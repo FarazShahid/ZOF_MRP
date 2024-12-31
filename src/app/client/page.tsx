@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 const page = () => {
   return (
     <Layout>
-      <div className="flex flex-col gap-3">
+      <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Clients</h1>
           <button

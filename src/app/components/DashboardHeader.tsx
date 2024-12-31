@@ -42,7 +42,7 @@ const DashboardHeader = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0 text-lg font-bold">
-            <Link href="/dashboard">ORM</Link>
+            <Link href="/dashboard">Zero One Forge - MRP</Link>
           </div>
 
           {/* Menu Items (hidden on small screens) */}
@@ -67,10 +67,11 @@ const DashboardHeader = () => {
           {/* Right Side (Username & Dropdown) */}
           <div className="relative">
             <button
-              className="hover:opacity-80"
+              className="hover:opacity-80 flex items-center gap-2"
               onClick={() => setDrawerOpen(!isDrawerOpen)}
             >
               User Name
+              <img src="/arrowDown.svg" className={`mt-1 ${isDrawerOpen ? "rotate-180":""}`} />
             </button>
             {/* Dropdown */}
             {isDrawerOpen && (
@@ -125,7 +126,7 @@ const DashboardHeader = () => {
                 <Link
                   href={item.route}
                   key={item.id}
-                  className="hover:text-gray-300 text-lg block"
+                  className="text-white text-lg block"
                 >
                   {item.name}
                 </Link>

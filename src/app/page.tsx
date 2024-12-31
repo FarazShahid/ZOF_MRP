@@ -20,7 +20,7 @@ export default function Home() {
       <div className="w-full bg-gray-100 lg:w-1/2 flex items-center justify-center">
         <div className="max-w-md w-full p-6">
           <h1 className="text-3xl font-semibold mb-6 text-black text-center">
-            Logo Here
+            Zero One Forge - MRP
           </h1>
           <h1 className="text-sm font-semibold mb-6 text-gray-500 text-center">
             Welcome to Order Managment System

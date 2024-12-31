@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ORM",
-  description: "Order Management System",
+  title: "MRP",
+  description: "Zero One Forge - MRP",
 };
 
 export default function RootLayout({
