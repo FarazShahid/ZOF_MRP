@@ -9,6 +9,7 @@ import ModalLayout, {
   ModalFooter,
   ModalHeader,
 } from "../components/ModalLayout/ModalLayout";
+import { OrderTableHeader } from "../interfaces";
 
 const page = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,40 +23,11 @@ const page = () => {
   const orders = [
     {
       id: "001",
-      name: "Order 1",
-      product: "T-shirt",
-      fabric: "Cotton",
-      color: "Blue",
-      size: "M",
-      image: "/tshirtMockUp.jpg",
-    },
-    {
-      id: "002",
-      name: "Order 2",
-      product: "Jacket",
-      fabric: "Leather",
-      color: "Black",
-      size: "L",
-      image: "/tshirtMockUp.jpg",
-    },
-    {
-      id: "003",
-      name: "Order 3",
-      product: "Pants",
-      fabric: "Denim",
-      color: "Gray",
-      size: "XL",
-      image: "/tshirtMockUp.jpg",
-    },
-    {
-      id: "004",
-      name: "Order 4",
-      product: "Pants",
-      fabric: "Denim",
-      color: "Gray",
-      size: "XXL",
-      image: "/tshirtMockUp.jpg",
-    },
+      orderType: "Winter Season",
+      status: "In-progress",
+      deadline: "01/04/2025",
+      description: "test description"
+    }
   ];
 
   const orderValidationSchema = {};
@@ -79,78 +51,34 @@ const page = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead className="bg-[#364254]">
-              <tr>
-                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
-                  Order ID
-                </th>
-                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
-                  Order Name
-                </th>
-                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
-                  Product
-                </th>
-                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
-                  Fabric
-                </th>
-                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
-                  Color
-                </th>
-                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
-                  Size
-                </th>
-                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
-                  Product Design
-                </th>
-                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr
-                  key={order.id}
-                  className="border-t even:bg-[#BFE8E1] hover:bg-[#7bdbcb]"
-                >
-                  <td className="px-4 py-2 border text-center">{order.id}</td>
-                  <td className="px-4 py-2 border text-center">{order.name}</td>
-                  <td className="px-4 py-2 border text-center">
-                    {order.product}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {order.fabric}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {order.color}
-                  </td>
-                  <td className="px-4 py-2 border text-center">{order.size}</td>
-                  <td className="px-4 py-2 border text-center">
-                    <div className="flex items-center justify-center">
-                      <img
-                        src={order.image}
-                        alt="prodcut Design"
-                        className="w-16 h-16 object-cover rounded"
-                      />
-                    </div>
-                  </td>
-                  <td className="px-4 py-2 border">
-                    <div className="flex items-center justify-center gap-2">
-                      <button type="button">
-                        <img src="/EditIcon.svg" className="w-4" />
-                      </button>
-                      <button type="button" onClick={openDeleteModal}>
-                        <img src="/DeleteIcon.svg" className="w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="flex flex-col gap-1 w-full">
+            <div className="grid grid-flow-col w-full">
+              {OrderTableHeader.map((header) => {
+                return (
+                  <div className="text-center bg-[#364254] px-4 py-2 text-sm w-full font-semibold text-gray-50 border">
+                    {header}
+                  </div>
+                );
+              })}
+            </div>
+
+            {orders.map((orders) => {
+              return (
+                <div className="grid grid-flow-col w-full">
+                  <div className="bg-gray-400 text-black">{orders.id}</div>
+                  <div className="bg-gray-400 text-black">{orders.orderType}</div>
+                  <div className="bg-gray-400 text-black">{orders.status}</div>
+                  <div className="bg-gray-400 text-black">{orders.deadline}</div>
+                  <div className="flex items-center justify-center">
+                    <img src="/arrowDown.svg" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
+
       {/* ---------- Add Modal ---------- */}
       <ModalLayout isOpen={isOpen} onClose={closeModal}>
         <ModalHeader title="Add Order" onClose={closeModal} />
@@ -165,7 +93,9 @@ const page = () => {
                 <Fragment>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex flex-col">
-                      <label className="text-gray-600 text-lg">Order Type</label>
+                      <label className="text-gray-600 text-lg">
+                        Order Type
+                      </label>
                       <select className="inputDefault p-[7px] rounded-md">
                         <option value="">--Select--</option>
                         <option value="sample">Sample</option>
@@ -174,7 +104,7 @@ const page = () => {
                       </select>
                     </div>
                     <div className="flex flex-col">
-                      <label className="text-gray-600 text-lg">Color</label>
+                      <label className="text-gray-600 text-lg">Status</label>
                       <div className="w-full flex items-center gap-2">
                         <select className="inputDefault p-[7px] rounded-md w-[85%]">
                           <option value="">Select Color</option>
