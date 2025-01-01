@@ -5,16 +5,9 @@ import { Client } from "../interfaces";
 import Spinner from "./Spinner";
 
 const clientslist = [
-  { name: "John Doe", id: "1" },
-  { name: "Jane Smith", id: "2" },
-  { name: "Michael Johnson", id: "3" },
-  { name: "Emily Davis", id: "4" },
-  { name: "James Brown", id: "5" },
-  { name: "Sophia Wilson", id: "6" },
-  { name: "David Clark", id: "7" },
-  { name: "Olivia Lewis", id: "8" },
-  { name: "Daniel Walker", id: "9" },
-  { name: "Mia Martinez", id: "10" },
+  { Name: "John Doe", id: "1" },
+  { Name: "Jane Smith", id: "2" },
+  { Name: "Michael Johnson", id: "3" },
 ];
 
 function SideNavigation() {
@@ -69,7 +62,7 @@ function SideNavigation() {
                 selectedClientId === client.id ? "bg-[#c2e7ff] rounded-xl" : ""
               }`}
             >
-              {client.name}
+              {client.Name}
             </li>
           ))}
         </ul>

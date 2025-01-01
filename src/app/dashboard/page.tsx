@@ -9,11 +9,12 @@ import ModalLayout, {
   ModalFooter,
   ModalHeader,
 } from "../components/ModalLayout/ModalLayout";
-import { OrderTableHeader } from "../interfaces";
 
 const page = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState("");
+  const [showOrderItemTable, setShowOrderItemTable] = useState(false);
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -22,13 +23,18 @@ const page = () => {
 
   const orders = [
     {
-      id: "001",
-      orderType: "Winter Season",
-      status: "In-progress",
-      deadline: "01/04/2025",
-      description: "test description"
-    }
+      orderId: "001",
+      orderType: "Seasonal",
+      status: "in-progress",
+      deadline: "06/01/2024",
+      description: "Description",
+    },
   ];
+
+  const HandleOrderItems = (showTable: boolean, orderId: string) => {
+    setShowOrderItemTable(showTable);
+    setSelectedOrderId(orderId);
+  };
 
   const orderValidationSchema = {};
   const initialValues = {};
@@ -51,34 +57,168 @@ const page = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <div className="flex flex-col gap-1 w-full">
-            <div className="grid grid-flow-col w-full">
-              {OrderTableHeader.map((header) => {
-                return (
-                  <div className="text-center bg-[#364254] px-4 py-2 text-sm w-full font-semibold text-gray-50 border">
-                    {header}
-                  </div>
-                );
-              })}
-            </div>
-
-            {orders.map((orders) => {
-              return (
-                <div className="grid grid-flow-col w-full">
-                  <div className="bg-gray-400 text-black">{orders.id}</div>
-                  <div className="bg-gray-400 text-black">{orders.orderType}</div>
-                  <div className="bg-gray-400 text-black">{orders.status}</div>
-                  <div className="bg-gray-400 text-black">{orders.deadline}</div>
-                  <div className="flex items-center justify-center">
-                    <img src="/arrowDown.svg" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead className="bg-[#364254]">
+              <tr>
+                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
+                  Order ID
+                </th>
+                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
+                  Order Type
+                </th>
+                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
+                  Status
+                </th>
+                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
+                  Dead Line
+                </th>
+                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
+                  Discription
+                </th>
+                <th className="px-4 py-2 text-center text-sm font-semibold text-gray-50 border">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((order) => (
+                <>
+                  <tr
+                    key={order.orderId}
+                    className="border-t even:bg-[#BFE8E1] hover:bg-[#7bdbcb]"
+                  >
+                    <td className="px-4 py-2 border text-center">
+                      {order.orderId}
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      {order.orderType}
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      {order.status}
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      {order.deadline}
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      {order.description}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      <div className="flex items-center justify-center">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            HandleOrderItems(!showOrderItemTable, order.orderId)
+                          }
+                        >
+                          <img src="/arrowDown.svg" className="w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {showOrderItemTable && (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-2">
+                        <table className="min-w-full bg-gray-100 border border-gray-200">
+                          <thead>
+                            <tr className="bg-gray-300">
+                              <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
+                                Image
+                              </th>
+                              <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
+                               Product ID
+                              </th>
+                              <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
+                               Product Name
+                              </th>
+                              <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
+                               Product Type
+                              </th>
+                              <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
+                                Size
+                              </th>
+                              <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
+                                Quantity
+                              </th>
+                              <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
+                                Fabric
+                              </th>
+                              <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
+                                Action
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td className="px-4 py-2 border text-center">
+                                <img
+                                  src="/exampleImage.png"
+                                  alt="Product"
+                                  className="w-10 h-10 object-cover mx-auto"
+                                />
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                1
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                T-Shirt
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                Custom
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                M
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                50
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                Cotton
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                <button>Edit</button>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="px-4 py-2 border text-center">
+                                <img
+                                  src="/exampleImage.png"
+                                  alt="Product"
+                                  className="w-10 h-10 object-cover mx-auto"
+                                />
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                1
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                T-Shirt
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                Custom
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                M
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                50
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                Cotton
+                              </td>
+                              <td className="px-4 py-2 border text-center">
+                                <button>Edit</button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  )}
+                </>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-
       {/* ---------- Add Modal ---------- */}
       <ModalLayout isOpen={isOpen} onClose={closeModal}>
         <ModalHeader title="Add Order" onClose={closeModal} />
