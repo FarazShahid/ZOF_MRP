@@ -2,6 +2,7 @@
 
 import React, { createContext, ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import Spinner from "../components/Spinner";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -70,6 +71,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, [pathname]);
 
+  
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout, token }}>
       {children}

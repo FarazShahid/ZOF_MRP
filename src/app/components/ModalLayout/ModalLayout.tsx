@@ -4,9 +4,15 @@ interface ModalLayoutProps {
   isOpen: boolean;
   onClose?: () => void;
   children: ReactNode;
+  classNames?: string;
 }
 
-const ModalLayout: FC<ModalLayoutProps> = ({ isOpen, onClose, children }) => {
+const ModalLayout: FC<ModalLayoutProps> = ({
+  isOpen,
+  onClose,
+  children,
+  classNames,
+}) => {
   return (
     isOpen && (
       <div
@@ -14,7 +20,7 @@ const ModalLayout: FC<ModalLayoutProps> = ({ isOpen, onClose, children }) => {
         onClick={onClose}
       >
         <div
-          className="bg-white p-5 rounded-lg sm:w-[90%] md:w-[90%] lg:w-[45%]"
+          className={`bg-white p-5 rounded-lg ${classNames === undefined? "" : classNames}`}
           onClick={(e) => e.stopPropagation()}
         >
           {children}

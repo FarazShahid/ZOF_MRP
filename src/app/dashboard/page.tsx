@@ -1,20 +1,25 @@
 "use client";
 
-import React, { Fragment } from "react";
 import { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import Layout from "../components/Layout";
 import ModalLayout, {
   ModalBody,
-  ModalFooter,
   ModalHeader,
 } from "../components/ModalLayout/ModalLayout";
+import SideNavigation from "../components/SideNavigation";
+import OrderProductForm from "../components/OrderProductForm";
+import { useClientOrders } from "../services/useClientOrders";
 
 const page = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState("");
   const [showOrderItemTable, setShowOrderItemTable] = useState(false);
+  const [orderType, setOrderType] = useState("1");
+
+
+  // pass the client id to get the client orders
+  const { isLoading, error, result } = useClientOrders("1");
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -36,15 +41,10 @@ const page = () => {
     setSelectedOrderId(orderId);
   };
 
-  const orderValidationSchema = {};
-  const initialValues = {};
-  const handleSubmit = (values: any) => {
-    
-  };
-
   return (
     <Layout>
-      <div className="w-full flex flex-col gap-3">
+      <SideNavigation />
+      <div className="w-full flex flex-col gap-3 p-5">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Orders</h1>
           <button
@@ -179,7 +179,10 @@ const page = () => {
                                   <button type="button">
                                     <img src="/EditIcon.svg" />
                                   </button>
-                                  <button type="button" onClick={openDeleteModal}>
+                                  <button
+                                    type="button"
+                                    onClick={openDeleteModal}
+                                  >
                                     <img src="/DeleteIcon.svg" />
                                   </button>
                                 </div>
@@ -196,98 +199,41 @@ const page = () => {
           </table>
         </div>
       </div>
+
+
+
       {/* ---------- Add Modal ---------- */}
-      <ModalLayout isOpen={isOpen} onClose={closeModal}>
+      <ModalLayout
+        isOpen={isOpen}
+        onClose={closeModal}
+        classNames="sm:w-[90%] md:w-[90%] lg:w-[45%]"
+      >
         <ModalHeader title="Add Order" onClose={closeModal} />
-        <Formik
-          validationSchema={orderValidationSchema}
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form>
-              <ModalBody>
-                <Fragment>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="flex flex-col">
-                      <label className="text-gray-600 text-lg">
-                        Order Type
-                      </label>
-                      <select className="inputDefault p-[7px] rounded-md">
-                        <option value="">--Select--</option>
-                        <option value="sample">Sample</option>
-                        <option value="giveaway">Give Away</option>
-                        <option value="event">Event</option>
-                      </select>
-                    </div>
-                    <div className="flex flex-col">
-                      <label className="text-gray-600 text-lg">Status</label>
-                      <div className="w-full flex items-center gap-2">
-                        <select className="inputDefault p-[7px] rounded-md w-[85%]">
-                          <option value="">Select Color</option>
-                          <option value="type1">#000000</option>
-                          <option value="type2">#ffffff</option>
-                          <option value="type3">#ababab</option>
-                        </select>
-                        <div className="w-[15%] inputDefault rounded-lg h-[40px]"></div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col">
-                      <label className="text-gray-600 text-lg">Prodcut</label>
-                      <input
-                        className="inputDefault p-[7px] rounded-md"
-                        type="text"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label className="text-gray-600 text-lg">Size</label>
-                      <select className="inputDefault p-[7px] rounded-md">
-                        <option value="">Select Size</option>
-                        <option value="s">S</option>
-                        <option value="M">M</option>
-                        <option value="L">L</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="flex flex-col">
-                    <label className="text-gray-600 text-lg">
-                      Product Desgin
-                    </label>
-                    <input
-                      className="inputDefault p-[7px] rounded-md"
-                      type="file"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className="text-gray-600 text-lg">
-                      Order Details
-                    </label>
-                    <textarea
-                      rows={5}
-                      className="inputDefault p-[7px] rounded-md"
-                    />
-                  </div>
-                </Fragment>
-              </ModalBody>
-              <ModalFooter>
-                <Fragment>
-                  <button
-                    onClick={closeModal}
-                    className="px-4 py-2 bg-gray-300 hover:text-white rounded-lg text-black hover:bg-green-400 focus:outline-none"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={closeModal}
-                    className="px-4 py-2 bg-gray-300 hover:text-white text-black rounded-lg hover:bg-red-400 focus:outline-none"
-                  >
-                    Cancel
-                  </button>
-                </Fragment>
-              </ModalFooter>
-            </Form>
-          )}
-        </Formik>
+        <ModalBody>
+          <div className="flex w-full gap-6">
+            <label className="flex items-center gap-0.5">
+              <input
+                type="radio"
+                name="orderType"
+                value="1"
+                checked={orderType === "1"}
+                onChange={() => setOrderType("1")}
+              />
+              Services
+            </label>
+            <label className="flex items-center gap-0.5">
+              <input
+                type="radio"
+                name="orderType"
+                value="2"
+                checked={orderType === "2"}
+                onChange={() => setOrderType("2")}
+              />
+              Products
+            </label>
+          </div>
+          {orderType === "2" ? <OrderProductForm /> : <></>}
+        </ModalBody>
       </ModalLayout>
 
       {/* ---------- Delete Modal ---------- */}
@@ -315,6 +261,8 @@ const page = () => {
           </div>
         </div>
       )}
+
+
     </Layout>
   );
 };

@@ -3,7 +3,10 @@ export interface Client{
     Name: string;
 }
 
-
+export const loginInitialValues = {
+    email: "",
+    password: "",
+}
 
 export const OrderTableHeader = [
     'Order Id',

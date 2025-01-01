@@ -7,15 +7,13 @@ interface LayoutProps {
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  
   return (
     <div className="flex-1 flex flex-col h-full min-h-screen w-full">
       <div className="sticky top-0 z-10">
         <DashboardHeader />
       </div>
       <div className="flex w-full flex-grow">
-        <SideNavigation/>
-        <div className="flex flex-grow p-5 overflow-auto h-[calc(100vh - 70px)]">
+        <div className="flex flex-grow overflow-auto h-[calc(100vh - 70px)]">
           {children}
         </div>
       </div>

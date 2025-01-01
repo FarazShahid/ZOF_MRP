@@ -4,11 +4,13 @@ import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AuthContext from "../services/authservice";
+import { useUser } from "../services/useUser";
 
 const DashboardHeader = () => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const pathname = usePathname();
   const authContext = useContext(AuthContext);
+  const { user } = useUser();
 
   const { logout } = authContext || {};
 
@@ -74,7 +76,7 @@ const DashboardHeader = () => {
               className="hover:opacity-80 flex items-center gap-2"
               onClick={() => setDrawerOpen(!isDrawerOpen)}
             >
-              User Name
+              {user?.Email}
               <img src="/arrowDown.svg" className={`mt-1 ${isDrawerOpen ? "rotate-180":""}`} />
             </button>
             {/* Dropdown */}

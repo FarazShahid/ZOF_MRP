@@ -6,12 +6,9 @@ import LoginSideLogo from "./components/LoginSideLogo";
 import { LoginSchemaValidation } from "./schema/loginSchema";
 import AuthContext from "./services/authservice";
 import Spinner from "./components/Spinner";
+import { loginInitialValues } from "./interfaces";
 
 export default function Home() {
-  const initialValues = {
-    email: "",
-    password: "",
-  };
 
   const authContext = useContext(AuthContext);
 
@@ -38,7 +35,7 @@ export default function Home() {
           </h1>
           <Formik
             validationSchema={LoginSchemaValidation}
-            initialValues={initialValues}
+            initialValues={loginInitialValues}
             onSubmit={handleSubmit}
           >
             {({ isSubmitting }) => (
