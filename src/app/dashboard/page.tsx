@@ -39,7 +39,7 @@ const page = () => {
   const orderValidationSchema = {};
   const initialValues = {};
   const handleSubmit = (values: any) => {
-    console.log("values", values);
+    
   };
 
   return (

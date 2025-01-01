@@ -1,12 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import AuthContext from "../services/authservice";
 
 const DashboardHeader = () => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const pathname = usePathname();
+  const authContext = useContext(AuthContext);
+
+  const { logout } = authContext || {};
 
   const MenuItemsList = [
     {
@@ -77,8 +81,8 @@ const DashboardHeader = () => {
             {isDrawerOpen && (
               <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded-md shadow-lg">
                 <a
-                  href="/"
-                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                onClick={logout}
+                  className="block w-full text-left px-4 py-2 cursor-pointer hover:bg-gray-100"
                 >
                   Logout
                 </a>

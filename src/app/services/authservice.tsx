@@ -1,12 +1,11 @@
 "use client";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
+
 import React, { createContext, ReactNode, useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 interface AuthContextType {
-  user: string | undefined;
   isAuthenticated: boolean;
-  login: (credentials: { email: string; password: string }) => void;
+  login: (credentials: { email: string; password: string }) => Promise<void>;
   logout: () => void;
   token: string | undefined;
 }
@@ -16,47 +15,90 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<string | undefined>(undefined);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [token, setToken] = useState<string | undefined>(undefined);
   const pathname = usePathname();
   const router = useRouter();
 
   const login = async (credentials: { email: string; password: string }) => {
-    // apicall
-    // set token to local Storage
-    // setToken in hook
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(credentials),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const { access_token } = data;
+
+        localStorage.setItem("token", access_token);
+        setToken(access_token);
+        setIsAuthenticated(true);
+
+        router.push("/dashboard");
+      } else {
+        const error = await response.json();
+        console.error("Login failed:", error.message);
+        alert(error.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("An unexpected error occurred during login.");
+    }
   };
 
   const logout = () => {
     setToken(undefined);
-    setUser(undefined);
+    setIsAuthenticated(false);
     localStorage.removeItem("token");
+    router.push("/");
   };
 
   useEffect(() => {
-    let token = localStorage.getItem("token");
-    token = "sdnasndj";
-    if (!token) {
-      if (pathname !== "/login") {
-        router.push("/login");
-      }
-      setIsAuthenticated(false);
-    } else {
-      setToken(token);
+    let storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
       setIsAuthenticated(true);
-      // If the user is logged in and visits the login page, redirect them elsewhere
-      if (pathname === "/login") {
-        router.push("/dashboard");
-      }
+    } else if (pathname !== "/") {
+      router.push("/");
     }
   }, [pathname]);
 
   return (
-    <AuthContext.Provider
-      value={{ user, isAuthenticated, login, logout, token }}
-    >
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, token }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+export const fetchWithAuth = async (
+  url: string,
+  options: RequestInit = {}
+): Promise<Response> => {
+  const token = localStorage.getItem("token");
+
+  const headers = new Headers(options.headers || {});
+  if (token) {
+    headers.append("Authorization", `Bearer ${token}`);
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers,
+  });
+
+  if (response.status === 401) {
+    console.error("Unauthorized! Redirecting to login.");
+    window.location.href = "/";
+  }
+
+  return response;
+};
+
+export default AuthContext;

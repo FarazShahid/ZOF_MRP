@@ -1,8 +1,11 @@
 "use client";
 
+import { useContext } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import LoginSideLogo from "./components/LoginSideLogo";
 import { LoginSchemaValidation } from "./schema/loginSchema";
+import AuthContext from "./services/authservice";
+import Spinner from "./components/Spinner";
 
 export default function Home() {
   const initialValues = {
@@ -10,8 +13,16 @@ export default function Home() {
     password: "",
   };
 
-  const handleSubmit = (values:any) => {
-    console.log("values", values);
+  const authContext = useContext(AuthContext);
+
+  if (!authContext) {
+    throw new Error("AuthContext must be used within AuthContextProvider");
+  }
+
+  const { login } = authContext;
+
+  const handleSubmit = async (values: { email: string; password: string }) => {
+    await login(values);
   };
 
   return (
@@ -23,7 +34,7 @@ export default function Home() {
             Zero One Forge - MRP
           </h1>
           <h1 className="text-sm font-semibold mb-6 text-gray-500 text-center">
-            Welcome to Order Managment System
+            Welcome to MRP
           </h1>
           <Formik
             validationSchema={LoginSchemaValidation}
@@ -69,8 +80,10 @@ export default function Home() {
                 <div>
                   <button
                     type="submit"
-                    className="w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300"
+                    disabled={isSubmitting}
+                    className="w-full bg-black text-white p-2 flex items-center justify-center gap-4 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300"
                   >
+                    {isSubmitting ? <Spinner size="small" /> : <></>}
                     Login
                   </button>
                 </div>

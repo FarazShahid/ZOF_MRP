@@ -3,18 +3,12 @@
 import { useState, useEffect } from "react";
 import { Client } from "../interfaces";
 import Spinner from "./Spinner";
-
-const clientslist = [
-  { Name: "John Doe", id: "1" },
-  { Name: "Jane Smith", id: "2" },
-  { Name: "Michael Johnson", id: "3" },
-];
+import { fetchWithAuth } from "../services/authservice";
 
 function SideNavigation() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedClientId, setSelectedClientId] = useState("");
-  const [error, setError] = useState("");
 
   const handleSelectedClinet = (clientId: string) => {
     setSelectedClientId(clientId);
@@ -23,14 +17,14 @@ function SideNavigation() {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await fetch("/api/clients");
+        const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/clients`);
         if (!response.ok) {
           throw new Error("Failed to fetch clients");
         }
-        const data = await response.json();
+        const data: Client[] = await response.json();
         setClients(data);
       } catch (err: unknown) {
-        setError((err as Error).message);
+        console.log("Error Fetching Clients")
       } finally {
         setLoading(false);
       }
@@ -53,13 +47,13 @@ function SideNavigation() {
           id="clients-list"
           className="custom-scrollbar flex w-full flex-col gap-2.5 text-sm h-full px-3 max-h-[calc(100vh-145px)]"
         >
-          {clientslist?.map((client, index) => (
+          {clients?.map((client) => (
             <li
-              key={client.id}
-              data-tooltip-target={client.id}
-              onClick={() => handleSelectedClinet(client.id)}
+              key={client.Id}
+              data-tooltip-target={client.Id}
+              onClick={() => handleSelectedClinet(client.Id)}
               className={`min-h-[24.8px] px-1.5 py-0.5 border-b border-b-[#e0e0e0] hover:opacity-90 cursor-pointer hover:bg-[#cedfee] hover:rounded-xl truncate ${
-                selectedClientId === client.id ? "bg-[#c2e7ff] rounded-xl" : ""
+                selectedClientId === client.Id ? "bg-[#c2e7ff] rounded-xl" : ""
               }`}
             >
               {client.Name}
