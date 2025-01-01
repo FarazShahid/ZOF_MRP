@@ -125,13 +125,13 @@ const page = () => {
                                 Image
                               </th>
                               <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
-                               Product ID
+                                Product ID
                               </th>
                               <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
-                               Product Name
+                                Product Name
                               </th>
                               <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
-                               Product Type
+                                Product Type
                               </th>
                               <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700 border">
                                 Size
@@ -175,37 +175,14 @@ const page = () => {
                                 Cotton
                               </td>
                               <td className="px-4 py-2 border text-center">
-                                <button>Edit</button>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td className="px-4 py-2 border text-center">
-                                <img
-                                  src="/exampleImage.png"
-                                  alt="Product"
-                                  className="w-10 h-10 object-cover mx-auto"
-                                />
-                              </td>
-                              <td className="px-4 py-2 border text-center">
-                                1
-                              </td>
-                              <td className="px-4 py-2 border text-center">
-                                T-Shirt
-                              </td>
-                              <td className="px-4 py-2 border text-center">
-                                Custom
-                              </td>
-                              <td className="px-4 py-2 border text-center">
-                                M
-                              </td>
-                              <td className="px-4 py-2 border text-center">
-                                50
-                              </td>
-                              <td className="px-4 py-2 border text-center">
-                                Cotton
-                              </td>
-                              <td className="px-4 py-2 border text-center">
-                                <button>Edit</button>
+                                <div className="flex items-center justify-center gap-2">
+                                  <button type="button">
+                                    <img src="/EditIcon.svg" />
+                                  </button>
+                                  <button type="button" onClick={openDeleteModal}>
+                                    <img src="/DeleteIcon.svg" />
+                                  </button>
+                                </div>
                               </td>
                             </tr>
                           </tbody>
