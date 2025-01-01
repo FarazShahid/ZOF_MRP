@@ -3,10 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --body-background: #ffffff;
   --foreground: #171717;
+  --sidenav-background: #F6F8FC;
+  --text-color: #333333;
+  --border-color: #e0e0e0;
 }
 
+/* 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -18,4 +22,49 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}  */
+
+body {
+  background-color: var(--body-background);
+  height: 100vh;
+  min-height: 100vh;
 }
+
+.inputDefault {
+  border: 1px solid;
+}
+
+.j-side-nav {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--sidenav-background);
+  border-right: 1px solid var(--border-color);
+  width: 210px;
+}
+
+/* Hide scrollbar by default */
+.custom-scrollbar {
+  overflow-y: scroll; /* Enable scrolling */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Hide scrollbar */
+  opacity: 0;
+}
+
+/* Show scrollbar on hover */
+.custom-scrollbar:hover::-webkit-scrollbar {
+  width: 6px; /* Set scrollbar width when hovering */
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: #dbdde1; /* Scrollbar thumb color on hover */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
+  background: #d7d7d9; /* Scrollbar thumb color on hover over the thumb */
+}
+
+/* EAECF0
+dbdde1 */
