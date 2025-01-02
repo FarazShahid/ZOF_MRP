@@ -35,11 +35,11 @@ body {
 }
 
 .j-side-nav {
-  display: flex;
   flex-direction: column;
   background-color: var(--sidenav-background);
   border-right: 1px solid var(--border-color);
   width: 210px;
+  min-width: 185px;
 }
 
 /* Hide scrollbar by default */
