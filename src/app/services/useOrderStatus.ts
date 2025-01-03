@@ -28,7 +28,7 @@ export const useOrderStatus = (): UseOrderStatusResult => {
       setError(null);
 
       try {
-        const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/orderstatus`);
+        const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/orderstatuses`);
         if (!response.ok) {
           throw new Error("Failed to fetch order statuses.");
         }

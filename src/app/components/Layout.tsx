@@ -13,7 +13,7 @@ const Layout = ({ children }: LayoutProps) => {
         <DashboardHeader />
       </div>
       <div className="flex w-full flex-grow">
-        <div className="flex flex-grow overflow-auto h-[calc(100vh - 70px)]">
+        <div className="flex flex-grow relative overflow-auto h-[calc(100vh-65px)]">
           {children}
         </div>
       </div>

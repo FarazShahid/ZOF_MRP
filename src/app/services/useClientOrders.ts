@@ -7,10 +7,15 @@ interface OrderItem {
 }
 
 interface Order {
-  ClientId: number;
+  Id: number;
+  ClientId: string;
+  ClientName: string;
   OrderEventId: number;
+  EventName: string;
   Description: string;
   OrderStatusId: number;
+  StatusName: string;
+  CreatedOn: string;
   Deadline: string;
   items: OrderItem[];
 }
@@ -18,11 +23,11 @@ interface Order {
 interface UseClientOrdersResult {
   isLoading: boolean;
   error: string | null;
-  result: Order | null;
+  result: Order[] | null;
 }
 
 export const useClientOrders = (clientId: string | null): UseClientOrdersResult => {
-  const [result, setResult] = useState<Order | null>(null);
+  const [result, setResult] = useState<Order[] | null>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +43,7 @@ export const useClientOrders = (clientId: string | null): UseClientOrdersResult 
       setError(null);
 
       try {
-        const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/api/orders?clientId=${clientId}`);
+        const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/orders/${clientId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch orders for client ID: ${clientId}`);
         }
