@@ -1,49 +1,42 @@
 import { useState, useEffect } from "react";
 import { fetchWithAuth } from "./authservice";
 
-interface Product {
+interface Size {
   Id: number;
-  Name: string;
-  ProductCategoryId: number;
-  ProductCategoryName: string;
-  FabricTypeId: number;
-  FabricTypeName: string;
-  FabricName: string;
-  FabricGSM: number;
-  Description: string;
+  OptionSizeOptions: string;
   CreatedOn: string;
   CreatedBy: string;
   UpdatedOn: string;
   UpdatedBy: string;
 }
 
-export const useFetchProducts = () => {
-  const [products, setProducts] = useState<Product[] | null>([]);
+export const useFetchSize = () => {
+  const [sizes, setSizes] = useState<Size[] | null>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchSize = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+        const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/sizeoptions`);
         if (!response.ok) {
           throw new Error(`Failed to fetch products:`);
         }
         const data = await response.json();
-        setProducts(data);
+        setSizes(data);
       } catch (err: unknown) {
         setError((err as Error).message);
-        setProducts(null);
+        setSizes(null);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchProducts();
+    fetchSize();
   }, []);
 
-  return { isLoading, error, products };
+  return { isLoading, error, sizes };
 };

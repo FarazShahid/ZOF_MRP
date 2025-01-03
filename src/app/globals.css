@@ -65,6 +65,6 @@ body {
 .custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
   background: #d7d7d9; /* Scrollbar thumb color on hover over the thumb */
 }
-
-/* EAECF0
-dbdde1 */
+.headerFontFamily{
+  font-family: 'circular';
+}

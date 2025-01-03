@@ -1,24 +1,8 @@
 import { useState, useEffect } from "react";
 import { fetchWithAuth } from "./authservice";
+import { Order } from "../interfaces";
 
-interface OrderItem {
-  itemId: number;
-  quantity: number;
-}
 
-interface Order {
-  Id: number;
-  ClientId: string;
-  ClientName: string;
-  OrderEventId: number;
-  EventName: string;
-  Description: string;
-  OrderStatusId: number;
-  StatusName: string;
-  CreatedOn: string;
-  Deadline: string;
-  items: OrderItem[];
-}
 
 interface UseClientOrdersResult {
   isLoading: boolean;
@@ -26,7 +10,7 @@ interface UseClientOrdersResult {
   result: Order[] | null;
 }
 
-export const useClientOrders = (clientId: string | null): UseClientOrdersResult => {
+export const useClientOrders = (clientId: string | null, refreshKey: number): UseClientOrdersResult => {
   const [result, setResult] = useState<Order[] | null>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +42,7 @@ export const useClientOrders = (clientId: string | null): UseClientOrdersResult 
     };
 
     fetchOrders();
-  }, [clientId]);
+  }, [clientId, refreshKey]);
 
   return { isLoading, error, result };
 };
