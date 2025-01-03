@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchWithAuth } from "./authservice";
 
-interface OrderItem {
+export interface OrderItem {
   Id: number;
   OrderId: number;
   ProductId: number;
@@ -56,7 +56,7 @@ export const useFetchOrderItems = (
     };
 
     fetchProducts();
-  }, []);
+  }, [orderId]);
 
   return { isLoading, error, orderItems };
 };

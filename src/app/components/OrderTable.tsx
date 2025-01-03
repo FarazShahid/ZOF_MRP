@@ -3,16 +3,19 @@ import React, { useState } from "react";
 import Spinner from "./Spinner";
 import OrderItemsTable from "./OrderItemsTable";
 import { useClientOrders } from "../services/useClientOrders";
-import { formatDate } from "../interfaces";
+import { formatDate, Order } from "../interfaces";
 import HeaderWidgets from "./HeaderWidgets";
 import StatusChip from "./StatusChip";
 import DeleteModal from "./DeleteModal";
+import ViewOrderComponent from "./ViewOrderComponent";
+import { useFetchOrderItems } from "../services/useFetchOrderItems";
 
 const OrderTable = ({ clientId }: { clientId: string }) => {
-  const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState(false);
+  const [isOpenViewModal, setIsOpenViewModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
   const [refreshKey, setRefreshKey] = useState<number>(0);
+  const [selectedOrder, setSelectedOrder] = useState<Order>()
 
   const { isLoading, result } = useClientOrders(clientId, refreshKey);
 
@@ -21,9 +24,13 @@ const OrderTable = ({ clientId }: { clientId: string }) => {
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
-  const toggleOrderItemsTable = (orderId: number) => {
-    setExpandedOrderId((prev) => (prev === orderId ? null : orderId));
+
+  const OpenViewModal = (order:Order, orderId: number) => {
+    setSelectedOrderId(orderId);
+    setIsOpenViewModal(true);
+    setSelectedOrder(order);
   };
+  const closeViewModal = () => setIsOpenViewModal(false);
 
   const refreshData = () => {
     setRefreshKey((prev) => prev + 1);
@@ -42,6 +49,9 @@ const OrderTable = ({ clientId }: { clientId: string }) => {
             <thead className="bg-[#656565] text-white">
               <tr>
                 <th className="px-4 py-2 text-center text-medium font-semibold rounded-tl-lg rounded-bl-lg">
+                  Order Name
+                </th>
+                <th className="px-4 py-2 text-center text-medium font-semibold">
                   Order ID
                 </th>
                 <th className="px-4 py-2 text-center text-medium font-semibold">
@@ -64,10 +74,15 @@ const OrderTable = ({ clientId }: { clientId: string }) => {
             <tbody>
               {result?.map((order) => (
                 <>
-                  <tr key={order.Id} className="border-t bg-gray-100">
+                  <tr
+                    key={order.Id}
+                    onClick={() => OpenViewModal(order, order.Id)}
+                    className="border-t bg-gray-100 cursor-pointer"
+                  >
                     <td className="px-4 py-2 text-center rounded-tl-lg rounded-bl-lg">
                       {order.Id}
                     </td>
+                    <td className="px-4 py-2 text-center">{order.Id}</td>
                     <td className="px-4 py-2 text-center">{order.EventName}</td>
                     <td className="px-4 py-2 text-center">
                       <StatusChip OrderStatus={order.StatusName} />
@@ -80,12 +95,6 @@ const OrderTable = ({ clientId }: { clientId: string }) => {
                     </td>
                     <td className="px-4 py-2 rounded-tr-lg rounded-br-lg">
                       <div className="flex items-center gap-2 justify-center">
-                        <button
-                          type="button"
-                          onClick={() => toggleOrderItemsTable(order.Id)}
-                        >
-                          <img src="/eyeIcon.svg" />
-                        </button>
                         <button type="button">
                           <img src="/EditIcon.svg" />
                         </button>
@@ -98,15 +107,19 @@ const OrderTable = ({ clientId }: { clientId: string }) => {
                       </div>
                     </td>
                   </tr>
-                  {expandedOrderId === order.Id && (
-                    <OrderItemsTable orderId={order.Id} />
-                  )}
                 </>
               ))}
             </tbody>
           </table>
         </div>
       )}
+
+      <ViewOrderComponent
+        isOpen={isOpenViewModal}
+        onClose={closeViewModal}
+        selectedOrder={selectedOrder}
+      />
+
       <DeleteModal
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
