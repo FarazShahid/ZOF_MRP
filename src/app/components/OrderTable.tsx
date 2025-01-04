@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 
 import Spinner from "./Spinner";
-import OrderItemsTable from "./OrderItemsTable";
-import { useClientOrders } from "../services/useClientOrders";
-import { formatDate, Order } from "../interfaces";
 import HeaderWidgets from "./HeaderWidgets";
 import StatusChip from "./StatusChip";
 import DeleteModal from "./DeleteModal";
 import ViewOrderComponent from "./ViewOrderComponent";
-import { useFetchOrderItems } from "../services/useFetchOrderItems";
+import { useClientOrders } from "../services/useClientOrders";
+import { formatDate, Order } from "../interfaces";
 
-const OrderTable = ({ clientId }: { clientId: string }) => {
+const OrderTable = ({ clientId, refreshTableData }: { clientId: string, refreshTableData: number }) => {
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenViewModal, setIsOpenViewModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
   const [refreshKey, setRefreshKey] = useState<number>(0);
   const [selectedOrder, setSelectedOrder] = useState<Order>()
 
-  const { isLoading, result } = useClientOrders(clientId, refreshKey);
+  const { isLoading, result } = useClientOrders(clientId, refreshKey, refreshTableData);
 
   const openDeleteModal = (orderId: number) => {
     setSelectedOrderId(orderId);
@@ -100,7 +98,10 @@ const OrderTable = ({ clientId }: { clientId: string }) => {
                         </button>
                         <button
                           type="button"
-                          onClick={() => openDeleteModal(order.Id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openDeleteModal(order.Id);
+                          }}
                         >
                           <img src="/DeleteIcon.svg" />
                         </button>
@@ -113,6 +114,7 @@ const OrderTable = ({ clientId }: { clientId: string }) => {
           </table>
         </div>
       )}
+
 
       <ViewOrderComponent
         isOpen={isOpenViewModal}

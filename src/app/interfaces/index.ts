@@ -86,7 +86,7 @@ export const formatedProductName = (
   FabricGSM: number,
   ProductCategoryName: string
 ): string => {
-  return `${FabricTypeName}_${FabricName}_${FabricGSM}_${ProductCategoryName}`;
+  return `${ProductCategoryName}_${FabricTypeName}_${FabricName}_${FabricGSM}`;
 };
 
 

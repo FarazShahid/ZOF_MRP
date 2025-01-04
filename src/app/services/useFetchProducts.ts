@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchWithAuth } from "./authservice";
 
-interface Product {
+export interface Product {
   Id: number;
   Name: string;
   ProductCategoryId: number;
