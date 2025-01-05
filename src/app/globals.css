@@ -5,7 +5,7 @@
 :root {
   --body-background: #ffffff;
   --foreground: #171717;
-  --sidenav-background: #F6F8FC;
+  --sidenav-background: #f6f8fc;
   --text-color: #333333;
   --border-color: #e0e0e0;
 }
@@ -65,6 +65,17 @@ body {
 .custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
   background: #d7d7d9; /* Scrollbar thumb color on hover over the thumb */
 }
+.headerFontFamily {
+  font-family: "circular";
+}
 
-/* EAECF0
-dbdde1 */
+.formInputdefault {
+  border-radius: 10px;
+  padding: 0px 6px;
+  height: 40px;
+  border: 1px solid #afafaf;
+}
+.formContainerWrapper {
+  background: rgb(252 251 251);
+  box-shadow: rgb(223, 223, 223) 1px 1px 2px 2px;
+}
