@@ -1,3 +1,5 @@
+import { Product } from "../services/useFetchProducts";
+
 export interface Client {
   Id: string;
   Name: string;
@@ -81,13 +83,25 @@ export interface OrderProductFormProps {
 }
 
 export const formatedProductName = (
-  FabricTypeName: string,
-  FabricName: string,
-  FabricGSM: number,
-  ProductCategoryName: string
+  FabricTypeName?: string,
+  FabricName?: string,
+  FabricGSM?: number,
+  ProductCategoryName?: string,
+  ProductCutOptionName?: string,
+  ProductSizeOptionName?: string,
 ): string => {
-  return `${ProductCategoryName}_${FabricTypeName}_${FabricName}_${FabricGSM}`;
+  const parts = [
+    ProductCutOptionName,
+    ProductCategoryName,
+    FabricTypeName,
+    FabricName,
+    FabricGSM?.toString(),
+    ProductSizeOptionName,
+  ].filter((part) => part);
+
+  return parts.join("_");
 };
+
 
 
 export interface OrderItem {
@@ -99,12 +113,99 @@ export interface Order {
   Id: number;
   ClientId: string;
   ClientName: string;
-  OrderEventId: number;
-  EventName: string;
+  Deadline: string;
   Description: string;
+  EventName: string;
+  ExternalOrderId: string;
+  OrderEventId: number;
+  OrderName: string;
+  OrderNumber: string;
+  OrderPriority: number;
   OrderStatusId: number;
   StatusName: string;
-  CreatedOn: string;
-  Deadline: string;
   items: OrderItem[];
 }
+
+export interface OrderItem {
+  Id: number;
+  ProductId: number;
+  Description: string;
+  OrderItemPriority: number;
+  ColorOptionId: number | null;
+  ImageId: number;
+  FileId: number;
+  VideoId: number;
+}
+
+
+
+export function  generateOrderIdentifier(
+  username?: string | null,
+  eventName?: string | null,
+  orderId?: number | null
+): string {
+  const userInitials = username
+    ?.split(' ')
+    .map(namePart => namePart.charAt(0).toUpperCase())
+    .join('');
+
+  const eventInitials = eventName
+    ?.split(' ')
+    .map(namePart => namePart.charAt(0).toUpperCase())
+    .join('');
+
+  const parts = [
+    userInitials, 
+    eventInitials, 
+    orderId !== null && orderId !== undefined ? orderId.toString() : null
+  ].filter(Boolean); // Filters out null, undefined, or empty values
+
+  return parts.join('_');
+}
+
+
+export const statusPriority: Record<Order["StatusName"], number> = {
+  Pending: 1,
+  Completed: 2,
+  Cancelled: 3,
+};
+
+export type SortConfig = {
+  key: keyof Order | null;
+  direction: "asc" | "desc";
+};
+
+export interface OrderItemType {
+  ProductId: number;
+  Description: string;
+  OrderItemPriority: number;
+  ColorOptionId: number;
+  OrderItemQuantity: number;
+  Name:string;
+  ImageId: number;
+  FileId: number;
+  VideoId: number;
+  printingOptions: {
+    PrintingOptionId: number;
+    Description: string;
+  }[];
+}
+
+export interface AddOrderComponentProps {
+  isOpen: boolean;
+  clientId: number | undefined;
+  isEditOrder: boolean;
+  refreshKey: number;
+  orderId: number;
+  onClose: () => void;
+  onOrderAdded: () => void;
+}
+
+
+export const getProductNameById = (
+  products: Product[] | null,
+  id: number
+): string | null => {
+  const product = products?.find((product) => product.Id === id);
+  return product ? product.Name : null;
+};

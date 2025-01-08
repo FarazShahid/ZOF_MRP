@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
 import { fetchWithAuth } from "./authservice";
 
-export interface Product {
-  Id: number;
-  Name: string;
-  ProductCategoryId: number;
-  FabricTypeId: number;
-  Description: string;
+export interface Client {
+    Id: number;
+    Name: string;
+    Email: string;
+    Phone: string;
+    Country: string;
+    State: string;
+    City:string;
+    CompleteAddress:string;
+    ClientStatusId:string;
+    CreatedOn:string;
+    CreatedBy: string;
 }
 
-export const useFetchProducts = () => {
-  const [products, setProducts] = useState<Product[] | null>([]);
+export const useFetchClients = () => {
+  const [client, setClient] = useState<Client[] | null>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,15 +26,15 @@ export const useFetchProducts = () => {
       setError(null);
 
       try {
-        const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+        const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/clients`);
         if (!response.ok) {
-          throw new Error(`Failed to fetch products:`);
+          throw new Error(`Failed to fetch clients:`);
         }
         const data = await response.json();
-        setProducts(data);
+        setClient(data);
       } catch (err: unknown) {
         setError((err as Error).message);
-        setProducts(null);
+        setClient(null);
       } finally {
         setIsLoading(false);
       }
@@ -37,5 +43,5 @@ export const useFetchProducts = () => {
     fetchProducts();
   }, []);
 
-  return { isLoading, error, products };
+  return { isLoading, error, client };
 };
