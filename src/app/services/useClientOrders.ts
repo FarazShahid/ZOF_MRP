@@ -9,9 +9,8 @@ interface UseClientOrdersResult {
 }
 
 export const useClientOrders = (
-  clientId: string | null,
+  clientId: number | null | undefined,
   refreshKey: number,
-  refreshTableData: number
 ): UseClientOrdersResult => {
   const [result, setResult] = useState<Order[] | null>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -46,7 +45,7 @@ export const useClientOrders = (
     };
 
     fetchOrders();
-  }, [clientId, refreshKey, refreshTableData]);
+  }, [clientId, refreshKey]);
 
   return { isLoading, error, result };
 };

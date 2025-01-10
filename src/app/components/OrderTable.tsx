@@ -15,7 +15,7 @@ const OrderTable = ({ clientId, refreshTableData }: { clientId: string, refreshT
   const [refreshKey, setRefreshKey] = useState<number>(0);
   const [selectedOrder, setSelectedOrder] = useState<Order>()
 
-  const { isLoading, result } = useClientOrders(clientId, refreshKey, refreshTableData);
+  const { isLoading, result } = useClientOrders(clientId, refreshKey);
 
   const openDeleteModal = (orderId: number) => {
     setSelectedOrderId(orderId);
