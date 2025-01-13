@@ -136,6 +136,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                           <option>Select Country</option>
                           <option value={"USA"}>USA</option>
                           <option value={"Pakistan"}>Pakistan</option>
+                          <option value={"UK"}>UK</option>
                         </Field>
                       </div>
                       <div className="flex flex-col gap-1 w-full">

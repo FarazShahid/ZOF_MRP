@@ -8,7 +8,7 @@ import ViewOrderComponent from "./ViewOrderComponent";
 import { useClientOrders } from "../services/useClientOrders";
 import { formatDate, Order } from "../interfaces";
 
-const OrderTable = ({ clientId, refreshTableData }: { clientId: string, refreshTableData: number }) => {
+const OrderTable = ({ clientId, refreshTableData }: { clientId: number, refreshTableData: number }) => {
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenViewModal, setIsOpenViewModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
