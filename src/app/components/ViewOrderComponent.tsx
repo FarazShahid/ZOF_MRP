@@ -57,6 +57,9 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
   const [orderItems, setOrderItems] = useState<ViewOrderItemType[] | null>([]);
 
   useEffect(() => {
+    if(!selectedOrder){
+      return
+    }
     const fetchProducts = async () => {
       setIsLoading(true);
       try {
