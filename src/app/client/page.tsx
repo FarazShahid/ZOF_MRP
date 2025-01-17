@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Layout from "../components/Layout";
 import {
   Table,
   TableHeader,
@@ -13,19 +12,24 @@ import {
   getKeyValue,
   Button,
 } from "@nextui-org/react";
+
 import { useFetchClients } from "../services/useFetchClients";
 import AddClients from "../components/AddClients";
+import DeleteClient from "../components/DeleteClient";
+import Layout from "../components/Layout";
 
 const page = () => {
-  const { client, isLoading } = useFetchClients();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState<number>(0);
+  const [selectedClientId, setSelectedClientId] = useState<number>(0);
+  const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const [page, setPage] = useState(1);
+  const { client, isLoading } = useFetchClients({ refreshKey });
+
   const rowsPerPage = 15;
-
   const pages = Math.ceil(client!.length / rowsPerPage);
-
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
@@ -34,7 +38,20 @@ const page = () => {
   }, [page, client]);
 
   const openAddModal = () => setIsAddModalOpen(true);
-  const closeAddModal = () => setIsAddModalOpen(false);
+  const closeAddModal = () => {
+    setIsAddModalOpen(false);
+    setIsEdit(false);
+  };
+  const handleOpenDeleteModal = (clientId: number) => {
+    setSelectedClientId(clientId);
+    setIsOpenDeleteModal(true);
+  };
+  const closeDeleteModal = () => setIsOpenDeleteModal(false);
+  const handleOpenEditModal = (clientId: number) => {
+    setSelectedClientId(clientId);
+    setIsEdit(true);
+    setIsAddModalOpen(true);
+  };
   const refetchData = () => {
     setRefreshKey((prev) => prev + 1);
   };
@@ -44,9 +61,9 @@ const page = () => {
       <div className="w-full flex flex-col gap-3 p-5">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Clients</h1>
-          {/* <Button color="primary" size="sm" onPress={openAddModal}>
+          <Button color="primary" size="sm" onPress={openAddModal}>
             Add Client
-          </Button> */}
+          </Button>
         </div>
         <Table
           isStriped
@@ -70,29 +87,32 @@ const page = () => {
           }}
         >
           <TableHeader>
-            <TableColumn
-              key="Name"
-              className="text-medium font-bold"
-            >
+            <TableColumn key="Name" className="text-medium font-bold">
               Name
             </TableColumn>
-            <TableColumn
-              key="Email"
-              className="text-medium font-bold"
-            >
+            <TableColumn key="Email" className="text-medium font-bold">
               Email
             </TableColumn>
-            <TableColumn
-              key="Phone"
-              className="text-medium font-bold"
-            >
+            <TableColumn key="Phone" className="text-medium font-bold">
               Phone
             </TableColumn>
+            <TableColumn key="City" className="text-medium font-bold">
+              City
+            </TableColumn>
+            <TableColumn key="State" className="text-medium font-bold">
+              State
+            </TableColumn>
+            <TableColumn key="Country" className="text-medium font-bold">
+              Country
+            </TableColumn>
             <TableColumn
-              key="Country"
+              key="CompleteAddress"
               className="text-medium font-bold"
             >
-              Country
+              Address
+            </TableColumn>
+            <TableColumn key="Action" className="text-medium font-bold">
+              Action
             </TableColumn>
           </TableHeader>
           <TableBody isLoading={isLoading} items={items}>
@@ -100,7 +120,24 @@ const page = () => {
               <TableRow key={item.Id}>
                 {(columnKey) => (
                   <TableCell>
-                    {getKeyValue(item, columnKey)}
+                    {columnKey !== "Action" ? (
+                      getKeyValue(item, columnKey)
+                    ) : (
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEditModal(item.Id)}
+                        >
+                          <img src="/EditIcon.svg" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenDeleteModal(item.Id)}
+                        >
+                          <img src="/DeleteIcon.svg" />
+                        </button>
+                      </div>
+                    )}
                   </TableCell>
                 )}
               </TableRow>
@@ -111,8 +148,16 @@ const page = () => {
         <AddClients
           isOpen={isAddModalOpen}
           closeAddModal={closeAddModal}
-          refreshKey={refreshKey}
           onOrderAdded={refetchData}
+          isEdit={isEdit}
+          clientId={selectedClientId}
+        />
+
+        <DeleteClient
+          isOpen={isOpenDeletModal}
+          onClose={closeDeleteModal}
+          clientId={selectedClientId}
+          onDeleteSuccess={refetchData}
         />
       </div>
     </Layout>

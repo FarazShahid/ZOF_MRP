@@ -17,7 +17,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({
   setIsSideNavOpen,
 }) => {
 
-  const {client, isLoading} = useFetchClients();
+  const [refreshKey, setRefreshkey] = useState(1);
+  const {client, isLoading} = useFetchClients({refreshKey});
   const [selectedClientId, setSelectedClientId] = useState<number>();
 
   const handleSelectedClinet = (clientId: number) => {
