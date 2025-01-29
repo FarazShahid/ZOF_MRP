@@ -1,17 +1,22 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+
 import LoginSideLogo from "./components/LoginSideLogo";
+import Spinner from "./components/Spinner";
 import { LoginSchemaValidation } from "./schema/loginSchema";
 import AuthContext from "./services/authservice";
-import Spinner from "./components/Spinner";
 import { loginInitialValues } from "./interfaces";
 
 export default function Home() {
-
   const authContext = useContext(AuthContext);
+  const [viewPassword, setViewPassword] = useState<boolean>(false);
 
+  const handleViewPassword = () => {
+    setViewPassword(!viewPassword);
+  };
   if (!authContext) {
     throw new Error("AuthContext must be used within AuthContextProvider");
   }
@@ -61,13 +66,23 @@ export default function Home() {
                   <label className="block text-sm font-medium text-gray-700">
                     Password
                   </label>
-                  <Field
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
-                  />
+                  <div className="flex relative">
+                    <Field
+                      type={viewPassword ? "text": "password"}
+                      id="password"
+                      name="password"
+                      placeholder="Enter your password"
+                      className="mt-1 py-2 pr-10 pl-2  w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleViewPassword}
+                      className="absolute right-2 top-4"
+                    >
+                      {!viewPassword ? <FaRegEye />: <FaRegEyeSlash />}
+                      
+                    </button>
+                  </div>
                   <ErrorMessage
                     name="password"
                     component="div"

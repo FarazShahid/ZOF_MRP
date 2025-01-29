@@ -68,7 +68,7 @@ const page = () => {
         <Table
           isStriped
           isHeaderSticky
-          aria-label="Product Table with pagination"
+          aria-label="Client Table with pagination"
           bottomContent={
             <div className="flex w-full justify-center">
               <Pagination
