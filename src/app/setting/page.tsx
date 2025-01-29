@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import { Card, CardBody, Tab, Tabs } from "@heroui/react";
 import Products from "./components/Products";
 import ProductCatagory from "./components/ProductCatagory";
+import SleeveType from "./Sleeve Type/SleeveType";
 
 const page = () => {
   return (
@@ -12,6 +13,9 @@ const page = () => {
         <Tabs aria-label="Options" color="primary">
           <Tab key="products" title="Products">
             <Products />
+          </Tab>
+          <Tab key="sleeveType" title="Sleeve Type">
+            <SleeveType />
           </Tab>
           <Tab key="catagory" title="Product Catagory">
             <ProductCatagory />
