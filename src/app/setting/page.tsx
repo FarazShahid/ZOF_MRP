@@ -9,20 +9,12 @@ const page = () => {
   return (
     <Layout>
       <div className="flex w-full flex-col p-5">
-        <Tabs aria-label="Options">
+        <Tabs aria-label="Options" color="primary">
           <Tab key="products" title="Products">
             <Products />
           </Tab>
           <Tab key="catagory" title="Product Catagory">
             <ProductCatagory />
-          </Tab>
-          <Tab key="sleevtype" title="Sleev Type">
-            <Card>
-              <CardBody>
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa
-                qui officia deserunt mollit anim id est laborum.
-              </CardBody>
-            </Card>
           </Tab>
         </Tabs>
       </div>

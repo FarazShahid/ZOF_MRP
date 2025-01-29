@@ -123,11 +123,13 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
-                              type="text"
-                              name="Email"
-                              placeholder="Enter Email"
+                              as="select"
+                              name="productCatagory"
                               className="formInputdefault"
-                            />
+                            >
+                              <option value={""}>Select</option>
+                              <option value={1}>T-shirt</option>
+                            </Field>
                             <ErrorMessage
                               name="Email"
                               component="div"
