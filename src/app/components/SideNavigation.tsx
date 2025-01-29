@@ -2,7 +2,7 @@
 
 import { useState, Dispatch, SetStateAction } from "react";
 import Spinner from "./Spinner";
-import { Tooltip } from "@nextui-org/react";
+import { Tooltip } from "@heroui/react";
 import { useFetchClients } from "../services/useFetchClients";
 
 interface SideNavigationProps {

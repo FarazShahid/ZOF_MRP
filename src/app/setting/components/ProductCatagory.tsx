@@ -12,7 +12,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import AddProduct from "./AddProduct";
 import { useFetchProductCatagory } from "../../services/useFetchProductCatagory";
 import DeleteProductCatagory from "./DeleteProductCatagory";

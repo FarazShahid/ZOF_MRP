@@ -6,7 +6,7 @@ import {
   ModalFooter,
   ModalHeader,
   Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import { fetchWithAuth } from "../../services/authservice";
 import { useFetchProductCatagoryById } from "../../services/useFetchProductCatagoryById";

@@ -1,4 +1,4 @@
-import { Chip } from "@nextui-org/react";
+import { Chip } from "@heroui/react";
 
 const StatusChip = ({ OrderStatus }: { OrderStatus: string }) => {
   const statusColorMap: Record<

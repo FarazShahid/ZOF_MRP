@@ -12,7 +12,7 @@ import {
   Pagination,
   getKeyValue,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useFetchProducts } from "../services/useFetchProducts";
 
 const page = () => {

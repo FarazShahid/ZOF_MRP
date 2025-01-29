@@ -5,7 +5,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import React from "react";
 import { SchemaValidation } from "../schema/ClientSchema";

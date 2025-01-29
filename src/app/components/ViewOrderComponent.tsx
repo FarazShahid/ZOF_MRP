@@ -9,7 +9,7 @@ import {
   Chip,
   Accordion,
   AccordionItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { VscTarget } from "react-icons/vsc";
 import { CiCalendarDate } from "react-icons/ci";
 import { TbExternalLink } from "react-icons/tb";

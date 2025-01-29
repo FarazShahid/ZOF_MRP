@@ -1,7 +1,7 @@
 "use client"
 
 import Layout from "../components/Layout";
-import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
+import { Card, CardBody, Tab, Tabs } from "@heroui/react";
 import Products from "./components/Products";
 import ProductCatagory from "./components/ProductCatagory";
 
