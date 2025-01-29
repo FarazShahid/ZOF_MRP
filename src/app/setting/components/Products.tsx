@@ -134,10 +134,10 @@ const Products = () => {
                     getKeyValue(item, columnKey)
                   ) : (
                     <div className="flex gap-2">
-                      <button type="button">
+                      <button type="button" onClick={() => openEditModal(item.id)}>
                         <MdEditSquare
                           className="hover:text-green-800"
-                          onClick={() => openEditModal(item.id)}
+                          size={18}
                         />
                       </button>
                       <button
@@ -145,7 +145,7 @@ const Products = () => {
                         className="hover:text-red-500"
                         onClick={() => handleOpenDeleteModal(item.id)}
                       >
-                        <MdDelete />
+                        <MdDelete size={18} />
                       </button>
                     </div>
                   )}
