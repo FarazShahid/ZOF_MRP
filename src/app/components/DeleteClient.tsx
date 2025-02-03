@@ -12,32 +12,35 @@ import { fetchWithAuth } from "../services/authservice";
 interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  orderId: number;
+  clientId: number;
   onDeleteSuccess: () => void;
 }
 
-const DeleteModal: React.FC<DeleteModalProps> = ({
+const DeleteClient: React.FC<DeleteModalProps> = ({
   isOpen,
   onClose,
-  orderId,
+  clientId,
   onDeleteSuccess,
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const handleDelete = async () => {
+    setIsDeleting(true);
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/clients/${clientId}`,
         {
           method: "DELETE",
         }
       );
       if (response.ok) {
+        setIsDeleting(false);
         onDeleteSuccess();
         onClose();
       }
     } catch (error) {
-      console.error("Error deleting order:", error);
-      alert("Failed to delete the order. Please try again.");
+      setIsDeleting(false);
+      console.error("Error deleting client:", error);
+      alert("Failed to delete the client. Please try again.");
     }
   };
   return (
@@ -49,12 +52,12 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
               Confirm Deletion
             </ModalHeader>
             <ModalBody>
-              <p>Are you sure you want to delete this order?</p>
+              <p>Are you sure you want to delete this client?</p>
             </ModalBody>
             <ModalFooter>
               <Button
                 color="danger"
-                variant="light"
+                variant="flat"
                 onPress={onClose}
                 disabled={isDeleting}
               >
@@ -75,4 +78,4 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   );
 };
 
-export default DeleteModal;
+export default DeleteClient;

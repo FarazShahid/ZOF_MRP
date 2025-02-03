@@ -15,7 +15,12 @@ export interface Client {
     CreatedBy: string;
 }
 
-export const useFetchClients = () => {
+interface fetchClientsType{
+  refreshKey?: number;
+}
+
+
+export const useFetchClients = ({refreshKey}: fetchClientsType) => {
   const [client, setClient] = useState<Client[] | null>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +46,7 @@ export const useFetchClients = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [refreshKey]);
 
   return { isLoading, error, client };
 };

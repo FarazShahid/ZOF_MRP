@@ -5,14 +5,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AuthContext from "../services/authservice";
 import { FaUserCircle } from "react-icons/fa";
+import { IoSettingsOutline } from "react-icons/io5";
+import { BiLogOutCircle } from "react-icons/bi";
 
 const DashboardHeader = () => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const pathname = usePathname();
   const authContext = useContext(AuthContext);
-  // const { user } = useUser();
 
   const { logout } = authContext || {};
+
 
   const MenuItemsList = [
     {
@@ -22,21 +24,16 @@ const DashboardHeader = () => {
     },
     {
       id: "2",
-      name: "Products",
-      route: "/products",
-    },
-    {
-      id: "3",
       name: "Inventory",
       route: "/inventory",
     },
     {
-      id: "4",
+      id: "3",
       name: "Clients",
       route: "/client",
     },
     {
-      id: "5",
+      id: "4",
       name: "Lead",
       route: "/lead",
     },
@@ -77,17 +74,30 @@ const DashboardHeader = () => {
               onClick={() => setDrawerOpen(!isDrawerOpen)}
             >
               <FaUserCircle /> Admin
-              <img src="/arrowDown.svg" className={`mt-1 ${isDrawerOpen ? "rotate-180":""}`} />
+              <img
+                src="/arrowDown.svg"
+                className={`mt-1 ${isDrawerOpen ? "rotate-180" : ""}`}
+              />
             </button>
             {/* Dropdown */}
             {isDrawerOpen && (
-              <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded-md shadow-lg">
-                <a
-                onClick={logout}
-                  className="block w-full text-left px-4 py-2 cursor-pointer hover:bg-gray-100"
-                >
-                  Logout
-                </a>
+              <div className="absolute right-0 mt-2">
+                <div className="w-40 bg-white text-black shadow-lg border-b-1">
+                  <Link 
+                    href={'/setting'}
+                    className="w-full flex items-center gap-3 text-left px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  >
+                   <IoSettingsOutline /> Setting
+                  </Link>
+                </div>
+                <div className="w-40 bg-white text-black shadow-lg">
+                  <a
+                    onClick={logout}
+                    className="flex items-center gap-3 w-full text-left px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  >
+                   <BiLogOutCircle /> Log Out
+                  </a>
+                </div>
               </div>
             )}
           </div>

@@ -14,7 +14,7 @@ import {
   Input,
   Accordion,
   AccordionItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { MdDeleteOutline } from "react-icons/md";
 import { Field, Form, Formik } from "formik";
 

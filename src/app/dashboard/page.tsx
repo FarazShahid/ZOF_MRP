@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Spinner, Tooltip } from "@nextui-org/react";
+import { Button, Spinner, Tooltip } from "@heroui/react";
 
 import Layout from "../components/Layout";
 import SideNavigation from "../components/SideNavigation";

@@ -1,0 +1,170 @@
+import { useEffect } from "react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Spinner,
+} from "@heroui/react";
+import { Field, Formik, Form, ErrorMessage } from "formik";
+import useCategoryStore from "@/store/useCategoryStore";
+import { SleeveTypeSchema } from "../../schema/SleeveTypeSchema";
+import useSleeveType from "@/store/useSleeveType";
+
+interface AddClientComponentProps {
+  isOpen: boolean;
+  isEdit: boolean;
+  sleeveTypeId: number;
+  closeAddModal: () => void;
+}
+
+const AddSleeveType: React.FC<AddClientComponentProps> = ({
+  isOpen,
+  closeAddModal,
+  isEdit,
+  sleeveTypeId,
+}) => {
+  interface AddFabricType {
+    sleeveTypeName: string;
+    productCategoryId: number;
+    createdBy: string;
+    updatedBy: string;
+  }
+
+  const {
+    addSleeveType,
+    getSleeveTypeById,
+    updateSleeveType,
+    sleeveType,
+    loading,
+  } = useSleeveType();
+  const {fetchCategories, productCategories} = useCategoryStore();
+
+  useEffect(() => {
+    if (sleeveTypeId && isEdit) {
+      getSleeveTypeById(sleeveTypeId);
+    }
+  }, [sleeveTypeId, isEdit]);
+
+  useEffect(()=>{
+    fetchCategories();
+  },[])
+
+  const InitialValues = {
+    sleeveTypeName: isEdit && sleeveType ? sleeveType.sleeveTypeName : "",
+    productCategoryId: isEdit && sleeveType ?  Number(sleeveType.productCategoryId) : 0,
+    createdBy: isEdit && sleeveType ? sleeveType.createdBy : "admin",
+    updatedBy: isEdit && sleeveType ? sleeveType.updatedBy : "admin",
+  };
+
+  const handleAddFabric = async (values: AddFabricType) => {
+    isEdit
+      ? updateSleeveType(sleeveTypeId, values, () => {
+          closeAddModal();
+        })
+      : addSleeveType(values, () => {
+          closeAddModal();
+        });
+  };
+
+  return (
+    <Modal isOpen={isOpen} size="lg" onOpenChange={closeAddModal}>
+      <ModalContent>
+        {() => (
+          <>
+            <ModalHeader className="flex flex-col gap-1">
+              {!isEdit ? (
+                <> Add Sleeve Type</>
+              ) : (
+                <> Edit Sleeve Type</>
+              )}
+            </ModalHeader>
+            <Formik
+              validationSchema={SleeveTypeSchema}
+              initialValues={InitialValues}
+              enableReinitialize
+              onSubmit={handleAddFabric}
+            >
+              {({ isSubmitting }) => (
+                <Form>
+                  <ModalBody>
+                    {loading ? (
+                      <Spinner />
+                    ) : (
+                      <>
+                        <div className="grid grid-cols-1 gap-3">
+                          <div className="flex flex-col gap-1 w-full">
+                            <label className="text-sm text-gray-600 font-sans">
+                            Sleeve Type Name
+                              <span className="text-red-500 text-sm">*</span>
+                            </label>
+                            <Field
+                              name="sleeveTypeName"
+                              type="text"
+                              placeholder="Enter Sleeve Type Name"
+                              className="formInputdefault"
+                            />
+                            <ErrorMessage
+                              name="sleeveTypeName"
+                              component="div"
+                              className="text-red-400 text-sm"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <label className="text-sm text-gray-600 font-sans">
+                            Product Category
+                              <span className="text-red-500 text-sm">*</span>
+                            </label>
+                            <Field
+                              name="productCategoryId"
+                              as="select"
+                              className="formInputdefault"
+                            >
+                              <option value={""}>Select a type</option>
+                              {
+                                productCategories.map((category)=>{
+                                  return(
+                                    <option value={category.id}>{category.type}</option>
+                                  )
+                                })
+                              }
+                            </Field>
+                            <ErrorMessage
+                              name="productCategoryId"
+                              component="div"
+                              className="text-red-400 text-sm"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      color="danger"
+                      variant="flat"
+                      onPress={closeAddModal}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      isLoading={isSubmitting}
+                      color="primary"
+                      type="submit"
+                    >
+                      {isEdit ? "Edit" : "Add"} Sleeve Type
+                    </Button>
+                  </ModalFooter>
+                </Form>
+              )}
+            </Formik>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
+  );
+};
+
+export default AddSleeveType;

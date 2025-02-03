@@ -1,3 +1,4 @@
+import useProductStore from "@/store/useProductStore";
 import {
   Modal,
   ModalContent,
@@ -6,38 +7,27 @@ import {
   ModalFooter,
   Button,
 } from "@heroui/react";
-import { useState } from "react";
-import { fetchWithAuth } from "../services/authservice";
 
 interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  orderId: number;
-  onDeleteSuccess: () => void;
+  productId: number;
 }
 
-const DeleteModal: React.FC<DeleteModalProps> = ({
+const DeleteProduct: React.FC<DeleteModalProps> = ({
   isOpen,
   onClose,
-  orderId,
-  onDeleteSuccess,
+  productId,
 }) => {
-  const [isDeleting, setIsDeleting] = useState(false);
+  const {deleteProduct, loading} = useProductStore();
+
   const handleDelete = async () => {
     try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (response.ok) {
-        onDeleteSuccess();
+      await deleteProduct(productId, () => {
         onClose();
-      }
+      });
     } catch (error) {
-      console.error("Error deleting order:", error);
-      alert("Failed to delete the order. Please try again.");
+      console.error("Delete failed:", error);
     }
   };
   return (
@@ -49,21 +39,21 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
               Confirm Deletion
             </ModalHeader>
             <ModalBody>
-              <p>Are you sure you want to delete this order?</p>
+              <p>Are you sure you want to delete this product?</p>
             </ModalBody>
             <ModalFooter>
               <Button
                 color="danger"
-                variant="light"
+                variant="flat"
                 onPress={onClose}
-                disabled={isDeleting}
+                disabled={loading}
               >
                 Cancel
               </Button>
               <Button
                 color="primary"
                 onPress={handleDelete}
-                isLoading={isDeleting}
+                isLoading={loading}
               >
                 Delete
               </Button>
@@ -75,4 +65,4 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   );
 };
 
-export default DeleteModal;
+export default DeleteProduct;

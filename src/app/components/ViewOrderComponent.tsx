@@ -9,7 +9,7 @@ import {
   Chip,
   Accordion,
   AccordionItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { VscTarget } from "react-icons/vsc";
 import { CiCalendarDate } from "react-icons/ci";
 import { TbExternalLink } from "react-icons/tb";
@@ -57,6 +57,9 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
   const [orderItems, setOrderItems] = useState<ViewOrderItemType[] | null>([]);
 
   useEffect(() => {
+    if(!selectedOrder){
+      return
+    }
     const fetchProducts = async () => {
       setIsLoading(true);
       try {
