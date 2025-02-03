@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IoAddCircleSharp } from "react-icons/io5";
 import { MdDelete, MdEditSquare } from "react-icons/md";
 import {
@@ -13,26 +13,27 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import AddProduct from "./AddProduct";
-import { useFetchProductCatagory } from "../../services/useFetchProductCatagory";
 import DeleteProductCatagory from "./DeleteProductCatagory";
 import { formatDate } from "../../interfaces";
 import AddProductCatagory from "./AddProductCatagory";
+import useCategoryStore from "@/store/useCategoryStore";
 
 const ProductCatagory = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [selectedProductCatId, setSelectedProductCatId] = useState<number>(0);
-  const [refreshKey, setRefreshKey] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const { isLoading, productCatagory } = useFetchProductCatagory({
-    refreshKey,
-  });
+  const { productCategories, fetchCategories, loading, error } =
+    useCategoryStore();
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(productCatagory!.length / rowsPerPage);
+  const pages = Math.ceil(productCategories!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
@@ -50,16 +51,13 @@ const ProductCatagory = () => {
     setIsAddModalOpen(true);
     setIsEdit(true);
   };
-  const refetchData = () => {
-    setRefreshKey((prev) => prev + 1);
-  };
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return productCatagory?.slice(start, end);
-  }, [page, productCatagory]);
+    return productCategories?.slice(start, end);
+  }, [page, productCategories]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -111,7 +109,7 @@ const ProductCatagory = () => {
             Action
           </TableColumn>
         </TableHeader>
-        <TableBody isLoading={isLoading} items={items}>
+        <TableBody isLoading={loading} items={items}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => (
@@ -150,7 +148,6 @@ const ProductCatagory = () => {
       <AddProductCatagory
         isOpen={isAddModalOpen}
         closeAddModal={closeAddModal}
-        onOrderAdded={refetchData}
         isEdit={isEdit}
         productIdCatagory={selectedProductCatId}
       />
@@ -159,7 +156,6 @@ const ProductCatagory = () => {
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
         productIdCatagory={selectedProductCatId}
-        onDeleteSuccess={refetchData}
       />
     </div>
   );

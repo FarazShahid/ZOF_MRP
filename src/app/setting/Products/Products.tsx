@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IoAddCircleSharp } from "react-icons/io5";
 import { MdDelete, MdEditSquare } from "react-icons/md";
 import {
@@ -14,44 +14,29 @@ import {
   TableRow,
 } from "@heroui/react";
 import DeleteProduct from "./DeleteProduct";
+import useProductStore from "@/store/useProductStore";
 import AddProduct from "./AddProduct";
 
 const Products = () => {
   const [page, setPage] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [selectedProductId, setSelectedProductId] = useState<number>(0);
-  const [refreshKey, setRefreshKey] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const users = [
-    {
-      key: "1",
-      id: 1,
-      name: "Product 1",
-      ProductCategory: "T-shirt",
-      FabricType: "Lecra",
-      Description: "this is description",
-      status: "Active",
-    },
-    {
-      key: "2",
-      id: 2,
-      name: "T-Shirt",
-      ProductCategory: "Hoodie",
-      FabricType: "Cotton-432",
-      Description: "this is description",
-      status: "Paused",
-    },
-  ];
+  const { fetchProducts, products, loading } = useProductStore();
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(users!.length / rowsPerPage);
+  const pages = Math.ceil(products!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
-  const handleOpenDeleteModal = (clientId: number) => {
-    setSelectedProductId(clientId);
+
+  const handleOpenDeleteModal = (productId: number) => {
+    setSelectedProductId(productId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -59,21 +44,18 @@ const Products = () => {
     setIsAddModalOpen(false);
     setIsEdit(false);
   };
-  const openEditModal = (clientId: number) => {
-    setSelectedProductId(clientId);
+  const openEditModal = (productId: number) => {
+    setSelectedProductId(productId);
     setIsAddModalOpen(true);
     setIsEdit(true);
-  };
-  const refetchData = () => {
-    setRefreshKey((prev) => prev + 1);
   };
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return users?.slice(start, end);
-  }, [page, users]);
+    return products?.slice(start, end);
+  }, [page, products]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -109,43 +91,52 @@ const Products = () => {
         }
       >
         <TableHeader>
-          <TableColumn key="name" className="text-medium font-bold">
-            Name
+          <TableColumn key="Name" className="text-medium font-bold">
+          Name
           </TableColumn>
-          <TableColumn key="ProductCategory" className="text-medium font-bold">
-            Product Category
+          <TableColumn key="ProductCategoryName" className="text-medium font-bold">
+          Product Category
+          </TableColumn>
+          <TableColumn key="FabricName" className="text-medium font-bold">
+          Fabric
           </TableColumn>
           <TableColumn key="FabricType" className="text-medium font-bold">
-            Fabric Type
+          Fabric Type
+          </TableColumn>
+          <TableColumn key="GSM" className="text-medium font-bold">
+          GSM
           </TableColumn>
           <TableColumn key="Description" className="text-medium font-bold">
-            Description
+          Description
           </TableColumn>
           <TableColumn key="action" className="text-medium font-bold">
             Action
           </TableColumn>
         </TableHeader>
-        <TableBody isLoading={isLoading} items={items}>
+        <TableBody isLoading={loading} items={items}>
           {(item) => (
-            <TableRow key={item.key}>
+            <TableRow key={item.Id}>
               {(columnKey) => (
                 <TableCell>
                   {columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
                     <div className="flex gap-2">
-                      <button type="button" onClick={() => openEditModal(item.id)}>
+                      <button
+                        type="button"
+                        onClick={() => openEditModal(item.Id)}
+                      >
                         <MdEditSquare
-                          className="hover:text-green-800"
+                          className="hover:text-green-800 cursor-pointer"
                           size={18}
                         />
                       </button>
                       <button
                         type="button"
-                        className="hover:text-red-500"
-                        onClick={() => handleOpenDeleteModal(item.id)}
+                        className="hover:text-red-500 cursor-pointer"
+                        onClick={() => handleOpenDeleteModal(item.Id)}
                       >
-                        <MdDelete size={18} />
+                        <MdDelete className="hover:text-red-500" size={18} />
                       </button>
                     </div>
                   )}
@@ -156,19 +147,22 @@ const Products = () => {
         </TableBody>
       </Table>
 
-      <AddProduct
+      {/* <AddSleeveType
         isOpen={isAddModalOpen}
         closeAddModal={closeAddModal}
-        onOrderAdded={refetchData}
         isEdit={isEdit}
-        clientId={selectedProductId}
+        sleeveTypeId={selectedSleeveTypeId}
+      />*/}
+       <AddProduct
+        isOpen={isAddModalOpen}
+        closeAddModal={closeAddModal}
+        isEdit={isEdit}
+        productId={selectedProductId}
       />
-
       <DeleteProduct
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
         productId={selectedProductId}
-        onDeleteSuccess={refetchData}
       />
     </div>
   );

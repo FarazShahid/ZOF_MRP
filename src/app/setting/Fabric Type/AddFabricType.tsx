@@ -9,62 +9,58 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import useCategoryStore from "@/store/useCategoryStore";
-import { SleeveTypeSchema } from "../../schema/SleeveTypeSchema";
-import useSleeveType from "@/store/useSleeveType";
+import { FabricTypeSchema } from "../../schema/FabricTypeSchema";
+import useFabricStore from "@/store/useFabricStore";
 
 interface AddClientComponentProps {
   isOpen: boolean;
   isEdit: boolean;
-  sleeveTypeId: number;
+  fabricTypeId: number;
   closeAddModal: () => void;
 }
 
-const AddSleeveType: React.FC<AddClientComponentProps> = ({
+const AddFabricType: React.FC<AddClientComponentProps> = ({
   isOpen,
   closeAddModal,
   isEdit,
-  sleeveTypeId,
+  fabricTypeId,
 }) => {
   interface AddFabricType {
-    sleeveTypeName: string;
-    productCategoryId: number;
+    type: string;
+    name: string;
+    gsm: string;
     createdBy: string;
     updatedBy: string;
   }
 
   const {
-    addSleeveType,
-    getSleeveTypeById,
-    updateSleeveType,
-    sleeveType,
+    addFabricType,
+    updateFabricType,
+    getFabricById,
+    fabricType,
     loading,
-  } = useSleeveType();
-  const {fetchCategories, productCategories} = useCategoryStore();
+  } = useFabricStore();
 
   useEffect(() => {
-    if (sleeveTypeId && isEdit) {
-      getSleeveTypeById(sleeveTypeId);
+    if (fabricTypeId && isEdit) {
+        getFabricById(fabricTypeId);
     }
-  }, [sleeveTypeId, isEdit]);
-
-  useEffect(()=>{
-    fetchCategories();
-  },[])
+  }, [fabricTypeId, isEdit]);
 
   const InitialValues = {
-    sleeveTypeName: isEdit && sleeveType ? sleeveType.sleeveTypeName : "",
-    productCategoryId: isEdit && sleeveType ?  Number(sleeveType.productCategoryId) : 0,
-    createdBy: isEdit && sleeveType ? sleeveType.createdBy : "admin",
-    updatedBy: isEdit && sleeveType ? sleeveType.updatedBy : "admin",
+    type: isEdit && fabricType ? fabricType.type : "",
+    name: isEdit && fabricType ? fabricType.name : "",
+    gsm: isEdit && fabricType ? fabricType.gsm : "",
+    createdBy: isEdit && fabricType ? fabricType.createdBy : "admin",
+    updatedBy: isEdit && fabricType ? fabricType.updatedBy : "admin",
   };
 
   const handleAddFabric = async (values: AddFabricType) => {
     isEdit
-      ? updateSleeveType(sleeveTypeId, values, () => {
+      ? updateFabricType(fabricTypeId, values, () => {
           closeAddModal();
         })
-      : addSleeveType(values, () => {
+      : addFabricType(values, () => {
           closeAddModal();
         });
   };
@@ -76,13 +72,13 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
           <>
             <ModalHeader className="flex flex-col gap-1">
               {!isEdit ? (
-                <> Add Sleeve Type</>
+                <> Add Fabric Type</>
               ) : (
-                <> Edit Sleeve Type</>
+                <> Edit Fabric Type</>
               )}
             </ModalHeader>
             <Formik
-              validationSchema={SleeveTypeSchema}
+              validationSchema={FabricTypeSchema}
               initialValues={InitialValues}
               enableReinitialize
               onSubmit={handleAddFabric}
@@ -97,42 +93,51 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                            Sleeve Type Name
+                              Type
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
-                              name="sleeveTypeName"
+                              name="type"
                               type="text"
-                              placeholder="Enter Sleeve Type Name"
+                              placeholder="Enter Type"
                               className="formInputdefault"
                             />
                             <ErrorMessage
-                              name="sleeveTypeName"
+                              name="type"
                               component="div"
                               className="text-red-400 text-sm"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                            Product Category
+                              Name
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
-                              name="productCategoryId"
-                              as="select"
+                              name="name"
+                              type="text"
+                              placeholder="Enter Name"
                               className="formInputdefault"
-                            >
-                              <option value={""}>Select a type</option>
-                              {
-                                productCategories.map((category)=>{
-                                  return(
-                                    <option value={category.id}>{category.type}</option>
-                                  )
-                                })
-                              }
-                            </Field>
+                            />
                             <ErrorMessage
-                              name="productCategoryId"
+                              name="name"
+                              component="div"
+                              className="text-red-400 text-sm"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <label className="text-sm text-gray-600 font-sans">
+                              GSM
+                              <span className="text-red-500 text-sm">*</span>
+                            </label>
+                            <Field
+                              name="gsm"
+                              type="number"
+                              placeholder="Enter GSM"
+                              className="formInputdefault"
+                            />
+                            <ErrorMessage
+                              name="gsm"
                               component="div"
                               className="text-red-400 text-sm"
                             />
@@ -154,7 +159,7 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Edit" : "Add"} Sleeve Type
+                      {isEdit ? "Edit" : "Add"} Fabric Type
                     </Button>
                   </ModalFooter>
                 </Form>
@@ -167,4 +172,4 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
   );
 };
 
-export default AddSleeveType;
+export default AddFabricType;

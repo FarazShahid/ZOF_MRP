@@ -1,4 +1,4 @@
-import { useState } from "react";
+import useProductStore from "@/store/useProductStore";
 import {
   Modal,
   ModalContent,
@@ -7,40 +7,27 @@ import {
   ModalFooter,
   Button,
 } from "@heroui/react";
-import { fetchWithAuth } from "../../services/authservice";
 
 interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
   productId: number;
-  onDeleteSuccess: () => void;
 }
 
 const DeleteProduct: React.FC<DeleteModalProps> = ({
   isOpen,
   onClose,
   productId,
-  onDeleteSuccess,
 }) => {
-  const [isDeleting, setIsDeleting] = useState(false);
+  const {deleteProduct, loading} = useProductStore();
+
   const handleDelete = async () => {
-    setIsDeleting(true);
     try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/product/${productId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (response.ok) {
-        setIsDeleting(false);
-        onDeleteSuccess();
+      await deleteProduct(productId, () => {
         onClose();
-      }
+      });
     } catch (error) {
-      setIsDeleting(false);
-      console.error("Error deleting Product:", error);
-      alert("Failed to delete the Product. Please try again.");
+      console.error("Delete failed:", error);
     }
   };
   return (
@@ -52,21 +39,21 @@ const DeleteProduct: React.FC<DeleteModalProps> = ({
               Confirm Deletion
             </ModalHeader>
             <ModalBody>
-              <p>Are you sure you want to delete this Product?</p>
+              <p>Are you sure you want to delete this product?</p>
             </ModalBody>
             <ModalFooter>
               <Button
                 color="danger"
                 variant="flat"
                 onPress={onClose}
-                disabled={isDeleting}
+                disabled={loading}
               >
                 Cancel
               </Button>
               <Button
                 color="primary"
                 onPress={handleDelete}
-                isLoading={isDeleting}
+                isLoading={loading}
               >
                 Delete
               </Button>

@@ -14,30 +14,31 @@ import {
   TableRow,
 } from "@heroui/react";
 import { formatDate } from "../../interfaces";
-import useSleeveType from "@/store/useSleeveType";
-import DeleteSleeveType from "./DeleteSleeveType";
-import AddSleeveType from "./AddSleeveType";
+import useFabricStore from "@/store/useFabricStore";
+import DeleteFabricType from "./DeleteFabricType";
+import AddFabricType from "./AddFabricType";
 
 const FabricType = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [selectedSleeveTypeId, setSelectedSleeveTypeId] = useState<number>(0);
+  const [selectedProductCatId, setSelectedProductCatId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const { fetchSleeveType, sleeveTypeData, loading } = useSleeveType();
+  const { fabricTypeData, fetchFabricType, loading, error } =
+    useFabricStore();
 
   useEffect(() => {
-    fetchSleeveType();
+    fetchFabricType();
   }, []);
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(sleeveTypeData!.length / rowsPerPage);
+  const pages = Math.ceil(fabricTypeData!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
   const handleOpenDeleteModal = (productCatagoryId: number) => {
-    setSelectedSleeveTypeId(productCatagoryId);
+    setSelectedProductCatId(productCatagoryId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -46,7 +47,7 @@ const FabricType = () => {
     setIsEdit(false);
   };
   const openEditModal = (clientId: number) => {
-    setSelectedSleeveTypeId(clientId);
+    setSelectedProductCatId(clientId);
     setIsAddModalOpen(true);
     setIsEdit(true);
   };
@@ -55,8 +56,8 @@ const FabricType = () => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return sleeveTypeData?.slice(start, end);
-  }, [page, sleeveTypeData]);
+    return fabricTypeData?.slice(start, end);
+  }, [page, fabricTypeData]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -92,11 +93,14 @@ const FabricType = () => {
         }
       >
         <TableHeader>
-          <TableColumn key="sleeveTypeName" className="text-medium font-bold">
-            Sleeve Type
+          <TableColumn key="type" className="text-medium font-bold">
+            Type
           </TableColumn>
-          <TableColumn key="categoryName" className="text-medium font-bold">
-            Category Name
+          <TableColumn key="name" className="text-medium font-bold">
+            Name
+          </TableColumn>
+          <TableColumn key="gsm" className="text-medium font-bold">
+            GSM
           </TableColumn>
           <TableColumn key="createdOn" className="text-medium font-bold">
             Created On
@@ -147,16 +151,16 @@ const FabricType = () => {
         </TableBody>
       </Table>
 
-      <AddSleeveType
+      <AddFabricType
         isOpen={isAddModalOpen}
         closeAddModal={closeAddModal}
         isEdit={isEdit}
-        sleeveTypeId={selectedSleeveTypeId}
+        fabricTypeId={selectedProductCatId}
       />
-      <DeleteSleeveType
+       <DeleteFabricType
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
-        sleeveTypeId={selectedSleeveTypeId}
+        productIdCatagory={selectedProductCatId}
       />
     </div>
   );

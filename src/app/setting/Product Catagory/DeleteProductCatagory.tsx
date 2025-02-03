@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -7,41 +6,28 @@ import {
   ModalFooter,
   Button,
 } from "@heroui/react";
-import { fetchWithAuth } from "../../services/authservice";
+import useCategoryStore from "@/store/useCategoryStore";
 
 interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
   productIdCatagory: number;
-  onDeleteSuccess: () => void;
 }
 
 const DeleteProductCatagory: React.FC<DeleteModalProps> = ({
   isOpen,
   onClose,
   productIdCatagory,
-  onDeleteSuccess,
 }) => {
-  const [isDeleting, setIsDeleting] = useState(false);
+  const {deleteCategory, loading} = useCategoryStore();
 
   const handleDelete = async () => {
-    setIsDeleting(true);
     try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/product-category/${productIdCatagory}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (response.ok) {
-        setIsDeleting(false);
-        onDeleteSuccess();
+      await deleteCategory(productIdCatagory, () => {
         onClose();
-      }
+      });
     } catch (error) {
-      setIsDeleting(false);
-      console.error("Error deleting Product category:", error);
-      alert("Failed to delete the Product. Please try again.");
+      console.error("Delete failed:", error);
     }
   };
   return (
@@ -60,14 +46,14 @@ const DeleteProductCatagory: React.FC<DeleteModalProps> = ({
                 color="danger"
                 variant="flat"
                 onPress={onClose}
-                disabled={isDeleting}
+                disabled={loading}
               >
                 Cancel
               </Button>
               <Button
                 color="primary"
                 onPress={handleDelete}
-                isLoading={isDeleting}
+                isLoading={loading}
               >
                 Delete
               </Button>

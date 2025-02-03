@@ -8,30 +8,43 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import { fetchWithAuth } from "../../services/authservice";
-import { useFetchProductCatagoryById } from "../../services/useFetchProductCatagoryById";
 import { CatagorySchema } from "../../schema/CatagorySchema";
+import useCategoryStore from "@/store/useCategoryStore";
+import { useEffect } from "react";
 
 interface AddClientComponentProps {
   isOpen: boolean;
   isEdit: boolean;
   productIdCatagory: number;
   closeAddModal: () => void;
-  onOrderAdded: () => void;
 }
 
 const AddProductCatagory: React.FC<AddClientComponentProps> = ({
   isOpen,
   closeAddModal,
-  onOrderAdded,
   isEdit,
   productIdCatagory,
 }) => {
   interface AddClientType {
     type: string;
+    createdBy: string;
+    updatedBy: string;
   }
 
-  const { isLoading, productCategory } = useFetchProductCatagoryById({productIdCatagory});
+  const {
+    productCategory,
+    getCategoryById,
+    addCategory,
+    updateCategory,
+    loading,
+    isResolved,
+  } = useCategoryStore();
+
+  useEffect(() => {
+    if (productIdCatagory && isEdit) {
+      getCategoryById(productIdCatagory);
+    }
+  }, [productIdCatagory, isEdit]);
 
   const InitialValues = {
     type: isEdit && productCategory ? productCategory.type : "",
@@ -40,31 +53,13 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
   };
 
   const handleAddCatagory = async (values: AddClientType) => {
-    debugger
-    const url = isEdit
-      ? `${process.env.NEXT_PUBLIC_API_URL}/product-category/${productIdCatagory}`
-      : `${process.env.NEXT_PUBLIC_API_URL}/product-category`;
-    const method = isEdit ? "PUT" : "POST";
-
-    try {
-      const response = await fetchWithAuth(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        console.log("Error creating Catagory");
-        throw new Error("Failed to create Catagory");
-      }
-      const result = await response.json();
-      closeAddModal();
-      onOrderAdded();
-    } catch (error) {
-      console.error("Error creating Catagory:", error);
-    }
+    isEdit
+      ? updateCategory(productIdCatagory, values, () => {
+          closeAddModal();
+        })
+      : addCategory(values, () => {
+          closeAddModal();
+        });
   };
 
   return (
@@ -73,7 +68,11 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {!isEdit ? <> Add Product Category</> : <> Edit Product Category</>}
+              {!isEdit ? (
+                <> Add Product Category</>
+              ) : (
+                <> Edit Product Category</>
+              )}
             </ModalHeader>
             <Formik
               validationSchema={CatagorySchema}
@@ -84,7 +83,7 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
               {({ isSubmitting }) => (
                 <Form>
                   <ModalBody>
-                    {isLoading ? (
+                    {loading ? (
                       <Spinner />
                     ) : (
                       <>

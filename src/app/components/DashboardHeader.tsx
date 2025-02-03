@@ -24,21 +24,16 @@ const DashboardHeader = () => {
     },
     {
       id: "2",
-      name: "Products",
-      route: "/products",
-    },
-    {
-      id: "3",
       name: "Inventory",
       route: "/inventory",
     },
     {
-      id: "4",
+      id: "3",
       name: "Clients",
       route: "/client",
     },
     {
-      id: "5",
+      id: "4",
       name: "Lead",
       route: "/lead",
     },
