@@ -61,7 +61,8 @@ const ProductCatagory = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-between">
+        <h6 className="font-sans text-lg font-semibold">Product Category</h6>
         <button
           type="button"
           className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"

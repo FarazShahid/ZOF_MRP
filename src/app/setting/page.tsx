@@ -1,11 +1,12 @@
 "use client";
 
-import Layout from "../components/Layout";
 import { Tab, Tabs } from "@heroui/react";
+import Layout from "../components/Layout";
 import ProductCatagory from "./Product Catagory/ProductCatagory";
 import SleeveType from "./Sleeve Type/SleeveType";
 import FabricType from "./Fabric Type/FabricType";
 import Products from "./Products/Products";
+import CutOptions from "./Cut Options/CutOptions";
 
 const page = () => {
   return (
@@ -31,7 +32,9 @@ const page = () => {
             <SleeveType />
           </Tab>
 
-          <Tab key="cutOptions" title="Cut Options" className="w-full"></Tab>
+          <Tab key="cutOptions" title="Cut Options" className="w-full">
+            <CutOptions />
+          </Tab>
           <Tab
             key="sizeMeasurement"
             title="Product Size Measurement"
