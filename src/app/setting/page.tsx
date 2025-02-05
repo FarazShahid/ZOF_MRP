@@ -7,6 +7,7 @@ import SleeveType from "./Sleeve Type/SleeveType";
 import FabricType from "./Fabric Type/FabricType";
 import Products from "./Products/Products";
 import CutOptions from "./Cut Options/CutOptions";
+import SizeOptions from "./SizeOptions/SizeOptions";
 
 const page = () => {
   return (
@@ -35,11 +36,9 @@ const page = () => {
           <Tab key="cutOptions" title="Cut Options" className="w-full">
             <CutOptions />
           </Tab>
-          <Tab
-            key="sizeMeasurement"
-            title="Product Size Measurement"
-            className="w-full"
-          ></Tab>
+          <Tab key="sizeMeasurement" title="Size Options" className="w-full">
+            <SizeOptions />
+          </Tab>
           <Tab
             key="Region"
             title="Product Region Standard"

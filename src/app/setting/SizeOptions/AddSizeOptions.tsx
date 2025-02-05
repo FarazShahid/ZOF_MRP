@@ -9,55 +9,49 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import useCutOptionsStore from "@/store/useCutOptionsStore";
-import { CutOptionSchema } from "../../schema/CutOptionSchema";
+import useSizeOptionsStore from "@/store/useSizeOptionsStore";
+import { SizeOptionSchema } from "../../schema/SizeOptionSchema";
 
 interface AddClientComponentProps {
   isOpen: boolean;
   isEdit: boolean;
-  cutOptionId: number;
+  sizeOptionId: number;
   closeAddModal: () => void;
 }
 
-const AddCutOptions: React.FC<AddClientComponentProps> = ({
+const AddSizeOptions: React.FC<AddClientComponentProps> = ({
   isOpen,
   closeAddModal,
   isEdit,
-  cutOptionId,
+  sizeOptionId,
 }) => {
-  interface AddCutOptionsType {
-    OptionProductCutOptions: string;
+  interface AddSizeOptionsType {
+    OptionSizeOptions: string;
     CreatedBy: string;
     UpdatedBy: string;
   }
-
-  const {
-    getCutOptionById,
-    updateCutOption,
-    addCutOption,
-    cutOptionsType,
-    loading,
-  } = useCutOptionsStore();
+  
+  const {getSizeOptionById, addSizeOption, updateSizeOption, sizeOptionsType,loading} = useSizeOptionsStore();
 
   useEffect(() => {
-    if (cutOptionId && isEdit) {
-      getCutOptionById(cutOptionId);
+    if (sizeOptionId && isEdit) {
+      getSizeOptionById(sizeOptionId);
     }
-  }, [cutOptionId, isEdit]);
+  }, [sizeOptionId, isEdit]);
+
 
   const InitialValues = {
-    OptionProductCutOptions:
-      isEdit && cutOptionsType ? cutOptionsType.OptionProductCutOptions : "",
-    CreatedBy: isEdit && cutOptionsType ? cutOptionsType.CreatedBy : "Admin",
-    UpdatedBy: isEdit && cutOptionsType ? cutOptionsType.UpdatedBy : "Admin",
+    OptionSizeOptions:  isEdit && sizeOptionsType ? sizeOptionsType.OptionSizeOptions : "",
+    CreatedBy: isEdit && sizeOptionsType ? sizeOptionsType.CreatedBy : "Admin",
+    UpdatedBy: isEdit && sizeOptionsType ? sizeOptionsType.UpdatedBy : "Admin",
   };
 
-  const handleAdd = async (values: AddCutOptionsType) => {
+  const handleAddSizeOption = async (values: AddSizeOptionsType) => {
     isEdit
-      ? updateCutOption(cutOptionId, values, () => {
+      ? updateSizeOption(sizeOptionId, values, () => {
           closeAddModal();
         })
-      : addCutOption(values, () => {
+      : addSizeOption(values, () => {
           closeAddModal();
         });
   };
@@ -68,13 +62,17 @@ const AddCutOptions: React.FC<AddClientComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {!isEdit ? <> Add Cut Option</> : <> Edit Cut Option</>}
+              {!isEdit ? (
+                <> Add Size Option</>
+              ) : (
+                <> Edit Size Option</>
+              )}
             </ModalHeader>
             <Formik
-              validationSchema={CutOptionSchema}
+              validationSchema={SizeOptionSchema}
               initialValues={InitialValues}
               enableReinitialize
-              onSubmit={handleAdd}
+              onSubmit={handleAddSizeOption}
             >
               {({ isSubmitting }) => (
                 <Form>
@@ -86,17 +84,17 @@ const AddCutOptions: React.FC<AddClientComponentProps> = ({
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                              Name
+                            Name
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
-                              name="OptionProductCutOptions"
+                              name="OptionSizeOptions"
                               type="text"
-                              placeholder="Enter Cut Option Name"
+                              placeholder="Enter Size Option Name"
                               className="formInputdefault"
                             />
                             <ErrorMessage
-                              name="OptionProductCutOptions"
+                              name="OptionSizeOptions"
                               component="div"
                               className="text-red-400 text-sm"
                             />
@@ -118,7 +116,7 @@ const AddCutOptions: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Update" : "Save"}
+                      {isEdit ? "Edit" : "Add"} Size Option
                     </Button>
                   </ModalFooter>
                 </Form>
@@ -131,4 +129,4 @@ const AddCutOptions: React.FC<AddClientComponentProps> = ({
   );
 };
 
-export default AddCutOptions;
+export default AddSizeOptions;
