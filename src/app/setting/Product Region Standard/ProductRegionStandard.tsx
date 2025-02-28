@@ -144,14 +144,12 @@ const ProductRegionStandard = () => {
           )}
         </TableBody>
       </Table>
-
       <AddProductRegion
         isOpen={isAddModalOpen}
         closeAddModal={closeAddModal}
         isEdit={isEdit}
         productRegionId={selectedProductCatId}
       />
-
       <DeleteProductRegion
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}

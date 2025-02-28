@@ -9,7 +9,6 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import useColorOptionsStore from "@/store/useColorOptionsStore";
 import { ColorOptionSchema } from "../../schema/ColorOptionSchema";
 import useProductRegionStore from "@/store/useProductRegionStore";
 
@@ -31,14 +30,6 @@ const AddProductRegion: React.FC<AddClientComponentProps> = ({
     CreatedBy: string;
     UpdatedBy: string;
   }
-
-  // const {
-  //   colorOption,
-  //   loading,
-  //   addColorOption,
-  //   updateColorOption,
-  //   getColorOptionId,
-  // } = useColorOptionsStore();
 
   const {loading, getProductRegionId, updateProductRegion,addProductRegion,productRegion} = useProductRegionStore();
 
