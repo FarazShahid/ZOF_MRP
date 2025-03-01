@@ -1,11 +1,15 @@
 "use client";
 
-import Layout from "../components/Layout";
 import { Tab, Tabs } from "@heroui/react";
+import Layout from "../components/Layout";
 import ProductCatagory from "./Product Catagory/ProductCatagory";
 import SleeveType from "./Sleeve Type/SleeveType";
 import FabricType from "./Fabric Type/FabricType";
 import Products from "./Products/Products";
+import CutOptions from "./Cut Options/CutOptions";
+import SizeOptions from "./SizeOptions/SizeOptions";
+import ColorOptions from "./Color Options/ColorOptions";
+import ProductRegionStandard from "./Product Region Standard/ProductRegionStandard";
 
 const page = () => {
   return (
@@ -30,19 +34,18 @@ const page = () => {
           <Tab key="sleeveType" title="Sleeve Type" className="w-full">
             <SleeveType />
           </Tab>
-
-          <Tab key="cutOptions" title="Cut Options" className="w-full"></Tab>
-          <Tab
-            key="sizeMeasurement"
-            title="Product Size Measurement"
-            className="w-full"
-          ></Tab>
-          <Tab
-            key="Region"
-            title="Product Region Standard"
-            className="w-full"
-          ></Tab>
-          <Tab key="Colors" title="Available Colors" className="w-full"></Tab>
+          <Tab key="cutOptions" title="Cut Options" className="w-full">
+            <CutOptions />
+          </Tab>
+          <Tab key="sizeMeasurement" title="Size Options" className="w-full">
+            <SizeOptions />
+          </Tab>
+          <Tab key="colorOptions" title="Color Options" className="w-full">
+            <ColorOptions />
+          </Tab>
+          <Tab key="productRegionStandard" title="Product Region Standard" className="w-full">
+            <ProductRegionStandard />
+          </Tab>
         </Tabs>
       </div>
     </Layout>

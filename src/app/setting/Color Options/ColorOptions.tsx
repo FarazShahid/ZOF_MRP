@@ -13,31 +13,31 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
+import DeleteColorOptions from "./DeleteColorOptions";
+import AddColorOptions from "./AddColorOptions";
 import { formatDate } from "../../interfaces";
-import useSleeveType from "@/store/useSleeveType";
-import DeleteSleeveType from "./DeleteSleeveType";
-import AddSleeveType from "./AddSleeveType";
+import useColorOptionsStore from "@/store/useColorOptionsStore";
 
-const FabricType = () => {
+const ColorOptions = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [selectedSleeveTypeId, setSelectedSleeveTypeId] = useState<number>(0);
+  const [selectedProductCatId, setSelectedProductCatId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const { fetchSleeveType, sleeveTypeData, loading } = useSleeveType();
+  const {colorOptions, fetchColorOptions ,loading, error} = useColorOptionsStore();
 
   useEffect(() => {
-    fetchSleeveType();
+    fetchColorOptions();
   }, []);
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(sleeveTypeData!.length / rowsPerPage);
+  const pages = Math.ceil(colorOptions!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
   const handleOpenDeleteModal = (productCatagoryId: number) => {
-    setSelectedSleeveTypeId(productCatagoryId);
+    setSelectedProductCatId(productCatagoryId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -46,7 +46,7 @@ const FabricType = () => {
     setIsEdit(false);
   };
   const openEditModal = (clientId: number) => {
-    setSelectedSleeveTypeId(clientId);
+    setSelectedProductCatId(clientId);
     setIsAddModalOpen(true);
     setIsEdit(true);
   };
@@ -55,13 +55,13 @@ const FabricType = () => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return sleeveTypeData?.slice(start, end);
-  }, [page, sleeveTypeData]);
+    return colorOptions?.slice(start, end);
+  }, [page, colorOptions]);
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-      <h6 className="font-sans text-lg font-semibold">Sleeve Type</h6>
+        <h6 className="font-sans text-lg font-semibold">Color Options</h6>
         <button
           type="button"
           className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
@@ -93,19 +93,16 @@ const FabricType = () => {
         }
       >
         <TableHeader>
-          <TableColumn key="sleeveTypeName" className="text-medium font-bold">
-            Sleeve Type
+          <TableColumn key="Name" className="text-medium font-bold">
+            Name
           </TableColumn>
-          <TableColumn key="categoryName" className="text-medium font-bold">
-            Category Name
-          </TableColumn>
-          <TableColumn key="createdOn" className="text-medium font-bold">
+          <TableColumn key="CreatedOn" className="text-medium font-bold">
             Created On
           </TableColumn>
-          <TableColumn key="createdBy" className="text-medium font-bold">
+          <TableColumn key="CreatedBy" className="text-medium font-bold">
             Created By
           </TableColumn>
-          <TableColumn key="updatedOn" className="text-medium font-bold">
+          <TableColumn key="UpdatedOn" className="text-medium font-bold">
             Updated On
           </TableColumn>
           <TableColumn key="action" className="text-medium font-bold">
@@ -114,10 +111,10 @@ const FabricType = () => {
         </TableHeader>
         <TableBody isLoading={loading} items={items}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item.Id}>
               {(columnKey) => (
                 <TableCell>
-                  {columnKey === "createdOn" || columnKey === "updatedOn" ? (
+                  {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
                     formatDate(item[columnKey])
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
@@ -125,7 +122,7 @@ const FabricType = () => {
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        onClick={() => openEditModal(item.id)}
+                        onClick={() => openEditModal(item.Id)}
                       >
                         <MdEditSquare
                           className="hover:text-green-800 cursor-pointer"
@@ -135,7 +132,7 @@ const FabricType = () => {
                       <button
                         type="button"
                         className="hover:text-red-500 cursor-pointer"
-                        onClick={() => handleOpenDeleteModal(item.id)}
+                        onClick={() => handleOpenDeleteModal(item.Id)}
                       >
                         <MdDelete className="hover:text-red-500" size={18} />
                       </button>
@@ -148,19 +145,20 @@ const FabricType = () => {
         </TableBody>
       </Table>
 
-      <AddSleeveType
+      <AddColorOptions
         isOpen={isAddModalOpen}
         closeAddModal={closeAddModal}
         isEdit={isEdit}
-        sleeveTypeId={selectedSleeveTypeId}
+        colorId={selectedProductCatId}
       />
-      <DeleteSleeveType
+
+      <DeleteColorOptions
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
-        sleeveTypeId={selectedSleeveTypeId}
+        colorId={selectedProductCatId}
       />
     </div>
   );
 };
 
-export default FabricType;
+export default ColorOptions;

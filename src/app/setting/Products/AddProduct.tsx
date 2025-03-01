@@ -36,9 +36,10 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
     UpdatedBy: string;
   }
 
-  const {addProduct, getProductById, productType, updateProduct, loading} = useProductStore();
-  const {fetchCategories, productCategories} = useCategoryStore();
-  const {fetchFabricType, fabricTypeData} = useFabricStore();
+  const { addProduct, getProductById, productType, updateProduct, loading } =
+    useProductStore();
+  const { fetchCategories, productCategories } = useCategoryStore();
+  const { fetchFabricType, fabricTypeData } = useFabricStore();
 
   useEffect(() => {
     if (productId && isEdit) {
@@ -46,18 +47,19 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
     }
   }, [productId, isEdit]);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchCategories();
     fetchFabricType();
-  },[])
+  }, []);
 
-  const InitialValues:AddProduct = {
+  const InitialValues: AddProduct = {
     Name: isEdit && productType ? productType.Name : "",
-    ProductCategoryId: isEdit && productType ? Number(productType.ProductCategoryId) : 0,
+    ProductCategoryId:
+      isEdit && productType ? Number(productType.ProductCategoryId) : 0,
     FabricTypeId: isEdit && productType ? Number(productType.FabricTypeId) : 0,
     Description: isEdit && productType ? productType.Description : "",
     CreatedBy: isEdit && productType ? productType.CreatedBy : "Admin",
-    UpdatedBy:isEdit && productType ? productType.UpdatedBy : "Admin",
+    UpdatedBy: isEdit && productType ? productType.UpdatedBy : "Admin",
   };
 
   const handleAddFabric = async (values: AddProduct) => {
@@ -76,11 +78,7 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {!isEdit ? (
-                <> Add Product</>
-              ) : (
-                <> Edit Product</>
-              )}
+              {!isEdit ? <> Add Product</> : <> Edit Product</>}
             </ModalHeader>
             <Formik
               validationSchema={ProductSchema}
@@ -98,7 +96,7 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                            Name
+                              Name
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
@@ -115,7 +113,7 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                           </div>
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                            Product Category
+                              Product Category
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
@@ -124,13 +122,13 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               className="formInputdefault"
                             >
                               <option value={""}>Select a type</option>
-                              {
-                                productCategories.map((category)=>{
-                                  return(
-                                    <option value={category.id}>{category.type}</option>
-                                  )
-                                })
-                              }
+                              {productCategories.map((category) => {
+                                return (
+                                  <option value={category.id}>
+                                    {category.type}
+                                  </option>
+                                );
+                              })}
                             </Field>
                             <ErrorMessage
                               name="ProductCategoryId"
@@ -140,7 +138,7 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                           </div>
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                            Fabric Type
+                              Fabric Type
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
@@ -149,15 +147,13 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               className="formInputdefault"
                             >
                               <option value={""}>Select a type</option>
-                              {
-                                fabricTypeData.map((category)=>{
-                                  return(
-                                    <option value={category.id}>
-                                      {`${category.name}_${category.type}_${category.gsm}`}
-                                    </option>
-                                  )
-                                })
-                              }
+                              {fabricTypeData.map((category) => {
+                                return (
+                                  <option value={category.id}>
+                                    {`${category.name}_${category.type}_${category.gsm}`}
+                                  </option>
+                                );
+                              })}
                             </Field>
                             <ErrorMessage
                               name="FabricTypeId"
@@ -165,9 +161,46 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               className="text-red-400 text-sm"
                             />
                           </div>
+                          <div className="flex flex-col gap-1">
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="flex flex-col gap-1 w-full">
+                                <label className="text-sm text-gray-600 font-sans">
+                                  Color Name
+                                  <span className="text-red-500 text-sm">
+                                    *
+                                  </span>
+                                </label>
+                                <Field
+                                  name="ColorName"
+                                  type="text"
+                                  placeholder="Enter Color"
+                                  className="formInputdefault !p-[4px]"
+                                />
+                                <ErrorMessage
+                                  name="ColorName"
+                                  component="div"
+                                  className="text-red-400 text-sm"
+                                />
+                              </div>
+                              <div className="flex flex-col gap-1 w-full">
+                                <label className="text-sm text-gray-600 font-sans">
+                                  Image
+                                </label>
+                                <input type="file" className="formInputdefault" />
+                              </div>
+                            </div>
+                            <div className="flex justify-end">
+                              <button
+                                className="bg-slate-300 rounded-md px-3 py-1 hover:bg-green-700 hover:text-white"
+                                type="button"
+                              >
+                                + Add
+                              </button>
+                            </div>
+                          </div>
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                            Description
+                              Description
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
