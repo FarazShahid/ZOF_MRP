@@ -14,10 +14,38 @@ interface Product {
   CreatedBy: string;
   UpdatedBy: string;
 }
+interface ProductById {
+  Id: string;
+  ProductCategoryId: number;
+  FabricTypeId: number;
+  Name: string;
+  Description: string;
+  CreatedOn: string;
+  CreatedBy: string;
+  UpdatedOn: string;
+  UpdatedBy: string;
+  productColors: [{ Id: number; colorId: number; ImageId: string }];
+  productDetails: [
+    {
+      Id: number;
+      ProductId: number;
+      ProductCutOptionId: number;
+      ProductSizeMeasurementId: number;
+      ProductRegionId: number;
+      SleeveTypeId: number;
+    }
+  ];
+}
+
+interface ProductAvailableColors {
+  Id: number;
+  ColorName: string;
+  ImageId: number;
+}
 interface AddProduct {
   ProductCategoryId: number;
   FabricTypeId: number;
-  Name:string;
+  Name: string;
   Description: string;
   CreatedBy: string;
   UpdatedBy: string;
@@ -26,15 +54,15 @@ interface AddProduct {
 interface CategoryState {
   products: Product[];
   productType: Product | null;
+  productById: ProductById | null;
+  productAvailableColors: ProductAvailableColors[];
   loading: boolean;
   error: string | null;
 
   fetchProducts: () => Promise<void>;
+  fetchProductAvailableColors: (id: number) => Promise<void>;
   getProductById: (id: number) => Promise<void>;
-  addProduct: (
-    productType: AddProduct,
-    onSuccess: () => void
-  ) => Promise<void>;
+  addProduct: (productType: AddProduct, onSuccess: () => void) => Promise<void>;
   updateProduct: (
     id: number,
     productType: AddProduct,
@@ -46,6 +74,8 @@ interface CategoryState {
 const useProductStore = create<CategoryState>((set, get) => ({
   products: [],
   productType: null,
+  productById: null,
+  productAvailableColors: [],
   loading: false,
   error: null,
 
@@ -66,14 +96,27 @@ const useProductStore = create<CategoryState>((set, get) => ({
     }
   },
 
+  fetchProductAvailableColors: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/availablecolors/${id}`
+      );
+      const data: ProductAvailableColors[] = await response.json();
+      set({ productAvailableColors: data, loading: false });
+    } catch (error) {
+      set({ error: "Failed to fetch product colors", loading: false });
+    }
+  },
+
   getProductById: async (id: number) => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`
       );
-      const data: Product = await response.json();
-      set({ productType: data, loading: false });
+      const data: ProductById = await response.json();
+      set({ productById: data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch product", loading: false });
     }
