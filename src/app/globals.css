@@ -82,3 +82,7 @@ body {
 .DefaultTabBorder{
   border-bottom: 1px solid #e1e1e1;
 }
+.AddOorderModalBody{
+  height: calc(100vh - 150px);
+  overflow-y: auto;
+}

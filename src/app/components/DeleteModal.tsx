@@ -6,13 +6,13 @@ import {
   ModalFooter,
   Button,
 } from "@heroui/react";
-import { useState } from "react";
-import { fetchWithAuth } from "../services/authservice";
+import useOrderStore from "@/store/useOrderStore";
 
 interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
   orderId: number;
+  clientId: number | undefined;
   onDeleteSuccess: () => void;
 }
 
@@ -20,26 +20,19 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   isOpen,
   onClose,
   orderId,
-  onDeleteSuccess,
+  clientId,
 }) => {
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { deleteOrder, loading } = useOrderStore();
   const handleDelete = async () => {
     try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (response.ok) {
-        onDeleteSuccess();
+      await deleteOrder(orderId, clientId || 0, () => {
         onClose();
-      }
+      });
     } catch (error) {
-      console.error("Error deleting order:", error);
-      alert("Failed to delete the order. Please try again.");
+      console.error("Delete failed:", error);
     }
   };
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose}>
       <ModalContent>
@@ -56,14 +49,14 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
                 color="danger"
                 variant="light"
                 onPress={onClose}
-                disabled={isDeleting}
+                disabled={loading}
               >
                 Cancel
               </Button>
               <Button
                 color="primary"
                 onPress={handleDelete}
-                isLoading={isDeleting}
+                isLoading={loading}
               >
                 Delete
               </Button>

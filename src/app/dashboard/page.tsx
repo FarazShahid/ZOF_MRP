@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Spinner, Tooltip } from "@heroui/react";
 
 import Layout from "../components/Layout";
@@ -18,6 +18,7 @@ import ViewOrderComponent from "../components/ViewOrderComponent";
 import DeleteModal from "../components/DeleteModal";
 import StatusChip from "../components/StatusChip";
 import HeaderWidgets from "../components/HeaderWidgets";
+import useOrderStore from "@/store/useOrderStore";
 
 const page = () => {
   const [clientId, setClientId] = useState<number>();
@@ -34,7 +35,7 @@ const page = () => {
     direction: "desc",
   });
 
-  const { isLoading, result } = useClientOrders(clientId, refreshKey);
+  const { fetchOrders, loading, Orders } = useOrderStore();
 
   const openDeleteModal = (orderId: number) => {
     setSelectedOrderId(orderId);
@@ -42,10 +43,10 @@ const page = () => {
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
 
-  const OpenViewModal = (order: Order, orderId: number) => {
+  const OpenViewModal = (orderId: number) => {
     setSelectedOrderId(orderId);
     setIsOpenViewModal(true);
-    setSelectedOrder(order);
+    // setSelectedOrder(order);
   };
   const closeViewModal = () => setIsOpenViewModal(false);
   const openAddOrderModal = () => {
@@ -72,31 +73,11 @@ const page = () => {
       direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
     }));
   };
-  const sortedOrders = [...(result || [])].sort((a, b) => {
-    if (!sortConfig.key) return 0;
-
-    const key = sortConfig.key;
-    const isAscending = sortConfig.direction === "asc";
-
-    if (key === "StatusName") {
-      const aPriority = statusPriority[a.StatusName];
-      const bPriority = statusPriority[b.StatusName];
-
-      return isAscending ? aPriority - bPriority : bPriority - aPriority;
+  useEffect(() => {
+    if (clientId) {
+      fetchOrders(clientId);
     }
-
-    if (typeof a[key] === "number" && typeof b[key] === "number") {
-      return isAscending ? a[key] - b[key] : b[key] - a[key];
-    }
-
-    if (typeof a[key] === "string" && typeof b[key] === "string") {
-      return isAscending
-        ? a[key].localeCompare(b[key])
-        : b[key].localeCompare(a[key]);
-    }
-
-    return 0;
-  });
+  }, [clientId]);
 
   return (
     <Layout>
@@ -139,8 +120,8 @@ const page = () => {
         </div>
         {clientId && (
           <div className="flex flex-col gap-3">
-            <HeaderWidgets orders={result} />
-            {isLoading ? (
+            <HeaderWidgets orders={Orders} />
+            {loading ? (
               <div className="flex items-center justify-center">
                 <Spinner />
               </div>
@@ -166,19 +147,13 @@ const page = () => {
                       </th>
                       <th
                         className="px-4 py-2 text-center text-medium font-semibold cursor-pointer"
-                        onClick={() => handleSort("StatusName")}
                       >
                         Status
-                        {sortConfig.key === "StatusName" &&
-                          (sortConfig.direction === "asc" ? "↑" : "↓")}
                       </th>
                       <th
                         className="px-4 py-2 text-center text-medium font-semibold cursor-pointer"
-                        onClick={() => handleSort("OrderPriority")}
                       >
                         Priority
-                        {sortConfig.key === "OrderPriority" &&
-                          (sortConfig.direction === "asc" ? "↑" : "↓")}
                       </th>
                       <th className="px-4 py-2 text-center text-medium font-semibold">
                         Deadline
@@ -193,11 +168,11 @@ const page = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {sortedOrders?.map((order) => (
+                    {Orders?.map((order) => (
                       <>
                         <tr
                           key={`${order.Id}_${order.OrderStatusId}`}
-                          onClick={() => OpenViewModal(order, order.Id)}
+                          onClick={() => OpenViewModal(order.Id)}
                           className="border-t bg-gray-100 cursor-pointer"
                         >
                           <Tooltip content={order.OrderName}>
@@ -275,12 +250,13 @@ const page = () => {
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
         orderId={selectedOrderId}
+        clientId={clientId}
         onDeleteSuccess={refreshData}
       />
       <ViewOrderComponent
         isOpen={isOpenViewModal}
         onClose={closeViewModal}
-        selectedOrder={selectedOrder}
+        selectedOrderId={selectedOrderId}
       />
     </Layout>
   );
