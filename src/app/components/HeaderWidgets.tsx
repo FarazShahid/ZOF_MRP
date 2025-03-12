@@ -1,10 +1,10 @@
 import React from 'react'
 import { AiOutlineProduct } from 'react-icons/ai';
 import { MdIncompleteCircle, MdOutlinePendingActions, MdOutlineCancel } from "react-icons/md";
-import { Order } from '../interfaces';
+import { GetOrdersType } from '@/store/useOrderStore';
 
 interface HeaderWidgetsProps {
-    orders: Order[] | null;
+    orders: GetOrdersType[] | null;
   }
   
   const HeaderWidgets: React.FC<HeaderWidgetsProps> = ({ orders }) => {
