@@ -99,50 +99,6 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
                     <StatusChip OrderStatus={OrderById?.StatusName || ""} />
                   </div>
                 </div>
-                {/* <div className="flex items-center flex-wrap gap-2">
-                  <div className="grid grid-cols-2">
-                    <div className="flex items-center gap-2">
-                      <CgInternal />
-                      <label className="text-gray-500 font-medium">
-                        Order No.
-                      </label>
-                    </div>
-                    <span className="text-gray-600 font-normal">
-                      {OrderById?.OrderNumber}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2">
-                    <div className="flex items-center gap-2">
-                      <TbExternalLink />
-                      <label className="text-gray-500 font-medium">
-                        External Order Id
-                      </label>
-                    </div>
-                    <span className="text-gray-600 font-normal">
-                      {OrderById?.ExternalOrderId}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2">
-                    <div className="flex items-center gap-2">
-                      <CiCalendarDate />
-                      <label className="text-gray-500 font-medium">
-                        Deadline
-                      </label>
-                    </div>
-                    <span className="text-gray-600 font-normal">
-                      {formatDate(OrderById?.Deadline || "")}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2">
-                    <div className="flex items-center gap-2">
-                      <VscTarget />
-                      <label className="text-gray-500 font-medium">
-                        Status
-                      </label>
-                    </div>
-                    <StatusChip OrderStatus={OrderById?.StatusName || ""} />
-                  </div>
-                </div> */}
                 <div className="flex flex-col gap-1">
                   <label className="text-medium">Description:</label>
                   <div className="border-1 p-2 rounded-lg">
@@ -172,76 +128,56 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
                           title={OrderItem?.ProductName}
                         >
                           <div className="flex flex-col">
-                            <div className="grid grid-cols-3 gap-1">
-                              <div className="flex items-center gap-5">
-                                <label className="text-sm text-gray-700">
-                                  Color:
-                                </label>
-                                <div className="flex items-center gap-1">
-                                  {OrderItem?.orderItemDetails?.map(
-                                    (option) => {
-                                      return (
-                                        <div className="flex items-center gap-1">
-                                          <span className="text-sm">
-                                            {option?.ColorName}
-                                          </span>
-                                        </div>
-                                      );
-                                    }
-                                  )}
+                            {OrderItem?.orderItemDetails?.map((option) => {
+                              return (
+                                <div className="grid grid-cols-3 gap-5">
+                                  <div className="flex items-center gap-3">
+                                    <label className="text-sm font-medium">
+                                      Color:
+                                    </label>
+                                    <span className="text-sm">
+                                      {option?.ColorOptionName}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-3">
+                                    <label className="text-sm font-medium">
+                                      Quantity:
+                                    </label>
+                                    <span className="text-sm">
+                                      {option?.Quantity}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-3">
+                                    <label className="text-sm font-medium">
+                                      Priority:
+                                    </label>
+                                    <span className="text-sm">
+                                      {option?.Priority}
+                                    </span>
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="flex items-center gap-5">
-                                <label className="text-sm text-gray-700">
-                                  Quantity:
-                                </label>
-                                <div className="flex items-center gap-1">
-                                  {OrderItem?.orderItemDetails?.map(
-                                    (option) => {
-                                      return (
-                                        <span className="text-sm">
-                                          {option?.Quantity}
-                                        </span>
-                                      );
-                                    }
-                                  )}
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-5">
-                                <label className="text-sm text-gray-700">
-                                  Priority:
-                                </label>
-                                <div className="flex items-center gap-1">
-                                  {OrderItem?.orderItemDetails?.map(
-                                    (option) => {
-                                      return (
-                                        <span className="text-sm">
-                                          {option?.Priority}
-                                        </span>
-                                      );
-                                    }
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-5">
-                              <label className="text-sm text-gray-700">
+                              );
+                            })}
+                            <div className="flex items-center gap-3 mt-2">
+                              <label className="text-sm font-medium">
                                 Printing options:
                               </label>
-                              <div className="flex items-center gap-1">
+                              <div className="">
                                 {OrderItem.printingOptions.map(
                                   (printingOption) => {
                                     return (
                                       <span className="text-sm">
-                                        {printingOption.PrintingOptionName},
+                                        {printingOption.PrintingOptionName}
                                       </span>
                                     );
                                   }
                                 )}
                               </div>
                             </div>
-                            <div className="flex flex-col gap-1 mt-3">
-                              <h6>Description</h6>
+                            <div className="flex flex-col gap-1 mt-2">
+                              <label className="text-sm font-medium">
+                                Description
+                              </label>
                               <div className="text-sm border p-2 rounded-lg">
                                 {OrderItem?.Description}
                               </div>

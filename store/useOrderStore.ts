@@ -53,7 +53,7 @@ export interface GetOrderByIdType {
       Description: string;
     }[];
     orderItemDetails: {
-      ColorName: string;
+      ColorOptionName: string;
       ColorOptionId: number;
       Quantity: number;
       Priority: number;
