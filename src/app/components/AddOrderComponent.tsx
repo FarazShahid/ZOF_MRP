@@ -371,7 +371,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
   return (
     <Modal
       isOpen={isOpen}
-      size="full"
+      size="5xl"
       classNames={{ body: "AddOorderModalBody" }}
       onOpenChange={handleModalClose}
     >

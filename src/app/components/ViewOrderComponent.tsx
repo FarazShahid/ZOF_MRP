@@ -17,15 +17,17 @@ import { TbExternalLink } from "react-icons/tb";
 import Spinner from "./Spinner";
 import StatusChip from "./StatusChip";
 import { formatDate } from "../interfaces";
+import { FaUser } from "react-icons/fa";
+import { BsFillCalendarEventFill } from "react-icons/bs";
 import { CgInternal } from "react-icons/cg";
 import useOrderStore from "@/store/useOrderStore";
+import ShowPriorityStatus from "./ShowPriorityStatus";
 
 interface ViewOrderComponentProps {
   isOpen: boolean;
   onClose: () => void;
   selectedOrderId: number;
 }
-
 
 const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
   isOpen,
@@ -35,22 +37,69 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
   const { getOrderById, loading, OrderById } = useOrderStore();
 
   useEffect(() => {
-    if (selectedOrderId) {
+    if (selectedOrderId > 0) {
       getOrderById(selectedOrderId);
     }
-  }, [selectedOrderId]);
+  }, [selectedOrderId, isOpen]);
 
   return (
-    <Modal isOpen={isOpen} size="3xl" onOpenChange={onClose}>
+    <Modal isOpen={isOpen} size="4xl" onOpenChange={onClose}>
       <ModalContent>
         {() => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
-              {OrderById?.OrderName}
+            <ModalHeader className="flex flex-col gap-1 text-gray-700 border-b-1 font-normal text-medium">
+              {OrderById.ClientName} / {OrderById?.OrderName} /{" "}
+              {OrderById?.OrderNumber}
             </ModalHeader>
             <ModalBody>
-              <div className="flex flex-col gap-3 px-5">
-                <div className="grid grid-cols-1 md:grid-col-2 lg:grid-cols-2 lg:gap-x-5 lg:gap-y-5 gap-2">
+              <div className="flex flex-col gap-3 px-5 mt-5">
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <FaUser color="#5d5d5d" />
+                      <label className="font-medium ">Client Name:</label>
+                    </div>
+                    <div>{OrderById?.ClientName}</div>
+                  </div>
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <BsFillCalendarEventFill color="#5d5d5d" />
+                      <label className="font-medium ">Event Name:</label>
+                    </div>
+                    <div>{OrderById?.EventName}</div>
+                  </div>
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <BsFillCalendarEventFill color="#5d5d5d" />
+                      <label className="font-medium ">Order Name:</label>
+                    </div>
+                    <div>{OrderById?.OrderName}</div>
+                  </div>
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <BsFillCalendarEventFill color="#5d5d5d" />
+                      <label className="font-medium ">Order Number:</label>
+                    </div>
+                    <div>{OrderById?.OrderNumber}</div>
+                  </div>
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <BsFillCalendarEventFill color="#5d5d5d" />
+                      <label className="font-medium ">Priority:</label>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <ShowPriorityStatus priority={OrderById?.OrderPriority} />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <BsFillCalendarEventFill color="#5d5d5d" />
+                      <label className="font-medium ">Status:</label>
+                    </div>
+                    <StatusChip OrderStatus={OrderById?.StatusName || ""} />
+                  </div>
+                </div>
+                {/* <div className="flex items-center flex-wrap gap-2">
                   <div className="grid grid-cols-2">
                     <div className="flex items-center gap-2">
                       <CgInternal />
@@ -93,7 +142,7 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
                     </div>
                     <StatusChip OrderStatus={OrderById?.StatusName || ""} />
                   </div>
-                </div>
+                </div> */}
                 <div className="flex flex-col gap-1">
                   <label className="text-medium">Description:</label>
                   <div className="border-1 p-2 rounded-lg">
@@ -123,7 +172,7 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
                           title={OrderItem?.ProductName}
                         >
                           <div className="flex flex-col">
-                            <div className="grid grid-cols-2 gap-1">
+                            <div className="grid grid-cols-3 gap-1">
                               <div className="flex items-center gap-5">
                                 <label className="text-sm text-gray-700">
                                   Color:
@@ -174,45 +223,23 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
                                   )}
                                 </div>
                               </div>
-                              <div className="flex items-center gap-5">
-                                <label className="text-sm text-gray-700">
-                                  Printing options:
-                                </label>
-                                <div className="flex items-center gap-1">
-                                  {OrderItem.printingOptions.map(
-                                    (printingOption) => {
-                                      return (
-                                        <span className="text-sm">
-                                          {printingOption.PrintingOptionName},
-                                        </span>
-                                      );
-                                    }
-                                  )}
-                                </div>
+                            </div>
+                            <div className="flex items-center gap-5">
+                              <label className="text-sm text-gray-700">
+                                Printing options:
+                              </label>
+                              <div className="flex items-center gap-1">
+                                {OrderItem.printingOptions.map(
+                                  (printingOption) => {
+                                    return (
+                                      <span className="text-sm">
+                                        {printingOption.PrintingOptionName},
+                                      </span>
+                                    );
+                                  }
+                                )}
                               </div>
                             </div>
-                            <div className="flex flex-col gap-1 mt-3">
-                              <h6>Uploaded documents</h6>
-                              <div
-                                key={1}
-                                className="border rounded-lg p-2 w-full flex items-center gap-5"
-                              >
-                                <img
-                                  src="/tshirtMockUp.jpg"
-                                  className="w-12 h-12"
-                                  alt="doc item"
-                                />
-                                <div className="flex flex-col gap-1">
-                                  <span className="text-sm">
-                                    T shirt frontside
-                                  </span>
-                                  <span className="text-[#9A9EA5] text-xs">
-                                    JPEG | 13MB
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-
                             <div className="flex flex-col gap-1 mt-3">
                               <h6>Description</h6>
                               <div className="text-sm border p-2 rounded-lg">

@@ -48,13 +48,18 @@ const page = () => {
     setIsOpenViewModal(true);
     // setSelectedOrder(order);
   };
-  const closeViewModal = () => setIsOpenViewModal(false);
+  const closeViewModal = () => {
+    setSelectedOrderId(0);
+    setIsOpenViewModal(false)
+  };
   const openAddOrderModal = () => {
     setIsisEditOrder(false);
     setSelectedOrderId(0);
     setIsAddOrderModalOpen(true);
   };
-  const closeAddOrderModal = () => setIsAddOrderModalOpen(false);
+  const closeAddOrderModal = () => {
+    setIsAddOrderModalOpen(false)
+  };
 
   const openEditOrderModal = (isEdit: boolean, OrderId: number) => {
     setIsisEditOrder(isEdit);
