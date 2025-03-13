@@ -32,7 +32,7 @@ const ProductCatagory = () => {
     fetchCategories();
   }, []);
 
-  const rowsPerPage = 15;
+  const rowsPerPage = 13;
   const pages = Math.ceil(productCategories!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
@@ -78,6 +78,7 @@ const ProductCatagory = () => {
         aria-label="Product Table with pagination"
         classNames={{
           wrapper: "min-h-[222px]",
+           th:"tableHeaderWrapper"
         }}
         bottomContent={
           <div className="flex w-full justify-center">

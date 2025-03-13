@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -17,6 +17,7 @@ import { useFetchClients } from "../services/useFetchClients";
 import AddClients from "../components/AddClients";
 import DeleteClient from "../components/DeleteClient";
 import Layout from "../components/Layout";
+import useClientStore from "@/store/useClientStore";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -26,16 +27,16 @@ const page = () => {
   const [page, setPage] = useState<number>(1);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const { client, isLoading } = useFetchClients({ refreshKey });
+  const {fetchClients, clients, loading} = useClientStore();
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(client!.length / rowsPerPage);
+  const pages = Math.ceil(clients!.length / rowsPerPage);
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return client?.slice(start, end);
-  }, [page, client]);
+    return clients?.slice(start, end);
+  }, [page, clients]);
 
   const openAddModal = () => setIsAddModalOpen(true);
   const closeAddModal = () => {
@@ -55,6 +56,10 @@ const page = () => {
   const refetchData = () => {
     setRefreshKey((prev) => prev + 1);
   };
+
+useEffect(()=>{
+  fetchClients();
+},[])
 
   return (
     <Layout>
@@ -84,6 +89,7 @@ const page = () => {
           }
           classNames={{
             wrapper: "min-h-[222px]",
+             th:"tableHeaderWrapper"
           }}
         >
           <TableHeader>
@@ -115,7 +121,7 @@ const page = () => {
               Action
             </TableColumn>
           </TableHeader>
-          <TableBody isLoading={isLoading} items={items}>
+          <TableBody isLoading={loading} items={items}>
             {(item) => (
               <TableRow key={item.Id}>
                 {(columnKey) => (

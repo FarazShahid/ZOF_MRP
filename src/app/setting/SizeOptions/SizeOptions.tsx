@@ -32,7 +32,7 @@ const SizeOptions = () => {
     fetchsizeOptions();
   }, []);
 
-  const rowsPerPage = 15;
+  const rowsPerPage = 13;
   const pages = Math.ceil(sizeOptions!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
@@ -78,6 +78,7 @@ const SizeOptions = () => {
         aria-label="Product Table with pagination"
         classNames={{
           wrapper: "min-h-[222px]",
+           th:"tableHeaderWrapper"
         }}
         bottomContent={
           <div className="flex w-full justify-center">

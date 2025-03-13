@@ -86,3 +86,7 @@ body {
   height: calc(100vh - 150px);
   overflow-y: auto;
 }
+.tableHeaderWrapper{
+  background: #55555b;
+  color: white;
+}

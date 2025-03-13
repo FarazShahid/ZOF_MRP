@@ -10,16 +10,15 @@ import {
   Accordion,
   AccordionItem,
 } from "@heroui/react";
-import { VscTarget } from "react-icons/vsc";
-import { CiCalendarDate } from "react-icons/ci";
-import { TbExternalLink } from "react-icons/tb";
 
 import Spinner from "./Spinner";
 import StatusChip from "./StatusChip";
-import { formatDate } from "../interfaces";
 import { FaUser } from "react-icons/fa";
+import { FaProjectDiagram } from "react-icons/fa";
 import { BsFillCalendarEventFill } from "react-icons/bs";
+import { TbStatusChange } from "react-icons/tb";
 import { CgInternal } from "react-icons/cg";
+import { RiAlignItemBottomLine } from "react-icons/ri";
 import useOrderStore from "@/store/useOrderStore";
 import ShowPriorityStatus from "./ShowPriorityStatus";
 
@@ -48,8 +47,7 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1 text-gray-700 border-b-1 font-normal text-medium">
-              {OrderById.ClientName} / {OrderById?.OrderName} /{" "}
-              {OrderById?.OrderNumber}
+              {OrderById?.OrderName} / {OrderById?.OrderNumber} /  {OrderById?.ExternalOrderId}
             </ModalHeader>
             <ModalBody>
               <div className="flex flex-col gap-3 px-5 mt-5">
@@ -70,21 +68,21 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
                   </div>
                   <div className="flex items-center gap-5">
                     <div className="flex items-center gap-3">
-                      <BsFillCalendarEventFill color="#5d5d5d" />
+                      <CgInternal color="#5d5d5d" />
                       <label className="font-medium ">Order Name:</label>
                     </div>
                     <div>{OrderById?.OrderName}</div>
                   </div>
                   <div className="flex items-center gap-5">
                     <div className="flex items-center gap-3">
-                      <BsFillCalendarEventFill color="#5d5d5d" />
+                      <RiAlignItemBottomLine color="#5d5d5d" />
                       <label className="font-medium ">Order Number:</label>
                     </div>
                     <div>{OrderById?.OrderNumber}</div>
                   </div>
                   <div className="flex items-center gap-5">
                     <div className="flex items-center gap-3">
-                      <BsFillCalendarEventFill color="#5d5d5d" />
+                      <FaProjectDiagram color="#5d5d5d" />
                       <label className="font-medium ">Priority:</label>
                     </div>
                     <div className="flex items-center gap-1">
@@ -93,7 +91,7 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
                   </div>
                   <div className="flex items-center gap-5">
                     <div className="flex items-center gap-3">
-                      <BsFillCalendarEventFill color="#5d5d5d" />
+                      <TbStatusChange color="#5d5d5d" size={20} />
                       <label className="font-medium ">Status:</label>
                     </div>
                     <StatusChip OrderStatus={OrderById?.StatusName || ""} />
@@ -167,7 +165,7 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
                                   (printingOption) => {
                                     return (
                                       <span className="text-sm">
-                                        {printingOption.PrintingOptionName}
+                                        {printingOption.PrintingOptionName},
                                       </span>
                                     );
                                   }
