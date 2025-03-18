@@ -1,5 +1,18 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
+import toast from "react-hot-toast";
 import { create } from "zustand";
+
+interface GetSizeOptionsResponse {
+  data: SizeOptions[];
+  statusCode: number;
+  message: string;
+}
+
+interface SizeOptionsIdRepsonse {
+  data: SizeOptions;
+  statusCode: number;
+  message: string;
+}
 
 interface SizeOptions {
   Id: number;
@@ -11,8 +24,8 @@ interface SizeOptions {
 }
 interface AddSizeOptions {
   OptionSizeOptions: string;
-  CreatedBy: string;
-  UpdatedBy: string;
+  // CreatedBy: string;
+  // UpdatedBy: string;
 }
 
 interface CategoryState {
@@ -50,11 +63,13 @@ const useSizeOptionsStore = create<CategoryState>((set, get) => ({
       );
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
+        toast.error("Error Fetching Data");
       }
-      const data: SizeOptions[] = await response.json();
-      set({ sizeOptions: data, loading: false });
+      const data: GetSizeOptionsResponse = await response.json();
+      set({ sizeOptions: data.data, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
+      toast.error("Error Fetching Data");
     }
   },
 
@@ -64,10 +79,16 @@ const useSizeOptionsStore = create<CategoryState>((set, get) => ({
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/sizeoptions/${id}`
       );
-      const data: SizeOptions = await response.json();
-      set({ sizeOptionsType: data, loading: false });
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to fetch data");
+      }
+      const data: SizeOptionsIdRepsonse = await response.json();
+      set({ sizeOptionsType: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch size option", loading: false });
+      toast.error("Failed to fetch size option");
     }
   },
 
@@ -85,13 +106,19 @@ const useSizeOptionsStore = create<CategoryState>((set, get) => ({
           body: JSON.stringify(sizeOptionsType),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to add size options");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchsizeOptions();
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to add size options");
+      } else {
+        set({ loading: false, error: null });
+        if (onSuccess) onSuccess();
+        await get().fetchsizeOptions();
+        toast.success("Size option added successfully");
+      }
     } catch (error) {
       set({ error: "Failed to add size options", loading: false });
+      toast.error("Failed to add size options");
     }
   },
 
@@ -110,13 +137,19 @@ const useSizeOptionsStore = create<CategoryState>((set, get) => ({
           body: JSON.stringify(updatedSizeOption),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to update cut option");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchsizeOptions();
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to update size options");
+      } else {
+        set({ loading: false, error: null });
+        if (onSuccess) onSuccess();
+        await get().fetchsizeOptions();
+        toast.success("Size option update successfully");
+      }
     } catch (error) {
-      set({ error: "Failed to update size option", loading: false });
+      set({ error: "Failed to update size options", loading: false });
+      toast.error("Failed to update size options");
     }
   },
 
@@ -127,13 +160,19 @@ const useSizeOptionsStore = create<CategoryState>((set, get) => ({
         `${process.env.NEXT_PUBLIC_API_URL}/sizeoptions/${id}`,
         { method: "DELETE" }
       );
-
-      if (!response.ok) throw new Error("Failed to delete size option");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchsizeOptions();
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to delete size options");
+      } else {
+        set({ loading: false, error: null });
+        if (onSuccess) onSuccess();
+        await get().fetchsizeOptions();
+        toast.success("Size option deleted successfully");
+      }
     } catch (error) {
-      set({ error: "Failed to size option", loading: false });
+      set({ error: "Failed to delete size options", loading: false });
+      toast.error("Failed to delete size options");
     }
   },
 }));

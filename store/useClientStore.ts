@@ -1,5 +1,13 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
+import toast from "react-hot-toast";
 import { create } from "zustand";
+
+
+interface GetClientResponseType{
+  data:GetClientsType[];
+  statusCode: number;
+  message: string;
+}
 
 interface GetClientsType {
   Id: number;
@@ -63,9 +71,10 @@ const useClientStore = create<ClientState>((set, get) => ({
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
       }
-      const data: GetClientsType[] = await response.json();
-      set({ clients: data, loading: false });
+      const data: GetClientResponseType = await response.json();
+      set({ clients: data.data, loading: false });
     } catch (error) {
+      toast.error("Error Fetching Data");
       set({ loading: false, error: "Error Fetching Data" });
     }
   },

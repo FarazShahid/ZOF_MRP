@@ -97,6 +97,9 @@ const ColorOptions = () => {
           <TableColumn key="Name" className="text-medium font-bold">
             Name
           </TableColumn>
+          <TableColumn key="HexCode" className="text-medium font-bold">
+            Color 
+          </TableColumn>
           <TableColumn key="CreatedOn" className="text-medium font-bold">
             Created On
           </TableColumn>
@@ -117,7 +120,11 @@ const ColorOptions = () => {
                 <TableCell>
                   {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
                     formatDate(item[columnKey])
-                  ) : columnKey !== "action" ? (
+                  ) : columnKey === "HexCode" ? (
+                   <div className="flex items-center gap-1">
+                      <div className="rounded-lg w-[100px] h-4" style={{background:`${item.HexCode}`}}></div>
+                   </div>
+                  ): columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
                     <div className="flex gap-2">

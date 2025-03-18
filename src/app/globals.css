@@ -90,3 +90,17 @@ body {
   background: #55555b;
   color: white;
 }
+#color-shades li {
+  display: inline-block;
+  min-width: 4%;
+  height: 100px;
+}
+#color-shades li .color-shade {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  transition: all 0.05s ease-in;
+}
+#color-shades li .color-shade:hover {
+  transform: scale(1.2);
+}

@@ -2,13 +2,25 @@
 
 import React, { createContext, ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Spinner from "../components/Spinner";
+import toast from "react-hot-toast";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (credentials: { email: string; password: string }) => Promise<void>;
   logout: () => void;
   token: string | undefined;
+}
+
+interface LoginResponseType{
+  data:{
+    access_token: string;
+    user:{
+      id: number;
+      email: string;
+    }
+  },
+  statusCode: number;
+  message: string;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -35,18 +47,15 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
       );
 
       if (response.ok) {
-        const data = await response.json();
-        const { access_token } = data;
-
-        localStorage.setItem("token", access_token);
-        setToken(access_token);
+        const data: LoginResponseType = await response.json();
+        const token = data.data.access_token;
+        localStorage.setItem("token", token);
+        setToken(token);
         setIsAuthenticated(true);
-
         router.push("/dashboard");
       } else {
         const error = await response.json();
-        console.error("Login failed:", error.message);
-        alert(error.message || "Login failed");
+        toast.error(error.message || "Login failed");
       }
     } catch (error) {
       console.error("Error during login:", error);

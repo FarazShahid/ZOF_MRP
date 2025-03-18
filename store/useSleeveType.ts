@@ -1,21 +1,32 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
+import toast from "react-hot-toast";
 import { create } from "zustand";
+
+interface GetSleeveTypeResponse {
+  data: SleeveType[];
+  statusCode: number;
+  message: string;
+}
+
+interface UpdateSleeveTypeResponse {
+  data: SleeveType;
+  statusCode: number;
+  message: string;
+}
 
 interface SleeveType {
   id: number;
   sleeveTypeName: string;
   productCategoryId: string;
   categoryName: string;
-  createdOn: string;
-  createdBy: string;
-  updatedOn: string;
+  CreatedOn: string;
+  CreatedBy: string;
+  UpdatedOn: string;
   updatedBy: string;
 }
 interface AddSleeveType {
   sleeveTypeName: string;
   productCategoryId: number;
-  createdBy: string;
-  updatedBy: string;
 }
 
 interface CategoryState {
@@ -54,8 +65,8 @@ const useSleeveType = create<CategoryState>((set, get) => ({
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
       }
-      const data: SleeveType[] = await response.json();
-      set({ sleeveTypeData: data, loading: false });
+      const data: GetSleeveTypeResponse = await response.json();
+      set({ sleeveTypeData: data.data, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
     }
@@ -67,10 +78,15 @@ const useSleeveType = create<CategoryState>((set, get) => ({
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/sleeve-type/${id}`
       );
-      const data: SleeveType = await response.json();
-      set({ sleeveType: data, loading: false });
+      if (!response.ok) {
+        const error = await response.json();
+        toast.error(error.message || "Failed to fetch sleeve type");
+      }
+      const data: UpdateSleeveTypeResponse = await response.json();
+      set({ sleeveType: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch fabric type", loading: false });
+      toast.error("Failed to add sleeve type.");
     }
   },
 
@@ -85,13 +101,19 @@ const useSleeveType = create<CategoryState>((set, get) => ({
           body: JSON.stringify(sleeveType),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to add sleeve type");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchSleeveType();
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to add sleeve type");
+      } else {
+        set({ loading: false, error: null });
+        toast.success("Sleeve type added successfully.");
+        if (onSuccess) onSuccess();
+        await get().fetchSleeveType();
+      }
     } catch (error) {
       set({ error: "Failed to add sleeve type", loading: false });
+      toast.error("Failed to add sleeve type.");
     }
   },
 
@@ -110,13 +132,19 @@ const useSleeveType = create<CategoryState>((set, get) => ({
           body: JSON.stringify(updatedFabricType),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to update sleeve type");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchSleeveType();
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to update sleeve type");
+      } else {
+        set({ loading: false, error: null });
+        toast.success("Sleeve type update successfully.");
+        if (onSuccess) onSuccess();
+        await get().fetchSleeveType();
+      }
     } catch (error) {
       set({ error: "Failed to update sleeve type", loading: false });
+      toast.error("Failed to update sleeve type");
     }
   },
 
@@ -128,12 +156,19 @@ const useSleeveType = create<CategoryState>((set, get) => ({
         { method: "DELETE" }
       );
 
-      if (!response.ok) throw new Error("Failed to delete sleeve type");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchSleeveType();
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to delete sleeve type");
+      } else {
+        set({ loading: false, error: null });
+        if (onSuccess) onSuccess();
+        toast.success("Sleeve type delete successfully.");
+        await get().fetchSleeveType();
+      }
     } catch (error) {
-      set({ error: "Failed to delete sleeve", loading: false });
+      set({ error: "Failed to delete sleeve type", loading: false });
+      toast.success("Failed to delete sleeve type");
     }
   },
 }));

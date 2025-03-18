@@ -25,7 +25,7 @@ const FabricType = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const { fabricTypeData, fetchFabricType, loading, error } = useFabricStore();
+  const { fabricTypeData, fetchFabricType, loading } = useFabricStore();
 
   useEffect(() => {
     fetchFabricType();

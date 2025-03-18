@@ -13,7 +13,6 @@ import {
   Button,
 } from "@heroui/react";
 
-import { useFetchClients } from "../services/useFetchClients";
 import AddClients from "../components/AddClients";
 import DeleteClient from "../components/DeleteClient";
 import Layout from "../components/Layout";

@@ -120,9 +120,13 @@ const Products = () => {
             <TableRow key={item.Id}>
               {(columnKey) => (
                 <TableCell>
-                  {columnKey !== "action" ? (
+                  {
+                  columnKey === "Name" ? (
+                    `${item.FabricName} ${item.ProductCategoryName}`
+                  ) :
+                  columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
-                  ) : (
+                  ): (
                     <div className="flex gap-2">
                       <button
                         type="button"
@@ -148,13 +152,6 @@ const Products = () => {
           )}
         </TableBody>
       </Table>
-
-      {/* <AddSleeveType
-        isOpen={isAddModalOpen}
-        closeAddModal={closeAddModal}
-        isEdit={isEdit}
-        sleeveTypeId={selectedSleeveTypeId}
-      />*/}
        <AddProduct
         isOpen={isAddModalOpen}
         closeAddModal={closeAddModal}

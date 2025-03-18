@@ -1,6 +1,11 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
 import { create } from "zustand";
 
+interface GetProductsResponse{
+  data: Product[];
+  message: string;
+}
+
 interface Product {
   Id: number;
   Name: string;
@@ -89,8 +94,8 @@ const useProductStore = create<CategoryState>((set, get) => ({
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
       }
-      const data: Product[] = await response.json();
-      set({ products: data, loading: false });
+      const data: GetProductsResponse = await response.json();
+      set({ products: data.data, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
     }

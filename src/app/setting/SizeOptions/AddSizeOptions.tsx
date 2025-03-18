@@ -27,8 +27,6 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
 }) => {
   interface AddSizeOptionsType {
     OptionSizeOptions: string;
-    CreatedBy: string;
-    UpdatedBy: string;
   }
   
   const {getSizeOptionById, addSizeOption, updateSizeOption, sizeOptionsType,loading} = useSizeOptionsStore();
@@ -42,8 +40,6 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
 
   const InitialValues = {
     OptionSizeOptions:  isEdit && sizeOptionsType ? sizeOptionsType.OptionSizeOptions : "",
-    CreatedBy: isEdit && sizeOptionsType ? sizeOptionsType.CreatedBy : "Admin",
-    UpdatedBy: isEdit && sizeOptionsType ? sizeOptionsType.UpdatedBy : "Admin",
   };
 
   const handleAddSizeOption = async (values: AddSizeOptionsType) => {

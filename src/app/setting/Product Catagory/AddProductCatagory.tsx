@@ -27,8 +27,6 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
 }) => {
   interface AddClientType {
     type: string;
-    createdBy: string;
-    updatedBy: string;
   }
 
   const {
@@ -48,8 +46,6 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
 
   const InitialValues = {
     type: isEdit && productCategory ? productCategory.type : "",
-    createdBy: isEdit && productCategory ? productCategory.createdBy : "admin",
-    updatedBy: isEdit && productCategory ? productCategory.updatedBy : "admin",
   };
 
   const handleAddCatagory = async (values: AddClientType) => {

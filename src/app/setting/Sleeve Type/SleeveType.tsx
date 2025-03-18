@@ -100,13 +100,13 @@ const FabricType = () => {
           <TableColumn key="categoryName" className="text-medium font-bold">
             Category Name
           </TableColumn>
-          <TableColumn key="createdOn" className="text-medium font-bold">
+          <TableColumn key="CreatedOn" className="text-medium font-bold">
             Created On
           </TableColumn>
           <TableColumn key="createdBy" className="text-medium font-bold">
             Created By
           </TableColumn>
-          <TableColumn key="updatedOn" className="text-medium font-bold">
+          <TableColumn key="UpdatedOn" className="text-medium font-bold">
             Updated On
           </TableColumn>
           <TableColumn key="action" className="text-medium font-bold">
@@ -118,7 +118,7 @@ const FabricType = () => {
             <TableRow key={item.id}>
               {(columnKey) => (
                 <TableCell>
-                  {columnKey === "createdOn" || columnKey === "updatedOn" ? (
+                  {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
                     formatDate(item[columnKey])
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)

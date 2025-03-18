@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import Spinner from "./Spinner";
 import { Tooltip } from "@heroui/react";
-import { useFetchClients } from "../services/useFetchClients";
+import useClientStore from "@/store/useClientStore";
 
 interface SideNavigationProps {
   onClientSelect: (id: number) => void;
@@ -17,14 +17,19 @@ const SideNavigation: React.FC<SideNavigationProps> = ({
   setIsSideNavOpen,
 }) => {
 
-  const [refreshKey, setRefreshkey] = useState(1);
-  const {client, isLoading} = useFetchClients({refreshKey});
+  const {fetchClients, clients, loading} = useClientStore();
   const [selectedClientId, setSelectedClientId] = useState<number>();
 
   const handleSelectedClinet = (clientId: number) => {
     onClientSelect(clientId);
     setSelectedClientId(clientId);
   };
+
+  useEffect(()=>{
+    fetchClients();
+  },[])
+
+
   return (
     <div className="flex h-full">
       <div
@@ -34,7 +39,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({
         <label htmlFor="clients-list" className="text-xl font-bold px-5 my-3">
           Clients
         </label>
-        {isLoading ? (
+        {loading ? (
           <div className="flex items-center justify-center">
             <Spinner />
           </div>
@@ -43,7 +48,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({
             id="clients-list"
             className="custom-scrollbar flex w-full flex-col gap-2.5 text-sm h-full px-3 max-h-[calc(100vh-145px)]"
           >
-            {client?.map((client) => (
+            {clients?.map((client) => (
               <Tooltip key={client.Id} content={client.Name}>
                 <li
                   key={client.Id}
@@ -81,7 +86,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({
               <img className="w-2.5 h-auto" src="/crossIcon.svg" />
             </button>
           </div>
-          {isLoading ? (
+          {loading ? (
             <div className="flex w-full h-full justify-center items-center">
               <Spinner />
             </div>
@@ -90,7 +95,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({
               id="clients-list"
               className="custom-scrollbar flex w-full flex-col gap-2.5 text-sm h-full px-3 max-h-[calc(100vh-145px)]"
             >
-              {client?.map((client) => (
+              {clients?.map((client) => (
                 <li
                   key={client.Id}
                   data-tooltip-target={client.Id}
