@@ -17,6 +17,7 @@ import AddClients from "../components/AddClients";
 import DeleteClient from "../components/DeleteClient";
 import Layout from "../components/Layout";
 import useClientStore from "@/store/useClientStore";
+import { IoAddCircleSharp } from "react-icons/io5";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -26,7 +27,7 @@ const page = () => {
   const [page, setPage] = useState<number>(1);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const {fetchClients, clients, loading} = useClientStore();
+  const { fetchClients, clients, loading } = useClientStore();
 
   const rowsPerPage = 15;
   const pages = Math.ceil(clients!.length / rowsPerPage);
@@ -56,18 +57,23 @@ const page = () => {
     setRefreshKey((prev) => prev + 1);
   };
 
-useEffect(()=>{
-  fetchClients();
-},[])
+  useEffect(() => {
+    fetchClients();
+  }, []);
 
   return (
     <Layout>
       <div className="w-full flex flex-col gap-3 p-5">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Clients</h1>
-          <Button color="primary" size="sm" onPress={openAddModal}>
-            Add Client
-          </Button>
+          <button
+            type="button"
+            className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
+            onClick={openAddModal}
+          >
+            <IoAddCircleSharp size={25} />
+            Add
+          </button>
         </div>
         <Table
           isStriped
@@ -88,7 +94,7 @@ useEffect(()=>{
           }
           classNames={{
             wrapper: "min-h-[222px]",
-             th:"tableHeaderWrapper"
+            th: "tableHeaderWrapper",
           }}
         >
           <TableHeader>

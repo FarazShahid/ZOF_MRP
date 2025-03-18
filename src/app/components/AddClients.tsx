@@ -63,7 +63,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
   },[isEdit, clientId])
 
   return (
-    <Modal isOpen={isOpen} size="lg" onOpenChange={closeAddModal}>
+    <Modal isOpen={isOpen} size="2xl" onOpenChange={closeAddModal}>
       <ModalContent>
         {() => (
           <>

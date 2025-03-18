@@ -9,6 +9,12 @@ interface GetClientResponseType{
   message: string;
 }
 
+interface ClinetByIdResponse{
+  data:GetClientsType;
+  statusCode: number;
+  message: string;
+}
+
 interface GetClientsType {
   Id: number;
   Name: string;
@@ -70,11 +76,12 @@ const useClientStore = create<ClientState>((set, get) => ({
       );
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
+        toast.error("Fail to fetch data");
       }
       const data: GetClientResponseType = await response.json();
       set({ clients: data.data, loading: false });
     } catch (error) {
-      toast.error("Error Fetching Data");
+      toast.error("Fail to fetch data");
       set({ loading: false, error: "Error Fetching Data" });
     }
   },
@@ -85,8 +92,12 @@ const useClientStore = create<ClientState>((set, get) => ({
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/clients/${id}`
       );
-      const data: GetClientsType = await response.json();
-      set({ clientById: data, loading: false });
+      if(!response.ok){
+        set({ loading: false, error: "Error Fetching Data" });
+        toast.error("Fail to fetch data");
+      }
+      const data: ClinetByIdResponse = await response.json();
+      set({ clientById: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch client", loading: false });
     }
@@ -103,13 +114,19 @@ const useClientStore = create<ClientState>((set, get) => ({
           body: JSON.stringify(client),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to add client");
-      set({ loading: false, error: null, isResolved: true });
-      if (onSuccess) onSuccess();
-      await get().fetchClients();
+      if(response.ok){
+        set({ loading: false, error: null, isResolved: true });
+        toast.success("Client added successfully.");
+        if (onSuccess) onSuccess();
+        await get().fetchClients();
+      }else{
+        set({ loading: false, error: null, isResolved: false });
+        const error = await response.json();
+        toast.error(error.message || "Fail to add client");
+      }
     } catch (error) {
       set({ error: "Failed to add client", loading: false });
+      toast.error("Fail to add client");
     }
   },
 
@@ -123,18 +140,24 @@ const useClientStore = create<ClientState>((set, get) => ({
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/clients/${id}`,
         {
-          method: "PATCH",
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedClient),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to update client");
-      set({ loading: false, error: null, isResolved: true });
-      if (onSuccess) onSuccess();
-      await get().fetchClients(); // Fetch latest data after update
+      if(response.ok){
+        set({ loading: false, error: null, isResolved: true });
+        toast.success("Client updated successfully.");
+        if (onSuccess) onSuccess();
+        await get().fetchClients();
+      }else{
+        set({ loading: false, error: null, isResolved: false });
+        const error = await response.json();
+        toast.error(error.message || "Fail to updated client");
+      }
     } catch (error) {
-      set({ error: "Failed to update client", loading: false });
+      set({ error: "Failed to updated client", loading: false });
+      toast.error("Fail to updated client");
     }
   },
 
@@ -146,12 +169,20 @@ const useClientStore = create<ClientState>((set, get) => ({
         { method: "DELETE" }
       );
 
-      if (!response.ok) throw new Error("Failed to delete clients");
-      set({ loading: false, error: null, isResolved: true });
-      if (onSuccess) onSuccess();
-      await get().fetchClients(); // Fetch latest data after deletion
+      if (response.ok){
+        set({ loading: false, error: null, isResolved: true });
+        toast.success("Client deleted successfully.")
+        if (onSuccess) onSuccess();
+        await get().fetchClients();
+      }else{
+        set({ loading: false, error: null, isResolved: false });
+        const error = await response.json();
+        toast.error(error.message || "Fail to delete client");
+      }
+      
     } catch (error) {
-      set({ error: "Failed to delete clients", loading: false });
+      set({ error: "Failed to delete client", loading: false });
+      toast.error("Failed to delete client");
     }
   },
 }));
