@@ -1,6 +1,13 @@
 "use client";
 
 import { Tab, Tabs } from "@heroui/react";
+import { FaTshirt, FaFlag } from "react-icons/fa";
+import { TbNeedleThread, TbRulerMeasure2 } from "react-icons/tb";
+import { AiFillProduct } from "react-icons/ai";
+import { MdOutlineCategory } from "react-icons/md";
+import { IoMdCut, IoMdColorFill } from "react-icons/io";
+import { GiNotebook } from "react-icons/gi";
+
 import Layout from "../components/Layout";
 import ProductCatagory from "./Product Catagory/ProductCatagory";
 import SleeveType from "./Sleeve Type/SleeveType";
@@ -10,13 +17,8 @@ import CutOptions from "./Cut Options/CutOptions";
 import SizeOptions from "./SizeOptions/SizeOptions";
 import ColorOptions from "./Color Options/ColorOptions";
 import ProductRegionStandard from "./Product Region Standard/ProductRegionStandard";
-import { FaTshirt } from "react-icons/fa";
-import { TbNeedleThread } from "react-icons/tb";
-import { AiFillProduct } from "react-icons/ai";
-import { MdOutlineCategory } from "react-icons/md";
-import { IoMdCut, IoMdColorFill } from "react-icons/io";
-import { TbRulerMeasure2 } from "react-icons/tb";
-import { FaFlag } from "react-icons/fa";
+import SizeMeasurements from "./SizeMeasurements/SizeMeasurements";
+
 
 const page = () => {
   return (
@@ -90,7 +92,7 @@ const page = () => {
             <CutOptions />
           </Tab>
           <Tab
-            key="sizeMeasurement"
+            key="sizeOptions"
             title={
               <div className="flex items-center space-x-2">
                 <TbRulerMeasure2 />
@@ -100,6 +102,18 @@ const page = () => {
             className="w-full"
           >
             <SizeOptions />
+          </Tab>
+          <Tab
+            key="sizeMeasurement"
+            title={
+              <div className="flex items-center space-x-2">
+                <GiNotebook />
+                <span>Size Measurement</span>
+              </div>
+            }
+            className="w-full"
+          >
+            <SizeMeasurements />
           </Tab>
           <Tab
             key="colorOptions"
