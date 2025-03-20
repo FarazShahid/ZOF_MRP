@@ -1,5 +1,11 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
+import toast from "react-hot-toast";
 import { create } from "zustand";
+
+interface GetProductsResponse {
+  data: Product[];
+  message: string;
+}
 
 interface Product {
   Id: number;
@@ -14,10 +20,44 @@ interface Product {
   CreatedBy: string;
   UpdatedBy: string;
 }
+interface GetProductByIdResponse {
+  data: ProductById;
+  statusCode: number;
+  message: string;
+}
+
+interface ProductById {
+  Id: string;
+  ProductCategoryId: number;
+  FabricTypeId: number;
+  Name: string;
+  Description: string;
+  CreatedOn: string;
+  CreatedBy: string;
+  UpdatedOn: string;
+  UpdatedBy: string;
+  productColors: [{ Id: number; colorId: number; ImageId: string }];
+  productDetails: [
+    {
+      Id: number;
+      ProductId: number;
+      ProductCutOptionId: number;
+      ProductSizeMeasurementId: number;
+      ProductRegionId: number;
+      SleeveTypeId: number;
+    }
+  ];
+}
+
+interface ProductAvailableColors {
+  Id: number;
+  ColorName: string;
+  ImageId: number;
+}
 interface AddProduct {
   ProductCategoryId: number;
   FabricTypeId: number;
-  Name:string;
+  Name: string;
   Description: string;
   CreatedBy: string;
   UpdatedBy: string;
@@ -26,15 +66,15 @@ interface AddProduct {
 interface CategoryState {
   products: Product[];
   productType: Product | null;
+  productById: ProductById | null;
+  productAvailableColors: ProductAvailableColors[];
   loading: boolean;
   error: string | null;
 
   fetchProducts: () => Promise<void>;
+  fetchProductAvailableColors: (id: number) => Promise<void>;
   getProductById: (id: number) => Promise<void>;
-  addProduct: (
-    productType: AddProduct,
-    onSuccess: () => void
-  ) => Promise<void>;
+  addProduct: (productType: AddProduct, onSuccess: () => void) => Promise<void>;
   updateProduct: (
     id: number,
     productType: AddProduct,
@@ -46,6 +86,8 @@ interface CategoryState {
 const useProductStore = create<CategoryState>((set, get) => ({
   products: [],
   productType: null,
+  productById: null,
+  productAvailableColors: [],
   loading: false,
   error: null,
 
@@ -58,11 +100,31 @@ const useProductStore = create<CategoryState>((set, get) => ({
       );
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
+        const error = await response.json();
+        toast.error(error.message || "Fail to fetch data.");
       }
-      const data: Product[] = await response.json();
-      set({ products: data, loading: false });
+      const data: GetProductsResponse = await response.json();
+      set({ products: data.data, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
+    }
+  },
+
+  fetchProductAvailableColors: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/availablecolors/${id}`
+      );
+      if (!response.ok) {
+        set({ loading: false, error: null });
+        const error = await response.json();
+        toast.error(error.message || "Fail to fetch data.");
+      }
+      const data: ProductAvailableColors[] = await response.json();
+      set({ productAvailableColors: data, loading: false });
+    } catch (error) {
+      set({ error: "Failed to fetch product colors", loading: false });
     }
   },
 
@@ -72,10 +134,16 @@ const useProductStore = create<CategoryState>((set, get) => ({
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`
       );
-      const data: Product = await response.json();
-      set({ productType: data, loading: false });
+      if (!response.ok) {
+        set({ loading: false, error: null });
+        const error = await response.json();
+        toast.error(error.message || "Fail to fetch data");
+      }
+      const data: GetProductByIdResponse = await response.json();
+      set({ productById: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch product", loading: false });
+      toast.error("Fail to add product");
     }
   },
 
@@ -91,12 +159,19 @@ const useProductStore = create<CategoryState>((set, get) => ({
         }
       );
 
-      if (!response.ok) throw new Error("Failed to add product");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchProducts();
+      if (response.ok) {
+        set({ loading: false, error: null });
+        if (onSuccess) onSuccess();
+        toast.success("Product added successfully.");
+        await get().fetchProducts();
+      } else {
+        set({ loading: false, error: null });
+        const error = await response.json();
+        toast.error(error.message || "Fail to add product");
+      }
     } catch (error) {
       set({ error: "Failed to add product", loading: false });
+      toast.error("Fail to add product");
     }
   },
 
@@ -115,13 +190,19 @@ const useProductStore = create<CategoryState>((set, get) => ({
           body: JSON.stringify(productType),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to update product");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchProducts();
+      if (response.ok) {
+        set({ loading: false, error: null });
+        if (onSuccess) onSuccess();
+        toast.success("Product updated successfully.");
+        await get().fetchProducts();
+      } else {
+        set({ loading: false, error: null });
+        const error = await response.json();
+        toast.error(error.message || "Fail to updated product");
+      }
     } catch (error) {
       set({ error: "Failed to update product", loading: false });
+      toast.error("Fail to updated product");
     }
   },
 
@@ -132,13 +213,19 @@ const useProductStore = create<CategoryState>((set, get) => ({
         `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
         { method: "DELETE" }
       );
-
-      if (!response.ok) throw new Error("Failed to delete product");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchProducts();
+      if (response.ok) {
+        set({ loading: false, error: null });
+        if (onSuccess) onSuccess();
+        toast.success("Product deleted successfully.");
+        await get().fetchProducts();
+      } else {
+        set({ loading: false, error: null });
+        const error = await response.json();
+        toast.error(error.message || "Fail to delete product");
+      }
     } catch (error) {
       set({ error: "Failed to delete products", loading: false });
+      toast.error("Fail to delete product");
     }
   },
 }));

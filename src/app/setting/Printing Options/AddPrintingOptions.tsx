@@ -9,45 +9,63 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import useSizeOptionsStore from "@/store/useSizeOptionsStore";
-import { SizeOptionSchema } from "../../schema/SizeOptionSchema";
+import useCutOptionsStore from "@/store/useCutOptionsStore";
+import { CutOptionSchema } from "../../schema/CutOptionSchema";
+import usePrintingOptionsStore, {
+  AddPrintingOptionsType,
+} from "@/store/usePrintingOptionsStore";
+import { PrintingOptionSchema } from "../../schema/PrintingOptionSchema";
 
 interface AddClientComponentProps {
   isOpen: boolean;
   isEdit: boolean;
-  sizeOptionId: number;
+  printingOptionId: number;
   closeAddModal: () => void;
 }
 
-const AddSizeOptions: React.FC<AddClientComponentProps> = ({
+const AddPrintingOptions: React.FC<AddClientComponentProps> = ({
   isOpen,
   closeAddModal,
   isEdit,
-  sizeOptionId,
+  printingOptionId,
 }) => {
-  interface AddSizeOptionsType {
-    OptionSizeOptions: string;
-  }
-  
-  const {getSizeOptionById, addSizeOption, updateSizeOption, sizeOptionsType,loading} = useSizeOptionsStore();
+  // interface AddCutOptionsType {
+  //   OptionProductCutOptions: string;
+  //   CreatedBy: string;
+  //   UpdatedBy: string;
+  // }
+
+  // const {
+  //   getCutOptionById,
+  //   updateCutOption,
+  //   addCutOption,
+  //   cutOptionsType,
+  //   loading,
+  // } = useCutOptionsStore();
+  const {
+    loading,
+    printingOptionById,
+    getPrintingOptionById,
+    addPrintingOption,
+    updatePrintingOption,
+  } = usePrintingOptionsStore();
 
   useEffect(() => {
-    if (sizeOptionId && isEdit) {
-      getSizeOptionById(sizeOptionId);
+    if (printingOptionId && isEdit) {
+      getPrintingOptionById(printingOptionId);
     }
-  }, [sizeOptionId, isEdit]);
-
+  }, [printingOptionId, isEdit]);
 
   const InitialValues = {
-    OptionSizeOptions:  isEdit && sizeOptionsType ? sizeOptionsType.OptionSizeOptions : "",
+    Name: isEdit && printingOptionById ? printingOptionById.Name : "",
   };
 
-  const handleAddSizeOption = async (values: AddSizeOptionsType) => {
+  const handleAdd = async (values: AddPrintingOptionsType) => {
     isEdit
-      ? updateSizeOption(sizeOptionId, values, () => {
+      ? updatePrintingOption(printingOptionId, values, () => {
           closeAddModal();
         })
-      : addSizeOption(values, () => {
+      : addPrintingOption(values, () => {
           closeAddModal();
         });
   };
@@ -58,17 +76,13 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {!isEdit ? (
-                <> Add Size Option</>
-              ) : (
-                <> Edit Size Option</>
-              )}
+              {!isEdit ? <> Add Printing Option</> : <> Edit Printing Option</>}
             </ModalHeader>
             <Formik
-              validationSchema={SizeOptionSchema}
+              validationSchema={PrintingOptionSchema}
               initialValues={InitialValues}
               enableReinitialize
-              onSubmit={handleAddSizeOption}
+              onSubmit={handleAdd}
             >
               {({ isSubmitting }) => (
                 <Form>
@@ -80,17 +94,17 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                            Name
+                              Name
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
-                              name="OptionSizeOptions"
+                              name="Name"
                               type="text"
-                              placeholder="Enter Size Option Name"
+                              placeholder="Enter Printing Option"
                               className="formInputdefault"
                             />
                             <ErrorMessage
-                              name="OptionSizeOptions"
+                              name="Name"
                               component="div"
                               className="text-red-400 text-sm"
                             />
@@ -112,7 +126,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Edit" : "Add"} Size Option
+                      {isEdit ? "Update" : "Save"}
                     </Button>
                   </ModalFooter>
                 </Form>
@@ -125,4 +139,4 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
   );
 };
 
-export default AddSizeOptions;
+export default AddPrintingOptions;

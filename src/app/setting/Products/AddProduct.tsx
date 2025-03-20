@@ -1,24 +1,45 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
+  Accordion,
+  AccordionItem,
   Button,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Select,
+  SelectItem,
   Spinner,
 } from "@heroui/react";
-import { Field, Formik, Form, ErrorMessage } from "formik";
+import { FaCirclePlus } from "react-icons/fa6";
+import { Field, Formik, Form, ErrorMessage, FieldArray } from "formik";
 import useCategoryStore from "@/store/useCategoryStore";
 import useFabricStore from "@/store/useFabricStore";
 import useProductStore from "@/store/useProductStore";
 import { ProductSchema } from "../../schema/ProductSchema";
+import useColorOptionsStore from "@/store/useColorOptionsStore";
+import { MdDelete } from "react-icons/md";
+import useCutOptionsStore from "@/store/useCutOptionsStore";
+import useSizeOptionsStore from "@/store/useSizeOptionsStore";
+import useProductRegionStore from "@/store/useProductRegionStore";
+import useSleeveType from "@/store/useSleeveType";
 
 interface AddClientComponentProps {
   isOpen: boolean;
   isEdit: boolean;
   productId: number;
   closeAddModal: () => void;
+}
+interface ColorOptions {
+  colorId: number | null;
+  ImageId: string;
+}
+interface productDetailsType {
+  ProductCutOptionId: number | null;
+  ProductSizeMeasurementId: number | null;
+  ProductRegionId: number | null;
+  SleeveTypeId: number | null;
 }
 
 const AddProduct: React.FC<AddClientComponentProps> = ({
@@ -31,15 +52,30 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
     ProductCategoryId: number;
     FabricTypeId: number;
     Name: string;
+    productColors: ColorOptions[];
+    productDetails: productDetailsType[];
     Description: string;
     CreatedBy: string;
     UpdatedBy: string;
   }
 
-  const { addProduct, getProductById, productType, updateProduct, loading } =
-    useProductStore();
+  const {
+    addProduct,
+    getProductById,
+    fetchProductAvailableColors,
+    updateProduct,
+    productById,
+    productAvailableColors,
+    loading,
+  } = useProductStore();
   const { fetchCategories, productCategories } = useCategoryStore();
   const { fetchFabricType, fabricTypeData } = useFabricStore();
+  const { colorOptions, fetchColorOptions } = useColorOptionsStore();
+  const { fetchcutOptions, cutOptions } = useCutOptionsStore();
+  const { fetchsizeOptions, sizeOptions } = useSizeOptionsStore();
+  const { fetchProductRegions, productRegions } = useProductRegionStore();
+  const { fetchSleeveType, sleeveTypeData } = useSleeveType();
+  const [selectedColorOptions, setSelectedColorOptions] = useState<string[]>([]);
 
   useEffect(() => {
     if (productId && isEdit) {
@@ -48,32 +84,96 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
   }, [productId, isEdit]);
 
   useEffect(() => {
-    fetchCategories();
-    fetchFabricType();
-  }, []);
+    if (isEdit && productById?.productColors) {
+      const selectedColors = productById.productColors.map((color) => String(color.colorId));
+      setSelectedColorOptions(selectedColors);
+    }
+  }, [isEdit, productById]);
 
-  const InitialValues: AddProduct = {
-    Name: isEdit && productType ? productType.Name : "",
-    ProductCategoryId:
-      isEdit && productType ? Number(productType.ProductCategoryId) : 0,
-    FabricTypeId: isEdit && productType ? Number(productType.FabricTypeId) : 0,
-    Description: isEdit && productType ? productType.Description : "",
-    CreatedBy: isEdit && productType ? productType.CreatedBy : "Admin",
-    UpdatedBy: isEdit && productType ? productType.UpdatedBy : "Admin",
+  useEffect(() => {
+    const fetchData = async () => {
+      await Promise.all([
+        fetchCategories(),
+        fetchFabricType(),
+        fetchColorOptions(),
+        fetchcutOptions(),
+        fetchsizeOptions(),
+        fetchProductRegions(),
+        fetchSleeveType(),
+      ]);
+    };
+    fetchData();
+  }, []);
+  
+
+  const handleColorOptionChange = (
+    keys:
+      | "all"
+      | Set<React.Key>
+      | (Set<React.Key> & { anchorKey?: string; currentKey?: string })
+  ) => {
+    if (keys === "all") {
+      const allKeys = colorOptions?.map((colorOption) => String(colorOption.Id));
+      setSelectedColorOptions(allKeys || []);
+    } else {
+      const keyArray = Array.from(keys).map(String);
+      setSelectedColorOptions(keyArray);
+    }
   };
 
-  const handleAddFabric = async (values: AddProduct) => {
+  const InitialValues: AddProduct = {
+    Name: isEdit && productById ? productById?.Name : "",
+    ProductCategoryId:
+      isEdit && productById ? Number(productById?.ProductCategoryId) : 0,
+    FabricTypeId: isEdit && productById ? Number(productById?.FabricTypeId) : 0,
+    productColors:
+      isEdit && productById
+        ? productById?.productColors?.map((color) => ({
+            colorId: color?.colorId,
+            ImageId: color?.ImageId || "",
+          }))
+        : [],
+    productDetails:
+      isEdit && productById
+        ? productById?.productDetails?.map((detail) => ({
+            ProductCutOptionId: detail?.ProductCutOptionId,
+            ProductSizeMeasurementId: detail?.ProductSizeMeasurementId,
+            ProductRegionId: detail?.ProductRegionId,
+            SleeveTypeId: detail?.SleeveTypeId,
+          }))
+        : [
+            {
+              ProductCutOptionId: null,
+              ProductSizeMeasurementId: null,
+              ProductRegionId: null,
+              SleeveTypeId: null,
+            },
+          ],
+    Description: isEdit && productById ? productById?.Description : "",
+    CreatedBy: isEdit && productById ? productById?.CreatedBy : "Admin",
+    UpdatedBy: isEdit && productById ? productById?.UpdatedBy : "Admin",
+  };
+
+  const handleAddProduct = async (values: AddProduct) => {
+    const updatedValues = {
+      ...values,
+      productColors: selectedColorOptions?.map((colorId) => ({
+        colorId: Number(colorId),
+        ImageId: "1",
+      })),
+    };
+
     isEdit
-      ? updateProduct(productId, values, () => {
+      ? updateProduct(productId, updatedValues, () => {
           closeAddModal();
         })
-      : addProduct(values, () => {
+      : addProduct(updatedValues, () => {
           closeAddModal();
         });
   };
 
   return (
-    <Modal isOpen={isOpen} size="lg" onOpenChange={closeAddModal}>
+    <Modal isOpen={isOpen} size="5xl" onOpenChange={closeAddModal}>
       <ModalContent>
         {() => (
           <>
@@ -84,17 +184,17 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
               validationSchema={ProductSchema}
               initialValues={InitialValues}
               enableReinitialize
-              onSubmit={handleAddFabric}
+              onSubmit={handleAddProduct}
             >
-              {({ isSubmitting }) => (
+              {({ isSubmitting, values }) => (
                 <Form>
                   <ModalBody>
                     {loading ? (
                       <Spinner />
                     ) : (
                       <>
-                        <div className="grid grid-cols-1 gap-3">
-                          <div className="flex flex-col gap-1 w-full">
+                        <div className="grid grid-cols-3 gap-3">
+                          {/* <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
                               Name
                               <span className="text-red-500 text-sm">*</span>
@@ -110,7 +210,7 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               component="div"
                               className="text-red-400 text-sm"
                             />
-                          </div>
+                          </div> */}
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
                               Product Category
@@ -161,61 +261,188 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               className="text-red-400 text-sm"
                             />
                           </div>
-                          <div className="flex flex-col gap-1">
-                            <div className="grid grid-cols-2 gap-2">
-                              <div className="flex flex-col gap-1 w-full">
-                                <label className="text-sm text-gray-600 font-sans">
-                                  Color Name
-                                  <span className="text-red-500 text-sm">
-                                    *
-                                  </span>
-                                </label>
-                                <Field
-                                  name="ColorName"
-                                  type="text"
-                                  placeholder="Enter Color"
-                                  className="formInputdefault !p-[4px]"
-                                />
-                                <ErrorMessage
-                                  name="ColorName"
-                                  component="div"
-                                  className="text-red-400 text-sm"
-                                />
-                              </div>
-                              <div className="flex flex-col gap-1 w-full">
-                                <label className="text-sm text-gray-600 font-sans">
-                                  Image
-                                </label>
-                                <input type="file" className="formInputdefault" />
-                              </div>
-                            </div>
-                            <div className="flex justify-end">
-                              <button
-                                className="bg-slate-300 rounded-md px-3 py-1 hover:bg-green-700 hover:text-white"
-                                type="button"
-                              >
-                                + Add
-                              </button>
-                            </div>
-                          </div>
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                              Description
+                              Color
                               <span className="text-red-500 text-sm">*</span>
                             </label>
-                            <Field
-                              name="Description"
-                              as="textarea"
-                              placeholder="Description"
-                              rows={4}
-                              className="formInputdefault !h-auto"
-                            />
+                            <Select
+                              className="max-w-xs"
+                              name="ColorName"
+                              placeholder="Select Color Options"
+                              selectionMode="multiple"
+                              aria-label="printing option"
+                              selectedKeys={new Set(selectedColorOptions)} 
+                              onSelectionChange={(keys) =>
+                                handleColorOptionChange(keys)
+                              }
+                            >
+                              {colorOptions!.map((colorOptions) => (
+                                <SelectItem key={colorOptions?.Id}>
+                                  {colorOptions.Name}
+                                </SelectItem>
+                              ))}
+                            </Select>
                             <ErrorMessage
-                              name="Description"
+                              name="ColorName"
                               component="div"
                               className="text-red-400 text-sm"
                             />
                           </div>
+                        </div>
+                        <FieldArray name="productDetails">
+                          {({ push, remove }) => (
+                            <div className="flex flex-col gap-3">
+                              {values.productDetails.map((_, index) => (
+                                <div
+                                  key={index}
+                                  className="flex flex-col gap-1 bg-gray-50 p-3 rounded-md border border-gray-300"
+                                >
+                                  <div className="grid grid-cols-3 gap-3">
+                                    {/* Cut Option */}
+                                    <div className="flex flex-col gap-1">
+                                      <label className="text-sm text-gray-600 font-sans">
+                                        Cut Option
+                                      </label>
+                                      <Field
+                                        as="select"
+                                        name={`productDetails[${index}].ProductCutOptionId`}
+                                        className="formInputdefault"
+                                      >
+                                        <option value="">
+                                          Select an option
+                                        </option>
+                                        {cutOptions.map((cutOption) => (
+                                          <option
+                                            key={cutOption.Id}
+                                            value={cutOption.Id}
+                                          >
+                                            {cutOption.OptionProductCutOptions}
+                                          </option>
+                                        ))}
+                                      </Field>
+                                    </div>
+
+                                    {/* Size Measurement */}
+                                    <div className="flex flex-col gap-1">
+                                      <label className="text-sm text-gray-600 font-sans">
+                                        Size Measurement
+                                      </label>
+                                      <Field
+                                        as="select"
+                                        name={`productDetails[${index}].ProductSizeMeasurementId`}
+                                        className="formInputdefault"
+                                      >
+                                        <option value="">
+                                          Select an option
+                                        </option>
+                                        {sizeOptions.map((sizeOption) => (
+                                          <option
+                                            key={sizeOption.Id}
+                                            value={sizeOption.Id}
+                                          >
+                                            {sizeOption.OptionSizeOptions}
+                                          </option>
+                                        ))}
+                                      </Field>
+                                    </div>
+
+                                    {/* Region */}
+                                    {/* <div className="flex flex-col gap-1">
+                                      <label className="text-sm text-gray-600 font-sans">
+                                        Region
+                                      </label>
+                                      <Field
+                                        as="select"
+                                        name={`productDetails[${index}].ProductRegionId`}
+                                        className="formInputdefault"
+                                      >
+                                        <option value="">
+                                          Select an option
+                                        </option>
+                                        {productRegions.map((region) => (
+                                          <option
+                                            key={region.Id}
+                                            value={region.Id}
+                                          >
+                                            {region.Name}
+                                          </option>
+                                        ))}
+                                      </Field>
+                                    </div> */}
+
+                                    {/* Sleeve Type */}
+                                    <div className="flex flex-col gap-1">
+                                      <label className="text-sm text-gray-600 font-sans">
+                                        Sleeve Type
+                                      </label>
+                                      <Field
+                                        as="select"
+                                        name={`productDetails[${index}].SleeveTypeId`}
+                                        className="formInputdefault"
+                                      >
+                                        <option value="">
+                                          Select an option
+                                        </option>
+                                        {sleeveTypeData.map((sleeve) => (
+                                          <option
+                                            key={sleeve.id}
+                                            value={sleeve.id}
+                                          >
+                                            {sleeve.sleeveTypeName}
+                                          </option>
+                                        ))}
+                                      </Field>
+                                    </div>
+                                  </div>
+
+                                  {/* Add / Delete Buttons */}
+                                  <div className="flex justify-end items-center gap-2 mt-2">
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        push({
+                                          ProductCutOptionId: "",
+                                          ProductSizeMeasurementId: "",
+                                          ProductRegionId: "",
+                                          SleeveTypeId: "",
+                                        })
+                                      }
+                                    >
+                                      <FaCirclePlus className="hover:text-green-500 text-lg" />
+                                    </button>
+
+                                    {index > 0 && (
+                                      <button
+                                        type="button"
+                                        onClick={() => remove(index)}
+                                      >
+                                        <MdDelete className="hover:text-red-500 text-lg" />
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </FieldArray>
+                        <div className="flex flex-col gap-1 w-full">
+                          <label className="text-sm text-gray-600 font-sans">
+                            Description
+                            <span className="text-red-500 text-sm">*</span>
+                          </label>
+                          <Field
+                            name="Description"
+                            as="textarea"
+                            placeholder="Description"
+                            rows={4}
+                            className="formInputdefault !h-auto"
+                          />
+                          <ErrorMessage
+                            name="Description"
+                            component="div"
+                            className="text-red-400 text-sm"
+                          />
                         </div>
                       </>
                     )}

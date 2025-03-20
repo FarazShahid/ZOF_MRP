@@ -25,13 +25,14 @@ const ColorOptions = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const {colorOptions, fetchColorOptions ,loading, error} = useColorOptionsStore();
+  const { colorOptions, fetchColorOptions, loading, error } =
+    useColorOptionsStore();
 
   useEffect(() => {
     fetchColorOptions();
   }, []);
 
-  const rowsPerPage = 15;
+  const rowsPerPage = 13;
   const pages = Math.ceil(colorOptions!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
@@ -77,6 +78,7 @@ const ColorOptions = () => {
         aria-label="Product Table with pagination"
         classNames={{
           wrapper: "min-h-[222px]",
+          th: "tableHeaderWrapper",
         }}
         bottomContent={
           <div className="flex w-full justify-center">
@@ -93,8 +95,14 @@ const ColorOptions = () => {
         }
       >
         <TableHeader>
+          <TableColumn key="Sr" className="text-medium font-bold">
+            Sr
+          </TableColumn>
           <TableColumn key="Name" className="text-medium font-bold">
             Name
+          </TableColumn>
+          <TableColumn key="HexCode" className="text-medium font-bold">
+            Color
           </TableColumn>
           <TableColumn key="CreatedOn" className="text-medium font-bold">
             Created On
@@ -110,12 +118,21 @@ const ColorOptions = () => {
           </TableColumn>
         </TableHeader>
         <TableBody isLoading={loading} items={items}>
-          {(item) => (
+          {(items ?? []).map((item: any, index: number) => (
             <TableRow key={item.Id}>
               {(columnKey) => (
                 <TableCell>
                   {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
                     formatDate(item[columnKey])
+                  ) : columnKey === "Sr" ? (
+                    index + 1
+                  ) : columnKey === "HexCode" ? (
+                    <div className="flex items-center gap-1">
+                      <div
+                        className="rounded-lg w-[100px] h-4"
+                        style={{ background: `${item.HexCode}` }}
+                      ></div>
+                    </div>
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
@@ -141,7 +158,7 @@ const ColorOptions = () => {
                 </TableCell>
               )}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
 

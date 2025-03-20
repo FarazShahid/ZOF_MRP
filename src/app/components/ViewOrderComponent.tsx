@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Modal,
   ModalContent,
@@ -10,238 +10,174 @@ import {
   Accordion,
   AccordionItem,
 } from "@heroui/react";
-import { VscTarget } from "react-icons/vsc";
-import { CiCalendarDate } from "react-icons/ci";
-import { TbExternalLink } from "react-icons/tb";
 
 import Spinner from "./Spinner";
 import StatusChip from "./StatusChip";
-import { formatDate, Order } from "../interfaces";
+import { FaUser } from "react-icons/fa";
+import { FaProjectDiagram } from "react-icons/fa";
+import { BsFillCalendarEventFill } from "react-icons/bs";
+import { TbStatusChange } from "react-icons/tb";
 import { CgInternal } from "react-icons/cg";
-import { fetchWithAuth } from "../services/authservice";
+import { RiAlignItemBottomLine } from "react-icons/ri";
+import useOrderStore from "@/store/useOrderStore";
+import ShowPriorityStatus from "./ShowPriorityStatus";
 
 interface ViewOrderComponentProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedOrder: Order | undefined;
-}
-
-interface ViewOrderItemType {
-  ColorName: string;
-  ColorOptionId: number;
-  CreatedOn: string;
-  Description: string;
-  FileId: number;
-  Id: number;
-  ImageId: number;
-  OrderId: number;
-  OrderItemPriority: number;
-  OrderItemQuantity: number;
-  ProductId: number;
-  ProductName: string;
-  UpdatedOn: string;
-  VideoId: number;
-  printingOptions: {
-    printingOptionId: number;
-    Description: string;
-    PrintingOptionName: string;
-  }[];
+  selectedOrderId: number;
 }
 
 const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
   isOpen,
   onClose,
-  selectedOrder,
+  selectedOrderId,
 }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [orderItems, setOrderItems] = useState<ViewOrderItemType[] | null>([]);
+  const { getOrderById, loading, OrderById } = useOrderStore();
 
   useEffect(() => {
-    if(!selectedOrder){
-      return
+    if (selectedOrderId > 0) {
+      getOrderById(selectedOrderId);
     }
-    const fetchProducts = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetchWithAuth(
-          `${process.env.NEXT_PUBLIC_API_URL}/orders/items/${selectedOrder?.Id}`
-        );
-        if (!response.ok) {
-          throw new Error(`Failed to fetch products:`);
-        }
-        const data = await response.json();
-        setOrderItems(data);
-      } catch (err: unknown) {
-        setOrderItems(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [selectedOrder?.Id]);
+  }, [selectedOrderId, isOpen]);
 
   return (
-    <Modal isOpen={isOpen} size="3xl" onOpenChange={onClose}>
+    <Modal isOpen={isOpen} size="4xl" onOpenChange={onClose}>
       <ModalContent>
         {() => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
-              {selectedOrder?.OrderName}
+            <ModalHeader className="flex flex-col gap-1 text-gray-700 border-b-1 font-normal text-medium">
+              {OrderById?.OrderName} / {OrderById?.OrderNumber} /  {OrderById?.ExternalOrderId}
             </ModalHeader>
             <ModalBody>
-              <div className="flex flex-col gap-3 px-5">
-                <div className="grid grid-cols-1 md:grid-col-2 lg:grid-cols-2 lg:gap-x-5 lg:gap-y-5 gap-2">
-                  <div className="grid grid-cols-2">
-                    <div className="flex items-center gap-2">
-                      <CgInternal />
-                      <label className="text-gray-500 font-medium">
-                        Order No.
-                      </label>
+              <div className="flex flex-col gap-3 px-5 mt-5">
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <FaUser color="#5d5d5d" />
+                      <label className="font-medium ">Client Name:</label>
                     </div>
-                    <span className="text-gray-600 font-normal">
-                      {selectedOrder?.OrderNumber}
-                    </span>
+                    <div>{OrderById?.ClientName}</div>
                   </div>
-                  <div className="grid grid-cols-2">
-                    <div className="flex items-center gap-2">
-                      <TbExternalLink />
-                      <label className="text-gray-500 font-medium">
-                        External Order Id
-                      </label>
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <BsFillCalendarEventFill color="#5d5d5d" />
+                      <label className="font-medium ">Event Name:</label>
                     </div>
-                    <span className="text-gray-600 font-normal">
-                      {selectedOrder?.ExternalOrderId}
-                    </span>
+                    <div>{OrderById?.EventName}</div>
                   </div>
-                  <div className="grid grid-cols-2">
-                    <div className="flex items-center gap-2">
-                      <CiCalendarDate />
-                      <label className="text-gray-500 font-medium">
-                        Deadline
-                      </label>
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <CgInternal color="#5d5d5d" />
+                      <label className="font-medium ">Order Name:</label>
                     </div>
-                    <span className="text-gray-600 font-normal">
-                      {formatDate(selectedOrder?.Deadline || "")}
-                    </span>
+                    <div>{OrderById?.OrderName}</div>
                   </div>
-                  <div className="grid grid-cols-2">
-                    <div className="flex items-center gap-2">
-                      <VscTarget />
-                      <label className="text-gray-500 font-medium">
-                        Status
-                      </label>
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <RiAlignItemBottomLine color="#5d5d5d" />
+                      <label className="font-medium ">Order Number:</label>
                     </div>
-                    <StatusChip OrderStatus={selectedOrder?.StatusName || ""} />
+                    <div>{OrderById?.OrderNumber}</div>
+                  </div>
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <FaProjectDiagram color="#5d5d5d" />
+                      <label className="font-medium ">Priority:</label>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <ShowPriorityStatus priority={OrderById?.OrderPriority} />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-3">
+                      <TbStatusChange color="#5d5d5d" size={20} />
+                      <label className="font-medium ">Status:</label>
+                    </div>
+                    <StatusChip OrderStatus={OrderById?.StatusName || ""} />
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-medium">Description:</label>
                   <div className="border-1 p-2 rounded-lg">
-                    {selectedOrder?.Description}
+                    {OrderById?.Description}
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
                   <h1 className="font-semibold headerFontFamily">
                     Order Items
                   </h1>
-                  {orderItems && orderItems?.length > 0 && (
+                  {OrderById && OrderById?.items?.length > 0 && (
                     <Chip variant="flat" size="sm" color="success">
-                      {orderItems?.length}
+                      {OrderById?.items?.length}
                     </Chip>
                   )}
                 </div>
 
-                {isLoading ? (
+                {loading ? (
                   <Spinner />
                 ) : (
                   <Accordion variant="splitted">
-                    {orderItems &&
-                      orderItems.map((product) => (
+                    {OrderById &&
+                      OrderById?.items?.map((OrderItem) => (
                         <AccordionItem
-                          key={product.Id}
-                          aria-label={`accordion-${product.Id}`}
-                          title={product.ProductName}
+                          key={`${OrderItem.Id}_${OrderItem.OrderName}`}
+                          aria-label={`accordion-${OrderItem.Id}`}
+                          title={OrderItem?.ProductName}
                         >
                           <div className="flex flex-col">
-                            <div className="grid grid-cols-2 gap-1">
-                              <div className="flex items-center gap-5">
-                                <label className="text-sm text-gray-700">
-                                  Color:
-                                </label>
-                                <div className="flex items-center gap-1">
-                                  <span className="text-sm">
-                                    {product.ColorName}
-                                  </span>
-                                  <div
-                                    className="w-3 h-3 rounded-lg"
-                                    style={{
-                                      background: `${product.ColorName}`,
-                                    }}
-                                  ></div>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-5">
-                                <label className="text-sm text-gray-700">
-                                  Quantity:
-                                </label>
-                                <span className="text-sm">
-                                  {product.OrderItemQuantity}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-5">
-                                <label className="text-sm text-gray-700">
-                                  Priority:
-                                </label>
-                                <span className="text-sm">
-                                  {product.OrderItemPriority}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-5">
-                                <label className="text-sm text-gray-700">
-                                  Printing options:
-                                </label>
-                                <div className="flex items-center gap-1">
-                                  {product.printingOptions.map(
-                                    (printingOption) => {
-                                      return (
-                                        <span className="text-sm">
-                                          {printingOption.PrintingOptionName},
-                                        </span>
-                                      );
-                                    }
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                           
-                              <div className="flex flex-col gap-1 mt-3">
-                                <h6>Uploaded documents</h6>
-                                <div
-                                  key={1}
-                                  className="border rounded-lg p-2 w-full flex items-center gap-5"
-                                >
-                                  <img
-                                    src="/tshirtMockUp.jpg"
-                                    className="w-12 h-12"
-                                    alt="doc item"
-                                  />
-                                  <div className="flex flex-col gap-1">
+                            {OrderItem?.orderItemDetails?.map((option) => {
+                              return (
+                                <div className="grid grid-cols-3 gap-5">
+                                  <div className="flex items-center gap-3">
+                                    <label className="text-sm font-medium">
+                                      Color:
+                                    </label>
                                     <span className="text-sm">
-                                      T shirt frontside
+                                      {option?.ColorOptionName}
                                     </span>
-                                    <span className="text-[#9A9EA5] text-xs">
-                                      JPEG | 13MB
+                                  </div>
+                                  <div className="flex items-center gap-3">
+                                    <label className="text-sm font-medium">
+                                      Quantity:
+                                    </label>
+                                    <span className="text-sm">
+                                      {option?.Quantity}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-3">
+                                    <label className="text-sm font-medium">
+                                      Priority:
+                                    </label>
+                                    <span className="text-sm">
+                                      {option?.Priority}
                                     </span>
                                   </div>
                                 </div>
+                              );
+                            })}
+                            <div className="flex items-center gap-3 mt-2">
+                              <label className="text-sm font-medium">
+                                Printing options:
+                              </label>
+                              <div className="">
+                                {OrderItem.printingOptions.map(
+                                  (printingOption) => {
+                                    return (
+                                      <span className="text-sm">
+                                        {printingOption.PrintingOptionName},
+                                      </span>
+                                    );
+                                  }
+                                )}
                               </div>
-                         
-
-                            <div className="flex flex-col gap-1 mt-3">
-                              <h6>Description</h6>
+                            </div>
+                            <div className="flex flex-col gap-1 mt-2">
+                              <label className="text-sm font-medium">
+                                Description
+                              </label>
                               <div className="text-sm border p-2 rounded-lg">
-                                {product.Description}
+                                {OrderItem?.Description}
                               </div>
                             </div>
                           </div>

@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
 import { fetchWithAuth } from "./authservice";
+import toast from "react-hot-toast";
+
+interface GetEventsRepsonse{
+  data: Event[];
+}
+
 
 interface Event {
   Id: number;
@@ -17,10 +23,12 @@ const useClientEvents = () => {
       try {
         const response = await fetchWithAuth( `${process.env.NEXT_PUBLIC_API_URL}/events`);
         if (!response.ok) {
-          throw new Error("Failed to fetch events");
+          const error = await response.json();
+          setIsLoading(false);
+          toast.error(error.message || "Fail to fetch available colors");
         }
-        const data: Event[] = await response.json();
-        setEvents(data);
+        const data: GetEventsRepsonse = await response.json();
+        setEvents(data.data);
       } catch (err: any) {
         setError(err.message || "An error occurred while fetching events");
       } finally {

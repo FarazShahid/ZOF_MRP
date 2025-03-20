@@ -31,7 +31,7 @@ const FabricType = () => {
     fetchSleeveType();
   }, []);
 
-  const rowsPerPage = 15;
+  const rowsPerPage = 13;
   const pages = Math.ceil(sleeveTypeData!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
@@ -61,7 +61,7 @@ const FabricType = () => {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-      <h6 className="font-sans text-lg font-semibold">Sleeve Type</h6>
+        <h6 className="font-sans text-lg font-semibold">Sleeve Type</h6>
         <button
           type="button"
           className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
@@ -77,6 +77,7 @@ const FabricType = () => {
         aria-label="Product Table with pagination"
         classNames={{
           wrapper: "min-h-[222px]",
+          th: "tableHeaderWrapper",
         }}
         bottomContent={
           <div className="flex w-full justify-center">
@@ -93,19 +94,22 @@ const FabricType = () => {
         }
       >
         <TableHeader>
+          <TableColumn key="Sr" className="text-medium font-bold">
+            Sr
+          </TableColumn>
           <TableColumn key="sleeveTypeName" className="text-medium font-bold">
             Sleeve Type
           </TableColumn>
           <TableColumn key="categoryName" className="text-medium font-bold">
             Category Name
           </TableColumn>
-          <TableColumn key="createdOn" className="text-medium font-bold">
+          <TableColumn key="CreatedOn" className="text-medium font-bold">
             Created On
           </TableColumn>
           <TableColumn key="createdBy" className="text-medium font-bold">
             Created By
           </TableColumn>
-          <TableColumn key="updatedOn" className="text-medium font-bold">
+          <TableColumn key="UpdatedOn" className="text-medium font-bold">
             Updated On
           </TableColumn>
           <TableColumn key="action" className="text-medium font-bold">
@@ -113,12 +117,14 @@ const FabricType = () => {
           </TableColumn>
         </TableHeader>
         <TableBody isLoading={loading} items={items}>
-          {(item) => (
+          {(items ?? []).map((item: any, index: number) => (
             <TableRow key={item.id}>
               {(columnKey) => (
                 <TableCell>
-                  {columnKey === "createdOn" || columnKey === "updatedOn" ? (
+                  {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
                     formatDate(item[columnKey])
+                  ) : columnKey === "Sr" ? (
+                    index + 1
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
@@ -144,7 +150,7 @@ const FabricType = () => {
                 </TableCell>
               )}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
 

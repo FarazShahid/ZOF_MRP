@@ -19,7 +19,6 @@ import { formatDate } from "../../interfaces";
 import AddCutOptions from "./AddCutOptions";
 import DeleteCutOptions from "./DeleteCutOptions";
 
-
 const CutOptions = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
@@ -27,13 +26,13 @@ const CutOptions = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const {fetchcutOptions, cutOptions, loading} = useCutOptionsStore();
+  const { fetchcutOptions, cutOptions, loading } = useCutOptionsStore();
 
   useEffect(() => {
     fetchcutOptions();
   }, []);
 
-  const rowsPerPage = 15;
+  const rowsPerPage = 13;
   const pages = Math.ceil(cutOptions!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
@@ -79,6 +78,7 @@ const CutOptions = () => {
         aria-label="Product Table with pagination"
         classNames={{
           wrapper: "min-h-[222px]",
+          th: "tableHeaderWrapper",
         }}
         bottomContent={
           <div className="flex w-full justify-center">
@@ -95,8 +95,14 @@ const CutOptions = () => {
         }
       >
         <TableHeader>
-          <TableColumn key="OptionProductCutOptions" className="text-medium font-bold">
-          Cut Option
+          <TableColumn key="Sr" className="text-medium font-bold">
+            Sr
+          </TableColumn>
+          <TableColumn
+            key="OptionProductCutOptions"
+            className="text-medium font-bold"
+          >
+            Cut Option
           </TableColumn>
           <TableColumn key="CreatedOn" className="text-medium font-bold">
             Created On
@@ -112,12 +118,14 @@ const CutOptions = () => {
           </TableColumn>
         </TableHeader>
         <TableBody isLoading={loading} items={items}>
-          {(item) => (
+          {(items ?? []).map((item: any, index: number) => (
             <TableRow key={item.Id}>
               {(columnKey) => (
                 <TableCell>
                   {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
                     formatDate(item[columnKey])
+                  ) : columnKey === "Sr" ? (
+                    index + 1
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
@@ -143,7 +151,7 @@ const CutOptions = () => {
                 </TableCell>
               )}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
 

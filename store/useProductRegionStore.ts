@@ -1,5 +1,18 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
+import toast from "react-hot-toast";
 import { create } from "zustand";
+
+interface getProductRegionResponse {
+  data: ProductRegion[];
+  statusCode: string;
+  message: string;
+}
+
+interface ProductRegionByIdResponse{
+  data: ProductRegion;
+  statusCode: string;
+  message: string;
+}
 
 interface ProductRegion {
   Id: number;
@@ -9,10 +22,8 @@ interface ProductRegion {
   UpdatedOn: string;
   UpdatedBy: string;
 }
-interface AddProductRegion {
+export interface AddProductRegion {
   Name: string;
-  CreatedBy: string;
-  UpdatedBy: string;
 }
 
 interface ProductRegionState {
@@ -52,9 +63,10 @@ const useProductRegionStore = create<ProductRegionState>((set, get) => ({
       );
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
+        toast.error("Fail to fetch data.")
       }
-      const data: ProductRegion[] = await response.json();
-      set({ productRegions: data, loading: false });
+      const data: getProductRegionResponse = await response.json();
+      set({ productRegions: data.data, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
     }
@@ -66,8 +78,13 @@ const useProductRegionStore = create<ProductRegionState>((set, get) => ({
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/product-region-standard/${id}`
       );
-      const data: ProductRegion = await response.json();
-      set({ productRegion: data, loading: false });
+      if(!response.ok){
+        const error = await response.json();
+        toast.error(error.message || "Fail to fetch data");
+        set({loading: false});
+      }
+      const data: ProductRegionByIdResponse = await response.json();
+      set({ productRegion: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch", loading: false });
     }
@@ -87,13 +104,19 @@ const useProductRegionStore = create<ProductRegionState>((set, get) => ({
           body: JSON.stringify(productRegion),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to add");
-      set({ loading: false, error: null, isResolved: true });
-      if (onSuccess) onSuccess();
-      await get().fetchProductRegions();
+      if (response.ok) {
+        set({ loading: false, error: null, isResolved: true });
+        toast.success("Region added successfully.");
+        if (onSuccess) onSuccess();
+        await get().fetchProductRegions();
+      } else {
+        const error = await response.json();
+        toast.error(error.message || "Fail to add region standard");
+        set({loading: false});
+      }
     } catch (error) {
       set({ error: "Failed to add", loading: false });
+      toast.error("Fail to add region standard");
     }
   },
 
@@ -113,12 +136,19 @@ const useProductRegionStore = create<ProductRegionState>((set, get) => ({
         }
       );
 
-      if (!response.ok) throw new Error("Failed to update");
-      set({ loading: false, error: null, isResolved: true });
-      if (onSuccess) onSuccess();
-      await get().fetchProductRegions(); // Fetch latest data after update
+      if (response.ok) {
+        set({ loading: false, error: null, isResolved: true });
+        toast.success("Region update successfully.");
+        if (onSuccess) onSuccess();
+        await get().fetchProductRegions();
+      } else {
+        const error = await response.json();
+        toast.error(error.message || "Fail to update region standard");
+        set({loading: false});
+      }
     } catch (error) {
       set({ error: "Failed to update", loading: false });
+      toast.error("Fail to update region standard");
     }
   },
 
@@ -129,13 +159,19 @@ const useProductRegionStore = create<ProductRegionState>((set, get) => ({
         `${process.env.NEXT_PUBLIC_API_URL}/product-region-standard/${id}`,
         { method: "DELETE" }
       );
-
-      if (!response.ok) throw new Error("Failed to delete");
-      set({ loading: false, error: null, isResolved: true });
-      if (onSuccess) onSuccess();
-      await get().fetchProductRegions(); // Fetch latest data after deletion
+      if (response.ok) {
+        set({ loading: false, error: null, isResolved: true });
+        toast.success("Region Deleted successfully");
+        if (onSuccess) onSuccess();
+        await get().fetchProductRegions();
+      }else{
+        const error = await response.json();
+        toast.error(error.message || "Fail to delete region");
+        set({loading: false});
+      }
     } catch (error) {
       set({ error: "Failed to delete", loading: false });
+      toast.error("Fail to delete region");
     }
   },
 }));

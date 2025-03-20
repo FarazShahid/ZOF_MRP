@@ -13,31 +13,32 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
+import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
+import DeletePrintingOptions from "./DeletePrintingOptions";
 import { formatDate } from "../../interfaces";
-import useFabricStore from "@/store/useFabricStore";
-import DeleteFabricType from "./DeleteFabricType";
-import AddFabricType from "./AddFabricType";
+import AddPrintingOptions from "./AddPrintingOptions";
 
-const FabricType = () => {
+const PrintitngOptions = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [selectedProductCatId, setSelectedProductCatId] = useState<number>(0);
+  const [selectedOptionId, setSelectedOptionId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const { fabricTypeData, fetchFabricType, loading } = useFabricStore();
+  const { loading, fetchprintingOptions, printingOptions } =
+    usePrintingOptionsStore();
 
   useEffect(() => {
-    fetchFabricType();
+    fetchprintingOptions();
   }, []);
 
   const rowsPerPage = 13;
-  const pages = Math.ceil(fabricTypeData!.length / rowsPerPage);
+  const pages = Math.ceil(printingOptions!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
   const handleOpenDeleteModal = (productCatagoryId: number) => {
-    setSelectedProductCatId(productCatagoryId);
+    setSelectedOptionId(productCatagoryId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -46,7 +47,7 @@ const FabricType = () => {
     setIsEdit(false);
   };
   const openEditModal = (clientId: number) => {
-    setSelectedProductCatId(clientId);
+    setSelectedOptionId(clientId);
     setIsAddModalOpen(true);
     setIsEdit(true);
   };
@@ -55,13 +56,13 @@ const FabricType = () => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return fabricTypeData?.slice(start, end);
-  }, [page, fabricTypeData]);
+    return printingOptions?.slice(start, end);
+  }, [page, printingOptions]);
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h6 className="font-sans text-lg font-semibold">Fabric Type</h6>
+        <h6 className="font-sans text-lg font-semibold">Printing Options</h6>
         <button
           type="button"
           className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
@@ -97,22 +98,16 @@ const FabricType = () => {
           <TableColumn key="Sr" className="text-medium font-bold">
             Sr
           </TableColumn>
-          <TableColumn key="type" className="text-medium font-bold">
-            Type
-          </TableColumn>
-          <TableColumn key="name" className="text-medium font-bold">
+          <TableColumn key="Type" className="text-medium font-bold">
             Name
           </TableColumn>
-          <TableColumn key="gsm" className="text-medium font-bold">
-            GSM
-          </TableColumn>
-          <TableColumn key="createdOn" className="text-medium font-bold">
+          <TableColumn key="CreatedOn" className="text-medium font-bold">
             Created On
           </TableColumn>
-          <TableColumn key="createdBy" className="text-medium font-bold">
+          <TableColumn key="CreatedBy" className="text-medium font-bold">
             Created By
           </TableColumn>
-          <TableColumn key="updatedOn" className="text-medium font-bold">
+          <TableColumn key="UpdatedOn" className="text-medium font-bold">
             Updated On
           </TableColumn>
           <TableColumn key="action" className="text-medium font-bold">
@@ -121,10 +116,10 @@ const FabricType = () => {
         </TableHeader>
         <TableBody isLoading={loading} items={items}>
           {(items ?? []).map((item: any, index: number) => (
-            <TableRow key={item.id}>
+            <TableRow key={item.Id}>
               {(columnKey) => (
                 <TableCell>
-                  {columnKey === "createdOn" || columnKey === "updatedOn" ? (
+                  {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
                     formatDate(item[columnKey])
                   ) : columnKey === "Sr" ? (
                     index + 1
@@ -134,7 +129,7 @@ const FabricType = () => {
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        onClick={() => openEditModal(item.id)}
+                        onClick={() => openEditModal(item.Id)}
                       >
                         <MdEditSquare
                           className="hover:text-green-800 cursor-pointer"
@@ -144,7 +139,7 @@ const FabricType = () => {
                       <button
                         type="button"
                         className="hover:text-red-500 cursor-pointer"
-                        onClick={() => handleOpenDeleteModal(item.id)}
+                        onClick={() => handleOpenDeleteModal(item.Id)}
                       >
                         <MdDelete className="hover:text-red-500" size={18} />
                       </button>
@@ -157,19 +152,20 @@ const FabricType = () => {
         </TableBody>
       </Table>
 
-      <AddFabricType
+      <AddPrintingOptions
         isOpen={isAddModalOpen}
         closeAddModal={closeAddModal}
         isEdit={isEdit}
-        fabricTypeId={selectedProductCatId}
+        printingOptionId={selectedOptionId}
       />
-      <DeleteFabricType
+
+      <DeletePrintingOptions
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
-        productIdCatagory={selectedProductCatId}
+        printingOptionId={selectedOptionId}
       />
     </div>
   );
 };
 
-export default FabricType;
+export default PrintitngOptions;

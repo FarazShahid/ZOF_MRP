@@ -1,5 +1,19 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
+import toast from "react-hot-toast";
 import { create } from "zustand";
+
+interface GetCutOptionsResponse {
+  data: CutOptions[];
+  statusCode: number;
+  message: string;
+}
+
+interface AddCutOptionResponse{
+  data: CutOptions;
+  statusCode: number;
+  message: string;
+}
+
 
 interface CutOptions {
   Id: number;
@@ -11,8 +25,6 @@ interface CutOptions {
 }
 interface AddCutOptions {
   OptionProductCutOptions: string;
-  CreatedBy: string;
-  UpdatedBy: string;
 }
 
 interface CategoryState {
@@ -51,8 +63,8 @@ const useCutOptionsStore = create<CategoryState>((set, get) => ({
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
       }
-      const data: CutOptions[] = await response.json();
-      set({ cutOptions: data, loading: false });
+      const data: GetCutOptionsResponse = await response.json();
+      set({ cutOptions: data.data, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
     }
@@ -64,10 +76,16 @@ const useCutOptionsStore = create<CategoryState>((set, get) => ({
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/productcutoptions/${id}`
       );
-      const data: CutOptions = await response.json();
-      set({ cutOptionsType: data, loading: false });
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to fetch cut option");
+      }
+      const data: AddCutOptionResponse = await response.json();
+      set({ cutOptionsType: data.data, loading: false });
     } catch (error) {
-      set({ error: "Failed to fetch fabric type", loading: false });
+      set({ error: "Failed to fetch cut option", loading: false });
+      toast.error("Failed to fetch cut option");
     }
   },
 
@@ -82,13 +100,19 @@ const useCutOptionsStore = create<CategoryState>((set, get) => ({
           body: JSON.stringify(cutOptionsType),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to add cut option");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchcutOptions();
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to add cut option");
+      } else {
+        set({ loading: false, error: null });
+        toast.success("Cut option added successfully");
+        if (onSuccess) onSuccess();
+        await get().fetchcutOptions();
+      }
     } catch (error) {
-      set({ error: "Failed to add cut option", loading: false });
+      set({ error: "Failed to cut option", loading: false });
+      toast.error("Failed to cut option");
     }
   },
 
@@ -107,13 +131,19 @@ const useCutOptionsStore = create<CategoryState>((set, get) => ({
           body: JSON.stringify(updatedFabricType),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to update cut option");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchcutOptions();
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to update cut option");
+      } else {
+        set({ loading: false, error: null });
+        toast.success("Cut option updated successfully");
+        if (onSuccess) onSuccess();
+        await get().fetchcutOptions();
+      }
     } catch (error) {
       set({ error: "Failed to update cut option", loading: false });
+      toast.error("Failed to update cut option");
     }
   },
 
@@ -125,12 +155,19 @@ const useCutOptionsStore = create<CategoryState>((set, get) => ({
         { method: "DELETE" }
       );
 
-      if (!response.ok) throw new Error("Failed to delete cut option");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchcutOptions();
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to delete  Cut Options");
+      } else {
+        set({ loading: false, error: null});
+        toast.success(" Cut Options deleted successfully");
+        if (onSuccess) onSuccess();
+        await get().fetchcutOptions();
+      }
     } catch (error) {
-      set({ error: "Failed to cut option", loading: false });
+      set({ error: "Failed to delete  Cut Options", loading: false });
+      toast.error("Failed to delete  Cut Options");
     }
   },
 }));

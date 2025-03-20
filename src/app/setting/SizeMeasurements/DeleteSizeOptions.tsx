@@ -6,33 +6,30 @@ import {
   ModalFooter,
   Button,
 } from "@heroui/react";
-import useOrderStore from "@/store/useOrderStore";
+import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
 
 interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  orderId: number;
-  clientId: number | undefined;
-  onDeleteSuccess: () => void;
+  sizeOptionId: number;
 }
 
-const DeleteModal: React.FC<DeleteModalProps> = ({
+const DeleteSizeOptions: React.FC<DeleteModalProps> = ({
   isOpen,
   onClose,
-  orderId,
-  clientId,
+  sizeOptionId,
 }) => {
-  const { deleteOrder, loading } = useOrderStore();
+  const { deleteSizeOption, loading } = useSizeMeasurementsStore();
+
   const handleDelete = async () => {
     try {
-      await deleteOrder(orderId, clientId || 0, () => {
+      await deleteSizeOption(sizeOptionId, () => {
         onClose();
       });
     } catch (error) {
       console.error("Delete failed:", error);
     }
   };
-
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose}>
       <ModalContent>
@@ -42,12 +39,12 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
               Confirm Deletion
             </ModalHeader>
             <ModalBody>
-              <p>Are you sure you want to delete this order?</p>
+              <p>Are you sure you want to delete this?</p>
             </ModalBody>
             <ModalFooter>
               <Button
                 color="danger"
-                variant="light"
+                variant="flat"
                 onPress={onClose}
                 disabled={loading}
               >
@@ -68,4 +65,4 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   );
 };
 
-export default DeleteModal;
+export default DeleteSizeOptions;

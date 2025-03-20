@@ -7,11 +7,12 @@ import {
   ModalHeader,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import { SchemaValidation } from "../schema/ClientSchema";
 import { fetchWithAuth } from "../services/authservice";
 import { useFetchClientById } from "../services/useFetchClientById";
 import Spinner from "./Spinner";
+import useClientStore, { AddClientType } from "@/store/useClientStore";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -28,58 +29,41 @@ const AddClients: React.FC<AddClientComponentProps> = ({
   isEdit,
   clientId,
 }) => {
-  interface AddClientType {
-    Name: string;
-    Email: string;
-    Phone: string;
-    Country: string;
-    State: string;
-    City: string;
-    CompleteAddress: string;
-    ClientStatusId: string;
-  }
+  
 
-  const { clientbyId, isLoading } = useFetchClientById({ clientId });
+  const {getClientById,addClient,updateClient,loading, clientById} = useClientStore();
 
   const InitialValues = {
-    Name: isEdit && clientbyId ? clientbyId.Name : "",
-    Email: isEdit && clientbyId ? clientbyId?.Email : "",
-    Phone: isEdit && clientbyId ? clientbyId?.Phone : "",
-    Country: isEdit && clientbyId ? clientbyId?.Country : "",
-    State: isEdit && clientbyId ? clientbyId?.State : "",
-    City: isEdit && clientbyId ? clientbyId?.City : "",
-    CompleteAddress: isEdit && clientbyId ? clientbyId?.CompleteAddress : "",
-    ClientStatusId: isEdit && clientbyId ? clientbyId?.ClientStatusId : "",
+    Name: isEdit && clientById ? clientById?.Name : "",
+    Email: isEdit && clientById ? clientById?.Email : "",
+    Phone: isEdit && clientById ? clientById?.Phone : "",
+    Country: isEdit && clientById ? clientById?.Country : "",
+    State: isEdit && clientById ? clientById?.State : "",
+    City: isEdit && clientById ? clientById?.City : "",
+    CompleteAddress: isEdit && clientById ? clientById?.CompleteAddress : "",
+    ClientStatusId: isEdit && clientById ? clientById?.ClientStatusId : "",
   };
+
+
   const handleAddClient = async (values: AddClientType) => {
-    const url = isEdit
-      ? `${process.env.NEXT_PUBLIC_API_URL}/clients/${clientId}`
-      : `${process.env.NEXT_PUBLIC_API_URL}/clients`;
-    const method = isEdit ? "PATCH" : "POST";
-
-    try {
-      const response = await fetchWithAuth(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        console.log("Error creating order");
-        throw new Error("Failed to create order");
-      }
-      const result = await response.json();
-      closeAddModal();
-      onOrderAdded();
-    } catch (error) {
-      console.error("Error creating order:", error);
-    }
+      isEdit
+      ? updateClient(clientId, values, () => {
+          closeAddModal();
+        })
+      : addClient(values, () => {
+          closeAddModal();
+        });
   };
+ 
+  useEffect(()=>{
+    if(clientId){
+      getClientById(clientId);
+    }
+    
+  },[isEdit, clientId])
 
   return (
-    <Modal isOpen={isOpen} size="lg" onOpenChange={closeAddModal}>
+    <Modal isOpen={isOpen} size="2xl" onOpenChange={closeAddModal}>
       <ModalContent>
         {() => (
           <>
@@ -95,7 +79,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
               {({ isSubmitting }) => (
                 <Form>
                   <ModalBody>
-                    {isLoading ? (
+                    {loading ? (
                       <Spinner />
                     ) : (
                       <>

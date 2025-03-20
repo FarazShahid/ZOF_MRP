@@ -1,23 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Spinner, Tooltip } from "@heroui/react";
 
 import Layout from "../components/Layout";
 import SideNavigation from "../components/SideNavigation";
 import AddOrderComponent from "../components/AddOrderComponent";
-import {
-  formatDate,
-  generateOrderIdentifier,
-  Order,
-  SortConfig,
-  statusPriority,
-} from "../interfaces";
-import { useClientOrders } from "../services/useClientOrders";
+import { formatDate } from "../interfaces";
 import ViewOrderComponent from "../components/ViewOrderComponent";
 import DeleteModal from "../components/DeleteModal";
 import StatusChip from "../components/StatusChip";
 import HeaderWidgets from "../components/HeaderWidgets";
+import useOrderStore from "@/store/useOrderStore";
 
 const page = () => {
   const [clientId, setClientId] = useState<number>();
@@ -27,14 +21,8 @@ const page = () => {
   const [isOpenViewModal, setIsOpenViewModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
   const [refreshKey, setRefreshKey] = useState<number>(0);
-  const [selectedOrder, setSelectedOrder] = useState<Order>();
   const [isEditOrder, setIsisEditOrder] = useState<boolean>(false);
-  const [sortConfig, setSortConfig] = useState<SortConfig>({
-    key: "OrderPriority",
-    direction: "desc",
-  });
-
-  const { isLoading, result } = useClientOrders(clientId, refreshKey);
+  const { fetchOrders, loading, Orders } = useOrderStore();
 
   const openDeleteModal = (orderId: number) => {
     setSelectedOrderId(orderId);
@@ -42,18 +30,22 @@ const page = () => {
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
 
-  const OpenViewModal = (order: Order, orderId: number) => {
+  const OpenViewModal = (orderId: number) => {
     setSelectedOrderId(orderId);
     setIsOpenViewModal(true);
-    setSelectedOrder(order);
   };
-  const closeViewModal = () => setIsOpenViewModal(false);
+  const closeViewModal = () => {
+    setSelectedOrderId(0);
+    setIsOpenViewModal(false);
+  };
   const openAddOrderModal = () => {
     setIsisEditOrder(false);
     setSelectedOrderId(0);
     setIsAddOrderModalOpen(true);
   };
-  const closeAddOrderModal = () => setIsAddOrderModalOpen(false);
+  const closeAddOrderModal = () => {
+    setIsAddOrderModalOpen(false);
+  };
 
   const openEditOrderModal = (isEdit: boolean, OrderId: number) => {
     setIsisEditOrder(isEdit);
@@ -66,37 +58,11 @@ const page = () => {
     setRefreshKey((prev) => prev + 1);
   };
 
-  const handleSort = (key: keyof Order) => {
-    setSortConfig((prev) => ({
-      key,
-      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
-    }));
-  };
-  const sortedOrders = [...(result || [])].sort((a, b) => {
-    if (!sortConfig.key) return 0;
-
-    const key = sortConfig.key;
-    const isAscending = sortConfig.direction === "asc";
-
-    if (key === "StatusName") {
-      const aPriority = statusPriority[a.StatusName];
-      const bPriority = statusPriority[b.StatusName];
-
-      return isAscending ? aPriority - bPriority : bPriority - aPriority;
+  useEffect(() => {
+    if (clientId) {
+      fetchOrders(clientId);
     }
-
-    if (typeof a[key] === "number" && typeof b[key] === "number") {
-      return isAscending ? a[key] - b[key] : b[key] - a[key];
-    }
-
-    if (typeof a[key] === "string" && typeof b[key] === "string") {
-      return isAscending
-        ? a[key].localeCompare(b[key])
-        : b[key].localeCompare(a[key]);
-    }
-
-    return 0;
-  });
+  }, [clientId]);
 
   return (
     <Layout>
@@ -139,8 +105,8 @@ const page = () => {
         </div>
         {clientId && (
           <div className="flex flex-col gap-3">
-            <HeaderWidgets orders={result} />
-            {isLoading ? (
+            <HeaderWidgets orders={Orders} />
+            {loading ? (
               <div className="flex items-center justify-center">
                 <Spinner />
               </div>
@@ -164,21 +130,11 @@ const page = () => {
                       <th className="px-4 py-2 text-center text-medium font-semibold">
                         Event
                       </th>
-                      <th
-                        className="px-4 py-2 text-center text-medium font-semibold cursor-pointer"
-                        onClick={() => handleSort("StatusName")}
-                      >
+                      <th className="px-4 py-2 text-center text-medium font-semibold cursor-pointer">
                         Status
-                        {sortConfig.key === "StatusName" &&
-                          (sortConfig.direction === "asc" ? "↑" : "↓")}
                       </th>
-                      <th
-                        className="px-4 py-2 text-center text-medium font-semibold cursor-pointer"
-                        onClick={() => handleSort("OrderPriority")}
-                      >
+                      <th className="px-4 py-2 text-center text-medium font-semibold cursor-pointer">
                         Priority
-                        {sortConfig.key === "OrderPriority" &&
-                          (sortConfig.direction === "asc" ? "↑" : "↓")}
                       </th>
                       <th className="px-4 py-2 text-center text-medium font-semibold">
                         Deadline
@@ -193,11 +149,11 @@ const page = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {sortedOrders?.map((order) => (
+                    {Orders?.map((order) => (
                       <>
                         <tr
                           key={`${order.Id}_${order.OrderStatusId}`}
-                          onClick={() => OpenViewModal(order, order.Id)}
+                          onClick={() => OpenViewModal(order.Id)}
                           className="border-t bg-gray-100 cursor-pointer"
                         >
                           <Tooltip content={order.OrderName}>
@@ -275,12 +231,13 @@ const page = () => {
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
         orderId={selectedOrderId}
+        clientId={clientId}
         onDeleteSuccess={refreshData}
       />
       <ViewOrderComponent
         isOpen={isOpenViewModal}
         onClose={closeViewModal}
-        selectedOrder={selectedOrder}
+        selectedOrderId={selectedOrderId}
       />
     </Layout>
   );

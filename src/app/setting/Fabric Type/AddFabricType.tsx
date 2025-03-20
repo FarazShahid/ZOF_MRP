@@ -29,8 +29,6 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
     type: string;
     name: string;
     gsm: string;
-    createdBy: string;
-    updatedBy: string;
   }
 
   const {
@@ -51,8 +49,6 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
     type: isEdit && fabricType ? fabricType.type : "",
     name: isEdit && fabricType ? fabricType.name : "",
     gsm: isEdit && fabricType ? fabricType.gsm : "",
-    createdBy: isEdit && fabricType ? fabricType.createdBy : "admin",
-    updatedBy: isEdit && fabricType ? fabricType.updatedBy : "admin",
   };
 
   const handleAddFabric = async (values: AddFabricType) => {

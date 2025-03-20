@@ -1,5 +1,18 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
+import toast from "react-hot-toast";
 import { create } from "zustand";
+
+interface GetFabricResponse{
+  data:FabricType[];
+  statusCode: number;
+  message: string;
+}
+
+interface GetFabricTypeResponse {
+  data:FabricType;
+  statusCode: number;
+  message: string;
+}
 
 interface FabricType {
   id: number;
@@ -13,8 +26,6 @@ interface FabricType {
 }
 interface AddFabricType {
   type: string;
-  createdBy: string;
-  updatedBy: string;
 }
 
 interface CategoryState {
@@ -52,11 +63,13 @@ const useFabricStore = create<CategoryState>((set, get) => ({
       );
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
+        toast.error("Fail to fetch fabric type");
       }
-      const data: FabricType[] = await response.json();
-      set({ fabricTypeData: data, loading: false });
+      const data: GetFabricResponse = await response.json();
+      set({ fabricTypeData: data.data, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
+      toast.error("Fail to fetch fabric type");
     }
   },
 
@@ -66,14 +79,20 @@ const useFabricStore = create<CategoryState>((set, get) => ({
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/fabrictype/${id}`
       );
-      const data: FabricType = await response.json();
-      set({ fabricType: data, loading: false });
+      if (!response.ok) {
+        set({ loading: false, error: "Error Fetching Data" });
+        toast.error("Fail to fetch fabric type");
+      }
+      const data: GetFabricTypeResponse = await response.json();
+      set({ fabricType: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch fabric type", loading: false });
+      toast.error("Fail to fetch fabric type");
     }
   },
 
   addFabricType: async (fabricType: AddFabricType, onSuccess?: () => void) => {
+    
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
@@ -84,13 +103,18 @@ const useFabricStore = create<CategoryState>((set, get) => ({
           body: JSON.stringify(fabricType),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to add fabric type");
-      set({ loading: false, error: null});
-      if (onSuccess) onSuccess();
-      await get().fetchFabricType();
+      if(response.ok){
+        set({ loading: false, error: null});
+        toast.success("Added successfully");
+        if (onSuccess) onSuccess();
+        await get().fetchFabricType();
+      }else{
+        const error = await response.json();
+        toast.error(error.message || "Failed to add");
+      }    
     } catch (error) {
       set({ error: "Failed to add fabric type", loading: false });
+      toast.error("Failed to add fabric type");
     }
   },
 
@@ -109,11 +133,15 @@ const useFabricStore = create<CategoryState>((set, get) => ({
           body: JSON.stringify(updatedFabricType),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to update fabric type");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchFabricType();
+      if(response.ok){
+        set({ loading: false, error: null});
+        toast.success("Fabric Type Updated successfully");
+        if (onSuccess) onSuccess();
+        await get().fetchFabricType();
+      }else{
+        const error = await response.json();
+        toast.error(error.message || "Failed to Update fabric type");
+      }  
     } catch (error) {
       set({ error: "Failed to update fabric type", loading: false });
     }
@@ -127,12 +155,17 @@ const useFabricStore = create<CategoryState>((set, get) => ({
         { method: "DELETE" }
       );
 
-      if (!response.ok) throw new Error("Failed to delete fabric type");
+      if (!response.ok){
+         const error = await response.json();
+         toast.error(error.message || "Failed to Update fabric type");
+      }
       set({ loading: false, error: null});
+      toast.success("Delete successfully");
       if (onSuccess) onSuccess();
       await get().fetchFabricType();
     } catch (error) {
-      set({ error: "Failed to delete category", loading: false });
+      set({ error: "Failed to delete fabric type", loading: false });
+      toast.error("Failed to delete fabric type");
     }
   },
 }));

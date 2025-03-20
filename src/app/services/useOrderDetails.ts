@@ -14,11 +14,17 @@ interface OrderDetails {
     ProductId: number,
     Description: string,
     OrderItemPriority: number,
-    ColorOptionId: number,
+    // ColorOptionId: number,
+
     OrderItemQuantity: number,
     ImageId: number,
     FileId: number,
     VideoId: number,
+    orderItemDetails: {
+      ColorOptionId: number;
+      Quantity: number;
+      Priority: number;
+    }[];
     printingOptions: {
         PrintingOptionId: number;
         Description: string;

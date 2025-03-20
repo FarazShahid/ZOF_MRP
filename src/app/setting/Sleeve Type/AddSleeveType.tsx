@@ -29,8 +29,6 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
   interface AddFabricType {
     sleeveTypeName: string;
     productCategoryId: number;
-    createdBy: string;
-    updatedBy: string;
   }
 
   const {
@@ -55,8 +53,6 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
   const InitialValues = {
     sleeveTypeName: isEdit && sleeveType ? sleeveType.sleeveTypeName : "",
     productCategoryId: isEdit && sleeveType ?  Number(sleeveType.productCategoryId) : 0,
-    createdBy: isEdit && sleeveType ? sleeveType.createdBy : "admin",
-    updatedBy: isEdit && sleeveType ? sleeveType.updatedBy : "admin",
   };
 
   const handleAddFabric = async (values: AddFabricType) => {

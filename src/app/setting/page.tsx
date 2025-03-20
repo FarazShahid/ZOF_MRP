@@ -1,6 +1,13 @@
 "use client";
 
 import { Tab, Tabs } from "@heroui/react";
+import { FaTshirt, FaFlag } from "react-icons/fa";
+import { TbNeedleThread, TbRulerMeasure2 } from "react-icons/tb";
+import { AiFillProduct } from "react-icons/ai";
+import { MdOutlineCategory, MdPrint } from "react-icons/md";
+import { IoMdCut, IoMdColorFill } from "react-icons/io";
+import { GiNotebook } from "react-icons/gi";
+
 import Layout from "../components/Layout";
 import ProductCatagory from "./Product Catagory/ProductCatagory";
 import SleeveType from "./Sleeve Type/SleeveType";
@@ -10,6 +17,9 @@ import CutOptions from "./Cut Options/CutOptions";
 import SizeOptions from "./SizeOptions/SizeOptions";
 import ColorOptions from "./Color Options/ColorOptions";
 import ProductRegionStandard from "./Product Region Standard/ProductRegionStandard";
+import SizeMeasurements from "./SizeMeasurements/SizeMeasurements";
+import PrintitngOptions from "./Printing Options/PrintitngOptions";
+
 
 const page = () => {
   return (
@@ -17,33 +27,129 @@ const page = () => {
       <div className="flex w-full flex-col p-5">
         <Tabs
           aria-label="Options"
-          color="primary"
-          placement="start"
+          color="secondary"
+          placement="top"
           variant="solid"
-          classNames={{ tab: "DefaultTabBorder" }}
         >
-          <Tab key="products" title="Products" className="w-full">
+          <Tab
+            key="products"
+            title={
+              <div className="flex items-center space-x-2">
+                <AiFillProduct />
+                <span>Products</span>
+              </div>
+            }
+            className="w-full"
+          >
             <Products />
           </Tab>
-          <Tab key="catagory" title="Product Category" className="w-full">
-            <ProductCatagory />
-          </Tab>
-          <Tab key="fabricTypes" title="Fabric Types" className="w-full">
+
+          <Tab
+            key="fabricTypes"
+            title={
+              <div className="flex items-center space-x-2">
+                <TbNeedleThread />
+                <span>Fabric Types</span>
+              </div>
+            }
+            className="w-full"
+          >
             <FabricType />
           </Tab>
-          <Tab key="sleeveType" title="Sleeve Type" className="w-full">
+          <Tab
+            key="sleeveType"
+            title={
+              <div className="flex items-center space-x-2">
+                <FaTshirt />
+                <span>Sleeve Type</span>
+              </div>
+            }
+            className="w-full"
+          >
             <SleeveType />
           </Tab>
-          <Tab key="cutOptions" title="Cut Options" className="w-full">
+          <Tab
+            key="catagory"
+            title={
+              <div className="flex items-center space-x-2">
+                <MdOutlineCategory />
+                <span>Product Category</span>
+              </div>
+            }
+            className="w-full"
+          >
+            <ProductCatagory />
+          </Tab>
+          <Tab
+            key="cutOptions"
+            title={
+              <div className="flex items-center space-x-2">
+                <IoMdCut />
+                <span>Cut Options</span>
+              </div>
+            }
+            className="w-full"
+          >
             <CutOptions />
           </Tab>
-          <Tab key="sizeMeasurement" title="Size Options" className="w-full">
+          <Tab
+            key="sizeOptions"
+            title={
+              <div className="flex items-center space-x-2">
+                <TbRulerMeasure2 />
+                <span>Size Options</span>
+              </div>
+            }
+            className="w-full"
+          >
             <SizeOptions />
           </Tab>
-          <Tab key="colorOptions" title="Color Options" className="w-full">
+          <Tab
+            key="sizeMeasurement"
+            title={
+              <div className="flex items-center space-x-2">
+                <GiNotebook />
+                <span>Size Measurement</span>
+              </div>
+            }
+            className="w-full"
+          >
+            <SizeMeasurements />
+          </Tab>
+          <Tab
+            key="colorOptions"
+            title={
+              <div className="flex items-center space-x-2">
+                <IoMdColorFill  />
+                <span>Color Options</span>
+              </div>
+            }
+            className="w-full"
+          >
             <ColorOptions />
           </Tab>
-          <Tab key="productRegionStandard" title="Product Region Standard" className="w-full">
+          <Tab
+            key="printingOptions"
+            title={
+              <div className="flex items-center space-x-2">
+                <MdPrint  />
+                <span>Printing Options</span>
+              </div>
+            }
+            className="w-full"
+          >
+            <PrintitngOptions />
+          </Tab>
+          <Tab
+            key="productRegionStandard"
+            title={
+              <div className="flex items-center space-x-2">
+                <FaFlag   />
+                <span>Product Region Standard</span>
+              </div>
+            }
+            className="w-full"
+          >
             <ProductRegionStandard />
           </Tab>
         </Tabs>

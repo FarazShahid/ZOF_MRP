@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -13,10 +13,11 @@ import {
   Button,
 } from "@heroui/react";
 
-import { useFetchClients } from "../services/useFetchClients";
 import AddClients from "../components/AddClients";
 import DeleteClient from "../components/DeleteClient";
 import Layout from "../components/Layout";
+import useClientStore from "@/store/useClientStore";
+import { IoAddCircleSharp } from "react-icons/io5";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -26,16 +27,16 @@ const page = () => {
   const [page, setPage] = useState<number>(1);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const { client, isLoading } = useFetchClients({ refreshKey });
+  const { fetchClients, clients, loading } = useClientStore();
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(client!.length / rowsPerPage);
+  const pages = Math.ceil(clients!.length / rowsPerPage);
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return client?.slice(start, end);
-  }, [page, client]);
+    return clients?.slice(start, end);
+  }, [page, clients]);
 
   const openAddModal = () => setIsAddModalOpen(true);
   const closeAddModal = () => {
@@ -56,14 +57,23 @@ const page = () => {
     setRefreshKey((prev) => prev + 1);
   };
 
+  useEffect(() => {
+    fetchClients();
+  }, []);
+
   return (
     <Layout>
       <div className="w-full flex flex-col gap-3 p-5">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Clients</h1>
-          <Button color="primary" size="sm" onPress={openAddModal}>
-            Add Client
-          </Button>
+          <button
+            type="button"
+            className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
+            onClick={openAddModal}
+          >
+            <IoAddCircleSharp size={25} />
+            Add
+          </button>
         </div>
         <Table
           isStriped
@@ -84,6 +94,7 @@ const page = () => {
           }
           classNames={{
             wrapper: "min-h-[222px]",
+            th: "tableHeaderWrapper",
           }}
         >
           <TableHeader>
@@ -115,7 +126,7 @@ const page = () => {
               Action
             </TableColumn>
           </TableHeader>
-          <TableBody isLoading={isLoading} items={items}>
+          <TableBody isLoading={loading} items={items}>
             {(item) => (
               <TableRow key={item.Id}>
                 {(columnKey) => (
