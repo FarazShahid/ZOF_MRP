@@ -25,7 +25,8 @@ const ProductRegionStandard = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const {loading, error, fetchProductRegions, productRegions} = useProductRegionStore();
+  const { loading, error, fetchProductRegions, productRegions } =
+    useProductRegionStore();
 
   useEffect(() => {
     fetchProductRegions();
@@ -61,7 +62,9 @@ const ProductRegionStandard = () => {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h6 className="font-sans text-lg font-semibold">Product Region Standard</h6>
+        <h6 className="font-sans text-lg font-semibold">
+          Product Region Standard
+        </h6>
         <button
           type="button"
           className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
@@ -77,7 +80,7 @@ const ProductRegionStandard = () => {
         aria-label="Product Table with pagination"
         classNames={{
           wrapper: "min-h-[222px]",
-           th:"tableHeaderWrapper"
+          th: "tableHeaderWrapper",
         }}
         bottomContent={
           <div className="flex w-full justify-center">
@@ -94,6 +97,9 @@ const ProductRegionStandard = () => {
         }
       >
         <TableHeader>
+          <TableColumn key="Sr" className="text-medium font-bold">
+            Sr
+          </TableColumn>
           <TableColumn key="Name" className="text-medium font-bold">
             Name
           </TableColumn>
@@ -111,12 +117,14 @@ const ProductRegionStandard = () => {
           </TableColumn>
         </TableHeader>
         <TableBody isLoading={loading} items={items}>
-          {(item) => (
+          {(items ?? []).map((item: any, index: number) => (
             <TableRow key={item.Id}>
               {(columnKey) => (
                 <TableCell>
                   {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
                     formatDate(item[columnKey])
+                  ) : columnKey === "Sr" ? (
+                    index + 1
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
@@ -142,7 +150,7 @@ const ProductRegionStandard = () => {
                 </TableCell>
               )}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
       <AddProductRegion

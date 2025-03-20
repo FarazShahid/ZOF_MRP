@@ -61,7 +61,7 @@ const FabricType = () => {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-      <h6 className="font-sans text-lg font-semibold">Sleeve Type</h6>
+        <h6 className="font-sans text-lg font-semibold">Sleeve Type</h6>
         <button
           type="button"
           className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
@@ -77,7 +77,7 @@ const FabricType = () => {
         aria-label="Product Table with pagination"
         classNames={{
           wrapper: "min-h-[222px]",
-           th:"tableHeaderWrapper"
+          th: "tableHeaderWrapper",
         }}
         bottomContent={
           <div className="flex w-full justify-center">
@@ -94,6 +94,9 @@ const FabricType = () => {
         }
       >
         <TableHeader>
+          <TableColumn key="Sr" className="text-medium font-bold">
+            Sr
+          </TableColumn>
           <TableColumn key="sleeveTypeName" className="text-medium font-bold">
             Sleeve Type
           </TableColumn>
@@ -114,12 +117,14 @@ const FabricType = () => {
           </TableColumn>
         </TableHeader>
         <TableBody isLoading={loading} items={items}>
-          {(item) => (
+          {(items ?? []).map((item: any, index: number) => (
             <TableRow key={item.id}>
               {(columnKey) => (
                 <TableCell>
                   {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
                     formatDate(item[columnKey])
+                  ) : columnKey === "Sr" ? (
+                    index + 1
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
@@ -145,7 +150,7 @@ const FabricType = () => {
                 </TableCell>
               )}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
 

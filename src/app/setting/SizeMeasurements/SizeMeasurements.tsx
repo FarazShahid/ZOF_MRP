@@ -13,9 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import useSizeOptionsStore from "@/store/useSizeOptionsStore";
-// import AddSizeOptions from "./AddSizeOptions";
-// import DeleteSizeOptions from "./DeleteSizeOptions";
 import { formatDate } from "../../interfaces";
 import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
 import ViewModal from "./ViewModal";
@@ -52,6 +49,7 @@ const SizeMeasurements = () => {
     setIsEdit(false);
   };
   const openEditModal = (sizeId: number) => {
+    debugger;
     setSelectedSizeOptionId(sizeId);
     setIsAddModalOpen(true);
     setIsEdit(true);
@@ -62,7 +60,6 @@ const SizeMeasurements = () => {
   };
   const handleCloseModal = () => {
     setIsViewModal(false);
-    setSelectedSizeOptionId(0);
   };
 
   const items = useMemo(() => {
@@ -108,17 +105,89 @@ const SizeMeasurements = () => {
         }
       >
         <TableHeader>
+          <TableColumn key="Sr" className="text-medium font-bold">
+            Sr
+          </TableColumn>
           <TableColumn key="Measurement1" className="text-medium font-bold">
             Name
           </TableColumn>
-          <TableColumn key="SizeOption" className="text-medium font-bold">
+          <TableColumn key="SizeOptionName" className="text-medium font-bold">
             Size Option
+          </TableColumn>
+          <TableColumn key="FrontLengthHPS" className="text-medium font-bold">
+            Front Length HPS
+          </TableColumn>
+          <TableColumn key="BackLengthHPS" className="text-medium font-bold">
+            Back Length HPS
+          </TableColumn>
+          <TableColumn key="AcrossShoulders" className="text-medium font-bold">
+            Across Shoulders
+          </TableColumn>
+          <TableColumn key="ArmHole" className="text-medium font-bold">
+            ArmHole
+          </TableColumn>
+          <TableColumn key="UpperChest" className="text-medium font-bold">
+            UpperChest
+          </TableColumn>
+          <TableColumn key="LowerChest" className="text-medium font-bold">
+            Lower Chest
+          </TableColumn>
+          <TableColumn key="Waist" className="text-medium font-bold">
+            Waist
+          </TableColumn>
+          <TableColumn key="BottomWidth" className="text-medium font-bold">
+            Bottom Width
+          </TableColumn>
+          <TableColumn key="SleeveLength" className="text-medium font-bold">
+            Sleeve Length
+          </TableColumn>
+          <TableColumn key="SleeveOpening" className="text-medium font-bold">
+            Sleeve Opening
+          </TableColumn>
+          <TableColumn key="NeckSize" className="text-medium font-bold">
+            Neck Size
+          </TableColumn>
+          <TableColumn key="CollarHeight" className="text-medium font-bold">
+            Collar Height
+          </TableColumn>
+          <TableColumn
+            key="CollarPointHeight"
+            className="text-medium font-bold"
+          >
+            Collar Point Height
+          </TableColumn>
+          <TableColumn key="StandHeightBack" className="text-medium font-bold">
+            Stand Height Back
+          </TableColumn>
+          <TableColumn
+            key="CollarStandLength"
+            className="text-medium font-bold"
+          >
+            Collar Stand Length
+          </TableColumn>
+          <TableColumn key="SideVentFront" className="text-medium font-bold">
+            Side Vent Front
+          </TableColumn>
+          <TableColumn key="SideVentBack" className="text-medium font-bold">
+            Side Vent Back
+          </TableColumn>
+          <TableColumn key="PlacketLength" className="text-medium font-bold">
+            Placket Length
+          </TableColumn>
+          <TableColumn
+            key="TwoButtonDistance"
+            className="text-medium font-bold"
+          >
+            Two Button Distance
+          </TableColumn>
+          <TableColumn key="PlacketWidth" className="text-medium font-bold">
+            Placket Width
+          </TableColumn>
+          <TableColumn key="BottomHem" className="text-medium font-bold">
+            Bottom Hem
           </TableColumn>
           <TableColumn key="CreatedOn" className="text-medium font-bold">
             Created On
-          </TableColumn>
-          <TableColumn key="CreatedBy" className="text-medium font-bold">
-            Created By
           </TableColumn>
           <TableColumn key="UpdatedOn" className="text-medium font-bold">
             Updated On
@@ -128,16 +197,22 @@ const SizeMeasurements = () => {
           </TableColumn>
         </TableHeader>
         <TableBody isLoading={loading} items={items}>
-          {(item) => (
-            <TableRow key={item.Id} onClick={() => openViewModal(item.Id)} className="cursor-pointer">
+          {(items ?? []).map((item: any, index: number) => (
+            <TableRow
+              key={item.Id}
+              onClick={() => openViewModal(item.Id)}
+              className="cursor-pointer"
+            >
               {(columnKey) => (
                 <TableCell>
                   {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
                     formatDate(item[columnKey])
+                  ) : columnKey === "Sr" ? (
+                    index + 1
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
-                    <div className="flex gap-2">
+                    <div className="flex gap-2" onClick={(event) => event.stopPropagation()}>
                       <button
                         type="button"
                         onClick={() => openEditModal(item.Id)}
@@ -159,7 +234,7 @@ const SizeMeasurements = () => {
                 </TableCell>
               )}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
 
@@ -177,9 +252,9 @@ const SizeMeasurements = () => {
         isOpen={isAddModalOpen}
         closeAddModal={closeAddModal}
         isEdit={isEdit}
-        sizeOptionId={selectedSizeOptionId}
+        sizeId={selectedSizeOptionId}
       />
-    
+
       <DeleteSizeOptions
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}

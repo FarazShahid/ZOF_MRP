@@ -159,10 +159,10 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
       ...values,
       productColors: selectedColorOptions?.map((colorId) => ({
         colorId: Number(colorId),
-        ImageId: "",
+        ImageId: "1",
       })),
     };
-    console.log("Product Final Payload:", updatedValues);
+
     isEdit
       ? updateProduct(productId, updatedValues, () => {
           closeAddModal();
@@ -186,15 +186,15 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
               enableReinitialize
               onSubmit={handleAddProduct}
             >
-              {({ isSubmitting, values, errors, touched, setFieldValue }) => (
+              {({ isSubmitting, values }) => (
                 <Form>
                   <ModalBody>
                     {loading ? (
                       <Spinner />
                     ) : (
                       <>
-                        <div className="grid grid-cols-4 gap-3">
-                          <div className="flex flex-col gap-1 w-full">
+                        <div className="grid grid-cols-3 gap-3">
+                          {/* <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
                               Name
                               <span className="text-red-500 text-sm">*</span>
@@ -210,7 +210,7 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               component="div"
                               className="text-red-400 text-sm"
                             />
-                          </div>
+                          </div> */}
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
                               Product Category
@@ -298,7 +298,7 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                                   key={index}
                                   className="flex flex-col gap-1 bg-gray-50 p-3 rounded-md border border-gray-300"
                                 >
-                                  <div className="grid grid-cols-4 gap-3">
+                                  <div className="grid grid-cols-3 gap-3">
                                     {/* Cut Option */}
                                     <div className="flex flex-col gap-1">
                                       <label className="text-sm text-gray-600 font-sans">
@@ -348,7 +348,7 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                                     </div>
 
                                     {/* Region */}
-                                    <div className="flex flex-col gap-1">
+                                    {/* <div className="flex flex-col gap-1">
                                       <label className="text-sm text-gray-600 font-sans">
                                         Region
                                       </label>
@@ -369,7 +369,7 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                                           </option>
                                         ))}
                                       </Field>
-                                    </div>
+                                    </div> */}
 
                                     {/* Sleeve Type */}
                                     <div className="flex flex-col gap-1">

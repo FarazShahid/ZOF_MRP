@@ -22,11 +22,11 @@ const ViewModal: React.FC<ComponentProps> = ({
   sizeOptionId,
   closeAddModal,
 }) => {
-  const { getSizeOptionById, loading, sizeMeasurementById } = useSizeMeasurementsStore();
+  const { getSizeMeasurementById ,loading, sizeMeasurementById } = useSizeMeasurementsStore();
 
   useEffect(() => {
     if (sizeOptionId) {
-      getSizeOptionById(sizeOptionId);
+      getSizeMeasurementById(sizeOptionId);
     }
   }, [sizeOptionId]);
 
@@ -36,7 +36,7 @@ const ViewModal: React.FC<ComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {sizeMeasurementById?.Measurement1}
+              {sizeMeasurementById?.Measurement1} / {sizeMeasurementById?.SizeOptionName}
             </ModalHeader>
             <ModalBody>
               {loading ? (

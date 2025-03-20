@@ -6,14 +6,7 @@ import { Button, Spinner, Tooltip } from "@heroui/react";
 import Layout from "../components/Layout";
 import SideNavigation from "../components/SideNavigation";
 import AddOrderComponent from "../components/AddOrderComponent";
-import {
-  formatDate,
-  generateOrderIdentifier,
-  Order,
-  SortConfig,
-  statusPriority,
-} from "../interfaces";
-import { useClientOrders } from "../services/useClientOrders";
+import { formatDate } from "../interfaces";
 import ViewOrderComponent from "../components/ViewOrderComponent";
 import DeleteModal from "../components/DeleteModal";
 import StatusChip from "../components/StatusChip";
@@ -28,13 +21,7 @@ const page = () => {
   const [isOpenViewModal, setIsOpenViewModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
   const [refreshKey, setRefreshKey] = useState<number>(0);
-  const [selectedOrder, setSelectedOrder] = useState<Order>();
   const [isEditOrder, setIsisEditOrder] = useState<boolean>(false);
-  const [sortConfig, setSortConfig] = useState<SortConfig>({
-    key: "OrderPriority",
-    direction: "desc",
-  });
-
   const { fetchOrders, loading, Orders } = useOrderStore();
 
   const openDeleteModal = (orderId: number) => {
@@ -46,11 +33,10 @@ const page = () => {
   const OpenViewModal = (orderId: number) => {
     setSelectedOrderId(orderId);
     setIsOpenViewModal(true);
-    // setSelectedOrder(order);
   };
   const closeViewModal = () => {
     setSelectedOrderId(0);
-    setIsOpenViewModal(false)
+    setIsOpenViewModal(false);
   };
   const openAddOrderModal = () => {
     setIsisEditOrder(false);
@@ -58,7 +44,7 @@ const page = () => {
     setIsAddOrderModalOpen(true);
   };
   const closeAddOrderModal = () => {
-    setIsAddOrderModalOpen(false)
+    setIsAddOrderModalOpen(false);
   };
 
   const openEditOrderModal = (isEdit: boolean, OrderId: number) => {
@@ -72,12 +58,6 @@ const page = () => {
     setRefreshKey((prev) => prev + 1);
   };
 
-  const handleSort = (key: keyof Order) => {
-    setSortConfig((prev) => ({
-      key,
-      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
-    }));
-  };
   useEffect(() => {
     if (clientId) {
       fetchOrders(clientId);
@@ -150,14 +130,10 @@ const page = () => {
                       <th className="px-4 py-2 text-center text-medium font-semibold">
                         Event
                       </th>
-                      <th
-                        className="px-4 py-2 text-center text-medium font-semibold cursor-pointer"
-                      >
+                      <th className="px-4 py-2 text-center text-medium font-semibold cursor-pointer">
                         Status
                       </th>
-                      <th
-                        className="px-4 py-2 text-center text-medium font-semibold cursor-pointer"
-                      >
+                      <th className="px-4 py-2 text-center text-medium font-semibold cursor-pointer">
                         Priority
                       </th>
                       <th className="px-4 py-2 text-center text-medium font-semibold">

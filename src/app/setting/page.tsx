@@ -4,7 +4,7 @@ import { Tab, Tabs } from "@heroui/react";
 import { FaTshirt, FaFlag } from "react-icons/fa";
 import { TbNeedleThread, TbRulerMeasure2 } from "react-icons/tb";
 import { AiFillProduct } from "react-icons/ai";
-import { MdOutlineCategory } from "react-icons/md";
+import { MdOutlineCategory, MdPrint } from "react-icons/md";
 import { IoMdCut, IoMdColorFill } from "react-icons/io";
 import { GiNotebook } from "react-icons/gi";
 
@@ -18,6 +18,7 @@ import SizeOptions from "./SizeOptions/SizeOptions";
 import ColorOptions from "./Color Options/ColorOptions";
 import ProductRegionStandard from "./Product Region Standard/ProductRegionStandard";
 import SizeMeasurements from "./SizeMeasurements/SizeMeasurements";
+import PrintitngOptions from "./Printing Options/PrintitngOptions";
 
 
 const page = () => {
@@ -126,6 +127,18 @@ const page = () => {
             className="w-full"
           >
             <ColorOptions />
+          </Tab>
+          <Tab
+            key="printingOptions"
+            title={
+              <div className="flex items-center space-x-2">
+                <MdPrint  />
+                <span>Printing Options</span>
+              </div>
+            }
+            className="w-full"
+          >
+            <PrintitngOptions />
           </Tab>
           <Tab
             key="productRegionStandard"

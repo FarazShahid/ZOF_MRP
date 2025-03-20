@@ -60,7 +60,7 @@ const Products = () => {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-      <h6 className="font-sans text-lg font-semibold">Products</h6>
+        <h6 className="font-sans text-lg font-semibold">Products</h6>
         <button
           type="button"
           className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
@@ -76,7 +76,7 @@ const Products = () => {
         aria-label="Product Table with pagination"
         classNames={{
           wrapper: "min-h-[222px]",
-          th:"tableHeaderWrapper"
+          th: "tableHeaderWrapper",
         }}
         bottomContent={
           <div className="flex w-full justify-center">
@@ -93,40 +93,46 @@ const Products = () => {
         }
       >
         <TableHeader>
-          <TableColumn key="Name" className="text-medium font-bold">
-          Name
+          <TableColumn key="Sr" className="text-medium font-bold">
+            Sr
           </TableColumn>
-          <TableColumn key="ProductCategoryName" className="text-medium font-bold">
-          Product Category
+          <TableColumn key="Name" className="text-medium font-bold">
+            Name
+          </TableColumn>
+          <TableColumn
+            key="ProductCategoryName"
+            className="text-medium font-bold"
+          >
+            Product Category
           </TableColumn>
           <TableColumn key="FabricName" className="text-medium font-bold">
-          Fabric
+            Fabric
           </TableColumn>
           <TableColumn key="FabricType" className="text-medium font-bold">
-          Fabric Type
+            Fabric Type
           </TableColumn>
           <TableColumn key="GSM" className="text-medium font-bold">
-          GSM
+            GSM
           </TableColumn>
           <TableColumn key="Description" className="text-medium font-bold">
-          Description
+            Description
           </TableColumn>
           <TableColumn key="action" className="text-medium font-bold">
             Action
           </TableColumn>
         </TableHeader>
         <TableBody isLoading={loading} items={items}>
-          {(item) => (
+          {(items ?? []).map((item: any, index: number) => (
             <TableRow key={item.Id}>
               {(columnKey) => (
                 <TableCell>
-                  {
-                  columnKey === "Name" ? (
+                  {columnKey === "Name" ? (
                     `${item.FabricName} ${item.ProductCategoryName}`
-                  ) :
-                  columnKey !== "action" ? (
+                  ) : columnKey === "Sr" ? (
+                    index + 1
+                  ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
-                  ): (
+                  ) : (
                     <div className="flex gap-2">
                       <button
                         type="button"
@@ -149,10 +155,10 @@ const Products = () => {
                 </TableCell>
               )}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
-       <AddProduct
+      <AddProduct
         isOpen={isAddModalOpen}
         closeAddModal={closeAddModal}
         isEdit={isEdit}

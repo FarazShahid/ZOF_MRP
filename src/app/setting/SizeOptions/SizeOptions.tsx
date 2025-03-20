@@ -18,7 +18,6 @@ import AddSizeOptions from "./AddSizeOptions";
 import DeleteSizeOptions from "./DeleteSizeOptions";
 import { formatDate } from "../../interfaces";
 
-
 const SizeOptions = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
@@ -26,7 +25,7 @@ const SizeOptions = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const {fetchsizeOptions, sizeOptions,loading} = useSizeOptionsStore();
+  const { fetchsizeOptions, sizeOptions, loading } = useSizeOptionsStore();
 
   useEffect(() => {
     fetchsizeOptions();
@@ -62,7 +61,7 @@ const SizeOptions = () => {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-      <h6 className="font-sans text-lg font-semibold">Size Options</h6>
+        <h6 className="font-sans text-lg font-semibold">Size Options</h6>
         <button
           type="button"
           className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
@@ -78,7 +77,7 @@ const SizeOptions = () => {
         aria-label="Product Table with pagination"
         classNames={{
           wrapper: "min-h-[222px]",
-           th:"tableHeaderWrapper"
+          th: "tableHeaderWrapper",
         }}
         bottomContent={
           <div className="flex w-full justify-center">
@@ -95,8 +94,14 @@ const SizeOptions = () => {
         }
       >
         <TableHeader>
-          <TableColumn key="OptionSizeOptions" className="text-medium font-bold">
-          Size Option
+          <TableColumn key="Sr" className="text-medium font-bold">
+            Sr
+          </TableColumn>
+          <TableColumn
+            key="OptionSizeOptions"
+            className="text-medium font-bold"
+          >
+            Size Option
           </TableColumn>
           <TableColumn key="CreatedOn" className="text-medium font-bold">
             Created On
@@ -112,12 +117,14 @@ const SizeOptions = () => {
           </TableColumn>
         </TableHeader>
         <TableBody isLoading={loading} items={items}>
-          {(item) => (
+          {(items ?? []).map((item: any, index: number) => (
             <TableRow key={item.Id}>
               {(columnKey) => (
                 <TableCell>
                   {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
                     formatDate(item[columnKey])
+                  ) : columnKey === "Sr" ? (
+                    index + 1
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
@@ -143,7 +150,7 @@ const SizeOptions = () => {
                 </TableCell>
               )}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
 

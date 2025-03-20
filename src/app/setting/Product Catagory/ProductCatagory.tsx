@@ -78,7 +78,7 @@ const ProductCatagory = () => {
         aria-label="Product Table with pagination"
         classNames={{
           wrapper: "min-h-[222px]",
-           th:"tableHeaderWrapper"
+          th: "tableHeaderWrapper",
         }}
         bottomContent={
           <div className="flex w-full justify-center">
@@ -95,6 +95,9 @@ const ProductCatagory = () => {
         }
       >
         <TableHeader>
+          <TableColumn key="Sr" className="text-medium font-bold">
+            Sr
+          </TableColumn>
           <TableColumn key="type" className="text-medium font-bold">
             Name
           </TableColumn>
@@ -112,12 +115,14 @@ const ProductCatagory = () => {
           </TableColumn>
         </TableHeader>
         <TableBody isLoading={loading} items={items}>
-          {(item) => (
+          {(items ?? []).map((item: any, index: number) => (
             <TableRow key={item.id}>
               {(columnKey) => (
                 <TableCell>
                   {columnKey === "createdOn" || columnKey === "updatedOn" ? (
                     formatDate(item[columnKey])
+                  ) : columnKey === "Sr" ? (
+                    index + 1
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
@@ -143,7 +148,7 @@ const ProductCatagory = () => {
                 </TableCell>
               )}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
 

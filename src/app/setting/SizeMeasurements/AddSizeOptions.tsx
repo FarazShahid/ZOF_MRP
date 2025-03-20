@@ -10,12 +10,15 @@ import {
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import useSizeOptionsStore from "@/store/useSizeOptionsStore";
-import { SizeOptionSchema } from "../../schema/SizeOptionSchema";
+import useSizeMeasurementsStore, {
+  AddSizeMeasurementType,
+} from "@/store/useSizeMeasurementsStore";
+import { SizeMeasurementSchema } from "../../schema/SizeMeasurementSchema";
 
 interface AddClientComponentProps {
   isOpen: boolean;
   isEdit: boolean;
-  sizeOptionId: number;
+  sizeId: number;
   closeAddModal: () => void;
 }
 
@@ -23,41 +26,91 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
   isOpen,
   closeAddModal,
   isEdit,
-  sizeOptionId,
+  sizeId,
 }) => {
-  interface AddSizeOptionsType {
-    OptionSizeOptions: string;
-  }
-
+  const { fetchsizeOptions, sizeOptions } = useSizeOptionsStore();
   const {
-    getSizeOptionById,
-    addSizeOption,
-    updateSizeOption,
-    sizeOptionsType,
     loading,
-  } = useSizeOptionsStore();
+    addSizeMeasurement,
+    updateMeasurement,
+    getSizeMeasurementById,
+    sizeMeasurementById,
+  } = useSizeMeasurementsStore();
 
   useEffect(() => {
-    if (sizeOptionId && isEdit) {
-      getSizeOptionById(sizeOptionId);
+    if (sizeId && isEdit) {
+      getSizeMeasurementById(sizeId);
     }
-  }, [sizeOptionId, isEdit]);
+  }, [sizeId, isEdit]);
+
+  useEffect(() => {
+    fetchsizeOptions();
+  }, []);
 
   const InitialValues = {
-    OptionSizeOptions:
-      isEdit && sizeOptionsType ? sizeOptionsType.OptionSizeOptions : "",
+    SizeOptionId:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.SizeOptionId : 0,
+    Measurement1:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.Measurement1 : "",
+    FrontLengthHPS:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.FrontLengthHPS : "",
+    BackLengthHPS:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.BackLengthHPS : "",
+    AcrossShoulders:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.AcrossShoulders : "",
+    ArmHole: isEdit && sizeMeasurementById ? sizeMeasurementById.ArmHole : "",
+    UpperChest:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.UpperChest : "",
+    LowerChest:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.LowerChest : "",
+    Waist: isEdit && sizeMeasurementById ? sizeMeasurementById.Waist : "",
+    BottomWidth:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.BottomWidth : "",
+    SleeveLength:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.SleeveLength : "",
+    SleeveOpening:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.SleeveOpening : "",
+    NeckSize: isEdit && sizeMeasurementById ? sizeMeasurementById.NeckSize : "",
+    CollarHeight:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.CollarHeight : "",
+    CollarPointHeight:
+      isEdit && sizeMeasurementById
+        ? sizeMeasurementById.CollarPointHeight
+        : "",
+    StandHeightBack:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.StandHeightBack : "",
+    CollarStandLength:
+      isEdit && sizeMeasurementById
+        ? sizeMeasurementById.CollarStandLength
+        : "",
+    SideVentFront:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.SideVentFront : "",
+    SideVentBack:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.SideVentBack : "",
+    PlacketLength:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.PlacketLength : "",
+    TwoButtonDistance:
+      isEdit && sizeMeasurementById
+        ? sizeMeasurementById.TwoButtonDistance
+        : "",
+    PlacketWidth:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.PlacketWidth : "",
+    BottomHem:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.BottomHem : "",
   };
 
-  const handleAddSizeOption = async (values: AddSizeOptionsType) => {
+  const handleAddSizeOption = async (values: AddSizeMeasurementType) => {
     isEdit
-      ? updateSizeOption(sizeOptionId, values, () => {
+      ? updateMeasurement(sizeId, values, () => {
           closeAddModal();
         })
-      : addSizeOption(values, () => {
+      : addSizeMeasurement(values, () => {
           closeAddModal();
         });
   };
 
+
+  console.log("sizeId", sizeId);
   return (
     <Modal isOpen={isOpen} size="5xl" onOpenChange={closeAddModal}>
       <ModalContent>
@@ -71,7 +124,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
               )}
             </ModalHeader>
             <Formik
-              validationSchema={SizeOptionSchema}
+              validationSchema={SizeMeasurementSchema}
               initialValues={InitialValues}
               enableReinitialize
               onSubmit={handleAddSizeOption}
@@ -107,12 +160,19 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
-                              name="SizeOption"
+                              name="SizeOptionId"
                               as="select"
                               type="text"
                               className="formInputdefault border-1"
                             >
                               <option value={""}>Select an option</option>
+                              {sizeOptions.map((size) => {
+                                return (
+                                  <option value={size.Id} key={size.Id}>
+                                    {size.OptionSizeOptions}
+                                  </option>
+                                );
+                              })}
                             </Field>
                             <ErrorMessage
                               name="SizeOption"

@@ -17,8 +17,6 @@ import {
 } from "@heroui/react";
 import { MdDeleteOutline } from "react-icons/md";
 import { Field, Form, Formik } from "formik";
-
-import useClientEvents from "../services/useClientEvents";
 import { useOrderStatus } from "../services/useOrderStatus";
 import { OrderSchemaValidation } from "../schema/OrderSchema";
 import { useFetchProducts } from "../services/useFetchProducts";
@@ -27,11 +25,10 @@ import {
   AddOrderComponentProps,
   getProductNameById,
 } from "../interfaces";
-import { fetchWithAuth } from "../services/authservice";
 import { useFetchPrintingOptions } from "../services/useFetchPrintingOptions";
 import { useOrderDetails } from "../services/useOrderDetails";
 import { FaCirclePlus } from "react-icons/fa6";
-import useOrderStore, { orderItemDetailsType } from "@/store/useOrderStore";
+import useOrderStore from "@/store/useOrderStore";
 
 const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
   isOpen,
@@ -46,14 +43,21 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
   const [selectedPrintingOptions, setSelectedPrintingOptions] = useState<
     number[] | undefined
   >([]);
-  
 
   const { orderDetails, refetch } = useOrderDetails(orderId);
-  const { events } = useClientEvents();
-  const { statuses } = useOrderStatus();
+  // const { statuses } = useOrderStatus();
   const { products } = useFetchProducts();
   const { printingoptions } = useFetchPrintingOptions();
-  const { getAvailableColorByProductId, addOrder , updateOrder, availableColors } = useOrderStore();
+  const {
+    getAvailableColorByProductId,
+    getOrderEvents,
+    addOrder,
+    updateOrder,
+    getOrderStatus,
+    availableColors,
+    events,
+    statuses,
+  } = useOrderStore();
 
   const onSelectionChange = (key: React.Key | null) => {
     if (key && products) {
@@ -302,7 +306,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
         };
       }),
     };
-   
+
     // try {
     //   const response = await fetchWithAuth(URL, {
     //     method: Method,
@@ -323,12 +327,12 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
     //   console.error("Error creating order:", error);
     // }
     isEditOrder
-    ? updateOrder(orderId, orderPayload, () => {
-      onClose();
-      })
-    : addOrder(orderPayload, () => {
-      onClose();
-      });
+      ? updateOrder(orderId, orderPayload, () => {
+          onClose();
+        })
+      : addOrder(orderPayload, () => {
+          onClose();
+        });
   };
 
   useEffect(() => {
@@ -367,6 +371,15 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
       });
     }
   }, [isEditOrder, selectedProducts, availableColors]);
+
+
+
+  useEffect(()=>{
+    if(clientId){
+      getOrderEvents(clientId);
+      getOrderStatus();
+    }
+  },[clientId])
 
   return (
     <Modal
