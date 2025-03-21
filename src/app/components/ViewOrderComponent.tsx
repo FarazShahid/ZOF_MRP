@@ -37,6 +37,7 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
 
   useEffect(() => {
     if (selectedOrderId > 0) {
+      debugger
       getOrderById(selectedOrderId);
     }
   }, [selectedOrderId, isOpen]);
@@ -123,7 +124,7 @@ const ViewOrderComponent: React.FC<ViewOrderComponentProps> = ({
                         <AccordionItem
                           key={`${OrderItem.Id}_${OrderItem.OrderName}`}
                           aria-label={`accordion-${OrderItem.Id}`}
-                          title={OrderItem?.ProductName}
+                          title={`${OrderItem?.ProductFabricName} ${OrderItem?.ProductCategoryName}`}
                         >
                           <div className="flex flex-col">
                             {OrderItem?.orderItemDetails?.map((option) => {

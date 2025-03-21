@@ -4,8 +4,12 @@ import { fetchWithAuth } from "./authservice";
 export interface Product {
   Id: number;
   Name: string;
+  FabricName: string;
   ProductCategoryId: number;
+  ProductCategoryName: string;
+  GSM: number;
   FabricTypeId: number;
+  FabricType: string;
   Description: string;
 }
 

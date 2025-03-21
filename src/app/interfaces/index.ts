@@ -88,7 +88,7 @@ export const formatedProductName = (
   FabricGSM?: number,
   ProductCategoryName?: string,
   ProductCutOptionName?: string,
-  ProductSizeOptionName?: string,
+  ProductSizeOptionName?: string
 ): string => {
   const parts = [
     ProductCutOptionName,
@@ -101,8 +101,6 @@ export const formatedProductName = (
 
   return parts.join("_");
 };
-
-
 
 export interface OrderItem {
   itemId: number;
@@ -137,32 +135,29 @@ export interface OrderItem {
   VideoId: number;
 }
 
-
-
-export function  generateOrderIdentifier(
+export function generateOrderIdentifier(
   username?: string | null,
   eventName?: string | null,
   orderId?: number | null
 ): string {
   const userInitials = username
-    ?.split(' ')
-    .map(namePart => namePart.charAt(0).toUpperCase())
-    .join('');
+    ?.split(" ")
+    .map((namePart) => namePart.charAt(0).toUpperCase())
+    .join("");
 
   const eventInitials = eventName
-    ?.split(' ')
-    .map(namePart => namePart.charAt(0).toUpperCase())
-    .join('');
+    ?.split(" ")
+    .map((namePart) => namePart.charAt(0).toUpperCase())
+    .join("");
 
   const parts = [
-    userInitials, 
-    eventInitials, 
-    orderId !== null && orderId !== undefined ? orderId.toString() : null
+    userInitials,
+    eventInitials,
+    orderId !== null && orderId !== undefined ? orderId.toString() : null,
   ].filter(Boolean); // Filters out null, undefined, or empty values
 
-  return parts.join('_');
+  return parts.join("_");
 }
-
 
 export const statusPriority: Record<Order["StatusName"], number> = {
   Pending: 1,
@@ -181,15 +176,15 @@ export interface OrderItemType {
   OrderItemPriority: number;
   // ColorOptionId: number;
   OrderItemQuantity: number;
-  Name:string;
+  Name: string;
   ImageId: number;
   FileId: number;
   VideoId: number;
-  orderItemDetails:{
+  orderItemDetails: {
     ColorOptionId: number;
     Quantity: number;
     Priority: number;
-  }[]
+  }[];
   printingOptions: {
     PrintingOptionId: number;
     Description: string;
@@ -206,11 +201,15 @@ export interface AddOrderComponentProps {
   onOrderAdded: () => void;
 }
 
-
 export const getProductNameById = (
   products: Product[] | null,
   id: number
 ): string | null => {
   const product = products?.find((product) => product.Id === id);
-  return product ? product.Name : null;
+  let productName = "";
+  if (product) {
+    productName = `${product.FabricName} ${product.ProductCategoryName} ${product.GSM}`;
+  }
+  return product ? productName : null;
 };
+

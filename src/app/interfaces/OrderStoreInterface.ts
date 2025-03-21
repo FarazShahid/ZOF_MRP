@@ -1,17 +1,19 @@
 export interface GetOrdersType {
   Id: number;
-  OrderName: string;
-  OrderNumber: string;
-  ExternalOrderId: string;
-  Description: string;
-  OrderEventId: number;
   ClientId: number;
-  OrderStatusId: number;
-  OrderPriority: number;
-  Deadline: string;
-  EventName: string;
   ClientName: string;
+  OrderEventId: number;
+  EventName: string;
+  Description: string;
+  OrderStatusId: number;
   StatusName: string;
+  Deadline: string;
+  OrderPriority: number;
+  OrderNumber: string;
+  OrderName: string;
+  ExternalOrderId: string;
+  CreatedOn: string;
+  UpdatedOn: string;
 }
 
 export interface GetOrderByClientResponse {
@@ -46,6 +48,11 @@ export interface GetOrderByIdType {
     OrderName: string;
     ExternalOrderId: string;
     OrderItemPriority: number;
+    ProductCategoryId: number;
+    ProductCategoryName: string;
+    ProductFabricGSM: string;
+    ProductFabricName: string;
+    ProductFabricType: string;
     ImageId: number;
     FileId: number;
     VideoId: number;
@@ -61,6 +68,10 @@ export interface GetOrderByIdType {
       Priority: number;
     }[];
   }[];
+}
+
+export interface GetOrderByIdResponse{
+  data: GetOrderByIdType;
 }
 
 export interface AddOrderType {

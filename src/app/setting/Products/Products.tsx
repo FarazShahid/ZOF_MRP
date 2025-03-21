@@ -127,7 +127,7 @@ const Products = () => {
               {(columnKey) => (
                 <TableCell>
                   {columnKey === "Name" ? (
-                    `${item.FabricName} ${item.ProductCategoryName}`
+                    `${item?.FabricName} ${item?.ProductCategoryName} ${item?.GSM}`
                   ) : columnKey === "Sr" ? (
                     index + 1
                   ) : columnKey !== "action" ? (

@@ -10,6 +10,7 @@ import {
   orderItemDetailsType,
   OderStatus,
   OderStatusResponse,
+  GetOrderByIdResponse,
 } from "@/src/app/interfaces/OrderStoreInterface";
 import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
@@ -89,7 +90,7 @@ const useOrderStore = create<StoreState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/events/${clientId}`
+        `${process.env.NEXT_PUBLIC_API_URL}/events`
       );
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching events Data" });
@@ -105,6 +106,7 @@ const useOrderStore = create<StoreState>((set, get) => ({
 
   getOrderById: async (id: number) => {
     set({ loading: true, error: null });
+    debugger
     try {
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/orders/get-edit/${id}`
@@ -114,8 +116,8 @@ const useOrderStore = create<StoreState>((set, get) => ({
         const error = await response.json();
         toast.error(error.message || "Error fetching data");
       }
-      const data: GetOrderByIdType = await response.json();
-      set({ OrderById: data, loading: false });
+      const data: GetOrderByIdResponse = await response.json();
+      set({ OrderById: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch category", loading: false });
     }
@@ -218,12 +220,19 @@ const useOrderStore = create<StoreState>((set, get) => ({
         { method: "DELETE" }
       );
 
-      if (!response.ok) throw new Error("Failed to delete order");
-      set({ loading: false, error: null, isResolved: true });
-      if (onSuccess) onSuccess();
-      await get().fetchOrders(clientId);
+      if(response.ok){
+        set({ loading: false, error: null, isResolved: true });
+        toast.success("Order deleted successfully.");
+        if (onSuccess) onSuccess();
+        await get().fetchOrders(clientId);
+      }else{
+        set({ loading: false, error: null, isResolved: false });
+        const error = await response.json();
+        toast.error(error.message || "Fail to delete order.");
+      }
     } catch (error) {
       set({ error: "Failed to delete order", loading: false });
+      toast.error("Fail to delete order.");
     }
   },
 }));

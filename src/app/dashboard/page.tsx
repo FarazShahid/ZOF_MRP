@@ -185,23 +185,17 @@ const page = () => {
                             </td>
                           </Tooltip>
 
-                          <td className="px-4 py-2 rounded-tr-lg rounded-br-lg">
+                          <td className="px-4 py-2 rounded-tr-lg rounded-br-lg" onClick={(e) =>{e.stopPropagation();}}>
                             <div className="flex items-center gap-2 justify-center">
                               <button
                                 type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openEditOrderModal(true, order.Id);
-                                }}
+                                onClick={() => {openEditOrderModal(true, order.Id)}}
                               >
                                 <img src="/EditIcon.svg" />
                               </button>
                               <button
                                 type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openDeleteModal(order.Id);
-                                }}
+                                onClick={() => {openDeleteModal(order.Id)}}
                               >
                                 <img src="/DeleteIcon.svg" />
                               </button>
