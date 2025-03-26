@@ -79,14 +79,14 @@ body {
   background: rgb(252 251 251);
   box-shadow: rgb(223, 223, 223) 1px 1px 2px 2px;
 }
-.DefaultTabBorder{
+.DefaultTabBorder {
   border-bottom: 1px solid #e1e1e1;
 }
-.AddOorderModalBody{
+.AddOorderModalBody {
   height: calc(100vh - 150px);
   overflow-y: auto;
 }
-.tableHeaderWrapper{
+.tableHeaderWrapper {
   background: #55555b;
   color: white;
 }
@@ -104,7 +104,7 @@ body {
 #color-shades li .color-shade:hover {
   transform: scale(1.2);
 }
-.chart-grid-container{
+.chart-grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 10px;

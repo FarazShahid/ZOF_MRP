@@ -185,12 +185,16 @@ const page = () => {
                             </td>
                           </Tooltip>
 
-                          <td className="px-4 py-2 rounded-tr-lg rounded-br-lg">
+                          <td
+                            className="px-4 py-2 rounded-tr-lg rounded-br-lg"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
                             <div className="flex items-center gap-2 justify-center">
                               <button
                                 type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
+                                onClick={() => {
                                   openEditOrderModal(true, order.Id);
                                 }}
                               >
@@ -198,8 +202,7 @@ const page = () => {
                               </button>
                               <button
                                 type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
+                                onClick={() => {
                                   openDeleteModal(order.Id);
                                 }}
                               >
@@ -218,27 +221,41 @@ const page = () => {
         )}
       </div>
 
-      <AddOrderComponent
-        isOpen={isAddOrderModalOpen}
-        clientId={clientId}
-        onClose={closeAddOrderModal}
-        onOrderAdded={refreshData}
-        isEditOrder={isEditOrder}
-        refreshKey={refreshKey}
-        orderId={selectedOrderId}
-      />
-      <DeleteModal
-        isOpen={isOpenDeletModal}
-        onClose={closeDeleteModal}
-        orderId={selectedOrderId}
-        clientId={clientId}
-        onDeleteSuccess={refreshData}
-      />
-      <ViewOrderComponent
-        isOpen={isOpenViewModal}
-        onClose={closeViewModal}
-        selectedOrderId={selectedOrderId}
-      />
+      {isAddOrderModalOpen ? (
+        <AddOrderComponent
+          isOpen={isAddOrderModalOpen}
+          clientId={clientId}
+          onClose={closeAddOrderModal}
+          onOrderAdded={refreshData}
+          isEditOrder={isEditOrder}
+          refreshKey={refreshKey}
+          orderId={selectedOrderId}
+        />
+      ) : (
+        <></>
+      )}
+
+      {isOpenDeletModal ? (
+        <DeleteModal
+          isOpen={isOpenDeletModal}
+          onClose={closeDeleteModal}
+          orderId={selectedOrderId}
+          clientId={clientId}
+          onDeleteSuccess={refreshData}
+        />
+      ) : (
+        <></>
+      )}
+
+      {isOpenViewModal ? (
+        <ViewOrderComponent
+          isOpen={isOpenViewModal}
+          onClose={closeViewModal}
+          selectedOrderId={selectedOrderId}
+        />
+      ) : (
+        <></>
+      )}
     </Layout>
   );
 };

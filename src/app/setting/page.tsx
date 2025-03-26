@@ -7,7 +7,7 @@ import { AiFillProduct } from "react-icons/ai";
 import { MdOutlineCategory, MdPrint } from "react-icons/md";
 import { IoMdCut, IoMdColorFill } from "react-icons/io";
 import { GiNotebook } from "react-icons/gi";
-
+import { BsFillCalendarEventFill } from "react-icons/bs";
 import Layout from "../components/Layout";
 import ProductCatagory from "./Product Catagory/ProductCatagory";
 import SleeveType from "./Sleeve Type/SleeveType";
@@ -19,6 +19,7 @@ import ColorOptions from "./Color Options/ColorOptions";
 import ProductRegionStandard from "./Product Region Standard/ProductRegionStandard";
 import SizeMeasurements from "./SizeMeasurements/SizeMeasurements";
 import PrintitngOptions from "./Printing Options/PrintitngOptions";
+import Events from "./Events/Events";
 
 
 const page = () => {
@@ -49,7 +50,7 @@ const page = () => {
             title={
               <div className="flex items-center space-x-2">
                 <TbNeedleThread />
-                <span>Fabric Types</span>
+                <span>Fabric</span>
               </div>
             }
             className="w-full"
@@ -121,7 +122,7 @@ const page = () => {
             title={
               <div className="flex items-center space-x-2">
                 <IoMdColorFill  />
-                <span>Color Options</span>
+                <span>Colors</span>
               </div>
             }
             className="w-full"
@@ -133,7 +134,7 @@ const page = () => {
             title={
               <div className="flex items-center space-x-2">
                 <MdPrint  />
-                <span>Printing Options</span>
+                <span>Printing</span>
               </div>
             }
             className="w-full"
@@ -145,12 +146,24 @@ const page = () => {
             title={
               <div className="flex items-center space-x-2">
                 <FaFlag   />
-                <span>Product Region Standard</span>
+                <span>Product Region</span>
               </div>
             }
             className="w-full"
           >
             <ProductRegionStandard />
+          </Tab>
+          <Tab
+            key="Events"
+            title={
+              <div className="flex items-center space-x-2">
+                <BsFillCalendarEventFill   />
+                <span>Events</span>
+              </div>
+            }
+            className="w-full"
+          >
+            <Events />
           </Tab>
         </Tabs>
       </div>

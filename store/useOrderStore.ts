@@ -10,6 +10,7 @@ import {
   orderItemDetailsType,
   OderStatus,
   OderStatusResponse,
+  GetOrderByIdResponse,
 } from "@/src/app/interfaces/OrderStoreInterface";
 import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
@@ -47,6 +48,7 @@ const useOrderStore = create<StoreState>((set, get) => ({
   Orders: [],
   OrderById: {
     ClientId: 0,
+    Id: 0,
     OrderEventId: 0,
     OrderPriority: 0,
     Description: "",
@@ -114,8 +116,8 @@ const useOrderStore = create<StoreState>((set, get) => ({
         const error = await response.json();
         toast.error(error.message || "Error fetching data");
       }
-      const data: GetOrderByIdType = await response.json();
-      set({ OrderById: data, loading: false });
+      const data: GetOrderByIdResponse = await response.json();
+      set({ OrderById: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch category", loading: false });
     }
@@ -175,13 +177,20 @@ const useOrderStore = create<StoreState>((set, get) => ({
           body: JSON.stringify(orderType),
         }
       );
-
-      if (!response.ok) throw new Error("Failed to add Order");
-      set({ loading: false, error: null });
-      if (onSuccess) onSuccess();
-      await get().fetchOrders(orderType?.ClientId);
+      if(response.ok){
+        set({ loading: false, error: null });
+        toast.success("Order added successfully.");
+        if (onSuccess) onSuccess();
+        await get().fetchOrders(orderType?.ClientId);
+      }else{
+        set({ loading: false, error: null });
+        const error = await response.json();
+        toast.error(error.message || "Fail to add Order");
+      }
+    
     } catch (error) {
-      set({ error: "Failed to add Order", loading: false });
+      set({ error: "Fail to add Order", loading: false });
+      toast.error("Fail to add Order");
     }
   },
 
