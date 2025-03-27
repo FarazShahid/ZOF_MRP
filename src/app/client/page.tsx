@@ -15,9 +15,12 @@ import {
 
 import AddClients from "../components/AddClients";
 import DeleteClient from "../components/DeleteClient";
-import Layout from "../components/Layout";
 import useClientStore from "@/store/useClientStore";
 import { IoAddCircleSharp } from "react-icons/io5";
+import AdminDashboardLayout from "../components/AdminDashboardLayout";
+import { GoPencil } from "react-icons/go";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { FiPlus } from "react-icons/fi";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -62,17 +65,16 @@ const page = () => {
   }, []);
 
   return (
-    <Layout>
-      <div className="w-full flex flex-col gap-3 p-5">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Clients</h1>
+    <AdminDashboardLayout>
+      <div className="w-full flex flex-col gap-3">
+        <div className="flex items-center justify-end">
           <button
             type="button"
-            className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
+            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
             onClick={openAddModal}
           >
-            <IoAddCircleSharp size={25} />
-            Add
+            <FiPlus />
+            Add New
           </button>
         </div>
         <Table
@@ -139,13 +141,13 @@ const page = () => {
                           type="button"
                           onClick={() => handleOpenEditModal(item.Id)}
                         >
-                          <img src="/EditIcon.svg" />
+                          <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           onClick={() => handleOpenDeleteModal(item.Id)}
                         >
-                          <img src="/DeleteIcon.svg" />
+                          <RiDeleteBin6Line color="red" />
                         </button>
                       </div>
                     )}
@@ -171,7 +173,7 @@ const page = () => {
           onDeleteSuccess={refetchData}
         />
       </div>
-    </Layout>
+    </AdminDashboardLayout>
   );
 };
 
