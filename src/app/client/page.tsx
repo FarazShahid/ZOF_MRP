@@ -10,17 +10,14 @@ import {
   TableCell,
   Pagination,
   getKeyValue,
-  Button,
 } from "@heroui/react";
-
-import AddClients from "../components/AddClients";
-import DeleteClient from "../components/DeleteClient";
-import useClientStore from "@/store/useClientStore";
-import { IoAddCircleSharp } from "react-icons/io5";
-import AdminDashboardLayout from "../components/AdminDashboardLayout";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
+import useClientStore from "@/store/useClientStore";
+import AddClients from "../components/AddClients";
+import DeleteClient from "../components/DeleteClient";
+import AdminDashboardLayout from "../components/AdminDashboardLayout";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -82,7 +79,10 @@ const page = () => {
           isHeaderSticky
           aria-label="Client Table with pagination"
           bottomContent={
-            <div className="flex w-full justify-center">
+            <div className="grid grid-cols-2">
+              <span className="w-[30%] text-small text-gray-500">
+                Total: {items.length || 0}
+              </span>
               <Pagination
                 isCompact
                 showControls

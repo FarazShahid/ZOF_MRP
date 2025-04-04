@@ -25,6 +25,7 @@ import useOrderStore from "@/store/useOrderStore";
 import useEventsStore from "@/store/useEventsStore";
 import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
 import useProductStore from "@/store/useProductStore";
+import useClientStore from "@/store/useClientStore";
 
 const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
   isOpen,
@@ -44,6 +45,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
   const { Events, fetchEvents } = useEventsStore();
   const { fetchProducts, products } = useProductStore();
   const { printingOptions, fetchprintingOptions } = usePrintingOptionsStore();
+  const { fetchClients, clients } = useClientStore();
   const {
     getAvailableColorByProductId,
     addOrder,
@@ -246,6 +248,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
   };
   const OrderInitialValues = isEditOrder
     ? {
+        ClientId: OrderById.ClientId || 0,
         OrderEventId: OrderById?.OrderEventId || "",
         Deadline: OrderById?.Deadline
           ? new Date(OrderById.Deadline).toISOString().split("T")[0]
@@ -255,6 +258,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
         OrderName: OrderById?.OrderName || "",
       }
     : {
+        ClinetId: 0,
         OrderEventId: "",
         OrderStatusId: "",
         Deadline: "",
@@ -265,7 +269,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
 
   const handleAddOrder = async (values: any) => {
     const orderPayload = {
-      ClientId: clientId || 0,
+      ClientId: values.ClientId || 0,
       OrderEventId: values.OrderEventId,
       Description: values.Description,
       Deadline: values.Deadline,
@@ -329,7 +333,6 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
         orderItemDetails: item.orderItemDetails || [],
         printingOptions: item.printingOptions || [],
       }));
-      console.log("formatedItems", formattedItems);
       setSelectedProducts(formattedItems);
     } else {
       setSelectedProducts([]);
@@ -346,12 +349,18 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
     }
   }, [isEditOrder, selectedProducts, availableColors]);
 
-  useEffect(() => {
-    getOrderStatus();
-    fetchEvents();
-    fetchprintingOptions();
-    fetchProducts();
-  }, []);
+   useEffect(() => {
+      const fetchData = async () => {
+        await Promise.all([
+          getOrderStatus(),
+          fetchEvents(),
+          fetchprintingOptions(),
+          fetchProducts(),
+          fetchClients(),
+        ]);
+      };
+      fetchData();
+    }, []);
 
   return (
     <Modal
@@ -379,7 +388,24 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                       <div className="flex flex-col gap-5 formContainerWrapper rounded-lg p-3">
                         <h6 className="text-lg font-medium">Order Details</h6>
                         <div className="flex flex-col gap-2">
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                            <div className="flex flex-col gap-1">
+                              <label className="font-medium text-sm text-[#181818]">
+                                Client
+                              </label>
+                              <Field
+                                as="select"
+                                name="ClientId"
+                                className="formInputdefault border-2"
+                              >
+                                <option value="">Select a client</option>
+                                {clients.map((client) => (
+                                  <option key={client.Id} value={client.Id}>
+                                    {client.Name}
+                                  </option>
+                                ))}
+                              </Field>
+                            </div>
                             <div className="flex flex-col gap-1">
                               <label className="font-medium text-sm text-[#181818]">
                                 Order Event

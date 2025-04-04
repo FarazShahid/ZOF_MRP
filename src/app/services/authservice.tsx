@@ -11,14 +11,14 @@ interface AuthContextType {
   token: string | undefined;
 }
 
-interface LoginResponseType{
-  data:{
+interface LoginResponseType {
+  data: {
     access_token: string;
-    user:{
+    user: {
       id: number;
       email: string;
-    }
-  },
+    };
+  };
   statusCode: number;
   message: string;
 }
@@ -50,9 +50,10 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
         const data: LoginResponseType = await response.json();
         const token = data.data.access_token;
         localStorage.setItem("token", token);
+        localStorage.setItem("email", data?.data?.user?.email);
         setToken(token);
         setIsAuthenticated(true);
-        router.push("/dashboard");
+        router.push("/adminDashboard");
       } else {
         const error = await response.json();
         toast.error(error.message || "Login failed");
@@ -80,7 +81,6 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, [pathname]);
 
-  
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout, token }}>
       {children}
@@ -111,5 +111,14 @@ export const fetchWithAuth = async (
 
   return response;
 };
+
+
+export const fetchLoginEmail = () =>{
+  const userEmail = localStorage.getItem("email");
+
+  if(userEmail){
+    return userEmail;
+  }
+}
 
 export default AuthContext;

@@ -12,6 +12,8 @@ export interface GetOrdersType {
   EventName: string;
   ClientName: string;
   StatusName: string;
+  CreatedOn: string;
+  UpdatedOn: string;
 }
 
 export interface GetOrderByClientResponse {

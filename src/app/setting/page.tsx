@@ -3,16 +3,14 @@
 import { Tab, Tabs } from "@heroui/react";
 import { FaTshirt, FaFlag } from "react-icons/fa";
 import { TbNeedleThread, TbRulerMeasure2 } from "react-icons/tb";
-import { AiFillProduct } from "react-icons/ai";
 import { MdOutlineCategory, MdPrint } from "react-icons/md";
 import { IoMdCut, IoMdColorFill } from "react-icons/io";
 import { GiNotebook } from "react-icons/gi";
 import { BsFillCalendarEventFill } from "react-icons/bs";
-import Layout from "../components/Layout";
+import { IoIosArrowBack } from "react-icons/io";
 import ProductCatagory from "./Product Catagory/ProductCatagory";
 import SleeveType from "./Sleeve Type/SleeveType";
 import FabricType from "./Fabric Type/FabricType";
-import Products from "./Products/Products";
 import CutOptions from "./Cut Options/CutOptions";
 import SizeOptions from "./SizeOptions/SizeOptions";
 import ColorOptions from "./Color Options/ColorOptions";
@@ -20,31 +18,37 @@ import ProductRegionStandard from "./Product Region Standard/ProductRegionStanda
 import SizeMeasurements from "./SizeMeasurements/SizeMeasurements";
 import PrintitngOptions from "./Printing Options/PrintitngOptions";
 import Events from "./Events/Events";
-
+import LoginUserDetail from "../components/LoginUserDetail";
+import { useRouter } from "next/navigation";
 
 const page = () => {
+   const router = useRouter();
+
+  const handleRoute = () => {
+    router.push("/adminDashboard")
+  }
+
+
   return (
-    <Layout>
-      <div className="flex w-full flex-col p-5">
+    <div className="h-full flex flex-col transition-all duration-300">
+      <div className="flex items-center justify-between w-full p-5">
+        <div className="flex items-center gap-3">
+          <button type="button" onClick={handleRoute}>
+            <IoIosArrowBack size={20} />
+          </button>
+          <span className="font-semibold text-lg font-sans text-[#383838]">
+            Setting
+          </span>
+        </div>
+        <LoginUserDetail />
+      </div>
+      <div className="flex w-full flex-col p-5 bg-gray-100 h-[calc(100vh-80px)]">
         <Tabs
           aria-label="Options"
           color="secondary"
           placement="top"
-          variant="solid"
+          variant="bordered"
         >
-          <Tab
-            key="products"
-            title={
-              <div className="flex items-center space-x-2">
-                <AiFillProduct />
-                <span>Products</span>
-              </div>
-            }
-            className="w-full"
-          >
-            <Products />
-          </Tab>
-
           <Tab
             key="fabricTypes"
             title={
@@ -121,7 +125,7 @@ const page = () => {
             key="colorOptions"
             title={
               <div className="flex items-center space-x-2">
-                <IoMdColorFill  />
+                <IoMdColorFill />
                 <span>Colors</span>
               </div>
             }
@@ -133,7 +137,7 @@ const page = () => {
             key="printingOptions"
             title={
               <div className="flex items-center space-x-2">
-                <MdPrint  />
+                <MdPrint />
                 <span>Printing</span>
               </div>
             }
@@ -145,7 +149,7 @@ const page = () => {
             key="productRegionStandard"
             title={
               <div className="flex items-center space-x-2">
-                <FaFlag   />
+                <FaFlag />
                 <span>Product Region</span>
               </div>
             }
@@ -157,7 +161,7 @@ const page = () => {
             key="Events"
             title={
               <div className="flex items-center space-x-2">
-                <BsFillCalendarEventFill   />
+                <BsFillCalendarEventFill />
                 <span>Events</span>
               </div>
             }
@@ -167,7 +171,7 @@ const page = () => {
           </Tab>
         </Tabs>
       </div>
-    </Layout>
+    </div>
   );
 };
 

@@ -7,7 +7,6 @@ import {
   GetOrderByIdType,
   GetOrdersType,
   Event,
-  orderItemDetailsType,
   OderStatus,
   OderStatusResponse,
   GetOrderByIdResponse,
@@ -71,9 +70,15 @@ const useOrderStore = create<StoreState>((set, get) => ({
 
   fetchOrders: async (clientId: number) => {
     set({ loading: true, error: null });
+    let endpoint = "";
+    if(clientId > 0){
+      endpoint = `orders/${clientId}`
+    }else{
+      endpoint = "orders"
+    }
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/${clientId}`
+        `${process.env.NEXT_PUBLIC_API_URL}/${endpoint}`
       );
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
@@ -86,6 +91,8 @@ const useOrderStore = create<StoreState>((set, get) => ({
       set({ loading: false, error: "Error Fetching Data" });
     }
   },
+
+
 
   getOrderEvents: async (clientId: number) => {
     set({ loading: true, error: null });

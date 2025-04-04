@@ -1,17 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { User } from "@heroui/react";
-
 import { MdDashboard } from "react-icons/md";
 import { BsFileEarmarkTextFill } from "react-icons/bs";
 import { FaUsers, FaStore } from "react-icons/fa6";
-import { HiUsers } from "react-icons/hi";
 import { FaJediOrder } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { BiLogOut } from "react-icons/bi";
 import { IoMdMenu } from "react-icons/io";
+import LoginUserDetail from "./LoginUserDetail";
+import AuthContext from "../services/authservice";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -23,6 +22,9 @@ const AdminDashboardLayout = ({ children }: LayoutProps) => {
   const [toggleNav, setToggleNav] = useState<boolean>(false);
   const pathname = usePathname();
   const router = useRouter();
+  const authContext = useContext(AuthContext);
+
+  const { logout } = authContext || {};
 
   const handleNavToggle = () => {
     setToggleNav(!toggleNav);
@@ -42,9 +44,9 @@ const AdminDashboardLayout = ({ children }: LayoutProps) => {
     },
     {
       id: 2,
-      name: "Orders",
-      path: "/orders",
-      icon: <FaJediOrder size={20} />,
+      name: "Clients",
+      path: "/client",
+      icon: <FaUsers size={20} />,
     },
     {
       id: 3,
@@ -54,9 +56,9 @@ const AdminDashboardLayout = ({ children }: LayoutProps) => {
     },
     {
       id: 4,
-      name: "Clients",
-      path: "/client",
-      icon: <FaUsers size={20} />,
+      name: "Orders",
+      path: "/orders",
+      icon: <FaJediOrder size={20} />,
     },
     {
       id: 5,
@@ -66,14 +68,8 @@ const AdminDashboardLayout = ({ children }: LayoutProps) => {
     },
     {
       id: 6,
-      name: "Users",
-      path: "/users",
-      icon: <HiUsers size={20} />,
-    },
-    {
-      id: 7,
       name: "Settings",
-      path: "/settings",
+      path: "/setting",
       icon: <IoSettingsOutline size={20} />,
     },
   ];
@@ -102,9 +98,9 @@ const AdminDashboardLayout = ({ children }: LayoutProps) => {
               <div
                 key={list.id}
                 onClick={() => handleSelectLink(list.id, list.path)}
-                className={`${
-                  !toggleNav ? "w-[80%]" : ""
-                } ${list.id === selectedItem ? "bg-[#584BDD]" : ""} text-[#e9e9e9] text-[16px] px-7 rounded-lg py-2 cursor-pointer flex items-center gap-3 relative z-10`}
+                className={`${!toggleNav ? "w-[80%]" : ""} ${
+                  list.id === selectedItem ? "bg-[#584BDD]" : ""
+                } text-[#e9e9e9] text-[16px] px-7 rounded-lg py-2 cursor-pointer flex items-center gap-3 relative z-10`}
               >
                 {list.icon} {!toggleNav ? `${list.name}` : ""}
               </div>
@@ -115,9 +111,13 @@ const AdminDashboardLayout = ({ children }: LayoutProps) => {
           className={`${toggleNav ? "w-full" : "w-[80%]"} flex flex-col gap-5`}
         >
           <hr className="border-[#e9e9e9] w-full" />
-          <div className="text-[#e9e9e9] text-[16px] px-7 py-2 w-full cursor-pointer flex items-center gap-3">
+          <button
+            type="button"
+            className="text-[#e9e9e9] text-[16px] px-7 py-2 w-full cursor-pointer flex items-center gap-3"
+            onClick={logout}
+          >
             <BiLogOut size={20} /> {!toggleNav ? "Logout" : ""}
-          </div>
+          </button>
         </div>
       </div>
       <div
@@ -134,7 +134,7 @@ const AdminDashboardLayout = ({ children }: LayoutProps) => {
               {headerName}
             </span>
           </div>
-          <User name="Admin" description="admin542@gmail.com" />
+          <LoginUserDetail />
         </div>
         <div className="bg-gray-100 flex flex-col gap-4 p-6 overflow-auto h-[calc(100vh-75px)]">
           {children}
