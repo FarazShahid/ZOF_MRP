@@ -9,8 +9,6 @@ import {
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import React, { useEffect } from "react";
 import { SchemaValidation } from "../schema/ClientSchema";
-import { fetchWithAuth } from "../services/authservice";
-import { useFetchClientById } from "../services/useFetchClientById";
 import Spinner from "./Spinner";
 import useClientStore, { AddClientType } from "@/store/useClientStore";
 
@@ -93,7 +91,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               name="Name"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault"
+                              className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="Name"
@@ -110,7 +108,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               type="text"
                               name="Email"
                               placeholder="Enter Email"
-                              className="formInputdefault"
+                              className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="Email"
@@ -127,7 +125,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               type="text"
                               name="Phone"
                               placeholder="Enter Phone"
-                              className="formInputdefault"
+                              className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="Phone"
@@ -144,7 +142,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               type="text"
                               name="Country"
                               placeholder="Enter Country"
-                              className="formInputdefault"
+                              className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="Country"
@@ -161,7 +159,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               type="text"
                               name="State"
                               placeholder="Enter State"
-                              className="formInputdefault"
+                              className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="State"
@@ -178,7 +176,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               type="text"
                               name="City"
                               placeholder="Enter City"
-                              className="formInputdefault"
+                              className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="City"
@@ -195,7 +193,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                           <Field
                             as="textarea"
                             name="CompleteAddress"
-                            className="formInputdefault !h-auto"
+                            className="formInputdefault !h-auto border-1"
                             rows={4}
                             placeholder="Enter Adress"
                           />
@@ -221,7 +219,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Edit" : "Add"} Order
+                      {isEdit ? "Edit" : "Add"} Client
                     </Button>
                   </ModalFooter>
                 </Form>

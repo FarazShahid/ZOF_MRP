@@ -180,8 +180,12 @@ export interface OrderItemType {
   Description: string;
   OrderItemPriority: number;
   // ColorOptionId: number;
-  OrderItemQuantity: number;
+  // OrderItemQuantity: number;
   Name:string;
+  ProductCategoryName: string;
+  ProductFabricName: string;
+  ProductFabricType: string;
+  ProductFabricGSM: number;
   ImageId: number;
   FileId: number;
   VideoId: number;

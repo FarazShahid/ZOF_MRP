@@ -17,18 +17,15 @@ import {
 } from "@heroui/react";
 import { MdDeleteOutline } from "react-icons/md";
 import { Field, Form, Formik } from "formik";
-import { useOrderStatus } from "../services/useOrderStatus";
 import { OrderSchemaValidation } from "../schema/OrderSchema";
-import { useFetchProducts } from "../services/useFetchProducts";
-import {
-  OrderItemType,
-  AddOrderComponentProps,
-  getProductNameById,
-} from "../interfaces";
-import { useFetchPrintingOptions } from "../services/useFetchPrintingOptions";
+import { OrderItemType, AddOrderComponentProps } from "../interfaces";
 import { useOrderDetails } from "../services/useOrderDetails";
 import { FaCirclePlus } from "react-icons/fa6";
 import useOrderStore from "@/store/useOrderStore";
+import useEventsStore from "@/store/useEventsStore";
+import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
+import useProductStore from "@/store/useProductStore";
+import useClientStore from "@/store/useClientStore";
 
 const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
   isOpen,
@@ -44,19 +41,19 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
     number[] | undefined
   >([]);
 
-  const { orderDetails, refetch } = useOrderDetails(orderId);
-  // const { statuses } = useOrderStatus();
-  const { products } = useFetchProducts();
-  const { printingoptions } = useFetchPrintingOptions();
+  // const { orderDetails, refetch } = useOrderDetails(orderId);
+  const { Events, fetchEvents } = useEventsStore();
+  const { fetchProducts, products } = useProductStore();
+  const { printingOptions, fetchprintingOptions } = usePrintingOptionsStore();
+  const { fetchClients, clients } = useClientStore();
   const {
     getAvailableColorByProductId,
-    getOrderEvents,
     addOrder,
     updateOrder,
     getOrderStatus,
+    getOrderById,
+    OrderById,
     availableColors,
-    events,
-    statuses,
   } = useOrderStore();
 
   const onSelectionChange = (key: React.Key | null) => {
@@ -75,11 +72,14 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
             ProductId: selectedItem.Id,
             Description: "",
             OrderItemPriority: 0,
-            OrderItemQuantity: 0,
             Name: selectedItem.Name,
-            ImageId: 0,
-            FileId: 0,
-            VideoId: 0,
+            ProductCategoryName: selectedItem.ProductCategoryName || "",
+            ProductFabricName: selectedItem.FabricName || "",
+            ProductFabricType: selectedItem.FabricType || "",
+            ProductFabricGSM: selectedItem.GSM || 0,
+            ImageId: 1,
+            FileId: 1,
+            VideoId: 1,
             orderItemDetails: [{ ColorOptionId: 0, Quantity: 0, Priority: 0 }],
             printingOptions: [],
           };
@@ -127,7 +127,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
     productId: number
   ) => {
     if (keys === "all") {
-      const allKeys = printingoptions?.map(
+      const allKeys = printingOptions?.map(
         (printingOption) => printingOption.Id
       );
       setSelectedPrintingOptions(allKeys);
@@ -140,7 +140,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                 ...product,
                 printingOptions: keyArray.map((optionId) => ({
                   PrintingOptionId: optionId,
-                  Description: "",
+                  Description: "Description",
                 })),
               }
             : product
@@ -248,16 +248,17 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
   };
   const OrderInitialValues = isEditOrder
     ? {
-        OrderEventId: orderDetails?.OrderEventId || "",
-        OrderStatusId: orderDetails?.OrderStatusId || "",
-        Deadline: orderDetails?.Deadline
-          ? new Date(orderDetails.Deadline).toISOString().split("T")[0]
+        ClientId: OrderById.ClientId || 0,
+        OrderEventId: OrderById?.OrderEventId || "",
+        Deadline: OrderById?.Deadline
+          ? new Date(OrderById.Deadline).toISOString().split("T")[0]
           : "",
-        Description: orderDetails?.Description || "",
-        OrderPriority: orderDetails?.OrderPriority || "",
-        OrderName: orderDetails?.OrderName || "",
+        Description: OrderById?.Description || "",
+        OrderPriority: OrderById?.OrderPriority || "",
+        OrderName: OrderById?.OrderName || "",
       }
     : {
+        ClinetId: 0,
         OrderEventId: "",
         OrderStatusId: "",
         Deadline: "",
@@ -267,15 +268,10 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
       };
 
   const handleAddOrder = async (values: any) => {
-    const Method = isEditOrder ? "PUT" : "POST";
-    const URL = isEditOrder
-      ? `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}`
-      : `${process.env.NEXT_PUBLIC_API_URL}/orders`;
     const orderPayload = {
-      ClientId: clientId || 0,
+      ClientId: values.ClientId || 0,
       OrderEventId: values.OrderEventId,
       Description: values.Description,
-      OrderStatusId: values.OrderStatusId,
       Deadline: values.Deadline,
       OrderNumber: "",
       OrderName: values.OrderName,
@@ -286,7 +282,6 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
           ProductId: product.ProductId,
           Description: product.Description,
           OrderItemPriority: product.OrderItemPriority,
-          OrderItemQuantity: product.OrderItemQuantity,
           ImageId: product.ImageId,
           FileId: product.FileId,
           VideoId: product.VideoId,
@@ -306,26 +301,6 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
         };
       }),
     };
-
-    // try {
-    //   const response = await fetchWithAuth(URL, {
-    //     method: Method,
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(orderPayload),
-    //   });
-
-    //   if (!response.ok) {
-    //     console.log("Error creating order");
-    //     throw new Error("Failed to create order");
-    //   }
-    //   const result = await response.json();
-    //   handleModalClose();
-    //   onOrderAdded();
-    // } catch (error) {
-    //   console.error("Error creating order:", error);
-    // }
     isEditOrder
       ? updateOrder(orderId, orderPayload, () => {
           onClose();
@@ -336,31 +311,33 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
   };
 
   useEffect(() => {
-    if (isEditOrder && isOpen) {
-      refetch();
+    if (isEditOrder && isOpen && orderId) {
+      getOrderById(orderId);
     }
-  }, [isEditOrder, isOpen, refetch]);
+  }, [isEditOrder, isOpen, orderId]);
 
   useEffect(() => {
-    if (isEditOrder && orderId && orderDetails) {
-      const formattedItems = orderDetails.items.map((item) => ({
+    if (isEditOrder && orderId && OrderById) {
+      const formattedItems = OrderById.items.map((item) => ({
         ProductId: item.ProductId,
         Description: item.Description || "",
         OrderItemPriority: item.OrderItemPriority || 0,
-        OrderItemQuantity: item.OrderItemQuantity || 0,
         Name: "",
+        ProductCategoryName: item.ProductCategoryName || "",
+        ProductFabricName: item.ProductFabricName || "",
+        ProductFabricType: item.ProductFabricType || "",
+        ProductFabricGSM: Number(item.ProductFabricGSM) || 0,
         ImageId: item.ImageId || 0,
         FileId: item.FileId || 0,
         VideoId: item.VideoId || 0,
         orderItemDetails: item.orderItemDetails || [],
         printingOptions: item.printingOptions || [],
       }));
-
       setSelectedProducts(formattedItems);
     } else {
       setSelectedProducts([]);
     }
-  }, [isEditOrder, orderId, orderDetails, isOpen]);
+  }, [isEditOrder, orderId, OrderById, isOpen]);
 
   useEffect(() => {
     if (isEditOrder && selectedProducts.length > 0) {
@@ -372,14 +349,18 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
     }
   }, [isEditOrder, selectedProducts, availableColors]);
 
-
-
-  useEffect(()=>{
-    if(clientId){
-      getOrderEvents(clientId);
-      getOrderStatus();
-    }
-  },[clientId])
+   useEffect(() => {
+      const fetchData = async () => {
+        await Promise.all([
+          getOrderStatus(),
+          fetchEvents(),
+          fetchprintingOptions(),
+          fetchProducts(),
+          fetchClients(),
+        ]);
+      };
+      fetchData();
+    }, []);
 
   return (
     <Modal
@@ -407,16 +388,23 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                       <div className="flex flex-col gap-5 formContainerWrapper rounded-lg p-3">
                         <h6 className="text-lg font-medium">Order Details</h6>
                         <div className="flex flex-col gap-2">
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                             <div className="flex flex-col gap-1">
                               <label className="font-medium text-sm text-[#181818]">
-                                Order Name
+                                Client
                               </label>
                               <Field
-                                name="OrderName"
-                                type="text"
+                                as="select"
+                                name="ClientId"
                                 className="formInputdefault border-2"
-                              />
+                              >
+                                <option value="">Select a client</option>
+                                {clients.map((client) => (
+                                  <option key={client.Id} value={client.Id}>
+                                    {client.Name}
+                                  </option>
+                                ))}
+                              </Field>
                             </div>
                             <div className="flex flex-col gap-1">
                               <label className="font-medium text-sm text-[#181818]">
@@ -428,26 +416,9 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                                 className="formInputdefault border-2"
                               >
                                 <option value="">Select an event</option>
-                                {events.map((event) => (
+                                {Events.map((event) => (
                                   <option key={event.Id} value={event.Id}>
                                     {event.EventName}
-                                  </option>
-                                ))}
-                              </Field>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <label className="font-medium text-sm text-[#181818]">
-                                Order Status
-                              </label>
-                              <Field
-                                as="select"
-                                name="OrderStatusId"
-                                className="formInputdefault border-2"
-                              >
-                                <option value="">Select a status</option>
-                                {statuses.map((statu) => (
-                                  <option key={statu.Id} value={statu.Id}>
-                                    {statu.StatusName}
                                   </option>
                                 ))}
                               </Field>
@@ -516,7 +487,8 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                           >
                             {(product) => (
                               <AutocompleteItem key={product.Id}>
-                                {product.Name}
+                                {product.FabricName}
+                                {product.ProductCategoryName} {product?.GSM}
                               </AutocompleteItem>
                             )}
                           </Autocomplete>
@@ -527,14 +499,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                             <AccordionItem
                               key={product.ProductId}
                               aria-label={`accordion-${product.ProductId}`}
-                              title={
-                                isEditOrder
-                                  ? getProductNameById(
-                                      products,
-                                      product.ProductId
-                                    )
-                                  : product.Name
-                              }
+                              title={`${product.ProductFabricName} ${product.ProductFabricType} ${product.ProductFabricGSM}`}
                             >
                               <div className="flex flex-col gap-2 mb-2">
                                 <div className="flex items-center justify-end">
@@ -689,7 +654,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                                         )
                                       }
                                     >
-                                      {printingoptions!.map(
+                                      {printingOptions!.map(
                                         (printingOption) => (
                                           <SelectItem key={printingOption?.Id}>
                                             {printingOption.Type}

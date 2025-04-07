@@ -3,53 +3,58 @@
 import { Tab, Tabs } from "@heroui/react";
 import { FaTshirt, FaFlag } from "react-icons/fa";
 import { TbNeedleThread, TbRulerMeasure2 } from "react-icons/tb";
-import { AiFillProduct } from "react-icons/ai";
 import { MdOutlineCategory, MdPrint } from "react-icons/md";
 import { IoMdCut, IoMdColorFill } from "react-icons/io";
 import { GiNotebook } from "react-icons/gi";
-
-import Layout from "../components/Layout";
+import { BsFillCalendarEventFill } from "react-icons/bs";
+import { IoIosArrowBack } from "react-icons/io";
 import ProductCatagory from "./Product Catagory/ProductCatagory";
 import SleeveType from "./Sleeve Type/SleeveType";
 import FabricType from "./Fabric Type/FabricType";
-import Products from "./Products/Products";
 import CutOptions from "./Cut Options/CutOptions";
 import SizeOptions from "./SizeOptions/SizeOptions";
 import ColorOptions from "./Color Options/ColorOptions";
 import ProductRegionStandard from "./Product Region Standard/ProductRegionStandard";
 import SizeMeasurements from "./SizeMeasurements/SizeMeasurements";
 import PrintitngOptions from "./Printing Options/PrintitngOptions";
-
+import Events from "./Events/Events";
+import LoginUserDetail from "../components/LoginUserDetail";
+import { useRouter } from "next/navigation";
 
 const page = () => {
+   const router = useRouter();
+
+  const handleRoute = () => {
+    router.push("/adminDashboard")
+  }
+
+
   return (
-    <Layout>
-      <div className="flex w-full flex-col p-5">
+    <div className="h-full flex flex-col transition-all duration-300">
+      <div className="flex items-center justify-between w-full p-5">
+        <div className="flex items-center gap-3">
+          <button type="button" onClick={handleRoute}>
+            <IoIosArrowBack size={20} />
+          </button>
+          <span className="font-semibold text-lg font-sans text-[#383838]">
+            Setting
+          </span>
+        </div>
+        <LoginUserDetail />
+      </div>
+      <div className="flex w-full flex-col p-5 bg-gray-100 h-[calc(100vh-80px)]">
         <Tabs
           aria-label="Options"
           color="secondary"
           placement="top"
-          variant="solid"
+          variant="bordered"
         >
-          <Tab
-            key="products"
-            title={
-              <div className="flex items-center space-x-2">
-                <AiFillProduct />
-                <span>Products</span>
-              </div>
-            }
-            className="w-full"
-          >
-            <Products />
-          </Tab>
-
           <Tab
             key="fabricTypes"
             title={
               <div className="flex items-center space-x-2">
                 <TbNeedleThread />
-                <span>Fabric Types</span>
+                <span>Fabric</span>
               </div>
             }
             className="w-full"
@@ -120,8 +125,8 @@ const page = () => {
             key="colorOptions"
             title={
               <div className="flex items-center space-x-2">
-                <IoMdColorFill  />
-                <span>Color Options</span>
+                <IoMdColorFill />
+                <span>Colors</span>
               </div>
             }
             className="w-full"
@@ -132,8 +137,8 @@ const page = () => {
             key="printingOptions"
             title={
               <div className="flex items-center space-x-2">
-                <MdPrint  />
-                <span>Printing Options</span>
+                <MdPrint />
+                <span>Printing</span>
               </div>
             }
             className="w-full"
@@ -144,17 +149,29 @@ const page = () => {
             key="productRegionStandard"
             title={
               <div className="flex items-center space-x-2">
-                <FaFlag   />
-                <span>Product Region Standard</span>
+                <FaFlag />
+                <span>Product Region</span>
               </div>
             }
             className="w-full"
           >
             <ProductRegionStandard />
           </Tab>
+          <Tab
+            key="Events"
+            title={
+              <div className="flex items-center space-x-2">
+                <BsFillCalendarEventFill />
+                <span>Events</span>
+              </div>
+            }
+            className="w-full"
+          >
+            <Events />
+          </Tab>
         </Tabs>
       </div>
-    </Layout>
+    </div>
   );
 };
 

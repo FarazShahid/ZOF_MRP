@@ -17,6 +17,9 @@ import { formatDate } from "../../interfaces";
 import useSleeveType from "@/store/useSleeveType";
 import DeleteSleeveType from "./DeleteSleeveType";
 import AddSleeveType from "./AddSleeveType";
+import { FiPlus } from "react-icons/fi";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { GoPencil } from "react-icons/go";
 
 const FabricType = () => {
   const [page, setPage] = useState<number>(1);
@@ -31,7 +34,7 @@ const FabricType = () => {
     fetchSleeveType();
   }, []);
 
-  const rowsPerPage = 13;
+  const rowsPerPage = 10;
   const pages = Math.ceil(sleeveTypeData!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
@@ -64,11 +67,11 @@ const FabricType = () => {
         <h6 className="font-sans text-lg font-semibold">Sleeve Type</h6>
         <button
           type="button"
-          className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
+          className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
           onClick={openAddModal}
         >
-          <IoAddCircleSharp size={25} />
-          Add
+          <FiPlus />
+          Add New
         </button>
       </div>
       <Table
@@ -133,17 +136,14 @@ const FabricType = () => {
                         type="button"
                         onClick={() => openEditModal(item.id)}
                       >
-                        <MdEditSquare
-                          className="hover:text-green-800 cursor-pointer"
-                          size={18}
-                        />
+                        <GoPencil color="green" />
                       </button>
                       <button
                         type="button"
                         className="hover:text-red-500 cursor-pointer"
                         onClick={() => handleOpenDeleteModal(item.id)}
                       >
-                        <MdDelete className="hover:text-red-500" size={18} />
+                        <RiDeleteBin6Line color="red" />
                       </button>
                     </div>
                   )}

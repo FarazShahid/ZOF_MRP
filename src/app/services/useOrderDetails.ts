@@ -16,7 +16,7 @@ interface OrderDetails {
     OrderItemPriority: number,
     // ColorOptionId: number,
 
-    OrderItemQuantity: number,
+    // OrderItemQuantity: number,
     ImageId: number,
     FileId: number,
     VideoId: number,

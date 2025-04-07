@@ -17,6 +17,9 @@ import DeleteProductCatagory from "./DeleteProductCatagory";
 import { formatDate } from "../../interfaces";
 import AddProductCatagory from "./AddProductCatagory";
 import useCategoryStore from "@/store/useCategoryStore";
+import { FiPlus } from "react-icons/fi";
+import { GoPencil } from "react-icons/go";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 const ProductCatagory = () => {
   const [page, setPage] = useState<number>(1);
@@ -32,7 +35,7 @@ const ProductCatagory = () => {
     fetchCategories();
   }, []);
 
-  const rowsPerPage = 13;
+  const rowsPerPage = 10;
   const pages = Math.ceil(productCategories!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
@@ -65,11 +68,11 @@ const ProductCatagory = () => {
         <h6 className="font-sans text-lg font-semibold">Product Category</h6>
         <button
           type="button"
-          className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
+          className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
           onClick={openAddModal}
         >
-          <IoAddCircleSharp size={25} />
-          Add
+          <FiPlus />
+          Add New
         </button>
       </div>
       <Table
@@ -131,17 +134,14 @@ const ProductCatagory = () => {
                         type="button"
                         onClick={() => openEditModal(item.id)}
                       >
-                        <MdEditSquare
-                          className="hover:text-green-800 cursor-pointer"
-                          size={18}
-                        />
+                        <GoPencil color="green" />
                       </button>
                       <button
                         type="button"
                         className="hover:text-red-500 cursor-pointer"
                         onClick={() => handleOpenDeleteModal(item.id)}
                       >
-                        <MdDelete className="hover:text-red-500" size={18} />
+                        <RiDeleteBin6Line color="red" />
                       </button>
                     </div>
                   )}

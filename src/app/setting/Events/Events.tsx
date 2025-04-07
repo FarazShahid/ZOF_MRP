@@ -13,30 +13,34 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import DeleteProduct from "./DeleteProduct";
-import useProductStore from "@/store/useProductStore";
-import AddProduct from "./AddProduct";
+import { formatDate } from "../../interfaces";
+import EventsForm from "./EventsForm";
+import DeleteEvent from "./DeleteEvent";
+import useEventsStore from "@/store/useEventsStore";
+import { FiPlus } from "react-icons/fi";
+import { GoPencil } from "react-icons/go";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
-const Products = () => {
+const Events = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [selectedProductId, setSelectedProductId] = useState<number>(0);
+  const [selectedEventId, setSelectedEventId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const { fetchProducts, products, loading } = useProductStore();
+  const { loading, fetchEvents, Events } = useEventsStore();
 
   useEffect(() => {
-    fetchProducts();
+    fetchEvents();
   }, []);
 
-  const rowsPerPage = 13;
-  const pages = Math.ceil(products!.length / rowsPerPage);
+  const rowsPerPage = 10;
+  const pages = Math.ceil(Events!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
-  const handleOpenDeleteModal = (productId: number) => {
-    setSelectedProductId(productId);
+  const handleOpenDeleteModal = (productCatagoryId: number) => {
+    setSelectedEventId(productCatagoryId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -44,8 +48,8 @@ const Products = () => {
     setIsAddModalOpen(false);
     setIsEdit(false);
   };
-  const openEditModal = (productId: number) => {
-    setSelectedProductId(productId);
+  const openEditModal = (clientId: number) => {
+    setSelectedEventId(clientId);
     setIsAddModalOpen(true);
     setIsEdit(true);
   };
@@ -54,20 +58,20 @@ const Products = () => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return products?.slice(start, end);
-  }, [page, products]);
+    return Events?.slice(start, end);
+  }, [page, Events]);
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h6 className="font-sans text-lg font-semibold">Products</h6>
+        <h6 className="font-sans text-lg font-semibold">Events</h6>
         <button
           type="button"
-          className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
+          className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
           onClick={openAddModal}
         >
-          <IoAddCircleSharp size={25} />
-          Add
+          <FiPlus />
+          Add New
         </button>
       </div>
       <Table
@@ -96,26 +100,20 @@ const Products = () => {
           <TableColumn key="Sr" className="text-medium font-bold">
             Sr
           </TableColumn>
-          <TableColumn key="Name" className="text-medium font-bold">
-            Name
-          </TableColumn>
-          <TableColumn
-            key="ProductCategoryName"
-            className="text-medium font-bold"
-          >
-            Product Category
-          </TableColumn>
-          <TableColumn key="FabricName" className="text-medium font-bold">
-            Fabric
-          </TableColumn>
-          <TableColumn key="FabricType" className="text-medium font-bold">
-            Fabric Type
-          </TableColumn>
-          <TableColumn key="GSM" className="text-medium font-bold">
-            GSM
+          <TableColumn key="EventName" className="text-medium font-bold">
+            Event Name
           </TableColumn>
           <TableColumn key="Description" className="text-medium font-bold">
             Description
+          </TableColumn>
+          <TableColumn key="CreatedOn" className="text-medium font-bold">
+            Created On
+          </TableColumn>
+          <TableColumn key="CreatedBy" className="text-medium font-bold">
+            Created By
+          </TableColumn>
+          <TableColumn key="UpdatedOn" className="text-medium font-bold">
+            Updated On
           </TableColumn>
           <TableColumn key="action" className="text-medium font-bold">
             Action
@@ -126,8 +124,8 @@ const Products = () => {
             <TableRow key={item.Id}>
               {(columnKey) => (
                 <TableCell>
-                  {columnKey === "Name" ? (
-                    `${item.FabricName} ${item.ProductCategoryName}`
+                  {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
+                    formatDate(item[columnKey])
                   ) : columnKey === "Sr" ? (
                     index + 1
                   ) : columnKey !== "action" ? (
@@ -138,17 +136,14 @@ const Products = () => {
                         type="button"
                         onClick={() => openEditModal(item.Id)}
                       >
-                        <MdEditSquare
-                          className="hover:text-green-800 cursor-pointer"
-                          size={18}
-                        />
+                        <GoPencil color="green" />
                       </button>
                       <button
                         type="button"
                         className="hover:text-red-500 cursor-pointer"
                         onClick={() => handleOpenDeleteModal(item.Id)}
                       >
-                        <MdDelete className="hover:text-red-500" size={18} />
+                        <RiDeleteBin6Line color="red" />
                       </button>
                     </div>
                   )}
@@ -158,19 +153,21 @@ const Products = () => {
           ))}
         </TableBody>
       </Table>
-      <AddProduct
+
+      <EventsForm
         isOpen={isAddModalOpen}
         closeAddModal={closeAddModal}
         isEdit={isEdit}
-        productId={selectedProductId}
+        eventId={selectedEventId}
       />
-      <DeleteProduct
+
+      <DeleteEvent
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
-        productId={selectedProductId}
+        eventId={selectedEventId}
       />
     </div>
   );
 };
 
-export default Products;
+export default Events;

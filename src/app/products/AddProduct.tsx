@@ -17,7 +17,7 @@ import { Field, Formik, Form, ErrorMessage, FieldArray } from "formik";
 import useCategoryStore from "@/store/useCategoryStore";
 import useFabricStore from "@/store/useFabricStore";
 import useProductStore from "@/store/useProductStore";
-import { ProductSchema } from "../../schema/ProductSchema";
+import { ProductSchema } from "../schema/ProductSchema";
 import useColorOptionsStore from "@/store/useColorOptionsStore";
 import { MdDelete } from "react-icons/md";
 import useCutOptionsStore from "@/store/useCutOptionsStore";
@@ -62,10 +62,8 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
   const {
     addProduct,
     getProductById,
-    fetchProductAvailableColors,
     updateProduct,
     productById,
-    productAvailableColors,
     loading,
   } = useProductStore();
   const { fetchCategories, productCategories } = useCategoryStore();

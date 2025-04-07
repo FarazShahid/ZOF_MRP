@@ -18,6 +18,9 @@ import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
 import ViewModal from "./ViewModal";
 import DeleteSizeOptions from "./DeleteSizeOptions";
 import AddSizeOptions from "./AddSizeOptions";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { GoPencil } from "react-icons/go";
+import { FiPlus } from "react-icons/fi";
 
 const SizeMeasurements = () => {
   const [page, setPage] = useState<number>(1);
@@ -34,7 +37,7 @@ const SizeMeasurements = () => {
     fetchSizeMeasurements();
   }, []);
 
-  const rowsPerPage = 13;
+  const rowsPerPage = 10;
   const pages = Math.ceil(sizeMeasurement!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
@@ -72,14 +75,14 @@ const SizeMeasurements = () => {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h6 className="font-sans text-lg font-semibold">Size Options</h6>
+        <h6 className="font-sans text-lg font-semibold">Size Measurements</h6>
         <button
           type="button"
-          className="flex items-center font-semibold gap-2 hover:bg-green-900 hover:text-white bg-gray-300 px-3 py-1 rounded-lg"
+          className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
           onClick={openAddModal}
         >
-          <IoAddCircleSharp size={25} />
-          Add
+          <FiPlus />
+          Add New
         </button>
       </div>
       <Table
@@ -212,22 +215,22 @@ const SizeMeasurements = () => {
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
-                    <div className="flex gap-2" onClick={(event) => event.stopPropagation()}>
+                    <div
+                      className="flex gap-2"
+                      onClick={(event) => event.stopPropagation()}
+                    >
                       <button
                         type="button"
                         onClick={() => openEditModal(item.Id)}
                       >
-                        <MdEditSquare
-                          className="hover:text-green-800 cursor-pointer"
-                          size={18}
-                        />
+                        <GoPencil color="green" />
                       </button>
                       <button
                         type="button"
                         className="hover:text-red-500 cursor-pointer"
                         onClick={() => handleOpenDeleteModal(item.Id)}
                       >
-                        <MdDelete className="hover:text-red-500" size={18} />
+                        <RiDeleteBin6Line color="red" />
                       </button>
                     </div>
                   )}
