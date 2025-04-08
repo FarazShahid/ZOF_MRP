@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Outfit } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { AuthContextProvider } from "./services/authservice";
 import NextUICompProvider from "./providers/NextUiProvider";
+import { ThemeProvider } from "./context/ThemeContext";
+import { SidebarProvider } from "./context/SidebarContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const outfit = Outfit({
   subsets: ["latin"],
 });
 
@@ -28,12 +25,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AuthContextProvider>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+        <body className={`${outfit.className} dark:bg-gray-900`}>
           <NextUICompProvider>
-            <Toaster position="top-right" reverseOrder={false} />
-            {children}
+            <ThemeProvider>
+              <Toaster position="top-right" reverseOrder={false} />
+              <SidebarProvider>{children}</SidebarProvider>
+            </ThemeProvider>
           </NextUICompProvider>
         </body>
       </AuthContextProvider>

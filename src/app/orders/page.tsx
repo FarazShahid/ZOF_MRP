@@ -18,12 +18,12 @@ import ViewOrderComponent from "../components/ViewOrderComponent";
 import DeleteModal from "../components/DeleteModal";
 import StatusChip from "../components/StatusChip";
 import useOrderStore from "@/store/useOrderStore";
-import AdminDashboardLayout from "../components/AdminDashboardLayout";
 import { FiPlus } from "react-icons/fi";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaRegEye } from "react-icons/fa6";
 import useClientStore from "@/store/useClientStore";
+import AdminLayout from "../adminDashboard/lauout";
 
 const page = () => {
   const [clientId, setClientId] = useState<number>(0);
@@ -94,7 +94,7 @@ const page = () => {
   }, []);
 
   return (
-    <AdminDashboardLayout>
+    <AdminLayout>
       <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <select
@@ -245,7 +245,7 @@ const page = () => {
       ) : (
         <></>
       )}
-    </AdminDashboardLayout>
+    </AdminLayout>
   );
 };
 

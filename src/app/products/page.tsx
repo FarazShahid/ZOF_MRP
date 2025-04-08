@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { IoAddCircleSharp } from "react-icons/io5";
-import { MdDelete, MdEditSquare } from "react-icons/md";
 import {
   getKeyValue,
   Pagination,
@@ -14,12 +12,12 @@ import {
   TableRow,
 } from "@heroui/react";
 import useProductStore from "@/store/useProductStore";
-import AdminDashboardLayout from "../components/AdminDashboardLayout";
 import { FiPlus } from "react-icons/fi";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DeleteProduct from "./DeleteProduct";
 import AddProduct from "./AddProduct";
+import AdminLayout from "../adminDashboard/lauout";
 
 const page = () => {
   const [page, setPage] = useState<number>(1);
@@ -62,7 +60,7 @@ const page = () => {
   }, [page, products]);
 
   return (
-    <AdminDashboardLayout>
+    <AdminLayout>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-end">
           <button
@@ -184,7 +182,7 @@ const page = () => {
           <></>
         )}
       </div>
-    </AdminDashboardLayout>
+    </AdminLayout>
   );
 };
 
