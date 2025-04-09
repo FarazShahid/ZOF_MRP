@@ -6,7 +6,7 @@ import {
     ModalFooter,
     Button,
   } from "@heroui/react";
-import useInventoryCategoryStore from "@/store/useInventoryCategoryStore";
+import useInventoryItemsStore from "@/store/useInventoryItemsStore";
   
   interface DeleteModalProps {
     isOpen: boolean;
@@ -19,12 +19,12 @@ import useInventoryCategoryStore from "@/store/useInventoryCategoryStore";
     onClose,
     Id,
   }) => {
-  
-    const {loading, deleteInventoryCategory} = useInventoryCategoryStore();
+
+    const {loading, deleteInventoryItem} = useInventoryItemsStore();
   
     const handleDelete = async () => {
       try {
-        await deleteInventoryCategory(Id, () => {
+        await deleteInventoryItem(Id, () => {
           onClose();
         });
       } catch (error) {

@@ -18,7 +18,7 @@ import AdminLayout from "../adminDashboard/lauout";
 import useInventoryCategoryStore from "@/store/useInventoryCategoryStore";
 import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 import DeleteInventoryItem from "./DeleteInventoryItem";
-
+import AddItems from "./AddItems";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -174,6 +174,17 @@ const page = () => {
           onClose={closeDeleteModal}
           Id={selectedItemId}
         /> */}
+
+        {isAddModalOpen ? (
+          <AddItems
+            isOpen={isAddModalOpen}
+            closeAddModal={closeAddModal}
+            isEdit={isEdit}
+            Id={selectedItemId}
+          />
+        ) : (
+          <></>
+        )}
 
         <DeleteInventoryItem
           isOpen={isOpenDeletModal}

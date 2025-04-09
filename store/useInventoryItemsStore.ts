@@ -24,7 +24,6 @@ interface InventoryItemResponse {
   SupplierId: number;
   SupplierName: string;
   ReorderLevel: string | number;
-  Quantity: number;
   Stock: number;
   CreatedOn: string;
   CreatedBy: string;
@@ -35,7 +34,6 @@ interface InventoryItemResponse {
 export interface AddInventoryItemOptions {
   Name: string;
   SubCategoryId: number;
-  Quantity: number;
   UnitOfMeasure: string;
   SupplierId: number;
   ReorderLevel: number;
