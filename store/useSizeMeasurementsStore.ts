@@ -16,6 +16,7 @@ interface SizeOptionsIdRepsonse {
 
 export interface AddSizeMeasurementType{
   SizeOptionId: number;
+  ClientId?: number;
   Measurement1: string;
   FrontLengthHPS: string;
   BackLengthHPS: string;
@@ -42,6 +43,8 @@ export interface AddSizeMeasurementType{
 
 interface SizeMeasurements {
   Id: number;
+  ClientName: string;
+  ClientId: number;
   SizeOptionId: number;
   SizeOptionName: string;
   Measurement1: string;

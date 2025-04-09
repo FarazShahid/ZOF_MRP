@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { IoAddCircleSharp } from "react-icons/io5";
-import { MdDelete, MdEditSquare } from "react-icons/md";
 import {
   getKeyValue,
   Pagination,
@@ -115,6 +113,9 @@ const page = () => {
             <TableColumn key="Measurement1" className="text-medium font-bold">
               Name
             </TableColumn>
+            <TableColumn key="ClientName" className="text-medium font-bold">
+              Client Name
+            </TableColumn>
             <TableColumn key="CreatedOn" className="text-medium font-bold">
               Created On
             </TableColumn>
@@ -177,12 +178,16 @@ const page = () => {
           <></>
         )}
 
-        <AddSizeOptions
-          isOpen={isAddModalOpen}
-          closeAddModal={closeAddModal}
-          isEdit={isEdit}
-          sizeId={selectedSizeOptionId}
-        />
+        {isAddModalOpen ? (
+          <AddSizeOptions
+            isOpen={isAddModalOpen}
+            closeAddModal={closeAddModal}
+            isEdit={isEdit}
+            sizeId={selectedSizeOptionId}
+          />
+        ) : (
+          <></>
+        )}
 
         <DeleteSizeOptions
           isOpen={isOpenDeletModal}
