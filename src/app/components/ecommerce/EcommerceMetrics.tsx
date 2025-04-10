@@ -57,7 +57,6 @@ export const EcommerceMetrics = () => {
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
           <FiUsers className="text-gray-800 size-6 dark:text-white/90" />
         </div>
-
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">

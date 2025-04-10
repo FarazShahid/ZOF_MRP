@@ -104,7 +104,6 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
   };
 
   const handleAddSizeOption = async (values: AddSizeMeasurementType) => {
-    debugger
     isEdit
       ? updateMeasurement(sizeId, values, () => {
           closeAddModal();

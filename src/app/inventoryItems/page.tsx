@@ -15,14 +15,12 @@ import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 import AdminLayout from "../adminDashboard/lauout";
-import useInventoryCategoryStore from "@/store/useInventoryCategoryStore";
 import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 import DeleteInventoryItem from "./DeleteInventoryItem";
 import AddItems from "./AddItems";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState<number>(0);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
@@ -161,19 +159,6 @@ const page = () => {
             ))}
           </TableBody>
         </Table>
-
-        {/* <AddCategoires
-          isOpen={isAddModalOpen}
-          closeAddModal={closeAddModal}
-          isEdit={isEdit}
-          Id={selectedItemId}
-        />
-
-        <DeleteCategories
-          isOpen={isOpenDeletModal}
-          onClose={closeDeleteModal}
-          Id={selectedItemId}
-        /> */}
 
         {isAddModalOpen ? (
           <AddItems

@@ -50,6 +50,7 @@ const navItems: NavItem[] = [
       { name: "Sub Categories", path: "/subcategories", pro: false },
       { name: "Suppliers", path: "/supplier", pro: false },
       { name: "Inventory Items", path: "/inventoryItems", pro: false },
+      { name: "Inventory Transaction", path: "/inventoryTransaction", pro: false },
     ],
   },
 ];
@@ -57,7 +58,7 @@ const navItems: NavItem[] = [
 const othersItems: NavItem[] = [
   {
     icon: <IoSettingsOutline size={24} />,
-    name: "Configrations",
+    name: "Product Defination",
     subItems: [
       { name: "Fabric Type", path: "/setting/fabrictype", pro: false },
       { name: "Sleeve Type", path: "/setting/sleevetype", pro: false },

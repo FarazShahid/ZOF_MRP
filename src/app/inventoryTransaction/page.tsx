@@ -14,57 +14,61 @@ import {
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
-import useClientStore from "@/store/useClientStore";
-import AddClients from "../components/AddClients";
-import DeleteClient from "../components/DeleteClient";
 import AdminLayout from "../adminDashboard/lauout";
+import useInventoryItemsStore from "@/store/useInventoryItemsStore";
+import useInventoryTransection from "@/store/useInventoryTransection";
+import { formatDate } from "../interfaces";
+import DeleteItem from "./DeleteItem";
+import AddInventoryTransaction from "./AddInventoryTransaction";
+// import DeleteInventoryItem from "./DeleteInventoryItem";
+// import AddItems from "./AddItems";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState<number>(0);
-  const [selectedClientId, setSelectedClientId] = useState<number>(0);
+  const [selectedItemId, setSelectedItemId] = useState<number>(0);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const { fetchClients, clients, loading } = useClientStore();
+  const { loading, fetchInventoryTransactions, inventoryTransactions } =
+    useInventoryTransection();
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(clients!.length / rowsPerPage);
+  const pages = Math.ceil(inventoryTransactions!.length / rowsPerPage);
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return clients?.slice(start, end);
-  }, [page, clients]);
+    return inventoryTransactions?.slice(start, end);
+  }, [page, inventoryTransactions]);
 
   const openAddModal = () => setIsAddModalOpen(true);
   const closeAddModal = () => {
     setIsAddModalOpen(false);
     setIsEdit(false);
   };
-  const handleOpenDeleteModal = (clientId: number) => {
-    setSelectedClientId(clientId);
+  const handleOpenDeleteModal = (Id: number) => {
+    setSelectedItemId(Id);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
-  const handleOpenEditModal = (clientId: number) => {
-    setSelectedClientId(clientId);
+  const handleOpenEditModal = (Id: number) => {
+    setSelectedItemId(Id);
     setIsEdit(true);
     setIsAddModalOpen(true);
   };
-  const refetchData = () => {
-    setRefreshKey((prev) => prev + 1);
-  };
 
   useEffect(() => {
-    fetchClients();
+    fetchInventoryTransactions();
   }, []);
 
   return (
     <AdminLayout>
       <div className="w-full flex flex-col gap-3">
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-between">
+          <h6 className="font-sans text-lg font-semibold">
+            Inventory Transaction
+          </h6>
           <button
             type="button"
             className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
@@ -78,7 +82,6 @@ const page = () => {
           isStriped
           isHeaderSticky
           aria-label="Client Table with pagination"
-          selectionMode="single"
           bottomContent={
             <div className="grid grid-cols-2">
               <span className="w-[30%] text-small text-gray-500">
@@ -101,40 +104,47 @@ const page = () => {
           }}
         >
           <TableHeader>
-            <TableColumn key="Name" className="text-medium font-bold">
-              Name
+            <TableColumn key="Sr" className="text-medium font-bold">
+              Sr
             </TableColumn>
-            <TableColumn key="Email" className="text-medium font-bold">
-              Email
+            <TableColumn key="ItemName" className="text-medium font-bold">
+              Item Name
             </TableColumn>
-            <TableColumn key="Phone" className="text-medium font-bold">
-              Phone
+            <TableColumn key="ItemCode" className="text-medium font-bold">
+              Code
             </TableColumn>
-            <TableColumn key="City" className="text-medium font-bold">
-              City
+            <TableColumn key="UnitOfMeasure" className="text-medium font-bold">
+              Unit Of Measure
             </TableColumn>
-            <TableColumn key="State" className="text-medium font-bold">
-              State
-            </TableColumn>
-            <TableColumn key="Country" className="text-medium font-bold">
-              Country
+            <TableColumn key="Quantity" className="text-medium font-bold">
+              Quantity
             </TableColumn>
             <TableColumn
-              key="CompleteAddress"
+              key="TransactionType"
               className="text-medium font-bold"
             >
-              Address
+              Transaction Type
             </TableColumn>
-            <TableColumn key="Action" className="text-medium font-bold">
+            <TableColumn
+              key="TransactionDate"
+              className="text-medium font-bold"
+            >
+              Transaction Date
+            </TableColumn>
+            <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
-            {(item) => (
+            {(items ?? []).map((item: any, index: number) => (
               <TableRow key={item.Id}>
                 {(columnKey) => (
                   <TableCell>
-                    {columnKey !== "Action" ? (
+                    {columnKey === "TransactionDate" ? (
+                      formatDate(item[columnKey])
+                    ) : columnKey === "Sr" ? (
+                      index + 1
+                    ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
@@ -146,6 +156,7 @@ const page = () => {
                         </button>
                         <button
                           type="button"
+                          className="hover:text-red-500 cursor-pointer"
                           onClick={() => handleOpenDeleteModal(item.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
@@ -155,23 +166,28 @@ const page = () => {
                   </TableCell>
                 )}
               </TableRow>
-            )}
+            ))}
           </TableBody>
         </Table>
 
-        <AddClients
-          isOpen={isAddModalOpen}
-          closeAddModal={closeAddModal}
-          onOrderAdded={refetchData}
-          isEdit={isEdit}
-          clientId={selectedClientId}
-        />
+        {isAddModalOpen ? (
+          <AddInventoryTransaction
+            isOpen={isAddModalOpen}
+            closeAddModal={closeAddModal}
+            isEdit={isEdit}
+            Id={selectedItemId}
+          />
+        ) : (
+          <></>
+        )}
 
-        <DeleteClient
+
+
+
+        <DeleteItem
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
-          clientId={selectedClientId}
-          onDeleteSuccess={refetchData}
+          Id={selectedItemId}
         />
       </div>
     </AdminLayout>

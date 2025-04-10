@@ -35,7 +35,7 @@ export default function UserDropdown() {
         className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
       >
         <span className="mr-3 overflow-hidden rounded-full flex items-center justify-center h-11 w-11 border-1">
-          <FaUserTie className="w-6 h-6" />
+          <FaUserTie className="w-6 h-6 text-[#ff7800]" />
         </span>
 
         <span className="block mr-1 font-medium text-theme-sm">Admin</span>
