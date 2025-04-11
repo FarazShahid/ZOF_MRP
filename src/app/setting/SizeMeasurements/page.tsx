@@ -11,8 +11,11 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
+import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { formatDate } from "../../interfaces";
-import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
+import useSizeMeasurementsStore, {
+  SizeMeasurements,
+} from "@/store/useSizeMeasurementsStore";
 import ViewModal from "./ViewModal";
 import DeleteSizeOptions from "./DeleteSizeOptions";
 import AddSizeOptions from "./AddSizeOptions";
@@ -28,6 +31,9 @@ const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isViewModal, setIsViewModal] = useState<boolean>(false);
+  const [sortColumn, setSortColumn] =
+    useState<keyof SizeMeasurements>("Measurement1");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   const { fetchSizeMeasurements, sizeMeasurement, loading } =
     useSizeMeasurementsStore();
@@ -64,11 +70,53 @@ const page = () => {
   };
 
   const items = useMemo(() => {
+    const sorted = [...(sizeMeasurement || [])].sort((a, b) => {
+      const aValue = a[sortColumn];
+      const bValue = b[sortColumn];
+
+      // String sorting
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortDirection === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      // Number sorting
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+      }
+
+      // Date sorting (for fields like CreatedOn)
+      if (
+        sortColumn === "CreatedOn" &&
+        typeof aValue === "string" &&
+        typeof bValue === "string"
+      ) {
+        const aDate = new Date(aValue).getTime();
+        const bDate = new Date(bValue).getTime();
+        return sortDirection === "asc" ? aDate - bDate : bDate - aDate;
+      }
+
+      return 0;
+    });
+
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
+    return sorted.slice(start, end);
+  }, [page, sizeMeasurement, sortColumn, sortDirection]);
 
-    return sizeMeasurement?.slice(start, end);
-  }, [page, sizeMeasurement]);
+  const handleSort = (column: keyof SizeMeasurements) => {
+    if (column === sortColumn) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  useEffect(() => {
+    setPage(1);
+  }, [sortColumn, sortDirection]);
 
   return (
     <AdminLayout>
@@ -93,7 +141,10 @@ const page = () => {
             th: "tableHeaderWrapper",
           }}
           bottomContent={
-            <div className="flex w-full justify-center">
+            <div className="grid grid-cols-2 mt-5">
+              <span className="w-[30%] text-small text-gray-500">
+                Total: {sizeMeasurement.length || 0}
+              </span>
               <Pagination
                 isCompact
                 showControls
@@ -110,8 +161,20 @@ const page = () => {
             <TableColumn key="Sr" className="text-medium font-bold">
               Sr
             </TableColumn>
-            <TableColumn key="Measurement1" className="text-medium font-bold">
-              Name
+            <TableColumn
+              key="Measurement1"
+              className="text-medium font-bold cursor-pointer"
+              onClick={() => handleSort("Measurement1")}
+            >
+              <div className="flex items-center gap-1">
+                Name
+                {sortColumn === "Measurement1" &&
+                  (sortDirection === "asc" ? (
+                    <TiArrowSortedUp />
+                  ) : (
+                    <TiArrowSortedDown />
+                  ))}
+              </div>
             </TableColumn>
             <TableColumn key="ClientName" className="text-medium font-bold">
               Client Name

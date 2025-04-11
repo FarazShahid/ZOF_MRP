@@ -85,7 +85,10 @@ const page = () => {
             th: "tableHeaderWrapper",
           }}
           bottomContent={
-            <div className="flex w-full justify-center">
+            <div className="grid grid-cols-2 mt-5">
+            <span className="w-[30%] text-small text-gray-500">
+              Total: {sizeOptions.length || 0}
+            </span>
               <Pagination
                 isCompact
                 showControls

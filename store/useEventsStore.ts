@@ -14,7 +14,7 @@ interface AddEventsResponse {
   message: string;
 }
 
-interface Events {
+export interface Events {
   Id: number;
   EventName: string;
   Description: string;

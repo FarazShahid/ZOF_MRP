@@ -41,7 +41,7 @@ export interface AddSizeMeasurementType{
   BottomHem: string;
 }
 
-interface SizeMeasurements {
+export interface SizeMeasurements {
   Id: number;
   ClientName: string;
   ClientId: number;

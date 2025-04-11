@@ -14,7 +14,7 @@ interface GetFabricTypeResponse {
   message: string;
 }
 
-interface FabricType {
+export interface FabricType {
   id: number;
   type: string;
   name: string;

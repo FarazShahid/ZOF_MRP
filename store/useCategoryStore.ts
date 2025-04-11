@@ -13,7 +13,7 @@ interface ProductCategoryIdRepsonse {
   message: string;
 }
 
-interface ProductCategory {
+export interface ProductCategory {
   id: number;
   type: string;
   createdOn: string;

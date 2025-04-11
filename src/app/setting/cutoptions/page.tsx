@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { IoAddCircleSharp } from "react-icons/io5";
-import { MdDelete, MdEditSquare } from "react-icons/md";
 import {
   getKeyValue,
   Pagination,
@@ -13,8 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-
-import useCutOptionsStore from "@/store/useCutOptionsStore";
+import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
+import useCutOptionsStore, { CutOptions } from "@/store/useCutOptionsStore";
 import { formatDate } from "../../interfaces";
 import AddCutOptions from "./AddCutOptions";
 import DeleteCutOptions from "./DeleteCutOptions";
@@ -29,6 +27,10 @@ const page = () => {
   const [selectedCutOptionId, setSelectedCutOptionId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [sortColumn, setSortColumn] = useState<keyof CutOptions>(
+    "OptionProductCutOptions"
+  );
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   const { fetchcutOptions, cutOptions, loading } = useCutOptionsStore();
 
@@ -57,17 +59,61 @@ const page = () => {
   };
 
   const items = useMemo(() => {
+    const sorted = [...(cutOptions || [])].sort((a, b) => {
+      const aValue = a[sortColumn];
+      const bValue = b[sortColumn];
+
+      // String sorting
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortDirection === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      // Number sorting
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+      }
+
+      // Date sorting (for fields like CreatedOn)
+      if (
+        sortColumn === "CreatedOn" &&
+        typeof aValue === "string" &&
+        typeof bValue === "string"
+      ) {
+        const aDate = new Date(aValue).getTime();
+        const bDate = new Date(bValue).getTime();
+        return sortDirection === "asc" ? aDate - bDate : bDate - aDate;
+      }
+
+      return 0;
+    });
+
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
+    return sorted.slice(start, end);
+  }, [page, cutOptions, sortColumn, sortDirection]);
 
-    return cutOptions?.slice(start, end);
-  }, [page, cutOptions]);
+  const handleSort = (column: keyof CutOptions) => {
+    if (column === sortColumn) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  useEffect(() => {
+    setPage(1);
+  }, [sortColumn, sortDirection]);
 
   return (
     <AdminLayout>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">Product Cut Options</h6>
+          <h6 className="font-sans text-lg font-semibold">
+            Product Cut Options
+          </h6>
           <button
             type="button"
             className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
@@ -86,7 +132,10 @@ const page = () => {
             th: "tableHeaderWrapper",
           }}
           bottomContent={
-            <div className="flex w-full justify-center">
+            <div className="grid grid-cols-2 mt-5">
+              <span className="w-[30%] text-small text-gray-500">
+                Total: {cutOptions.length || 0}
+              </span>
               <Pagination
                 isCompact
                 showControls
@@ -105,9 +154,18 @@ const page = () => {
             </TableColumn>
             <TableColumn
               key="OptionProductCutOptions"
-              className="text-medium font-bold"
+              className="text-medium font-bold cursor-pointer"
+              onClick={() => handleSort("OptionProductCutOptions")}
             >
-              Cut Option
+              <div className="flex items-center gap-1">
+                Cut Option
+                {sortColumn === "OptionProductCutOptions" &&
+                  (sortDirection === "asc" ? (
+                    <TiArrowSortedUp />
+                  ) : (
+                    <TiArrowSortedDown />
+                  ))}
+              </div>
             </TableColumn>
             <TableColumn key="CreatedOn" className="text-medium font-bold">
               Created On

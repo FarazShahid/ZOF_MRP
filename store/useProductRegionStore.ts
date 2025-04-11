@@ -14,7 +14,7 @@ interface ProductRegionByIdResponse{
   message: string;
 }
 
-interface ProductRegion {
+export interface ProductRegion {
   Id: number;
   Name: string;
   CreatedOn: string;

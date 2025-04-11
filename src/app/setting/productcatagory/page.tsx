@@ -16,10 +16,11 @@ import {
 import DeleteProductCatagory from "./DeleteProductCatagory";
 import { formatDate } from "../../interfaces";
 import AddProductCatagory from "./AddProductCatagory";
-import useCategoryStore from "@/store/useCategoryStore";
+import useCategoryStore, { ProductCategory } from "@/store/useCategoryStore";
 import { FiPlus } from "react-icons/fi";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import AdminLayout from "../../adminDashboard/lauout";
 
 const page = () => {
@@ -28,6 +29,8 @@ const page = () => {
   const [selectedProductCatId, setSelectedProductCatId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [sortColumn, setSortColumn] = useState<keyof ProductCategory>("type");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   const { productCategories, fetchCategories, loading, error } =
     useCategoryStore();
@@ -56,12 +59,61 @@ const page = () => {
     setIsEdit(true);
   };
 
+  // const items = useMemo(() => {
+  //   const start = (page - 1) * rowsPerPage;
+  //   const end = start + rowsPerPage;
+
+  //   return productCategories?.slice(start, end);
+  // }, [page, productCategories]);
+
   const items = useMemo(() => {
+    const sorted = [...(productCategories || [])].sort((a, b) => {
+      const aValue = a[sortColumn];
+      const bValue = b[sortColumn];
+
+      // String sorting
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortDirection === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      // Number sorting
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+      }
+
+      // Date sorting (for fields like CreatedOn)
+      if (
+        sortColumn === "createdOn" &&
+        typeof aValue === "string" &&
+        typeof bValue === "string"
+      ) {
+        const aDate = new Date(aValue).getTime();
+        const bDate = new Date(bValue).getTime();
+        return sortDirection === "asc" ? aDate - bDate : bDate - aDate;
+      }
+
+      return 0;
+    });
+
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
+    return sorted.slice(start, end);
+  }, [page, productCategories, sortColumn, sortDirection]);
 
-    return productCategories?.slice(start, end);
-  }, [page, productCategories]);
+  const handleSort = (column: keyof ProductCategory) => {
+    if (column === sortColumn) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  useEffect(() => {
+    setPage(1);
+  }, [sortColumn, sortDirection]);
 
   return (
     <AdminLayout>
@@ -86,7 +138,10 @@ const page = () => {
             th: "tableHeaderWrapper",
           }}
           bottomContent={
-            <div className="flex w-full justify-center">
+            <div className="grid grid-cols-2 mt-5">
+              <span className="w-[30%] text-small text-gray-500">
+                Total: {productCategories.length || 0}
+              </span>
               <Pagination
                 isCompact
                 showControls
@@ -103,8 +158,20 @@ const page = () => {
             <TableColumn key="Sr" className="text-medium font-bold">
               Sr
             </TableColumn>
-            <TableColumn key="type" className="text-medium font-bold">
-              Name
+            <TableColumn
+              key="type"
+              className="text-medium font-bold cursor-pointer"
+              onClick={() => handleSort("type")}
+            >
+              <div className="flex items-center gap-1">
+                Name
+                {sortColumn === "type" &&
+                  (sortDirection === "asc" ? (
+                    <TiArrowSortedUp />
+                  ) : (
+                    <TiArrowSortedDown />
+                  ))}
+              </div>
             </TableColumn>
             <TableColumn key="createdOn" className="text-medium font-bold">
               Created On
