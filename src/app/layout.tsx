@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Outfit } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
@@ -25,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AuthContextProvider>
-        <body className={`${outfit.className} dark:bg-gray-900`}>
+        <body className={`${outfit.className}`}>
           <NextUICompProvider>
             <ThemeProvider>
               <Toaster position="top-right" reverseOrder={false} />
