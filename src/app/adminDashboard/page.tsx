@@ -1,10 +1,11 @@
 import React from "react";
 import RecentOrders from "./components/RecentOrders";
+import AdminLayout from "./lauout";
 import { EcommerceMetrics } from "../components/ecommerce/EcommerceMetrics";
 import MonthlySalesChart from "../components/ecommerce/MonthlySalesChart";
 import MonthlyTarget from "../components/ecommerce/MonthlyTarget";
 import StatisticsChart from "../components/ecommerce/StatisticsChart";
-import AdminLayout from "./lauout";
+
 
 
 const page = () => {
@@ -15,7 +16,6 @@ const page = () => {
           <EcommerceMetrics />
           <MonthlySalesChart />
         </div>
-
         <div className="col-span-12 xl:col-span-5">
           <MonthlyTarget />
         </div>
