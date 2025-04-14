@@ -13,6 +13,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { RiAlignItemBottomLine } from "react-icons/ri";
 import { FaTshirt } from "react-icons/fa";
 import { PiWarehouseDuotone } from "react-icons/pi";
+import { FaUserFriends } from "react-icons/fa";
 
 type NavItem = {
   name: string;
@@ -31,6 +32,11 @@ const navItems: NavItem[] = [
     icon: <UserCircleIcon />,
     name: "Clients",
     path: "/client",
+  },
+  {
+    icon: <FaUserFriends size={22} />,
+    name: "Users",
+    path: "/users",
   },
   {
     icon: <RiAlignItemBottomLine size={22} />,

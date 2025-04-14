@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
-// import Chart from "react-apexcharts";
+import React, { useEffect, useMemo } from "react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import ChartTab from "../common/ChartTab";
+import dayjs from "dayjs";
+import useInventoryTransection from "@/store/useInventoryTransection";
 
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -11,26 +12,81 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 });
 
 export default function StatisticsChart() {
+  const {
+    loading,
+    fetchInventoryTransactions,
+    inventoryTransactions,
+  } = useInventoryTransection();
+
+  useEffect(() => {
+    fetchInventoryTransactions();
+  }, []);
+
+  const allMonths = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  ];
+
+  const { series, categories } = useMemo(() => {
+    const groupedData: Record<
+      string,
+      {
+        IN: number;
+        OUT: number;
+        PRODUCTION: number;
+        "Opening Balance": number;
+        Disposal: number;
+      }
+    > = {};
+
+    inventoryTransactions.forEach((txn) => {
+      const month = dayjs(txn.TransactionDate).format("MMM");
+
+      if (!groupedData[month]) {
+        groupedData[month] = {
+          IN: 0,
+          OUT: 0,
+          PRODUCTION: 0,
+          "Opening Balance": 0,
+          Disposal: 0,
+        };
+      }
+
+      const txnType = txn.TransactionType as keyof typeof groupedData[string];
+      groupedData[month][txnType] += parseFloat(txn.Quantity);
+    });
+
+    return {
+      categories: allMonths,
+      series: [
+        { name: "IN", data: allMonths.map((m) => groupedData[m]?.IN || 0) },
+        { name: "OUT", data: allMonths.map((m) => groupedData[m]?.OUT || 0) },
+        { name: "PRODUCTION", data: allMonths.map((m) => groupedData[m]?.PRODUCTION || 0) },
+        { name: "Opening Balance", data: allMonths.map((m) => groupedData[m]?.["Opening Balance"] || 0) },
+        { name: "Disposal", data: allMonths.map((m) => groupedData[m]?.Disposal || 0) },
+      ],
+    };
+  }, [inventoryTransactions]);
+
   const options: ApexOptions = {
     legend: {
-      show: false, // Hide legend
+      show: true,
       position: "top",
       horizontalAlign: "left",
     },
-    colors: ["#465FFF", "#9CB9FF"], // Define line colors
+    colors: ["#3B82F6", "#EF4444", "#10B981", "#FBBF24", "#6366F1"],
     chart: {
       fontFamily: "Outfit, sans-serif",
       height: 310,
-      type: "line", // Set the chart type to 'line'
+      type: "area",
       toolbar: {
-        show: false, // Hide chart toolbar
+        show: false,
       },
     },
     stroke: {
-      curve: "straight", // Define the line style (straight, smooth, or step)
-      width: [2, 2], // Line width for each dataset
+      curve: "smooth",
+      width: 2,
     },
-
     fill: {
       type: "gradient",
       gradient: {
@@ -39,69 +95,53 @@ export default function StatisticsChart() {
       },
     },
     markers: {
-      size: 0, // Size of the marker points
-      strokeColors: "#fff", // Marker border color
+      size: 0,
+      strokeColors: "#fff",
       strokeWidth: 2,
       hover: {
-        size: 6, // Marker size on hover
+        size: 6,
       },
     },
     grid: {
       xaxis: {
         lines: {
-          show: false, // Hide grid lines on x-axis
+          show: false,
         },
       },
       yaxis: {
         lines: {
-          show: true, // Show grid lines on y-axis
+          show: true,
         },
       },
     },
     dataLabels: {
-      enabled: false, // Disable data labels
+      enabled: false,
     },
     tooltip: {
-      enabled: true, // Enable tooltip
-      x: {
-        format: "dd MMM yyyy", // Format for x-axis tooltip
-      },
+      enabled: true,
     },
     xaxis: {
-      type: "category", // Category-based x-axis
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      type: "category",
+      categories: categories,
       axisBorder: {
-        show: false, // Hide x-axis border
+        show: false,
       },
       axisTicks: {
-        show: false, // Hide x-axis ticks
+        show: false,
       },
       tooltip: {
-        enabled: false, // Disable tooltip for x-axis points
+        enabled: false,
       },
     },
     yaxis: {
       labels: {
         style: {
-          fontSize: "12px", // Adjust font size for y-axis labels
-          colors: ["#6B7280"], // Color of the labels
+          fontSize: "12px",
+          colors: ["#6B7280"],
         },
       },
       title: {
-        text: "", // Remove y-axis title
+        text: "",
         style: {
           fontSize: "0px",
         },
@@ -109,29 +149,16 @@ export default function StatisticsChart() {
     },
   };
 
-  const series = [
-    {
-      name: "Sales",
-      data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
-    },
-    {
-      name: "Revenue",
-      data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
-    },
-  ];
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Statistics
+            Transations Statistics
           </h3>
           <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-            Target you’ve set for each month
+            Inventory transactions grouped by month
           </p>
-        </div>
-        <div className="flex items-start w-full gap-3 sm:justify-end">
-          <ChartTab />
         </div>
       </div>
 
