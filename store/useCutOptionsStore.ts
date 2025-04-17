@@ -15,7 +15,7 @@ interface AddCutOptionResponse{
 }
 
 
-interface CutOptions {
+export interface CutOptions {
   Id: number;
   OptionProductCutOptions: string;
   CreatedOn: string;

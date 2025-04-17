@@ -14,6 +14,7 @@ import useSizeMeasurementsStore, {
   AddSizeMeasurementType,
 } from "@/store/useSizeMeasurementsStore";
 import { SizeMeasurementSchema } from "../../schema/SizeMeasurementSchema";
+import useClientStore from "@/store/useClientStore";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
   sizeId,
 }) => {
   const { fetchsizeOptions, sizeOptions } = useSizeOptionsStore();
+  const {fetchClients, clients} = useClientStore();
   const {
     loading,
     addSizeMeasurement,
@@ -45,11 +47,13 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
 
   useEffect(() => {
     fetchsizeOptions();
+    fetchClients();
   }, []);
 
   const InitialValues = {
     SizeOptionId:
       isEdit && sizeMeasurementById ? sizeMeasurementById.SizeOptionId : 0,
+      ClientId:  isEdit && sizeMeasurementById ? sizeMeasurementById.ClientId : 0,
     Measurement1:
       isEdit && sizeMeasurementById ? sizeMeasurementById.Measurement1 : "",
     FrontLengthHPS:
@@ -136,7 +140,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                       <Spinner />
                     ) : (
                       <>
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-3 gap-3">
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
                               Name
@@ -153,6 +157,26 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                               component="div"
                               className="text-red-400 text-sm"
                             />
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <label className="text-sm text-gray-600 font-sans">
+                              Client
+                            </label>
+                            <Field
+                              name="ClientId"
+                              as="select"
+                              type="text"
+                              className="formInputdefault border-1"
+                            >
+                              <option value={""}>Select a Client</option>
+                              {clients.map((client) => {
+                                return (
+                                  <option value={client.Id} key={client.Id}>
+                                    {client.Name}
+                                  </option>
+                                );
+                              })}
+                            </Field>
                           </div>
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">

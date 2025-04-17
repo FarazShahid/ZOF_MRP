@@ -8,7 +8,7 @@ interface GetPrintingOptionsResponse {
   message: string;
 }
 
-interface PrintingOptionType {
+export interface PrintingOptionType {
   Id: number;
   Type: string;
   CreatedOn: string;

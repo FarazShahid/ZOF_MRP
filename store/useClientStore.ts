@@ -15,7 +15,7 @@ interface ClinetByIdResponse{
   message: string;
 }
 
-interface GetClientsType {
+export interface GetClientsType {
   Id: number;
   Name: string;
   Email: string;

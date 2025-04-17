@@ -14,7 +14,7 @@ interface UpdateSleeveTypeResponse {
   message: string;
 }
 
-interface SleeveType {
+export interface SleeveType {
   id: number;
   sleeveTypeName: string;
   productCategoryId: string;

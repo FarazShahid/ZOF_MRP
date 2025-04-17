@@ -11,11 +11,14 @@
    "dependencies": {
       "@heroui/react": "2.6.14",
       "@hookform/resolvers": "^3.9.1",
+      "apexcharts": "^4.5.0",
       "chroma-js": "^3.1.2",
+      "dayjs": "^1.11.13",
       "formik": "^2.4.6",
       "framer-motion": "^11.15.0",
       "next": "15.1.2",
       "react": "^19.0.0",
+      "react-apexcharts": "^1.7.0",
       "react-dom": "^19.0.0",
       "react-hot-toast": "^2.5.2",
       "react-icons": "^5.4.0",
@@ -23,12 +26,15 @@
       "zustand": "^5.0.3"
    },
    "devDependencies": {
+      "@svgr/webpack": "^8.1.0",
       "@types/chroma-js": "^3.1.1",
       "@types/node": "^20",
       "@types/react": "^19",
       "@types/react-dom": "^19",
+      "@types/webpack": "^5.28.5",
       "postcss": "^8",
       "tailwindcss": "^3.4.1",
-      "typescript": "^5"
+      "typescript": "^5",
+      "webpack": "^5.99.2"
    }
 }

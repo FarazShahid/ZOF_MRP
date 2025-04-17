@@ -3,12 +3,11 @@
 import { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
-
-import LoginSideLogo from "./components/LoginSideLogo";
 import Spinner from "./components/Spinner";
 import { LoginSchemaValidation } from "./schema/loginSchema";
 import AuthContext from "./services/authservice";
 import { loginInitialValues } from "./interfaces";
+import LoginAnimator from "./components/LoginAnimator";
 
 export default function Home() {
   const authContext = useContext(AuthContext);
@@ -28,82 +27,120 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen">
-      <LoginSideLogo />
-      <div className="w-full bg-gray-100 lg:w-1/2 flex items-center justify-center">
-        <div className="max-w-md w-full p-6">
-          <h1 className="text-3xl font-semibold mb-6 text-black text-center">
-            Zero One Forge - MRP
-          </h1>
-          <h1 className="text-sm font-semibold mb-6 text-gray-500 text-center">
-            Welcome to MRP
-          </h1>
-          <Formik
-            validationSchema={LoginSchemaValidation}
-            initialValues={loginInitialValues}
-            onSubmit={handleSubmit}
-          >
-            {({ isSubmitting }) => (
-              <Form className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Email
-                  </label>
-                  <Field
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-400 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Password
-                  </label>
-                  <div className="flex relative">
-                    <Field
-                      type={viewPassword ? "text": "password"}
-                      id="password"
-                      name="password"
-                      placeholder="Enter your password"
-                      className="mt-1 py-2 pr-10 pl-2  w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleViewPassword}
-                      className="absolute right-2 top-4"
-                    >
-                      {!viewPassword ? <FaRegEye />: <FaRegEyeSlash />}
-                      
-                    </button>
-                  </div>
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="text-red-400 text-sm"
-                  />
-                </div>
-                <div>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-black text-white p-2 flex items-center justify-center gap-4 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300"
-                  >
-                    {isSubmitting ? <Spinner size="small" /> : <></>}
-                    Login
-                  </button>
-                </div>
-              </Form>
-            )}
-          </Formik>
+    <>
+      <div className="relative min-h-screen flex ">
+        <div className="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 bg-white">
+          <LoginAnimator />
+          <div className="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full xl:w-2/5 p-8  md:p-10 lg:p-14 sm:rounded-lg md:rounded-none bg-white">
+            <div className="max-w-md w-full space-y-8">
+              <div className="text-center">
+                <h2 className="mt-6 text-3xl font-bold text-gray-900">
+                  Welcom Back!
+                </h2>
+                <p className="mt-2 text-sm text-gray-500">
+                  Please sign in to your account
+                </p>
+              </div>
+
+              <div className="flex items-center justify-center space-x-2">
+                <span className="h-px w-16 bg-gray-200"></span>
+                <span className="text-gray-300 font-normal">
+                  ZeroOneForge MRP
+                </span>
+                <span className="h-px w-16 bg-gray-200"></span>
+              </div>
+              <Formik
+                validationSchema={LoginSchemaValidation}
+                initialValues={loginInitialValues}
+                onSubmit={handleSubmit}
+              >
+                {({ isSubmitting }) => (
+                  <Form className="mt-8 space-y-6">
+                    <div className="relative">
+                      <label className="ml-3 text-sm font-bold text-gray-700 tracking-wide">
+                        Email
+                      </label>
+                      <div className="flex flex-col w-full">
+                        <Field
+                          type="email"
+                          id="email"
+                          name="email"
+                          placeholder="mail@gmail.com"
+                          className="w-full text-base px-4 py-2 border-b border-gray-300 focus:outline-none rounded-2xl focus:border-indigo-500"
+                        />
+                        <ErrorMessage
+                          name="email"
+                          component="div"
+                          className="text-red-400 text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-8 content-center">
+                      <label className="ml-3 text-sm font-bold text-gray-700 tracking-wide">
+                        Password
+                      </label>
+                      <div className="flex flex-col w-full">
+                        <div className="flex relative">
+                          <Field
+                            type={viewPassword ? "text" : "password"}
+                            id="password"
+                            name="password"
+                            placeholder="******"
+                            className="w-full content-center text-base px-4 py-2 border-b rounded-2xl border-gray-300 focus:outline-none focus:border-indigo-500"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleViewPassword}
+                            className="absolute right-2 top-4"
+                          >
+                            {!viewPassword ? <FaRegEye /> : <FaRegEyeSlash />}
+                          </button>
+                        </div>
+                        <ErrorMessage
+                          name="password"
+                          component="div"
+                          className="text-red-400 text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <input
+                          id="remember_me"
+                          name="remember_me"
+                          type="checkbox"
+                          className="h-4 w-4 bg-blue-500 focus:ring-blue-400 border-gray-300 rounded"
+                        />
+                        <label className="ml-2 block text-sm text-gray-900">
+                          Remember me
+                        </label>
+                      </div>
+                      <div className="text-sm">
+                        <a
+                          href="#"
+                          className="text-indigo-400 hover:text-blue-500"
+                        >
+                          Forgot your password?
+                        </a>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full flex justify-center gap-3 bg-gradient-to-r from-indigo-500 to-blue-600  hover:bg-gradient-to-l hover:from-blue-500 hover:to-indigo-600 text-gray-100 p-4  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
+                      >
+                        Sign in
+                        {isSubmitting ? <Spinner size="small" /> : <></>}
+                      </button>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

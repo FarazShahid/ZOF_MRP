@@ -14,10 +14,11 @@ import {
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
-import useClientStore from "@/store/useClientStore";
+import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
+import useClientStore, { GetClientsType } from "@/store/useClientStore";
 import AddClients from "../components/AddClients";
 import DeleteClient from "../components/DeleteClient";
-import AdminDashboardLayout from "../components/AdminDashboardLayout";
+import AdminLayout from "../adminDashboard/lauout";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -26,17 +27,49 @@ const page = () => {
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [sortColumn, setSortColumn] = useState<keyof GetClientsType>("Name");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   const { fetchClients, clients, loading } = useClientStore();
 
   const rowsPerPage = 15;
   const pages = Math.ceil(clients!.length / rowsPerPage);
+
   const items = useMemo(() => {
+    const sorted = [...(clients || [])].sort((a, b) => {
+      const aValue = a[sortColumn];
+      const bValue = b[sortColumn];
+
+      // String sorting
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortDirection === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      // Number sorting
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+      }
+
+      // Date sorting (for fields like CreatedOn)
+      if (
+        sortColumn === "CreatedOn" &&
+        typeof aValue === "string" &&
+        typeof bValue === "string"
+      ) {
+        const aDate = new Date(aValue).getTime();
+        const bDate = new Date(bValue).getTime();
+        return sortDirection === "asc" ? aDate - bDate : bDate - aDate;
+      }
+
+      return 0;
+    });
+
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-
-    return clients?.slice(start, end);
-  }, [page, clients]);
+    return sorted.slice(start, end);
+  }, [page, clients, sortColumn, sortDirection]);
 
   const openAddModal = () => setIsAddModalOpen(true);
   const closeAddModal = () => {
@@ -57,12 +90,25 @@ const page = () => {
     setRefreshKey((prev) => prev + 1);
   };
 
+  const handleSort = (column: keyof GetClientsType) => {
+    if (column === sortColumn) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
   useEffect(() => {
     fetchClients();
   }, []);
 
+  useEffect(() => {
+    setPage(1);
+  }, [sortColumn, sortDirection]);
+
   return (
-    <AdminDashboardLayout>
+    <AdminLayout>
       <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-end">
           <button
@@ -78,10 +124,11 @@ const page = () => {
           isStriped
           isHeaderSticky
           aria-label="Client Table with pagination"
+          selectionMode="single"
           bottomContent={
-            <div className="grid grid-cols-2">
+            <div className="grid grid-cols-2 mt-5">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {items.length || 0}
+                Total: {clients.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -100,14 +147,50 @@ const page = () => {
           }}
         >
           <TableHeader>
-            <TableColumn key="Name" className="text-medium font-bold">
-              Name
+            <TableColumn
+              key="Name"
+              className="text-medium font-bold cursor-pointer"
+              onClick={() => handleSort("Name")}
+            >
+              <div className="flex items-center gap-1">
+                Name
+                {sortColumn === "Name" &&
+                  (sortDirection === "asc" ? (
+                    <TiArrowSortedUp />
+                  ) : (
+                    <TiArrowSortedDown />
+                  ))}
+              </div>
             </TableColumn>
-            <TableColumn key="Email" className="text-medium font-bold">
-              Email
+            <TableColumn
+              key="Email"
+              className="text-medium font-bold cursor-pointer"
+              onClick={() => handleSort("Email")}
+            >
+              <div className="flex items-center gap-1">
+                Email
+                {sortColumn === "Email" &&
+                  (sortDirection === "asc" ? (
+                    <TiArrowSortedUp />
+                  ) : (
+                    <TiArrowSortedDown />
+                  ))}
+              </div>
             </TableColumn>
-            <TableColumn key="Phone" className="text-medium font-bold">
+            <TableColumn
+              key="Phone"
+              className="text-medium font-bold cursor-pointer"
+              onClick={() => handleSort("Phone")}
+            >
+              <div className="flex items-center gap-1">
               Phone
+                {sortColumn === "Phone" &&
+                  (sortDirection === "asc" ? (
+                    <TiArrowSortedUp />
+                  ) : (
+                    <TiArrowSortedDown />
+                  ))}
+              </div>
             </TableColumn>
             <TableColumn key="City" className="text-medium font-bold">
               City
@@ -173,7 +256,7 @@ const page = () => {
           onDeleteSuccess={refetchData}
         />
       </div>
-    </AdminDashboardLayout>
+    </AdminLayout>
   );
 };
 
