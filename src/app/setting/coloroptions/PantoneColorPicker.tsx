@@ -5,6 +5,7 @@ import rawPantoneColors from "../../../../lib/pantone-colors.json";
 import { Button, Input } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import useColorOptionsStore, { AddColorOption } from "@/store/useColorOptionsStore";
+import { color } from "framer-motion";
 
 export type PantoneColor = {
   code: string;
@@ -14,6 +15,22 @@ export type PantoneColor = {
   s: number;
   l: number;
 };
+
+const filterBtns = [
+  {id: 1, name: "All Shades", color: ""},
+  {id: 2, name: "Red", color: "#ff2929"},
+  {id: 3, name: "Orange", color: "#ff7a29"},
+  {id: 4, name: "Brown", color: "#bf7f35"},
+  {id: 5, name: "Yellow", color: "#fad02e"},
+  {id: 6, name: "Green", color: "#91fa49"},
+  {id: 7, name: "Turquoise", color: "#36d8b7"},
+  {id: 8, name: "Blue", color: "#3b8aff"},
+  {id: 9, name: "Violet", color: "#991ef9"},
+  {id: 10, name: "Pink", color: "#ff5dcd"},
+  {id: 11, name: "White", color: "#FFFFFF"},
+  {id: 12, name: "Gray", color: "#b3bac1"},
+  {id: 13, name: "Black", color: "#000000"},
+]
 
 // Convert HEX to HSL
 function hexToHSL(hex: string): [number, number, number] {
@@ -82,6 +99,8 @@ export default function PantoneColorDropdown({
     pantoneColors[0]
   );
   const [search, setSearch] = useState("");
+  const [selectedBtnId, setSelectedBtnId] = useState(1);
+  const [selectedBtnName, setSelectedBtnName] = useState("");
 
 
   const {addColorOption} = useColorOptionsStore();
@@ -116,20 +135,72 @@ export default function PantoneColorDropdown({
     router.push("/setting/coloroptions");
   }
 
-    const handleAddColor = async () => {
-      const values = {
-        HexCode: selectedColor?.hex || "",
-        Name: selectedColor?.name || "",
-      };
+  const handleAddColor = async () => {
+    const values = {
+      HexCode: selectedColor?.hex || "",
+      Name: selectedColor?.name || "",
+    };
 
-        addColorOption(values, () => {
-              onCloseModal();
-            });
-      };
+    addColorOption(values, () => {
+      onCloseModal();
+    });
+  };
+
+  const handleSelectFilter = (id: number, name: string) =>{
+    const colorName = name === "All Shades" ? "" : name;
+
+    setSelectedBtnId(id);
+    setSelectedBtnName(name);
+    setSearch(colorName);
+  }
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+
+
+      <div className="w-full lg:max-w-[992px] mb-[50px] px-5">
+        <ul className="flex flex-wrap items-center justify-center">
+          {
+            filterBtns.map((btn)=>{
+              return(
+              <li className="m-1" key={btn.id}>
+                <button className={`color-tag ${btn.id === selectedBtnId ? "tagIsActive":""}`} onClick={() => handleSelectFilter(btn.id, btn.name)}>
+                  {
+                    btn.name !== "All Shades" ? <div  style={{ backgroundColor: btn.color }} /> :<></>
+                  }
+                  
+                  <span>{btn.name}</span>
+                </button>
+              </li>
+              )
+            })
+          }
+        </ul>
+      </div>
+
+      <div className="grid card-grid card-grid--350">
+        {filteredColors?.map((color) => (
+          <div className="color-card">
+            <div className="color-card_color" style={{ backgroundColor: color?.hex }}>
+              <span>{color?.code}</span>
+            </div>
+            <div className="color-card_info">
+              <a className="link link--black color-card_name">{color?.name}</a>
+              <div className="color-card_btns">
+                <a className="link link--secondary color-card_save-btn" style={{ display: "flex" }}>
+                  <i className="icon icon-favorite-16px"></i>
+                </a>
+                <a className="link link--secondary color-card_more-btn">
+                  <i className="icon icon-dots-24px"></i>
+                </a>
+              </div>
+            </div>
+            <div className="color-card_select-overlay"></div>
+          </div>
+        ))}
+        
+      </div>
+      {/* <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div
             className="w-10 h-10 rounded border shadow-inner"
@@ -161,13 +232,9 @@ export default function PantoneColorDropdown({
           <button
             key={color.code}
             type="button"
-            className="w-24 h-24 border transition-all duration-150 hover:ring-1 hover:ring-slate-600 hover:scale-125 text-xs flex justify-end"
+            className="w-24 h-24 border rounded transition-all duration-75 hover:ring-1 hover:ring-slate-600 hover:scale-80 text-xs flex justify-end"
             style={{
               backgroundColor: color.hex,
-              // clipPath:
-              //   'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
-              // shapeOutside:
-              //   'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
             }}
             onClick={() => handleSelect(color)}
             title={`${color.name} (${color.hex})`}
@@ -175,7 +242,7 @@ export default function PantoneColorDropdown({
             {color.hex}
           </button>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
