@@ -2,13 +2,13 @@ import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 
-interface GetSizeOptionsResponse {
+export interface GetSizeOptionsResponse {
   data: SizeMeasurements[];
   statusCode: number;
   message: string;
 }
 
-interface SizeOptionsIdRepsonse {
+export interface SizeOptionsIdRepsonse {
   data: SizeMeasurements;
   statusCode: number;
   message: string;
@@ -81,11 +81,13 @@ interface AddSizeOptions {
 interface StoreState {
   sizeMeasurement: SizeMeasurements[];
   sizeMeasurementById: SizeMeasurements | null;
+  sizeMeasurementsByClientId: SizeMeasurements[];
   loading: boolean;
   error: string | null;
 
   fetchSizeMeasurements: () => Promise<void>;
   getSizeMeasurementById: (id: number) => Promise<void>;
+  getSizeMeasurementByClientId: (id: number) => Promise<void>;
     addSizeMeasurement: (
       sizeMeasurement: AddSizeMeasurementType,
       onSuccess: () => void
@@ -101,6 +103,7 @@ interface StoreState {
 const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
   sizeMeasurement: [],
   sizeMeasurementById: null,
+  sizeMeasurementsByClientId: [],
   loading: false,
   error: null,
 
@@ -127,6 +130,24 @@ const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
     try {
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/${id}`
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to fetch data");
+      }
+      const data: SizeOptionsIdRepsonse = await response.json();
+      set({ sizeMeasurementById: data.data, loading: false });
+    } catch (error) {
+      set({ error: "Failed to fetch data", loading: false });
+      toast.error("Failed to fetch data");
+    }
+  },
+  getSizeMeasurementByClientId: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/by-client/${id}`
       );
       if (!response.ok) {
         const error = await response.json();
@@ -175,6 +196,7 @@ const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
       sizeMeasurement: AddSizeMeasurementType,
       onSuccess?: () => void
     ) => {
+      
       set({ loading: true, error: null });
       try {
         const response = await fetchWithAuth(

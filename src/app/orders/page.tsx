@@ -122,7 +122,7 @@ const page = () => {
           bottomContent={
             <div className="grid grid-cols-2">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {items.length || 0}
+                Total: {Orders?.length || 0}
               </span>
               <Pagination
                 isCompact

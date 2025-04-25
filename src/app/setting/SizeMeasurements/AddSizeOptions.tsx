@@ -13,8 +13,9 @@ import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import useSizeMeasurementsStore, {
   AddSizeMeasurementType,
 } from "@/store/useSizeMeasurementsStore";
-import { SizeMeasurementSchema } from "../../schema/SizeMeasurementSchema";
 import useClientStore from "@/store/useClientStore";
+import { SizeMeasurementSchema } from "../../schema/SizeMeasurementSchema";
+
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -113,8 +114,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
         });
   };
 
-
-  console.log("sizeId", sizeId);
+  console.log(" sizeMeasurementById ",  sizeMeasurementById );
   return (
     <Modal isOpen={isOpen} size="5xl" onOpenChange={closeAddModal}>
       <ModalContent>

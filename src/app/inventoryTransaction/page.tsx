@@ -15,13 +15,12 @@ import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 import AdminLayout from "../adminDashboard/lauout";
-import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 import useInventoryTransection from "@/store/useInventoryTransection";
 import { formatDate } from "../interfaces";
 import DeleteItem from "./DeleteItem";
 import AddInventoryTransaction from "./AddInventoryTransaction";
-// import DeleteInventoryItem from "./DeleteInventoryItem";
-// import AddItems from "./AddItems";
+import TransactionTypeChip from "./TransactionTypeChip";
+
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -144,6 +143,8 @@ const page = () => {
                       formatDate(item[columnKey])
                     ) : columnKey === "Sr" ? (
                       index + 1
+                    ): columnKey === "TransactionType" ? (
+                      <TransactionTypeChip type={item.TransactionType} />
                     ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
                     ) : (

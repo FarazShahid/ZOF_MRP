@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { IoAddCircleSharp } from "react-icons/io5";
-import { MdDelete, MdEditSquare } from "react-icons/md";
+import Link from "next/link";
 import {
   getKeyValue,
   Pagination,
@@ -68,14 +67,13 @@ const page = () => {
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <h6 className="font-sans text-lg font-semibold">Color Options</h6>
-        <button
-          type="button"
+        <Link
+        href={"/setting/coloroptions/addColor"}
           className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
-          onClick={openAddModal}
         >
           <FiPlus />
           Add New
-        </button>
+        </Link>
       </div>
       <Table
         isStriped
@@ -145,12 +143,12 @@ const page = () => {
                     getKeyValue(item, columnKey)
                   ) : (
                     <div className="flex gap-2">
-                      <button
+                      {/* <button
                         type="button"
                         onClick={() => openEditModal(item.Id)}
                       >
                         <GoPencil color="green" />
-                      </button>
+                      </button> */}
                       <button
                         type="button"
                         className="hover:text-red-500 cursor-pointer"
@@ -167,12 +165,12 @@ const page = () => {
         </TableBody>
       </Table>
 
-      <AddColorOptions
+      {/* <AddColorOptions
         isOpen={isAddModalOpen}
         closeAddModal={closeAddModal}
         isEdit={isEdit}
         colorId={selectedProductCatId}
-      />
+      /> */}
 
       <DeleteColorOptions
         isOpen={isOpenDeletModal}

@@ -18,6 +18,7 @@ import AdminLayout from "../adminDashboard/lauout";
 import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 import DeleteInventoryItem from "./DeleteInventoryItem";
 import AddItems from "./AddItems";
+import StockDataVisulizer from "./StockDataVisulizer";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -132,11 +133,13 @@ const page = () => {
               <TableRow key={item.Id}>
                 {(columnKey) => (
                   <TableCell>
-                    {columnKey === "Sr" ? (
-                      index + 1
-                    ) : columnKey !== "action" ? (
-                      getKeyValue(item, columnKey)
-                    ) : (
+                  {columnKey === "Sr" ? (
+                    index + 1
+                  ):columnKey === "Stock" ? (
+                    <StockDataVisulizer stock={item.Stock} reorderLevel={item.ReorderLevel} itemCode={item.ItemCode} />
+                  ) : columnKey !== "action" ? (
+                    getKeyValue(item, columnKey)
+                  ) : (
                       <div className="flex gap-2">
                         <button
                           type="button"

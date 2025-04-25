@@ -9,9 +9,7 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import useInventoryItemsStore, {
-  AddInventoryItemOptions,
-} from "@/store/useInventoryItemsStore";
+import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 import { InventoryTransactionSchema } from "../schema/InventoryItemSchema";
 import useInventoryTransection, { AddInventoryTransactionType, TRANSACTION_TYPES } from "@/store/useInventoryTransection";
 
@@ -28,13 +26,6 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
   isEdit,
   Id,
 }) => {
-//   const {
-//     loading,
-//     getInventoryItemById,
-//     inventoryItemById,
-//     updateInventoryItem,
-//     addInventoryItem,
-//   } = useInventoryItemsStore();
 
 const {loading, getInventoryTransactionById, inventoryTransactionById, addInventoryTransaction, updateInventoryTransaction} = useInventoryTransection();
 

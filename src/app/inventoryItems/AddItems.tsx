@@ -9,10 +9,6 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import { SupplierSchema } from "../schema/SupplierSchema";
-import useInventoryCategoryStore, {
-  AddInventoryCategoryOptions,
-} from "@/store/useInventoryCategoryStore";
 import useInventoryItemsStore, {
   AddInventoryItemOptions,
 } from "@/store/useInventoryItemsStore";
@@ -99,7 +95,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                       <Spinner />
                     ) : (
                       <>
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
                               Name
@@ -195,22 +191,6 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                             <ErrorMessage
                               name="ReorderLevel"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Stock
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
-                            <Field
-                              name="Stock"
-                              type="number"
-                              className="formInputdefault"
-                            />
-                            <ErrorMessage
-                              name="Stock"
                               component="div"
                               className="text-red-400 text-sm"
                             />
