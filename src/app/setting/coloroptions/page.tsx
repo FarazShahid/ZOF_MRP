@@ -110,15 +110,7 @@ const page = () => {
           <TableColumn key="HexCode" className="text-medium font-bold">
             Color
           </TableColumn>
-          <TableColumn key="CreatedOn" className="text-medium font-bold">
-            Created On
-          </TableColumn>
-          <TableColumn key="CreatedBy" className="text-medium font-bold">
-            Created By
-          </TableColumn>
-          <TableColumn key="UpdatedOn" className="text-medium font-bold">
-            Updated On
-          </TableColumn>
+          
           <TableColumn key="action" className="text-medium font-bold">
             Action
           </TableColumn>
@@ -128,9 +120,7 @@ const page = () => {
             <TableRow key={item.Id}>
               {(columnKey) => (
                 <TableCell>
-                  {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
-                    formatDate(item[columnKey])
-                  ) : columnKey === "Sr" ? (
+                  {columnKey === "Sr" ? (
                     index + 1
                   ) : columnKey === "HexCode" ? (
                     <div className="flex items-center gap-1">
@@ -143,12 +133,6 @@ const page = () => {
                     getKeyValue(item, columnKey)
                   ) : (
                     <div className="flex gap-2">
-                      {/* <button
-                        type="button"
-                        onClick={() => openEditModal(item.Id)}
-                      >
-                        <GoPencil color="green" />
-                      </button> */}
                       <button
                         type="button"
                         className="hover:text-red-500 cursor-pointer"

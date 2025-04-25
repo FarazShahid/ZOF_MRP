@@ -111,15 +111,7 @@ const page = () => {
             >
               Size Option
             </TableColumn>
-            <TableColumn key="CreatedOn" className="text-medium font-bold">
-              Created On
-            </TableColumn>
-            <TableColumn key="CreatedBy" className="text-medium font-bold">
-              Created By
-            </TableColumn>
-            <TableColumn key="UpdatedOn" className="text-medium font-bold">
-              Updated On
-            </TableColumn>
+            
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
@@ -129,9 +121,7 @@ const page = () => {
               <TableRow key={item.Id}>
                 {(columnKey) => (
                   <TableCell>
-                    {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
-                      formatDate(item[columnKey])
-                    ) : columnKey === "Sr" ? (
+                    {columnKey === "Sr" ? (
                       index + 1
                     ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)

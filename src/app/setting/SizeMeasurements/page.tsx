@@ -179,12 +179,6 @@ const page = () => {
             <TableColumn key="ClientName" className="text-medium font-bold">
               Client Name
             </TableColumn>
-            <TableColumn key="CreatedOn" className="text-medium font-bold">
-              Created On
-            </TableColumn>
-            <TableColumn key="UpdatedOn" className="text-medium font-bold">
-              Updated On
-            </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
@@ -198,9 +192,7 @@ const page = () => {
               >
                 {(columnKey) => (
                   <TableCell>
-                    {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
-                      formatDate(item[columnKey])
-                    ) : columnKey === "Sr" ? (
+                    {columnKey === "Sr" ? (
                       index + 1
                     ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)

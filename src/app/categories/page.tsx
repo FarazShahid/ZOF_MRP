@@ -103,15 +103,7 @@ const page = () => {
             <TableColumn key="Name" className="text-medium font-bold">
               Name
             </TableColumn>
-            <TableColumn key="CreatedOn" className="text-medium font-bold">
-              Created On
-            </TableColumn>
-            <TableColumn key="CreatedBy" className="text-medium font-bold">
-              Created By
-            </TableColumn>
-            <TableColumn key="UpdatedOn" className="text-medium font-bold">
-              Updated On
-            </TableColumn>
+            
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
