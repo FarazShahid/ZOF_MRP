@@ -253,8 +253,7 @@
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #344054;
 }
-@layer utilities {
-  /* For Remove Date Icon */
+/* @layer utilities {
   input[type="date"]::-webkit-inner-spin-button,
   input[type="time"]::-webkit-inner-spin-button,
   input[type="date"]::-webkit-calendar-picker-indicator,
@@ -262,7 +261,7 @@
     display: none;
     -webkit-appearance: none;
   }
-}
+} */
 
 /* third-party libraries CSS */
 .apexcharts-legend-text {
