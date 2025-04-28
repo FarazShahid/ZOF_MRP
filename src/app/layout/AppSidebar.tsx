@@ -2,6 +2,11 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import { IoSettingsOutline } from "react-icons/io5";
+import { RiAlignItemBottomLine } from "react-icons/ri";
+import { PiWarehouseDuotone } from "react-icons/pi";
+import { FaUserFriends, FaTshirt } from "react-icons/fa";
 import { useSidebar } from "../context/SidebarContext";
 import {
   ChevronDownIcon,
@@ -9,11 +14,7 @@ import {
   HorizontaLDots,
   UserCircleIcon,
 } from "../../../public/icons/index";
-import { IoSettingsOutline } from "react-icons/io5";
-import { RiAlignItemBottomLine } from "react-icons/ri";
-import { FaTshirt } from "react-icons/fa";
-import { PiWarehouseDuotone } from "react-icons/pi";
-import { FaUserFriends } from "react-icons/fa";
+import Logo from "../../../public/logo.png";
 
 type NavItem = {
   name: string;
@@ -55,6 +56,7 @@ const navItems: NavItem[] = [
       { name: "Categories", path: "/categories", pro: false },
       { name: "Sub Categories", path: "/subcategories", pro: false },
       { name: "Suppliers", path: "/supplier", pro: false },
+      { name: "Unit of Measure", path: "/unitofmeasure", pro: false },
       { name: "Inventory Items", path: "/inventoryItems", pro: false },
       { name: "Inventory Transaction", path: "/inventoryTransaction", pro: false },
     ],
@@ -297,19 +299,15 @@ const AppSidebar: React.FC = () => {
         <Link href="/adminDashboard">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
-              <div className="flex items-baseline gap-1">
-                <span className="text-xs font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-green-900">
-                  ZeroOneForge
-                </span>
+              <div className="flex items-center gap-1">
+                <Image alt="MRP" src={Logo} className="w-10 h-10" />
                 <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-900">
                   MRP
                 </span>
               </div>
             </>
           ) : (
-            <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-900">
-              MRP
-            </span>
+            <Image alt="MRP" src={Logo} />
           )}
         </Link>
       </div>

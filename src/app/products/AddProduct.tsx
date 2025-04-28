@@ -286,10 +286,10 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               className="formInputdefault"
                             >
                               <option value={""}>Select a type</option>
-                              {productCategories.map((category) => {
+                              {productCategories?.map((category, index) => {
                                 return (
-                                  <option value={category.id}>
-                                    {category.type}
+                                  <option value={category?.id} key={index}>
+                                    {category?.type}
                                   </option>
                                 );
                               })}
@@ -311,10 +311,10 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               className="formInputdefault"
                             >
                               <option value={""}>Select a type</option>
-                              {fabricTypeData.map((category) => {
+                              {fabricTypeData?.map((category, index) => {
                                 return (
-                                  <option value={category.id}>
-                                    {`${category.name}_${category.type}_${category.gsm}`}
+                                  <option value={category?.id} key={index}>
+                                    {`${category?.name}_${category?.type}_${category?.gsm}`}
                                   </option>
                                 );
                               })}
@@ -325,39 +325,42 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               className="text-red-400 text-sm"
                             />
                           </div>
-                          <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Color
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
-                            <Select
-                              className="max-w-xs"
-                              name="ColorName"
-                              placeholder="Select Color Options"
-                              selectionMode="multiple"
-                              aria-label="printing option"
-                              selectedKeys={new Set(selectedColorOptions)}
-                              onSelectionChange={(keys) =>
-                                handleColorOptionChange(keys)
-                              }
-                            >
-                              {colorOptions!.map((colorOptions) => (
-                                <SelectItem key={colorOptions?.Id}>
-                                  {colorOptions.Name}
-                                </SelectItem>
-                              ))}
-                            </Select>
-                            <ErrorMessage
-                              name="ColorName"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
+                          <div className="flex gap-1 items-end">
+                            <div className="flex flex-col gap-1 w-full">
+                              <label className="text-sm text-gray-600 font-sans">
+                                Available Colors
+                                <span className="text-red-500 text-sm">*</span>
+                              </label>
+                              <Select
+                                className="max-w-xs"
+                                name="ColorName"
+                                placeholder="Select Color Options"
+                                selectionMode="multiple"
+                                aria-label="printing option"
+                                selectedKeys={new Set(selectedColorOptions)}
+                                onSelectionChange={(keys) =>
+                                  handleColorOptionChange(keys)
+                                }
+                              >
+                                {colorOptions!.map((colorOptions) => (
+                                  <SelectItem key={colorOptions?.Id}>
+                                    {colorOptions.Name}
+                                  </SelectItem>
+                                ))}
+                              </Select>
+                              <ErrorMessage
+                                name="ColorName"
+                                component="div"
+                                className="text-red-400 text-sm"
+                              />
+                            </div>
+                            <input type="color" />
                           </div>
                         </div>
                         <FieldArray name="productDetails">
                           {({ push, remove }) => (
                             <div className="flex flex-col gap-3">
-                              {values.productDetails.map((_, index) => (
+                              {values?.productDetails?.map((_, index) => (
                                 <div
                                   key={index}
                                   className="flex flex-col gap-1 bg-gray-50 p-3 rounded-md border border-gray-300"
@@ -376,12 +379,12 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                                         <option value="">
                                           Select an option
                                         </option>
-                                        {cutOptions.map((cutOption) => (
+                                        {cutOptions?.map((cutOption) => (
                                           <option
-                                            key={cutOption.Id}
-                                            value={cutOption.Id}
+                                            key={cutOption?.Id}
+                                            value={cutOption?.Id}
                                           >
-                                            {cutOption.OptionProductCutOptions}
+                                            {cutOption?.OptionProductCutOptions}
                                           </option>
                                         ))}
                                       </Field>
@@ -407,12 +410,12 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                                         <option value="">
                                           Select a client
                                         </option>
-                                        {clients.map((client) => (
+                                        {clients?.map((client) => (
                                           <option
-                                            key={client.Id}
-                                            value={client.Id}
+                                            key={client?.Id}
+                                            value={client?.Id}
                                           >
-                                            {client.Name}
+                                            {client?.Name}
                                           </option>
                                         ))}
                                       </Field>
@@ -434,12 +437,12 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                                         {(
                                           measurementsMap[index] ??
                                           allMeasurements
-                                        ).map((sizeMeasurement) => (
+                                        )?.map((sizeMeasurement, index) => (
                                           <option
-                                            key={sizeMeasurement.Id}
-                                            value={sizeMeasurement.Id}
+                                            key={index}
+                                            value={sizeMeasurement?.Id}
                                           >
-                                            {sizeMeasurement.Measurement1}
+                                            {sizeMeasurement?.Measurement1}
                                           </option>
                                         ))}
                                       </Field>
@@ -458,12 +461,12 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                                         <option value="">
                                           Select an option
                                         </option>
-                                        {sleeveTypeData.map((sleeve) => (
+                                        {sleeveTypeData?.map((sleeve, index) => (
                                           <option
-                                            key={sleeve.id}
-                                            value={sleeve.id}
+                                            key={index}
+                                            value={sleeve?.id}
                                           >
-                                            {sleeve.sleeveTypeName}
+                                            {sleeve?.sleeveTypeName}
                                           </option>
                                         ))}
                                       </Field>

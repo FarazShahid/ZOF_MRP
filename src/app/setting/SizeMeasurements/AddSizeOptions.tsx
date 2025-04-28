@@ -114,7 +114,6 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
         });
   };
 
-  console.log(" sizeMeasurementById ",  sizeMeasurementById );
   return (
     <Modal isOpen={isOpen} size="5xl" onOpenChange={closeAddModal}>
       <ModalContent>

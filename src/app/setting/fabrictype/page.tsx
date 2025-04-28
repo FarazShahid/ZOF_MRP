@@ -156,21 +156,6 @@ const page = () => {
               Sr
             </TableColumn>
             <TableColumn
-              key="type"
-              className="text-medium font-bold cursor-pointer"
-              onClick={() => handleSort("type")}
-            >
-              <div className="flex items-center gap-1">
-                Type
-                {sortColumn === "type" &&
-                  (sortDirection === "asc" ? (
-                    <TiArrowSortedUp />
-                  ) : (
-                    <TiArrowSortedDown />
-                  ))}
-              </div>
-            </TableColumn>
-            <TableColumn
               key="name"
               className="text-medium font-bold cursor-pointer"
               onClick={() => handleSort("name")}
@@ -185,6 +170,22 @@ const page = () => {
                   ))}
               </div>
             </TableColumn>
+            <TableColumn
+              key="type"
+              className="text-medium font-bold cursor-pointer"
+              onClick={() => handleSort("type")}
+            >
+              <div className="flex items-center gap-1">
+                Type
+                {sortColumn === "type" &&
+                  (sortDirection === "asc" ? (
+                    <TiArrowSortedUp />
+                  ) : (
+                    <TiArrowSortedDown />
+                  ))}
+              </div>
+            </TableColumn>
+            
             <TableColumn key="gsm" className="text-medium font-bold">
               GSM
             </TableColumn>

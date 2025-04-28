@@ -102,8 +102,8 @@ const page = () => {
             onChange={(e) => handleClinetFilter(e.target.value)}
           >
             <option value={0}>View All</option>
-            {clients.map((client) => {
-              return <option value={client.Id}>{client.Name}</option>;
+            {clients?.map((client, index) => {
+              return <option value={client?.Id} key={index}>{client?.Name}</option>;
             })}
           </select>
           <button
@@ -162,19 +162,16 @@ const page = () => {
             <TableColumn key="Deadline" className="text-medium font-bold">
               Deadline
             </TableColumn>
-            <TableColumn key="UpdatedOn" className="text-medium font-bold">
-            Updated On
-            </TableColumn>
             <TableColumn key="Action" className="text-medium font-bold">
               Action
             </TableColumn>
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
             {(item) => (
-              <TableRow key={item.Id}>
+              <TableRow key={`${item.Id}_${item.OrderNumber}`}>
                 {(columnKey) => (
                   <TableCell>
-                    {columnKey === "UpdatedOn" || columnKey === "Deadline" ? (
+                    {columnKey === "Deadline" ? (
                       formatDate(item[columnKey])
                     ) : columnKey === "StatusName" ? (
                       <StatusChip OrderStatus={item.StatusName} />

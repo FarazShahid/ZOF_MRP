@@ -2,12 +2,14 @@
 
 import { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import Image from "next/image";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import Spinner from "./components/Spinner";
 import { LoginSchemaValidation } from "./schema/loginSchema";
 import AuthContext from "./services/authservice";
 import { loginInitialValues } from "./interfaces";
 import LoginAnimator from "./components/LoginAnimator";
+import Logo from "../../public/logo.png";
 
 export default function Home() {
   const authContext = useContext(AuthContext);
@@ -44,9 +46,10 @@ export default function Home() {
 
               <div className="flex items-center justify-center space-x-2">
                 <span className="h-px w-16 bg-gray-200"></span>
-                <span className="text-gray-300 font-normal">
+                {/* <span className="text-gray-300 font-normal">
                   ZeroOneForge MRP
-                </span>
+                </span> */}
+                <Image alt="MRP" src={Logo} className="w-10 h-10" />
                 <span className="h-px w-16 bg-gray-200"></span>
               </div>
               <Formik

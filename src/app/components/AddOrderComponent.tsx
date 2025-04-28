@@ -41,7 +41,6 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
     number[] | undefined
   >([]);
 
-  // const { orderDetails, refetch } = useOrderDetails(orderId);
   const { Events, fetchEvents } = useEventsStore();
   const { fetchProducts, products } = useProductStore();
   const { printingOptions, fetchprintingOptions } = usePrintingOptionsStore();
@@ -499,7 +498,8 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                             <AccordionItem
                               key={product.ProductId}
                               aria-label={`accordion-${product.ProductId}`}
-                              title={`${product.ProductFabricName} ${product.ProductFabricType} ${product.ProductFabricGSM}`}
+                              title={`${product.ProductFabricName} ${product.ProductCategoryName} ${product.ProductFabricGSM}`}
+                              // `${item.FabricName} ${item.ProductCategoryName} ${item?.GSM}`
                             >
                               <div className="flex flex-col gap-2 mb-2">
                                 <div className="flex items-center justify-end">

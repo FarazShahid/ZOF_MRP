@@ -1,12 +1,14 @@
 import React from "react";
+import Image from "next/image";
+import Logo from "../../../public/logo.png";
 
 const LoginAnimator = () => {
   return (
     <div className="sm:w-1/2 xl:w-3/5 h-full hidden md:flex flex-auto items-center justify-center p-10 overflow-hidden bg-purple-900 text-white bg-no-repeat bg-cover relative loginAnimator">
       <div className="absolute bg-gradient-to-b from-indigo-600 to-blue-500 opacity-75 inset-0 z-0"></div>
       <div className="w-full  max-w-md z-10">
-        <div className="sm:text-4xl xl:text-5xl font-bold leading-tight mb-6">
-          ZeroOneForge
+        <div className="sm:text-4xl xl:text-5xl font-bold leading-tight mb-6 flex items-center gap-1">
+          <Image alt="MRP" src={Logo} className="w-10 h-10" /> MRP
         </div>
         <div className="sm:text-sm xl:text-md text-gray-200 font-normal">
           ZeroOneForge MRP is a cutting-edge Material Requirements Planning

@@ -12,9 +12,10 @@ import { Field, Formik, Form, ErrorMessage } from "formik";
 import useInventoryItemsStore, {
   AddInventoryItemOptions,
 } from "@/store/useInventoryItemsStore";
-import { InventoryItemSchema } from "../schema/InventoryItemSchema";
 import useInventorySubCategoryStore from "@/store/useInventorySubCategoryStore";
 import useSupplierStore from "@/store/useSupplierStore";
+import useUnitOfMeasureStore from "@/store/useUnitOfMeasureStore";
+import { InventoryItemSchema } from "../schema/InventoryItemSchema";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -39,6 +40,7 @@ const AddItems: React.FC<AddComponentProps> = ({
 
   const { fetchSubCategories, subCategories } = useInventorySubCategoryStore();
   const { fetchSuppliers, suppliers } = useSupplierStore();
+  const {fetchUnitOfMeasures, unitMeasures} = useUnitOfMeasureStore();
 
   useEffect(() => {
     if (Id && isEdit) {
@@ -49,14 +51,15 @@ const AddItems: React.FC<AddComponentProps> = ({
   useEffect(() => {
     fetchSubCategories();
     fetchSuppliers();
+    fetchUnitOfMeasures();
   }, []);
 
   const InitialValues = {
     Name: isEdit && inventoryItemById ? inventoryItemById.Name : "",
     SubCategoryId:
       isEdit && inventoryItemById ? inventoryItemById.SubCategoryId : 0,
-    UnitOfMeasure:
-      isEdit && inventoryItemById ? inventoryItemById.UnitOfMeasure : "",
+    UnitOfMeasureId:
+      isEdit && inventoryItemById ? inventoryItemById.UnitOfMeasureId : "",
     SupplierId: isEdit && inventoryItemById ? inventoryItemById.SupplierId : 0,
     ReorderLevel:
       isEdit && inventoryItemById ? Number(inventoryItemById.ReorderLevel) : 0,
@@ -64,7 +67,6 @@ const AddItems: React.FC<AddComponentProps> = ({
   };
 
   const handleAdd = async (values: AddInventoryItemOptions) => {
-    console.log("values", values);
     isEdit
       ? updateInventoryItem(Id, values, () => {
           closeAddModal();
@@ -124,10 +126,10 @@ const AddItems: React.FC<AddComponentProps> = ({
                               className="formInputdefault"
                             >
                               <option value={0}>Select sub category</option>
-                              {subCategories.map((category) => {
+                              {subCategories.map((category, index) => {
                                 return (
-                                  <option value={category.Id}>
-                                    {category.Name}
+                                  <option value={category?.Id} key={index}>
+                                    {category?.Name}
                                   </option>
                                 );
                               })}
@@ -149,10 +151,10 @@ const AddItems: React.FC<AddComponentProps> = ({
                               className="formInputdefault"
                             >
                               <option value={0}>Select Supplier</option>
-                              {suppliers.map((supplier) => {
+                              {suppliers?.map((supplier, index) => {
                                 return (
-                                  <option value={supplier.Id}>
-                                    {supplier.Name}
+                                  <option value={supplier?.Id} key={index}>
+                                    {supplier?.Name}
                                   </option>
                                 );
                               })}
@@ -169,10 +171,19 @@ const AddItems: React.FC<AddComponentProps> = ({
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
-                              name="UnitOfMeasure"
-                              type="number"
+                              name="UnitOfMeasureId"
+                              as="select"
                               className="formInputdefault"
-                            />
+                            >
+                              <option value={0}>Select Unit of measure</option>
+                              {unitMeasures?.map((unitMeasure, index) => {
+                                return (
+                                  <option value={unitMeasure?.Id} key={index}>
+                                    {unitMeasure?.Name}
+                                  </option>
+                                );
+                              })}
+                            </Field>
                             <ErrorMessage
                               name="UnitOfMeasure"
                               component="div"

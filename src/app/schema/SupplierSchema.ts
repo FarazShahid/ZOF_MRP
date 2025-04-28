@@ -8,3 +8,9 @@ export const SupplierSchema = Yup.object().shape({
 export const UserSchema = Yup.object().shape({
     Email: Yup.string().required('Email is required'),
 })
+
+
+export const UnitOfMeasureSchema = Yup.object().shape({
+    Name: Yup.string().required('Name is required'),
+    ShortForm: Yup.string().required('ShortForm is required'),
+})

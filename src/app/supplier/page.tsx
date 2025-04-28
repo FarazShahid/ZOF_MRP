@@ -105,7 +105,24 @@ const page = () => {
             <TableColumn key="Name" className="text-medium font-bold">
               Name
             </TableColumn>
-            
+            <TableColumn key="Phone" className="text-medium font-bold">
+              Phone
+            </TableColumn>
+            <TableColumn key="Email" className="text-medium font-bold">
+              Email
+            </TableColumn>
+            <TableColumn key="City" className="text-medium font-bold">
+            City
+            </TableColumn>
+            <TableColumn key="State" className="text-medium font-bold">
+            State
+            </TableColumn>
+            <TableColumn key="Country" className="text-medium font-bold">
+            Country
+            </TableColumn>
+            <TableColumn key="CompleteAddress" className="text-medium font-bold">
+           Address
+            </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>

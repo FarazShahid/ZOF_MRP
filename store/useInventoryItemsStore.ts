@@ -20,7 +20,9 @@ interface InventoryItemResponse {
   ItemCode: string;
   SubCategoryId: number;
   SubCategoryName: string;
-  UnitOfMeasure: string;
+  UnitOfMeasureId: string;
+  UnitOfMeasureName: string;
+  UnitOfMeasureShortForm: string;
   SupplierId: number;
   SupplierName: string;
   ReorderLevel: string | number;
@@ -34,7 +36,7 @@ interface InventoryItemResponse {
 export interface AddInventoryItemOptions {
   Name: string;
   SubCategoryId: number;
-  UnitOfMeasure: string;
+  UnitOfMeasureId: string;
   SupplierId: number;
   ReorderLevel: number;
   Stock: number;
