@@ -11,14 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { formatDate } from "../../interfaces";
-import useFabricStore, { FabricType } from "@/store/useFabricStore";
-import DeleteFabricType from "./DeleteFabricType";
-import AddFabricType from "./AddFabricType";
 import { FiPlus } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { GoPencil } from "react-icons/go";
+import useFabricStore, { FabricType } from "@/store/useFabricStore";
+import DeleteFabricType from "./DeleteFabricType";
+import AddFabricType from "./AddFabricType";
 import AdminLayout from "../../adminDashboard/lauout";
 
 const page = () => {
@@ -56,31 +55,21 @@ const page = () => {
     setIsEdit(true);
   };
 
-  // const items = useMemo(() => {
-  //   const start = (page - 1) * rowsPerPage;
-  //   const end = start + rowsPerPage;
-
-  //   return fabricTypeData?.slice(start, end);
-  // }, [page, fabricTypeData]);
-
   const items = useMemo(() => {
     const sorted = [...(fabricTypeData || [])].sort((a, b) => {
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
 
-      // String sorting
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortDirection === "asc"
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
 
-      // Number sorting
       if (typeof aValue === "number" && typeof bValue === "number") {
         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
       }
 
-      // Date sorting (for fields like CreatedOn)
       if (
         sortColumn === "createdOn" &&
         typeof aValue === "string" &&

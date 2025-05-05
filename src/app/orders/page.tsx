@@ -11,18 +11,18 @@ import {
   TableRow,
   getKeyValue,
 } from "@heroui/react";
+import { FaRegEye } from "react-icons/fa6";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { FiPlus } from "react-icons/fi";
+import { GoPencil } from "react-icons/go";
 
+import useOrderStore from "@/store/useOrderStore";
+import useClientStore from "@/store/useClientStore";
 import AddOrderComponent from "../components/AddOrderComponent";
 import { formatDate } from "../interfaces";
 import ViewOrderComponent from "../components/ViewOrderComponent";
 import DeleteModal from "../components/DeleteModal";
 import StatusChip from "../components/StatusChip";
-import useOrderStore from "@/store/useOrderStore";
-import { FiPlus } from "react-icons/fi";
-import { GoPencil } from "react-icons/go";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { FaRegEye } from "react-icons/fa6";
-import useClientStore from "@/store/useClientStore";
 import AdminLayout from "../adminDashboard/lauout";
 
 const page = () => {
