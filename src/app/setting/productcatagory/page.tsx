@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { IoAddCircleSharp } from "react-icons/io5";
-import { MdDelete, MdEditSquare } from "react-icons/md";
 import {
   getKeyValue,
   Pagination,
@@ -14,7 +12,6 @@ import {
   TableRow,
 } from "@heroui/react";
 import DeleteProductCatagory from "./DeleteProductCatagory";
-import { formatDate } from "../../interfaces";
 import AddProductCatagory from "./AddProductCatagory";
 import useCategoryStore, { ProductCategory } from "@/store/useCategoryStore";
 import { FiPlus } from "react-icons/fi";
