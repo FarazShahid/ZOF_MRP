@@ -17,7 +17,7 @@ export type PantoneColor = {
   l: number;
 };
 
-const filterBtns = [
+export const filterBtns = [
   {id: 1, name: "All Shades", color: ""},
   {id: 2, name: "Red", color: "#ff2929"},
   {id: 3, name: "Orange", color: "#ff7a29"},

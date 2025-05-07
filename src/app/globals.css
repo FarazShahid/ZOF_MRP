@@ -918,6 +918,10 @@ span.flatpickr-weekday,
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-gap: 10px 35px;
 }
+.popupColorGrid{
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  grid-gap: 10px 35px;
+}
 .color-card {
   display: block;
   opacity: 1;
@@ -1029,4 +1033,19 @@ span.flatpickr-weekday,
 }
 .color-card:hover .color-card_color span {
   opacity: 1;
+}
+.selectedNavItem{
+  background: #3f3f3f;
+}
+.selectedNavItem svg > path {
+  fill: #039855;
+}
+.selectedNavItem span {
+  color: white;
+}
+.activeListing{
+  border: 2px solid #4ade80;
+}
+.activeListing svg > path {
+  fill: #4ade80;
 }
