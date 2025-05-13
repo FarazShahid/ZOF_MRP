@@ -10,7 +10,9 @@ import {
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import useEventsStore, { AddEvent } from "@/store/useEventsStore";
-import { EventsSchema } from "../../schema/EventsSchema";
+import { EventsSchema } from "../schema/EventsSchema";
+import useClientStore from "@/store/useClientStore";
+import Label from "../components/common/Label";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -27,6 +29,12 @@ const EventsForm: React.FC<AddClientComponentProps> = ({
 }) => {
   const { loading, eventById, getEventsById, addEvent, updateEvent } =
     useEventsStore();
+  const {fetchClients, clients} = useClientStore();
+
+
+  useEffect(()=>{
+    fetchClients();
+  },[])
 
   useEffect(() => {
     if (eventId && isEdit) {
@@ -36,6 +44,7 @@ const EventsForm: React.FC<AddClientComponentProps> = ({
 
   const InitialValues = {
     EventName: isEdit && eventById ? eventById?.EventName : "",
+    ClientId: isEdit && eventById ? eventById?.ClientId : 0,
     Description: isEdit && eventById ? eventById?.Description : "",
   };
 
@@ -72,16 +81,35 @@ const EventsForm: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                             <Label isRequired={true} label="Name" labelForm="Name" />
                             <Field
                               name="EventName"
                               type="text"
                               placeholder="Enter Type"
                               className="formInputdefault border-1"
                             />
+                            <ErrorMessage
+                              name="EventName"
+                              component="div"
+                              className="text-red-400 text-sm"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <Label isRequired={false} label="Client" labelForm="Client" />
+                            <Field
+                              name="ClientId"
+                              as="select"
+                              className="formInputdefault border-1"
+                            >
+                              <option value={""}>Select a client</option>
+                              {
+                                clients.map((client, index)=>{
+                                  return(
+                                    <option value={client.Id} key={index}>{client.Name}</option>
+                                  )
+                                })
+                              }
+                            </Field>
                             <ErrorMessage
                               name="EventName"
                               component="div"

@@ -18,6 +18,8 @@ export interface Events {
   Id: number;
   EventName: string;
   Description: string;
+  ClientId: number;
+  ClientName: string;
   CreatedBy: string;
   CreatedOn: string;
   UpdatedOn: string;
@@ -25,6 +27,7 @@ export interface Events {
 }
 export interface AddEvent {
   EventName: string;
+  ClientId?: number;
   Description: string;
 }
 

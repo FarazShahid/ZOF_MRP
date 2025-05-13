@@ -38,7 +38,6 @@ const ActiveOrderCard: React.FC<ComponentProp> = ({
       </div>
       <Tooltip content={`${orderPercentage}%`}>
         <Progress
-          isStriped
           aria-label="Loading..."
           color="success"
           value={Number(orderPercentage)}

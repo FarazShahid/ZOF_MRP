@@ -80,14 +80,11 @@ const OrderCard = () => {
           </span>
         </div>
       </div>
-
       <div className="bg-gray-700 p-3 rounded m-2">
         <div className="flex items-center gap-2">
             <span className="text-sm">Order is on shipping</span>
             <span className="text-gray-400 text-xs">November 7, 2022</span>
         </div>
-
-
       </div>
     </div>
   );

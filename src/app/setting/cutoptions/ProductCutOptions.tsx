@@ -11,37 +11,38 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { FiPlus } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { FiPlus } from "react-icons/fi";
 import { GoPencil } from "react-icons/go";
-import useFabricStore, { FabricType } from "@/store/useFabricStore";
-import DeleteFabricType from "./DeleteFabricType";
-import AddFabricType from "./AddFabricType";
-import AdminLayout from "../../adminDashboard/lauout";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import useCutOptionsStore, { CutOptions } from "@/store/useCutOptionsStore";
+import AddCutOptions from "./AddCutOptions";
+import DeleteCutOptions from "./DeleteCutOptions";
 
-const page = () => {
+const ProductCutOptions = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [selectedProductCatId, setSelectedProductCatId] = useState<number>(0);
+  const [selectedCutOptionId, setSelectedCutOptionId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [sortColumn, setSortColumn] = useState<keyof FabricType>("name");
+  const [sortColumn, setSortColumn] = useState<keyof CutOptions>(
+    "OptionProductCutOptions"
+  );
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  const { fabricTypeData, fetchFabricType, loading } = useFabricStore();
+  const { fetchcutOptions, cutOptions, loading } = useCutOptionsStore();
 
   useEffect(() => {
-    fetchFabricType();
+    fetchcutOptions();
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(fabricTypeData!.length / rowsPerPage);
+  const pages = Math.ceil(cutOptions!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
   const handleOpenDeleteModal = (productCatagoryId: number) => {
-    setSelectedProductCatId(productCatagoryId);
+    setSelectedCutOptionId(productCatagoryId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -50,13 +51,13 @@ const page = () => {
     setIsEdit(false);
   };
   const openEditModal = (clientId: number) => {
-    setSelectedProductCatId(clientId);
+    setSelectedCutOptionId(clientId);
     setIsAddModalOpen(true);
     setIsEdit(true);
   };
 
   const items = useMemo(() => {
-    const sorted = [...(fabricTypeData || [])].sort((a, b) => {
+    const sorted = [...(cutOptions || [])].sort((a, b) => {
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
 
@@ -71,7 +72,7 @@ const page = () => {
       }
 
       if (
-        sortColumn === "createdOn" &&
+        sortColumn === "CreatedOn" &&
         typeof aValue === "string" &&
         typeof bValue === "string"
       ) {
@@ -86,9 +87,9 @@ const page = () => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     return sorted.slice(start, end);
-  }, [page, fabricTypeData, sortColumn, sortDirection]);
+  }, [page, cutOptions, sortColumn, sortDirection]);
 
-  const handleSort = (column: keyof FabricType) => {
+  const handleSort = (column: keyof CutOptions) => {
     if (column === sortColumn) {
       setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
@@ -102,10 +103,12 @@ const page = () => {
   }, [sortColumn, sortDirection]);
 
   return (
-    <AdminLayout>
+    <>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">Fabric Type</h6>
+          <h6 className="font-sans text-lg font-semibold">
+            Product Cut Options
+          </h6>
           <button
             type="button"
             className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
@@ -126,7 +129,7 @@ const page = () => {
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {fabricTypeData.length || 0}
+                Total: {cutOptions.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -145,38 +148,19 @@ const page = () => {
               Sr
             </TableColumn>
             <TableColumn
-              key="name"
+              key="OptionProductCutOptions"
               className="text-medium font-bold cursor-pointer"
-              onClick={() => handleSort("name")}
+              onClick={() => handleSort("OptionProductCutOptions")}
             >
               <div className="flex items-center gap-1">
-                Name
-                {sortColumn === "name" &&
+                Cut Option
+                {sortColumn === "OptionProductCutOptions" &&
                   (sortDirection === "asc" ? (
                     <TiArrowSortedUp />
                   ) : (
                     <TiArrowSortedDown />
                   ))}
               </div>
-            </TableColumn>
-            <TableColumn
-              key="type"
-              className="text-medium font-bold cursor-pointer"
-              onClick={() => handleSort("type")}
-            >
-              <div className="flex items-center gap-1">
-                Type
-                {sortColumn === "type" &&
-                  (sortDirection === "asc" ? (
-                    <TiArrowSortedUp />
-                  ) : (
-                    <TiArrowSortedDown />
-                  ))}
-              </div>
-            </TableColumn>
-            
-            <TableColumn key="gsm" className="text-medium font-bold">
-              GSM
             </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">
               Action
@@ -184,7 +168,7 @@ const page = () => {
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
             {(items ?? []).map((item: any, index: number) => (
-              <TableRow key={item.id}>
+              <TableRow key={index}>
                 {(columnKey) => (
                   <TableCell>
                     {columnKey === "Sr" ? (
@@ -195,14 +179,14 @@ const page = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => openEditModal(item.id)}
+                          onClick={() => openEditModal(item.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.id)}
+                          onClick={() => handleOpenDeleteModal(item.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>
@@ -215,20 +199,20 @@ const page = () => {
           </TableBody>
         </Table>
 
-        <AddFabricType
+        <AddCutOptions
           isOpen={isAddModalOpen}
           closeAddModal={closeAddModal}
           isEdit={isEdit}
-          fabricTypeId={selectedProductCatId}
+          cutOptionId={selectedCutOptionId}
         />
-        <DeleteFabricType
+        <DeleteCutOptions
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
-          productIdCatagory={selectedProductCatId}
+          cutOptionId={selectedCutOptionId}
         />
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
-export default page;
+export default ProductCutOptions;

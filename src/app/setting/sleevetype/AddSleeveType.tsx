@@ -12,6 +12,7 @@ import { Field, Formik, Form, ErrorMessage } from "formik";
 import useCategoryStore from "@/store/useCategoryStore";
 import { SleeveTypeSchema } from "../../schema/SleeveTypeSchema";
 import useSleeveType from "@/store/useSleeveType";
+import Label from "../../components/common/Label";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -92,10 +93,7 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                            Sleeve Type Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                             <Label isRequired={true} label="Sleeve Type Name" labelForm="Sleeve Type Name" />
                             <Field
                               name="sleeveTypeName"
                               type="text"
@@ -109,10 +107,7 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                            Product Category
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Product Category" labelForm="Product Category" />
                             <Field
                               name="productCategoryId"
                               as="select"
@@ -120,9 +115,9 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                             >
                               <option value={""}>Select a type</option>
                               {
-                                productCategories.map((category)=>{
+                                productCategories?.map((category, index)=>{
                                   return(
-                                    <option value={category.id}>{category.type}</option>
+                                    <option value={index}>{category.type}</option>
                                   )
                                 })
                               }

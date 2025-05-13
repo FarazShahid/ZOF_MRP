@@ -11,38 +11,34 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
-import { formatDate } from "../../interfaces";
-import EventsForm from "./EventsForm";
-import DeleteEvent from "./DeleteEvent";
-import useEventsStore, { Events } from "@/store/useEventsStore";
 import { FiPlus } from "react-icons/fi";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import AdminLayout from "../../adminDashboard/lauout";
+import useSizeOptionsStore from "@/store/useSizeOptionsStore";
+import AddSizeOptions from "./AddSizeOptions";
+import DeleteSizeOptions from "./DeleteSizeOptions";
 
-const page = () => {
+
+const ProductSizeOptions = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [selectedEventId, setSelectedEventId] = useState<number>(0);
+  const [selectedSizeOptionId, setSelectedSizeOptionId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [sortColumn, setSortColumn] = useState<keyof Events>("EventName");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  const { loading, fetchEvents, Events } = useEventsStore();
+  const { fetchsizeOptions, sizeOptions, loading } = useSizeOptionsStore();
 
   useEffect(() => {
-    fetchEvents();
+    fetchsizeOptions();
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(Events!.length / rowsPerPage);
+  const pages = Math.ceil(sizeOptions!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
-  const handleOpenDeleteModal = (productCatagoryId: number) => {
-    setSelectedEventId(productCatagoryId);
+  const handleOpenDeleteModal = (sizeOptionId: number) => {
+    setSelectedSizeOptionId(sizeOptionId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -50,66 +46,24 @@ const page = () => {
     setIsAddModalOpen(false);
     setIsEdit(false);
   };
-  const openEditModal = (clientId: number) => {
-    setSelectedEventId(clientId);
+  const openEditModal = (sizeId: number) => {
+    setSelectedSizeOptionId(sizeId);
     setIsAddModalOpen(true);
     setIsEdit(true);
   };
 
   const items = useMemo(() => {
-    const sorted = [...(Events || [])].sort((a, b) => {
-      const aValue = a[sortColumn];
-      const bValue = b[sortColumn];
-
-      // String sorting
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      }
-
-      // Number sorting
-      if (typeof aValue === "number" && typeof bValue === "number") {
-        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
-      }
-
-      // Date sorting (for fields like CreatedOn)
-      if (
-        sortColumn === "CreatedOn" &&
-        typeof aValue === "string" &&
-        typeof bValue === "string"
-      ) {
-        const aDate = new Date(aValue).getTime();
-        const bDate = new Date(bValue).getTime();
-        return sortDirection === "asc" ? aDate - bDate : bDate - aDate;
-      }
-
-      return 0;
-    });
-
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return sorted.slice(start, end);
-  }, [page, Events, sortColumn, sortDirection]);
 
-  const handleSort = (column: keyof Events) => {
-    if (column === sortColumn) {
-      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
-    }
-  };
-
-  useEffect(() => {
-    setPage(1);
-  }, [sortColumn, sortDirection]);
+    return sizeOptions?.slice(start, end);
+  }, [page, sizeOptions]);
 
   return (
-    <AdminLayout>
+    <>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">Events</h6>
+          <h6 className="font-sans text-lg font-semibold">Size Options</h6>
           <button
             type="button"
             className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
@@ -129,9 +83,9 @@ const page = () => {
           }}
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
-              <span className="w-[30%] text-small text-gray-500">
-                Total: {Events.length || 0}
-              </span>
+            <span className="w-[30%] text-small text-gray-500">
+              Total: {sizeOptions.length || 0}
+            </span>
               <Pagination
                 isCompact
                 showControls
@@ -149,24 +103,12 @@ const page = () => {
               Sr
             </TableColumn>
             <TableColumn
-              key="EventName"
-              className="text-medium font-bold cursor-pointer"
-              onClick={() => handleSort("EventName")}
+              key="OptionSizeOptions"
+              className="text-medium font-bold"
             >
-              <div className="flex items-center gap-1">
-                Event Name
-                {sortColumn === "EventName" &&
-                  (sortDirection === "asc" ? (
-                    <TiArrowSortedUp />
-                  ) : (
-                    <TiArrowSortedDown />
-                  ))}
-              </div>
+              Size Option
             </TableColumn>
-            <TableColumn key="Description" className="text-medium font-bold">
-              Description
-            </TableColumn>
-           
+            
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
@@ -204,21 +146,20 @@ const page = () => {
           </TableBody>
         </Table>
 
-        <EventsForm
+        <AddSizeOptions
           isOpen={isAddModalOpen}
           closeAddModal={closeAddModal}
           isEdit={isEdit}
-          eventId={selectedEventId}
+          sizeOptionId={selectedSizeOptionId}
         />
-
-        <DeleteEvent
+        <DeleteSizeOptions
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
-          eventId={selectedEventId}
+          sizeOptionId={selectedSizeOptionId}
         />
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
-export default page;
+export default ProductSizeOptions;

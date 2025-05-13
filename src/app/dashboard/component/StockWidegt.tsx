@@ -69,7 +69,7 @@ const StockWidegt = () => {
           {stats.map((s, i) => (
             <div key={i} className="space-y-1">
               <p className="text-xs text-gray-400">{s.label}</p>
-              <Progress isStriped aria-label="Loading..." className="max-w-md" color={s.color} value={s.value} />
+              <Progress aria-label="Loading..." className="max-w-md" color={s.color} value={s.value} />
               <p className="text-xs text-white">
                 {s.count.toLocaleString()} products
               </p>

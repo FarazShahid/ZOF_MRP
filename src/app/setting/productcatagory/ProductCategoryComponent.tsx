@@ -12,43 +12,36 @@ import {
   TableRow,
 } from "@heroui/react";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
-import { formatDate } from "../../interfaces";
-import useSizeMeasurementsStore, {
-  SizeMeasurements,
-} from "@/store/useSizeMeasurementsStore";
-import ViewModal from "./ViewModal";
-import DeleteSizeOptions from "./DeleteSizeOptions";
-import AddSizeOptions from "./AddSizeOptions";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { GoPencil } from "react-icons/go";
 import { FiPlus } from "react-icons/fi";
-import AdminLayout from "../../adminDashboard/lauout";
+import { GoPencil } from "react-icons/go";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import useCategoryStore, { ProductCategory } from "@/store/useCategoryStore";
+import DeleteProductCatagory from "./DeleteProductCatagory";
+import AddProductCatagory from "./AddProductCatagory";
 
-const page = () => {
+const ProductCategoryComponent = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [selectedSizeOptionId, setSelectedSizeOptionId] = useState<number>(0);
+  const [selectedProductCatId, setSelectedProductCatId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [isViewModal, setIsViewModal] = useState<boolean>(false);
-  const [sortColumn, setSortColumn] =
-    useState<keyof SizeMeasurements>("Measurement1");
+  const [sortColumn, setSortColumn] = useState<keyof ProductCategory>("type");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  const { fetchSizeMeasurements, sizeMeasurement, loading } =
-    useSizeMeasurementsStore();
+  const { productCategories, fetchCategories, loading, error } =
+    useCategoryStore();
 
   useEffect(() => {
-    fetchSizeMeasurements();
+    fetchCategories();
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(sizeMeasurement!.length / rowsPerPage);
+  const pages = Math.ceil(productCategories!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
-  const handleOpenDeleteModal = (sizeOptionId: number) => {
-    setSelectedSizeOptionId(sizeOptionId);
+  const handleOpenDeleteModal = (productCatagoryId: number) => {
+    setSelectedProductCatId(productCatagoryId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -56,39 +49,30 @@ const page = () => {
     setIsAddModalOpen(false);
     setIsEdit(false);
   };
-  const openEditModal = (sizeId: number) => {
-    setSelectedSizeOptionId(sizeId);
+  const openEditModal = (clientId: number) => {
+    setSelectedProductCatId(clientId);
     setIsAddModalOpen(true);
     setIsEdit(true);
   };
-  const openViewModal = (sizeId: number) => {
-    setSelectedSizeOptionId(sizeId);
-    setIsViewModal(true);
-  };
-  const handleCloseModal = () => {
-    setIsViewModal(false);
-  };
+
 
   const items = useMemo(() => {
-    const sorted = [...(sizeMeasurement || [])].sort((a, b) => {
+    const sorted = [...(productCategories || [])].sort((a, b) => {
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
 
-      // String sorting
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortDirection === "asc"
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
 
-      // Number sorting
       if (typeof aValue === "number" && typeof bValue === "number") {
         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
       }
 
-      // Date sorting (for fields like CreatedOn)
       if (
-        sortColumn === "CreatedOn" &&
+        sortColumn === "createdOn" &&
         typeof aValue === "string" &&
         typeof bValue === "string"
       ) {
@@ -103,9 +87,9 @@ const page = () => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     return sorted.slice(start, end);
-  }, [page, sizeMeasurement, sortColumn, sortDirection]);
+  }, [page, productCategories, sortColumn, sortDirection]);
 
-  const handleSort = (column: keyof SizeMeasurements) => {
+  const handleSort = (column: keyof ProductCategory) => {
     if (column === sortColumn) {
       setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
@@ -119,10 +103,10 @@ const page = () => {
   }, [sortColumn, sortDirection]);
 
   return (
-    <AdminLayout>
+    <>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">Size Measurements</h6>
+          <h6 className="font-sans text-lg font-semibold">Product Category</h6>
           <button
             type="button"
             className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
@@ -143,7 +127,7 @@ const page = () => {
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {sizeMeasurement.length || 0}
+                Total: {productCategories.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -162,13 +146,13 @@ const page = () => {
               Sr
             </TableColumn>
             <TableColumn
-              key="Measurement1"
+              key="type"
               className="text-medium font-bold cursor-pointer"
-              onClick={() => handleSort("Measurement1")}
+              onClick={() => handleSort("type")}
             >
               <div className="flex items-center gap-1">
                 Name
-                {sortColumn === "Measurement1" &&
+                {sortColumn === "type" &&
                   (sortDirection === "asc" ? (
                     <TiArrowSortedUp />
                   ) : (
@@ -176,20 +160,13 @@ const page = () => {
                   ))}
               </div>
             </TableColumn>
-            <TableColumn key="ClientName" className="text-medium font-bold">
-              Client Name
-            </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
             {(items ?? []).map((item: any, index: number) => (
-              <TableRow
-                key={item.Id}
-                onClick={() => openViewModal(item.Id)}
-                className="cursor-pointer"
-              >
+              <TableRow key={item.id}>
                 {(columnKey) => (
                   <TableCell>
                     {columnKey === "Sr" ? (
@@ -197,20 +174,17 @@ const page = () => {
                     ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
                     ) : (
-                      <div
-                        className="flex gap-2"
-                        onClick={(event) => event.stopPropagation()}
-                      >
+                      <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => openEditModal(item.Id)}
+                          onClick={() => openEditModal(item.id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.Id)}
+                          onClick={() => handleOpenDeleteModal(item.id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>
@@ -223,35 +197,21 @@ const page = () => {
           </TableBody>
         </Table>
 
-        {isViewModal ? (
-          <ViewModal
-            isOpen={isViewModal}
-            closeAddModal={handleCloseModal}
-            sizeOptionId={selectedSizeOptionId}
-          />
-        ) : (
-          <></>
-        )}
+        <AddProductCatagory
+          isOpen={isAddModalOpen}
+          closeAddModal={closeAddModal}
+          isEdit={isEdit}
+          productIdCatagory={selectedProductCatId}
+        />
 
-        {isAddModalOpen ? (
-          <AddSizeOptions
-            isOpen={isAddModalOpen}
-            closeAddModal={closeAddModal}
-            isEdit={isEdit}
-            sizeId={selectedSizeOptionId}
-          />
-        ) : (
-          <></>
-        )}
-
-        <DeleteSizeOptions
+        <DeleteProductCatagory
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
-          sizeOptionId={selectedSizeOptionId}
+          productIdCatagory={selectedProductCatId}
         />
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
-export default page;
+export default ProductCategoryComponent;

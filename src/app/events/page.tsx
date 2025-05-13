@@ -12,39 +12,36 @@ import {
   TableRow,
 } from "@heroui/react";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
-import useCutOptionsStore, { CutOptions } from "@/store/useCutOptionsStore";
-import { formatDate } from "../../interfaces";
-import AddCutOptions from "./AddCutOptions";
-import DeleteCutOptions from "./DeleteCutOptions";
 import { FiPlus } from "react-icons/fi";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import AdminLayout from "../../adminDashboard/lauout";
+import useEventsStore, { Events } from "@/store/useEventsStore";
+import EventsForm from "./EventsForm";
+import DeleteEvent from "./DeleteEvent";
+import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
 
 const page = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [selectedCutOptionId, setSelectedCutOptionId] = useState<number>(0);
+  const [selectedEventId, setSelectedEventId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [sortColumn, setSortColumn] = useState<keyof CutOptions>(
-    "OptionProductCutOptions"
-  );
+  const [sortColumn, setSortColumn] = useState<keyof Events>("EventName");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  const { fetchcutOptions, cutOptions, loading } = useCutOptionsStore();
+  const { loading, fetchEvents, Events } = useEventsStore();
 
   useEffect(() => {
-    fetchcutOptions();
+    fetchEvents();
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(cutOptions!.length / rowsPerPage);
+  const pages = Math.ceil(Events!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
   const handleOpenDeleteModal = (productCatagoryId: number) => {
-    setSelectedCutOptionId(productCatagoryId);
+    setSelectedEventId(productCatagoryId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -53,29 +50,26 @@ const page = () => {
     setIsEdit(false);
   };
   const openEditModal = (clientId: number) => {
-    setSelectedCutOptionId(clientId);
+    setSelectedEventId(clientId);
     setIsAddModalOpen(true);
     setIsEdit(true);
   };
 
   const items = useMemo(() => {
-    const sorted = [...(cutOptions || [])].sort((a, b) => {
+    const sorted = [...(Events || [])].sort((a, b) => {
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
 
-      // String sorting
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortDirection === "asc"
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
 
-      // Number sorting
       if (typeof aValue === "number" && typeof bValue === "number") {
         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
       }
 
-      // Date sorting (for fields like CreatedOn)
       if (
         sortColumn === "CreatedOn" &&
         typeof aValue === "string" &&
@@ -92,9 +86,9 @@ const page = () => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     return sorted.slice(start, end);
-  }, [page, cutOptions, sortColumn, sortDirection]);
+  }, [page, Events, sortColumn, sortDirection]);
 
-  const handleSort = (column: keyof CutOptions) => {
+  const handleSort = (column: keyof Events) => {
     if (column === sortColumn) {
       setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
@@ -108,12 +102,10 @@ const page = () => {
   }, [sortColumn, sortDirection]);
 
   return (
-    <AdminLayout>
+    <AdminDashboardLayout>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">
-            Product Cut Options
-          </h6>
+          <h6 className="font-sans text-lg font-semibold">Events</h6>
           <button
             type="button"
             className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
@@ -134,7 +126,7 @@ const page = () => {
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {cutOptions.length || 0}
+                Total: {Events.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -153,13 +145,13 @@ const page = () => {
               Sr
             </TableColumn>
             <TableColumn
-              key="OptionProductCutOptions"
+              key="EventName"
               className="text-medium font-bold cursor-pointer"
-              onClick={() => handleSort("OptionProductCutOptions")}
+              onClick={() => handleSort("EventName")}
             >
               <div className="flex items-center gap-1">
-                Cut Option
-                {sortColumn === "OptionProductCutOptions" &&
+                Event Name
+                {sortColumn === "EventName" &&
                   (sortDirection === "asc" ? (
                     <TiArrowSortedUp />
                   ) : (
@@ -167,6 +159,13 @@ const page = () => {
                   ))}
               </div>
             </TableColumn>
+             <TableColumn key="ClientName" className="text-medium font-bold">
+              Client
+            </TableColumn>
+            <TableColumn key="Description" className="text-medium font-bold">
+              Description
+            </TableColumn>
+
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
@@ -204,19 +203,24 @@ const page = () => {
           </TableBody>
         </Table>
 
-        <AddCutOptions
-          isOpen={isAddModalOpen}
-          closeAddModal={closeAddModal}
-          isEdit={isEdit}
-          cutOptionId={selectedCutOptionId}
-        />
-        <DeleteCutOptions
+        {isAddModalOpen ? (
+          <EventsForm
+            isOpen={isAddModalOpen}
+            closeAddModal={closeAddModal}
+            isEdit={isEdit}
+            eventId={selectedEventId}
+          />
+        ) : (
+          <></>
+        )}
+
+        <DeleteEvent
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
-          cutOptionId={selectedCutOptionId}
+          eventId={selectedEventId}
         />
       </div>
-    </AdminLayout>
+    </AdminDashboardLayout>
   );
 };
 

@@ -19,6 +19,7 @@ import useClientStore, { GetClientsType } from "@/store/useClientStore";
 import AddClients from "../components/AddClients";
 import DeleteClient from "../components/DeleteClient";
 import AdminLayout from "../adminDashboard/lauout";
+import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -108,7 +109,7 @@ const page = () => {
   }, [sortColumn, sortDirection]);
 
   return (
-    <AdminLayout>
+    <AdminDashboardLayout>
       <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-end">
           <button
@@ -256,7 +257,7 @@ const page = () => {
           onDeleteSuccess={refetchData}
         />
       </div>
-    </AdminLayout>
+    </AdminDashboardLayout>
   );
 };
 

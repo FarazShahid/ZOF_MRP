@@ -15,6 +15,7 @@ import usePrintingOptionsStore, {
   AddPrintingOptionsType,
 } from "@/store/usePrintingOptionsStore";
 import { PrintingOptionSchema } from "../../schema/PrintingOptionSchema";
+import Label from "../../components/common/Label";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -29,19 +30,7 @@ const AddPrintingOptions: React.FC<AddClientComponentProps> = ({
   isEdit,
   printingOptionId,
 }) => {
-  // interface AddCutOptionsType {
-  //   OptionProductCutOptions: string;
-  //   CreatedBy: string;
-  //   UpdatedBy: string;
-  // }
 
-  // const {
-  //   getCutOptionById,
-  //   updateCutOption,
-  //   addCutOption,
-  //   cutOptionsType,
-  //   loading,
-  // } = useCutOptionsStore();
   const {
     loading,
     printingOptionById,
@@ -93,10 +82,7 @@ const AddPrintingOptions: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Name" />
                             <Field
                               name="Name"
                               type="text"

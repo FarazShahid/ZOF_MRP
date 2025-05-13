@@ -11,39 +11,40 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { formatDate } from "../../interfaces";
-import useSleeveType, { SleeveType } from "@/store/useSleeveType";
-import DeleteSleeveType from "./DeleteSleeveType";
-import AddSleeveType from "./AddSleeveType";
+
+import useProductRegionStore, {
+  ProductRegion,
+} from "@/store/useProductRegionStore";
 import { FiPlus } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { GoPencil } from "react-icons/go";
-import AdminLayout from "../../adminDashboard/lauout";
+import DeleteProductRegion from "./DeleteColorOptions";
+import AddProductRegion from "./AddColorOptions";
 
-const page = () => {
+const ProductRegionComponent = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [selectedSleeveTypeId, setSelectedSleeveTypeId] = useState<number>(0);
+  const [selectedProductCatId, setSelectedProductCatId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [sortColumn, setSortColumn] =
-    useState<keyof SleeveType>("sleeveTypeName");
+  const [sortColumn, setSortColumn] = useState<keyof ProductRegion>("Name");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  const { fetchSleeveType, sleeveTypeData, loading } = useSleeveType();
+  const { loading, error, fetchProductRegions, productRegions } =
+    useProductRegionStore();
 
   useEffect(() => {
-    fetchSleeveType();
+    fetchProductRegions();
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(sleeveTypeData!.length / rowsPerPage);
+  const pages = Math.ceil(productRegions!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
   const handleOpenDeleteModal = (productCatagoryId: number) => {
-    setSelectedSleeveTypeId(productCatagoryId);
+    setSelectedProductCatId(productCatagoryId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -52,29 +53,29 @@ const page = () => {
     setIsEdit(false);
   };
   const openEditModal = (clientId: number) => {
-    setSelectedSleeveTypeId(clientId);
+    setSelectedProductCatId(clientId);
     setIsAddModalOpen(true);
     setIsEdit(true);
   };
 
   const items = useMemo(() => {
-    const sorted = [...(sleeveTypeData || [])].sort((a, b) => {
+    const sorted = [...(productRegions || [])].sort((a, b) => {
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
 
-      // String sorting
+
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortDirection === "asc"
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
 
-      // Number sorting
+
       if (typeof aValue === "number" && typeof bValue === "number") {
         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
       }
 
-      // Date sorting (for fields like CreatedOn)
+
       if (
         sortColumn === "CreatedOn" &&
         typeof aValue === "string" &&
@@ -91,9 +92,9 @@ const page = () => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     return sorted.slice(start, end);
-  }, [page, sleeveTypeData, sortColumn, sortDirection]);
+  }, [page, productRegions, sortColumn, sortDirection]);
 
-  const handleSort = (column: keyof SleeveType) => {
+  const handleSort = (column: keyof ProductRegion) => {
     if (column === sortColumn) {
       setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
@@ -101,16 +102,17 @@ const page = () => {
       setSortDirection("asc");
     }
   };
-
   useEffect(() => {
     setPage(1);
   }, [sortColumn, sortDirection]);
 
   return (
-    <AdminLayout>
+    <>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">Sleeve Type</h6>
+          <h6 className="font-sans text-lg font-semibold">
+            Product Region Standard
+          </h6>
           <button
             type="button"
             className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
@@ -131,7 +133,7 @@ const page = () => {
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {sleeveTypeData.length || 0}
+                Total: {productRegions.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -150,13 +152,13 @@ const page = () => {
               Sr
             </TableColumn>
             <TableColumn
-              key="sleeveTypeName"
+              key="Name"
               className="text-medium font-bold cursor-pointer"
-              onClick={() => handleSort("sleeveTypeName")}
+              onClick={() => handleSort("Name")}
             >
               <div className="flex items-center gap-1">
-                Sleeve Type
-                {sortColumn === "sleeveTypeName" &&
+                Name
+                {sortColumn === "Name" &&
                   (sortDirection === "asc" ? (
                     <TiArrowSortedUp />
                   ) : (
@@ -164,16 +166,14 @@ const page = () => {
                   ))}
               </div>
             </TableColumn>
-            <TableColumn key="categoryName" className="text-medium font-bold">
-              Category Name
-            </TableColumn>
+            
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
             {(items ?? []).map((item: any, index: number) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.Id}>
                 {(columnKey) => (
                   <TableCell>
                     {columnKey === "Sr" ? (
@@ -184,14 +184,14 @@ const page = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => openEditModal(item.id)}
+                          onClick={() => openEditModal(item.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.id)}
+                          onClick={() => handleOpenDeleteModal(item.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>
@@ -203,21 +203,20 @@ const page = () => {
             ))}
           </TableBody>
         </Table>
-
-        <AddSleeveType
+        <AddProductRegion
           isOpen={isAddModalOpen}
           closeAddModal={closeAddModal}
           isEdit={isEdit}
-          sleeveTypeId={selectedSleeveTypeId}
+          productRegionId={selectedProductCatId}
         />
-        <DeleteSleeveType
+        <DeleteProductRegion
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
-          sleeveTypeId={selectedSleeveTypeId}
+          productRegionId={selectedProductCatId}
         />
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
-export default page;
+export default ProductRegionComponent;

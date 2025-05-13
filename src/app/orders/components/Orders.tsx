@@ -1,5 +1,6 @@
 import ActiveOrderCard from "../../dashboard/component/ActiveOrderCard";
 import OrderCard from "./OrderCard";
+import OrderTable from "./OrderTable";
 
 const Orders = () => {
   const activeOrdersData = [
@@ -36,9 +37,9 @@ const Orders = () => {
   ];
   return (
     <div className="grid grid-cols-1 gap-5 w-full h-[75vh] overflow-y-auto">
-      {activeOrdersData.map((order, index) => {
+      {/* {activeOrdersData.map((order, index) => {
         return (
-          <OrderCard />
+          // <OrderCard />
           // <ActiveOrderCard
           //   key={index}
           //   clientName={order.clientName}
@@ -50,7 +51,8 @@ const Orders = () => {
           //   totalOrderItems={order.totalOrderItems}
           // />
         );
-      })}
+      })} */}
+      <OrderTable />
     </div>
   );
 };

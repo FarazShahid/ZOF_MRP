@@ -1,23 +1,28 @@
-// "use client";
+"use client";
 
-// import { useEffect, useMemo, useState } from "react";
-// import {
-//   Pagination,
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableColumn,
-//   TableHeader,
-//   TableRow,
-//   getKeyValue,
-// } from "@heroui/react";
-// import { FaRegEye } from "react-icons/fa6";
-// import { RiDeleteBin6Line } from "react-icons/ri";
-// import { FiPlus } from "react-icons/fi";
-// import { GoPencil } from "react-icons/go";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Pagination,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+  getKeyValue,
+} from "@heroui/react";
+import { FaRegEye } from "react-icons/fa6";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { FiPlus } from "react-icons/fi";
+import { GoPencil } from "react-icons/go";
 
-// import useOrderStore from "@/store/useOrderStore";
-// import useClientStore from "@/store/useClientStore";
+import useOrderStore from "@/store/useOrderStore";
+import useClientStore from "@/store/useClientStore";
+import { formatDate } from "../../interfaces";
+import StatusChip from "../../components/StatusChip";
+import AddOrderComponent from "../../components/AddOrderComponent";
+import DeleteModal from "../../components/DeleteModal";
+import ViewOrderComponent from "../../components/ViewOrderComponent";
 // import AddOrderComponent from "../components/AddOrderComponent";
 // import { formatDate } from "../interfaces";
 // import ViewOrderComponent from "../components/ViewOrderComponent";
@@ -27,78 +32,78 @@
 // import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
 
 const OrderTable = () => {
-//     const [clientId, setClientId] = useState<number>(0);
-//   const [isAddOrderModalOpen, setIsAddOrderModalOpen] = useState(false);
-//   const [isOpenDeletModal, setIsOpenDeleteModal] = useState(false);
-//   const [isOpenViewModal, setIsOpenViewModal] = useState(false);
-//   const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
-//   const [refreshKey, setRefreshKey] = useState<number>(0);
-//   const [isEditOrder, setIsisEditOrder] = useState<boolean>(false);
-//   const [page, setPage] = useState<number>(1);
+    const [clientId, setClientId] = useState<number>(0);
+  const [isAddOrderModalOpen, setIsAddOrderModalOpen] = useState(false);
+  const [isOpenDeletModal, setIsOpenDeleteModal] = useState(false);
+  const [isOpenViewModal, setIsOpenViewModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
+  const [isEditOrder, setIsisEditOrder] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
 
-//   const { fetchOrders, loading, Orders } = useOrderStore();
-//   const { fetchClients, clients } = useClientStore();
+  const { fetchOrders, loading, Orders } = useOrderStore();
+  const { fetchClients, clients } = useClientStore();
 
-//   const rowsPerPage = 15;
-//   const pages = Math.ceil(Orders!.length / rowsPerPage);
-//   const items = useMemo(() => {
-//     const start = (page - 1) * rowsPerPage;
-//     const end = start + rowsPerPage;
+  const rowsPerPage = 15;
+  const pages = Math.ceil(Orders!.length / rowsPerPage);
+  const items = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
 
-//     return Orders?.slice(start, end);
-//   }, [page, Orders]);
+    return Orders?.slice(start, end);
+  }, [page, Orders]);
 
-//   const handleClinetFilter = (id: string) => {
-//     setClientId(Number(id));
-//   };
+  const handleClinetFilter = (id: string) => {
+    setClientId(Number(id));
+  };
 
-//   const openDeleteModal = (orderId: number) => {
-//     setSelectedOrderId(orderId);
-//     setIsOpenDeleteModal(true);
-//   };
-//   const closeDeleteModal = () => setIsOpenDeleteModal(false);
+  const openDeleteModal = (orderId: number) => {
+    setSelectedOrderId(orderId);
+    setIsOpenDeleteModal(true);
+  };
+  const closeDeleteModal = () => setIsOpenDeleteModal(false);
 
-//   const OpenViewModal = (orderId: number) => {
-//     setSelectedOrderId(orderId);
-//     setIsOpenViewModal(true);
-//   };
-//   const closeViewModal = () => {
-//     setSelectedOrderId(0);
-//     setIsOpenViewModal(false);
-//   };
-//   const openAddOrderModal = () => {
-//     setIsisEditOrder(false);
-//     setSelectedOrderId(0);
-//     setIsAddOrderModalOpen(true);
-//   };
-//   const closeAddOrderModal = () => {
-//     setIsAddOrderModalOpen(false);
-//   };
+  const OpenViewModal = (orderId: number) => {
+    setSelectedOrderId(orderId);
+    setIsOpenViewModal(true);
+  };
+  const closeViewModal = () => {
+    setSelectedOrderId(0);
+    setIsOpenViewModal(false);
+  };
+  const openAddOrderModal = () => {
+    setIsisEditOrder(false);
+    setSelectedOrderId(0);
+    setIsAddOrderModalOpen(true);
+  };
+  const closeAddOrderModal = () => {
+    setIsAddOrderModalOpen(false);
+  };
 
-//   const openEditOrderModal = (OrderId: number) => {
-//     setIsisEditOrder(true);
-//     setRefreshKey((prev) => prev + 1);
-//     setSelectedOrderId(OrderId);
-//     setIsAddOrderModalOpen(true);
-//   };
+  const openEditOrderModal = (OrderId: number) => {
+    setIsisEditOrder(true);
+    setRefreshKey((prev) => prev + 1);
+    setSelectedOrderId(OrderId);
+    setIsAddOrderModalOpen(true);
+  };
 
-//   const refreshData = () => {
-//     setRefreshKey((prev) => prev + 1);
-//   };
+  const refreshData = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
 
-//   useEffect(() => {
-//     fetchOrders(clientId);
-//   }, [clientId]);
+  useEffect(() => {
+    fetchOrders(clientId);
+  }, [clientId]);
 
-//   useEffect(() => {
-//     fetchClients();
-//   }, []);
+  useEffect(() => {
+    fetchClients();
+  }, []);
   return (
     <div>
 
 
 
-        {/* <div className="w-full flex flex-col gap-3">
+        <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <select
             className="p-1 rounded-lg border-1"
@@ -244,7 +249,7 @@ const OrderTable = () => {
         />
       ) : (
         <></>
-      )} */}
+      )}
     </div>
   )
 }

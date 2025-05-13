@@ -832,7 +832,7 @@ span.flatpickr-weekday,
   border-radius: 10px;
   padding: 0px 6px;
   height: 40px;
-  background: #f6f6f6;
+  /* background: #f6f6f6; */
 }
 .formContainerWrapper {
   background: rgb(252 251 251);

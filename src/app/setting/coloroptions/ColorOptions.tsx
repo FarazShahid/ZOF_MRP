@@ -12,16 +12,14 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { formatDate } from "../../interfaces";
 import useColorOptionsStore from "@/store/useColorOptionsStore";
 import { FiPlus } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { GoPencil } from "react-icons/go";
 import DeleteColorOptions from "./DeleteColorOptions";
-import AddColorOptions from "./AddColorOptions";
 import AdminLayout from "../../adminDashboard/lauout";
+import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
 
-const page = () => {
+const ColorOptions = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [selectedProductCatId, setSelectedProductCatId] = useState<number>(0);
@@ -63,8 +61,8 @@ const page = () => {
   }, [page, colorOptions]);
 
   return (
-    <AdminLayout>
-    <div className="flex flex-col gap-3">
+   
+    <div className="flex flex-col gap-3 w-full">
       <div className="flex items-center justify-between">
         <h6 className="font-sans text-lg font-semibold">Color Options</h6>
         <Link
@@ -149,21 +147,13 @@ const page = () => {
         </TableBody>
       </Table>
 
-      {/* <AddColorOptions
-        isOpen={isAddModalOpen}
-        closeAddModal={closeAddModal}
-        isEdit={isEdit}
-        colorId={selectedProductCatId}
-      /> */}
-
       <DeleteColorOptions
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
         colorId={selectedProductCatId}
       />
     </div>
-    </AdminLayout>
   );
 };
 
-export default page;
+export default ColorOptions;

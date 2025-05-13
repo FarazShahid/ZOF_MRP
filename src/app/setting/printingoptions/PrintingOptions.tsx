@@ -14,16 +14,14 @@ import {
 import usePrintingOptionsStore, {
   PrintingOptionType,
 } from "@/store/usePrintingOptionsStore";
-import DeletePrintingOptions from "./DeletePrintingOptions";
-import { formatDate } from "../../interfaces";
-import AddPrintingOptions from "./AddPrintingOptions";
 import { FiPlus } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { GoPencil } from "react-icons/go";
-import AdminLayout from "../../adminDashboard/lauout";
+import DeletePrintingOptions from "./DeletePrintingOptions";
+import AddPrintingOptions from "./AddPrintingOptions";
 
-const page = () => {
+const PrintingOptions = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [selectedOptionId, setSelectedOptionId] = useState<number>(0);
@@ -65,19 +63,16 @@ const page = () => {
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
 
-      // String sorting
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortDirection === "asc"
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
 
-      // Number sorting
       if (typeof aValue === "number" && typeof bValue === "number") {
         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
       }
 
-      // Date sorting (for fields like CreatedOn)
       if (
         sortColumn === "CreatedOn" &&
         typeof aValue === "string" &&
@@ -110,7 +105,7 @@ const page = () => {
   }, [sortColumn, sortDirection]);
 
   return (
-    <AdminLayout>
+    <>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">Printing Options</h6>
@@ -218,8 +213,8 @@ const page = () => {
           printingOptionId={selectedOptionId}
         />
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
-export default page;
+export default PrintingOptions;
