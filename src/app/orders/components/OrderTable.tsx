@@ -23,16 +23,9 @@ import StatusChip from "../../components/StatusChip";
 import AddOrderComponent from "../../components/AddOrderComponent";
 import DeleteModal from "../../components/DeleteModal";
 import ViewOrderComponent from "../../components/ViewOrderComponent";
-// import AddOrderComponent from "../components/AddOrderComponent";
-// import { formatDate } from "../interfaces";
-// import ViewOrderComponent from "../components/ViewOrderComponent";
-// import DeleteModal from "../components/DeleteModal";
-// import StatusChip from "../components/StatusChip";
-// import AdminLayout from "../adminDashboard/lauout";
-// import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
 
 const OrderTable = () => {
-    const [clientId, setClientId] = useState<number>(0);
+  const [clientId, setClientId] = useState<number>(0);
   const [isAddOrderModalOpen, setIsAddOrderModalOpen] = useState(false);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenViewModal, setIsOpenViewModal] = useState(false);
@@ -100,10 +93,7 @@ const OrderTable = () => {
   }, []);
   return (
     <div>
-
-
-
-        <div className="w-full flex flex-col gap-3">
+      <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <select
             className="p-1 rounded-lg border-1"
@@ -111,7 +101,11 @@ const OrderTable = () => {
           >
             <option value={0}>View All</option>
             {clients?.map((client, index) => {
-              return <option value={client?.Id} key={index}>{client?.Name}</option>;
+              return (
+                <option value={client?.Id} key={index}>
+                  {client?.Name}
+                </option>
+              );
             })}
           </select>
           <button
@@ -251,7 +245,7 @@ const OrderTable = () => {
         <></>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default OrderTable
+export default OrderTable;

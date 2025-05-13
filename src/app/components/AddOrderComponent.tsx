@@ -19,13 +19,14 @@ import { MdDeleteOutline } from "react-icons/md";
 import { Field, Form, Formik } from "formik";
 import { OrderSchemaValidation } from "../schema/OrderSchema";
 import { OrderItemType, AddOrderComponentProps } from "../interfaces";
-import { useOrderDetails } from "../services/useOrderDetails";
 import { FaCirclePlus } from "react-icons/fa6";
 import useOrderStore from "@/store/useOrderStore";
 import useEventsStore from "@/store/useEventsStore";
 import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
 import useProductStore from "@/store/useProductStore";
 import useClientStore from "@/store/useClientStore";
+import Label from "./common/Label";
+import useMediaHandlerStore from "@/store/useMediaHandlerStore";
 
 const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
   isOpen,
@@ -54,6 +55,8 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
     OrderById,
     availableColors,
   } = useOrderStore();
+
+  const { isUploading, uploadError, uploadFile, uploadResult } = useMediaHandlerStore();
 
   const onSelectionChange = (key: React.Key | null) => {
     if (key && products) {
@@ -136,12 +139,12 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
         prevProducts.map((product) =>
           product.ProductId === productId
             ? {
-                ...product,
-                printingOptions: keyArray.map((optionId) => ({
-                  PrintingOptionId: optionId,
-                  Description: "Description",
-                })),
-              }
+              ...product,
+              printingOptions: keyArray.map((optionId) => ({
+                PrintingOptionId: optionId,
+                Description: "Description",
+              })),
+            }
             : product
         )
       );
@@ -164,12 +167,12 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
       prevProducts.map((product) =>
         product.ProductId === productId
           ? {
-              ...product,
-              orderItemDetails: [
-                ...(product.orderItemDetails || []),
-                { ColorOptionId: 0, Quantity: 0, Priority: 0 },
-              ],
-            }
+            ...product,
+            orderItemDetails: [
+              ...(product.orderItemDetails || []),
+              { ColorOptionId: 0, Quantity: 0, Priority: 0 },
+            ],
+          }
           : product
       )
     );
@@ -247,24 +250,24 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
   };
   const OrderInitialValues = isEditOrder
     ? {
-        ClientId: OrderById.ClientId || 0,
-        OrderEventId: OrderById?.OrderEventId || "",
-        Deadline: OrderById?.Deadline
-          ? new Date(OrderById.Deadline).toISOString().split("T")[0]
-          : "",
-        Description: OrderById?.Description || "",
-        OrderPriority: OrderById?.OrderPriority || "",
-        OrderName: OrderById?.OrderName || "",
-      }
+      ClientId: OrderById.ClientId || 0,
+      OrderEventId: OrderById?.OrderEventId || "",
+      Deadline: OrderById?.Deadline
+        ? new Date(OrderById.Deadline).toISOString().split("T")[0]
+        : "",
+      Description: OrderById?.Description || "",
+      OrderPriority: OrderById?.OrderPriority || "",
+      OrderName: OrderById?.OrderName || "",
+    }
     : {
-        ClinetId: 0,
-        OrderEventId: "",
-        OrderStatusId: "",
-        Deadline: "",
-        Description: "",
-        OrderPriority: "",
-        orderItemDetails: [],
-      };
+      ClinetId: 0,
+      OrderEventId: "",
+      OrderStatusId: "",
+      Deadline: "",
+      Description: "",
+      OrderPriority: "",
+      orderItemDetails: [],
+    };
 
   const handleAddOrder = async (values: any) => {
     const orderPayload = {
@@ -302,11 +305,11 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
     };
     isEditOrder
       ? updateOrder(orderId, orderPayload, () => {
-          onClose();
-        })
+        onClose();
+      })
       : addOrder(orderPayload, () => {
-          onClose();
-        });
+        onClose();
+      });
   };
 
   useEffect(() => {
@@ -348,18 +351,18 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
     }
   }, [isEditOrder, selectedProducts, availableColors]);
 
-   useEffect(() => {
-      const fetchData = async () => {
-        await Promise.all([
-          getOrderStatus(),
-          fetchEvents(),
-          fetchprintingOptions(),
-          fetchProducts(),
-          fetchClients(),
-        ]);
-      };
-      fetchData();
-    }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      await Promise.all([
+        getOrderStatus(),
+        fetchEvents(),
+        fetchprintingOptions(),
+        fetchProducts(),
+        fetchClients(),
+      ]);
+    };
+    fetchData();
+  }, []);
 
   return (
     <Modal
@@ -384,18 +387,16 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                 <Form>
                   <ModalBody>
                     <div className="flex flex-col gap-3">
-                      <div className="flex flex-col gap-5 formContainerWrapper rounded-lg p-3">
+                      <div className="flex flex-col gap-5 rounded-lg p-3">
                         <h6 className="text-lg font-medium">Order Details</h6>
                         <div className="flex flex-col gap-2">
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                             <div className="flex flex-col gap-1">
-                              <label className="font-medium text-sm text-[#181818]">
-                                Client
-                              </label>
+                              <Label isRequired={false} label="Client" />
                               <Field
                                 as="select"
                                 name="ClientId"
-                                className="formInputdefault border-2"
+                                className="formInputdefault"
                               >
                                 <option value="">Select a client</option>
                                 {clients.map((client) => (
@@ -406,13 +407,11 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                               </Field>
                             </div>
                             <div className="flex flex-col gap-1">
-                              <label className="font-medium text-sm text-[#181818]">
-                                Order Event
-                              </label>
+                              <Label isRequired={false} label="Order Event" />
                               <Field
                                 as="select"
                                 name="OrderEventId"
-                                className="formInputdefault border-2"
+                                className="formInputdefault"
                               >
                                 <option value="">Select an event</option>
                                 {Events.map((event) => (
@@ -423,42 +422,36 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                               </Field>
                             </div>
                             <div className="flex flex-col gap-1">
-                              <label className="font-medium text-sm text-[#181818]">
-                                Deadline
-                              </label>
+                              <Label isRequired={false} label="Deadline" />
                               <Field
                                 name="Deadline"
                                 type="date"
-                                className="formInputdefault border-2"
+                                className="formInputdefault"
                               />
                             </div>
                             <div className="flex flex-col gap-1">
-                              <label className="font-medium text-sm text-[#181818]">
-                                Order Priority
-                              </label>
+                              <Label isRequired={false} label="Order Priority" />
                               <Field
                                 name="OrderPriority"
                                 type="number"
-                                className="formInputdefault border-2"
+                                className="formInputdefault"
                                 min={0}
                               />
                             </div>
                           </div>
                           <div className="flex flex-col gap-1">
-                            <label className="font-medium text-sm text-[#181818]">
-                              Description
-                            </label>
+                            <Label isRequired={false} label="Description" />
                             <Field
                               as="textarea"
                               name="Description"
-                              className="formInputdefault border-2 !h-auto"
+                              className="formInputdefault !h-auto"
                               rows={4}
                               placeholder="Enter description"
                             />
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-5 formContainerWrapper rounded-lg p-3">
+                      <div className="flex flex-col gap-5 rounded-lg p-3">
                         <div className="flex items-center gap-1">
                           <h6 className="text-lg font-medium">Order Items</h6>
                           {selectedProducts.length > 0 ? (
@@ -499,7 +492,6 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                               key={product.ProductId}
                               aria-label={`accordion-${product.ProductId}`}
                               title={`${product.ProductFabricName} ${product.ProductCategoryName} ${product.ProductFabricGSM}`}
-                              // `${item.FabricName} ${item.ProductCategoryName} ${item?.GSM}`
                             >
                               <div className="flex flex-col gap-2 mb-2">
                                 <div className="flex items-center justify-end">
@@ -525,9 +517,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                                         >
                                           <div className="flex items-center gap-4">
                                             <div className="flex flex-col gap-1 w-full">
-                                              <label className="text-sm text-[#181818] font-sans">
-                                                Available Colors
-                                              </label>
+                                              <Label isRequired={false} label="Available Colors" />
                                               <Select
                                                 className="w-full"
                                                 placeholder="Select Color"
@@ -535,12 +525,12 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                                                 aria-label="Color option"
                                                 selectedKeys={
                                                   detail.ColorOptionId ||
-                                                  detail.ColorOptionId === 0
+                                                    detail.ColorOptionId === 0
                                                     ? new Set([
-                                                        String(
-                                                          detail.ColorOptionId
-                                                        ),
-                                                      ])
+                                                      String(
+                                                        detail.ColorOptionId
+                                                      ),
+                                                    ])
                                                     : new Set()
                                                 }
                                                 onSelectionChange={(keys) =>
@@ -553,7 +543,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                                               >
                                                 {(
                                                   availableColors[
-                                                    product.ProductId
+                                                  product.ProductId
                                                   ] || []
                                                 ).map((color) => (
                                                   <SelectItem key={color.Id}>
@@ -563,9 +553,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                                               </Select>
                                             </div>
                                             <div className="flex flex-col gap-1 w-full">
-                                              <label className="text-sm text-gray-600 font-sans">
-                                                Quantity
-                                              </label>
+                                              <Label isRequired={false} label="Quantity" />
                                               <Input
                                                 type="number"
                                                 placeholder="Enter Quantity"
@@ -581,9 +569,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                                               />
                                             </div>
                                             <div className="flex flex-col gap-1 w-full">
-                                              <label className="text-sm text-gray-600 font-sans">
-                                                Priority
-                                              </label>
+                                              <Label isRequired={false} label="Priority" />
                                               <Input
                                                 type="number"
                                                 placeholder="Enter Priority"
@@ -632,9 +618,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                                 </div>
                                 <div className="flex items-center gap-4 w-full">
                                   <div className="flex flex-col gap-1 w-full">
-                                    <label className="text-sm text-[#181818] font-sans">
-                                      Printing Options
-                                    </label>
+                                    <Label isRequired={false} label="Printing Options" />
                                     <Select
                                       className="w-full"
                                       placeholder="Select Printing options"
@@ -664,9 +648,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                                     </Select>
                                   </div>
                                   <div className="flex flex-col gap-1 w-full">
-                                    <label className="text-sm text-[#181818] font-sans">
-                                      Order Priority
-                                    </label>
+                                    <Label isRequired={false} label="Order Priority" />
                                     <Input
                                       type="number"
                                       placeholder="Enter Order Item Priority"
@@ -684,20 +666,16 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                                   </div>
                                 </div>
                                 <div className="flex flex-col gap-1">
-                                  <label className="text-sm text-[#181818] font-sans">
-                                    Documents
-                                  </label>
+                                  <Label isRequired={false} label="Documents" />
                                   <input
                                     type="file"
                                     className="border-2 rounded-lg p-1"
                                   />
                                 </div>
                                 <div className="flex flex-col">
-                                  <label className="text-sm text-[#181818] font-sans">
-                                    Description
-                                  </label>
+                                  <Label isRequired={false} label="Description" />
                                   <textarea
-                                    className="border-2 rounded-lg p-2 bg-gray-100"
+                                    className="border-2 rounded-lg p-2"
                                     rows={5}
                                     value={product.Description || ""}
                                     onChange={(e) =>

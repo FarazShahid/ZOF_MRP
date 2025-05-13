@@ -218,3 +218,8 @@ export const getProductNameById = (
   const product = products?.find((product) => product.Id === id);
   return product ? product.Name : null;
 };
+
+export const DOC_TYPE_ENUM = {
+  ORDER_DOCTYPE_ID: 1,
+  PRODUCT_DOCTYPE_ID: 2,
+}

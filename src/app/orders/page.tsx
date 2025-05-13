@@ -28,7 +28,7 @@ const page = () => {
               <span className="text-gray-500 text-[10px]">total Orders</span>
             </div>
           </div>
-          <div className="flex items-center gap-5">
+          {/* <div className="flex items-center gap-5">
             <Tooltip content="Product Definition">
               <Link
                 href={"/product/productdefination"}
@@ -58,7 +58,7 @@ const page = () => {
               </button>
             </div>
             <AddButton title={"New Order"} onClick={handleClick} />
-          </div>
+          </div> */}
         </div>
         <div className="flex gap-7 w-full mt-5 h-full">
           <div className="bg-gray-900 p-6 h-full rounded-lg flex flex-col gap-6">
@@ -101,7 +101,9 @@ const page = () => {
               <FiRefreshCw /> Reset Filters
             </button>
           </div>
-          {selectedListType === 1 ? <Orders /> : <></>}
+          <div className="flex-1">
+            {selectedListType === 1 ? <Orders /> : <></>}
+          </div>
         </div>
       </div>
     </AdminDashboardLayout>

@@ -1,8 +1,19 @@
+import useOrderStore from "@/store/useOrderStore";
 import ActiveOrderCard from "../../dashboard/component/ActiveOrderCard";
 import OrderCard from "./OrderCard";
 import OrderTable from "./OrderTable";
+import { useEffect } from "react";
+import Link from "next/link";
 
 const Orders = () => {
+  const {fetchOrders, Orders} = useOrderStore();
+
+
+  useEffect(()=>{
+    fetchOrders(0);
+  },[])
+
+
   const activeOrdersData = [
     {
       id: 1,
@@ -36,23 +47,28 @@ const Orders = () => {
     },
   ];
   return (
-    <div className="grid grid-cols-1 gap-5 w-full h-[75vh] overflow-y-auto">
-      {/* {activeOrdersData.map((order, index) => {
-        return (
-          // <OrderCard />
-          // <ActiveOrderCard
-          //   key={index}
-          //   clientName={order.clientName}
-          //   orderNo={order.orderNo}
-          //   deadline={order.deadline}
-          //   orderPercentage={order.orderPercentage}
-          //   orderStatus={order.orderStatus}
-          //   remaingOrderItems={order.remaingOrderItems}
-          //   totalOrderItems={order.totalOrderItems}
-          // />
-        );
-      })} */}
-      <OrderTable />
+    <div className="flex flex-col gap-5">
+      {/* <div className="flex justify-end items-center">
+        <Link href="/addorder" className="bg-green-800 text-gray-300 rounded px-2 py-1">New Order</Link>
+      </div> */}
+      {/* <div className="grid grid-cols-1 gap-5 w-full overflow-y-auto">
+        {Orders.map((order, index) => {
+          return (
+            <ActiveOrderCard
+              key={index}
+              clientName={order.ClientName}
+              orderNo={order.OrderNumber}
+              deadline={order.Deadline}
+              orderPercentage={"30"}
+              orderStatus={order.StatusName}
+              remaingOrderItems={"30"}
+              totalOrderItems={"20"}
+            />
+          );
+        })}
+      
+      </div> */}
+        <OrderTable />
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { Progress, Tooltip } from "@heroui/react";
 import { IoCalendarNumber } from "react-icons/io5";
 import { GiProgression } from "react-icons/gi";
 import { FaUserCircle } from "react-icons/fa";
+import { formatDate } from "../../interfaces";
 
 export interface ComponentProp {
   orderNo: string;
@@ -50,7 +51,7 @@ const ActiveOrderCard: React.FC<ComponentProp> = ({
             <IoCalendarNumber size={18} />
             <span className="uppercase">expected finished date</span>
           </div>
-          <span className="text-sm text-white pl-7">{deadline}</span>
+          <span className="text-sm text-white pl-7">{formatDate(deadline)}</span>
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-3 text-xs text-gray-500">
