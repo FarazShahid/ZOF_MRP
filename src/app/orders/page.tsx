@@ -28,37 +28,6 @@ const page = () => {
               <span className="text-gray-500 text-[10px]">total Orders</span>
             </div>
           </div>
-          {/* <div className="flex items-center gap-5">
-            <Tooltip content="Product Definition">
-              <Link
-                href={"/product/productdefination"}
-                className="bg-gray-700 rounded-lg p-2"
-              >
-                <FiSettings size={20} />
-              </Link>
-            </Tooltip>
-            <div className="flex items-center bg-gray-700 rounded-lg">
-              <button
-                type="button"
-                onClick={() => setSelectedListType(1)}
-                className={`p-2 rounded-lg text-gray-200 ${
-                  selectedListType === 1 ? "activeListing" : ""
-                }`}
-              >
-                <FaList />
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedListType(2)}
-                className={`p-2 rounded-lg text-gray-200 ${
-                  selectedListType === 2 ? "activeListing" : ""
-                }`}
-              >
-                <AiFillProduct />
-              </button>
-            </div>
-            <AddButton title={"New Order"} onClick={handleClick} />
-          </div> */}
         </div>
         <div className="flex gap-7 w-full mt-5 h-full">
           <div className="bg-gray-900 p-6 h-full rounded-lg flex flex-col gap-6">

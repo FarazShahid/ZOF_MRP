@@ -7,6 +7,7 @@ import useFabricStore from "@/store/useFabricStore";
 import { Select, SelectItem } from "@heroui/react";
 import useColorOptionsStore from "@/store/useColorOptionsStore";
 import ColorPickerModal from "./ColorPickerModal";
+import Label from "../../components/common/Label";
 
 export default function Step1({ formik }: any) {
   const [isColorModalOpen, setIsColorModalOpen] = useState(false);
@@ -58,9 +59,7 @@ export default function Step1({ formik }: any) {
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-semibold text-gray-400">
-          Product Category
-        </label>
+        <Label isRequired={true} label="Product Category" />
         <Field
           as="select"
           name="ProductCategoryId"
@@ -82,9 +81,7 @@ export default function Step1({ formik }: any) {
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-semibold text-gray-400">
-          Fabric Type
-        </label>
+        <Label isRequired={true} label="Fabric Type" />
         <Field
           as="select"
           name="FabricTypeId"
