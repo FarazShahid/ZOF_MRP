@@ -21,6 +21,7 @@ import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { GoPencil } from "react-icons/go";
 import DeleteProductRegion from "./DeleteColorOptions";
 import AddProductRegion from "./AddColorOptions";
+import AddButton from "../../components/common/AddButton";
 
 const ProductRegionComponent = () => {
   const [page, setPage] = useState<number>(1);
@@ -63,18 +64,15 @@ const ProductRegionComponent = () => {
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
 
-
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortDirection === "asc"
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
 
-
       if (typeof aValue === "number" && typeof bValue === "number") {
         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
       }
-
 
       if (
         sortColumn === "CreatedOn" &&
@@ -113,14 +111,7 @@ const ProductRegionComponent = () => {
           <h6 className="font-sans text-lg font-semibold">
             Product Region Standard
           </h6>
-          <button
-            type="button"
-            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
-            onClick={openAddModal}
-          >
-            <FiPlus />
-            Add New
-          </button>
+          <AddButton title="Add New" onClick={openAddModal} />
         </div>
         <Table
           isStriped
@@ -166,7 +157,7 @@ const ProductRegionComponent = () => {
                   ))}
               </div>
             </TableColumn>
-            
+
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>

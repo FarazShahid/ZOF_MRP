@@ -18,6 +18,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import useCategoryStore, { ProductCategory } from "@/store/useCategoryStore";
 import DeleteProductCatagory from "./DeleteProductCatagory";
 import AddProductCatagory from "./AddProductCatagory";
+import AddButton from "../../components/common/AddButton";
 
 const ProductCategoryComponent = () => {
   const [page, setPage] = useState<number>(1);
@@ -107,14 +108,7 @@ const ProductCategoryComponent = () => {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">Product Category</h6>
-          <button
-            type="button"
-            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
-            onClick={openAddModal}
-          >
-            <FiPlus />
-            Add New
-          </button>
+          <AddButton title="Add New" onClick={openAddModal} />
         </div>
         <Table
           isStriped

@@ -41,7 +41,7 @@ const CutomNavBar = () => {
       id: 4,
       label: "Inventory",
       icon: <IoStorefrontOutline size={14} />,
-      route: "/Inventory",
+      route: "/inventoryItems",
       isNested: true,
     },
     {
@@ -68,19 +68,19 @@ const CutomNavBar = () => {
       <div className="w-7 h-7">
         <Image src={Logo} alt="logo" />
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         {Navlist.map((item) => {
           const isActive = pathname.startsWith(item.route);
           return (
             <div
-              className={`flex items-center gap-1 border-1 border-gray-400 px-2 py-1 cursor-pointer rounded-full transition-all duration-150 ${
+              className={`flex items-center gap-2 px-2 py-1 cursor-pointer rounded-full transition-all duration-150 ${
                 isActive ? "selectedNavItem" : ""
               }`}
               key={item.id}
               onClick={() => handleRoute(item.route)}
             >
               {item.icon}
-              <span className="text-gray-400 text-sm">{item.label}</span>
+              <span className="text-gray-400 font-bold text-sm">{item.label}</span>
             </div>
           );
         })}

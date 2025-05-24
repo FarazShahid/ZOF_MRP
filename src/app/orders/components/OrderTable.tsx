@@ -23,6 +23,8 @@ import StatusChip from "../../components/StatusChip";
 import AddOrderComponent from "../../components/AddOrderComponent";
 import DeleteModal from "../../components/DeleteModal";
 import ViewOrderComponent from "../../components/ViewOrderComponent";
+import Link from "next/link";
+import PriorityChip from "./PriorityChip";
 
 const OrderTable = () => {
   const [clientId, setClientId] = useState<number>(0);
@@ -108,14 +110,14 @@ const OrderTable = () => {
               );
             })}
           </select>
-          <button
+          <Link
+            href={"/orders/addorder"}
             type="button"
-            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
-            onClick={openAddOrderModal}
+            className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
           >
             <FiPlus />
             Add New
-          </button>
+          </Link>
         </div>
         <Table
           isStriped
@@ -175,6 +177,8 @@ const OrderTable = () => {
                   <TableCell>
                     {columnKey === "Deadline" ? (
                       formatDate(item[columnKey])
+                    ) : columnKey === "OrderPriority" ? (
+                      <PriorityChip priority={item.OrderPriority} />
                     ) : columnKey === "StatusName" ? (
                       <StatusChip OrderStatus={item.StatusName} />
                     ) : columnKey !== "Action" ? (

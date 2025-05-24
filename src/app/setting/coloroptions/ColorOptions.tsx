@@ -61,13 +61,12 @@ const ColorOptions = () => {
   }, [page, colorOptions]);
 
   return (
-   
     <div className="flex flex-col gap-3 w-full">
       <div className="flex items-center justify-between">
         <h6 className="font-sans text-lg font-semibold">Color Options</h6>
         <Link
-        href={"/setting/coloroptions/addColor"}
-          className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
+          href={"/setting/coloroptions/addColor"}
+          className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
         >
           <FiPlus />
           Add New
@@ -83,9 +82,9 @@ const ColorOptions = () => {
         }}
         bottomContent={
           <div className="grid grid-cols-2 mt-5">
-              <span className="w-[30%] text-small text-gray-500">
-                Total: {colorOptions.length || 0}
-              </span>
+            <span className="w-[30%] text-small text-gray-500">
+              Total: {colorOptions.length || 0}
+            </span>
             <Pagination
               isCompact
               showControls
@@ -108,7 +107,7 @@ const ColorOptions = () => {
           <TableColumn key="HexCode" className="text-medium font-bold">
             Color
           </TableColumn>
-          
+
           <TableColumn key="action" className="text-medium font-bold">
             Action
           </TableColumn>

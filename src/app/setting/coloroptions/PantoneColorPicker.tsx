@@ -7,6 +7,7 @@ import { Button } from "@heroui/react";
 import { IoChevronBackOutline } from "react-icons/io5";
 import useColorOptionsStore from "@/store/useColorOptionsStore";
 import rawPantoneColors from "../../../../lib/pantone-colors.json";
+import AddButton from "../../components/common/AddButton";
 
 export type PantoneColor = {
   code: string;
@@ -131,7 +132,7 @@ export default function PantoneColorDropdown({
 
 
   const onCloseModal = () => {
-    router.push("/setting/coloroptions");
+    router.back();
   }
 
   const handleAddColor = async () => {
@@ -156,25 +157,25 @@ export default function PantoneColorDropdown({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
-        <Link href="/setting/coloroptions" className="flex items-center gap-1 text-lg font-semibold">
+        <button type="button" 
+          onClick={onCloseModal} 
+          className="flex items-center gap-1 text-lg font-semibold">
           <IoChevronBackOutline size={20} />  Back
-        </Link>
+        </button>
         <div className="flex items-center gap-4">
           <div
             className="w-10 h-10 rounded border shadow-inner"
             style={{ backgroundColor: selectedColor.hex }}
           />
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="text-sm text-gray-300">
             <strong>{selectedColor.name}</strong> ({selectedColor.code}) —{" "}
             <span>{selectedColor.hex.toUpperCase()}</span>
           </div>
         </div>
-        <Button color="primary" type="submit" onPress={handleAddColor}>
-        + Add Color
-        </Button>
+        <AddButton title="Add New" onClick={handleAddColor} />
       </div>
-      <div className="w-full lg:max-w-[992px] mb-[50px] px-5">
-        <ul className="flex flex-wrap items-center justify-center">
+      <div className="w-full  mb-[50px] px-5 flex items-center justify-center">
+        <ul className="flex flex-wrap items-center justify-center lg:max-w-[992px]">
           {
             filterBtns.map((btn)=>{
               return(

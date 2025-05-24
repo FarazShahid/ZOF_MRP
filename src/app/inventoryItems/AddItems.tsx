@@ -16,6 +16,7 @@ import useInventorySubCategoryStore from "@/store/useInventorySubCategoryStore";
 import useSupplierStore from "@/store/useSupplierStore";
 import useUnitOfMeasureStore from "@/store/useUnitOfMeasureStore";
 import { InventoryItemSchema } from "../schema/InventoryItemSchema";
+import Label from "../components/common/Label";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -99,10 +100,9 @@ const AddItems: React.FC<AddComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} 
+                              label="Name" 
+                              labelForm="Name" />
                             <Field
                               name="Name"
                               type="text"
@@ -116,10 +116,9 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Sub Category
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true}
+                               label="Sub Category" 
+                               labelForm="Sub Category" />
                             <Field
                               name="SubCategoryId"
                               as="select"
@@ -141,10 +140,9 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Supplier
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true}
+                               label="Supplier" 
+                               labelForm="Supplier" />
                             <Field
                               name="SupplierId"
                               as="select"
@@ -166,10 +164,9 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Unit Of Measure
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                             <Label isRequired={true}
+                               label="Unit Of Measure" 
+                               labelForm="Unit Of Measure" />
                             <Field
                               name="UnitOfMeasureId"
                               as="select"
@@ -191,10 +188,9 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Reorder Level
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true}
+                               label="Reorder Level" 
+                               labelForm="Reorder Level" />
                             <Field
                               name="ReorderLevel"
                               type="number"

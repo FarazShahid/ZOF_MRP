@@ -108,7 +108,7 @@ const page = () => {
           <h6 className="font-sans text-lg font-semibold">Events</h6>
           <button
             type="button"
-            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
+            className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
             onClick={openAddModal}
           >
             <FiPlus />

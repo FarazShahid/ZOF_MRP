@@ -1,7 +1,7 @@
 "use client"
 
-import AdminLayout from "@/src/app/adminDashboard/lauout";
 import PantoneColorDropdown from "../PantoneColorPicker";
+import AdminDashboardLayout from "@/src/app/components/common/AdminDashboardLayout";
 
 export type PantoneColor = {
   code: string;
@@ -19,11 +19,11 @@ const page = () => {
   };
 
   return (
-    <AdminLayout>
+    <AdminDashboardLayout>
       <PantoneColorDropdown
             onChange={(color) => handleColorPicker(color)}
           />
-    </AdminLayout>
+    </AdminDashboardLayout>
   );
 };
 

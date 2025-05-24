@@ -6,6 +6,7 @@ import { useDropzone } from "react-dropzone";
 import { MdCancel } from "react-icons/md";
 import { FaRegEye } from "react-icons/fa";
 import FilePreviewModal from "../../product/component/FilePreviewModal";
+import { useFileUploadStore } from "@/store/useFileUploadStore";
 
 type UploadedFile = {
   file: File;
@@ -15,12 +16,16 @@ type UploadedFile = {
 };
 
 const DropZone = () => {
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+   const {
+    uploadedFiles,
+    addUploadedFile,
+    removeUploadedFile,
+  } = useFileUploadStore();
+  
   const [selectedFile, setSelectedFile] = useState<UploadedFile | null>(null);
   const [OpenViewModal, setOpenViewModal] = useState<boolean>(false);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    const newFiles: UploadedFile[] = [];
 
     for (const file of acceptedFiles) {
       const type = file.type;
@@ -40,11 +45,11 @@ const DropZone = () => {
         previewUrl = URL.createObjectURL(file);
       }
 
-      newFiles.push({ file, type, previewUrl, zipContents });
+     const newFile: UploadedFile = ({ file, type, previewUrl, zipContents });
+     addUploadedFile(newFile);
     }
 
-    setUploadedFiles((prev) => [...prev, ...newFiles]);
-  }, []);
+  }, [addUploadedFile]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -62,7 +67,7 @@ const DropZone = () => {
   });
 
   const handleRemove = (indexToRemove: number) => {
-    setUploadedFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+    removeUploadedFile(indexToRemove);
   };
   const handleOpenModal = (file: UploadedFile) => {
     setSelectedFile(file);
@@ -73,7 +78,7 @@ const DropZone = () => {
   };
 
   return (
-    <div className="space-y-6 w-[500px]">
+    <div className="space-y-6 w-full">
       <div className="p-4">
         <div
           {...getRootProps()}
@@ -134,16 +139,18 @@ const DropZone = () => {
               {/* File Info */}
               <div className="mt-2">
                 <p className="font-medium truncate">{f.file.name}</p>
-                <p className="text-xs text-gray-500">
-                  {f.type || "Unknown type"}
-                </p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-gray-500">
+                    {f.type || "Unknown type"}
+                  </p>
+                  <button
+                    className="mt-2 text-sm text-green-500 hover:underline"
+                    onClick={() => handleOpenModal(f)}
+                  >
+                    <FaRegEye size={18} />
+                  </button>
+                </div>
               </div>
-              <button
-                className="mt-2 text-sm text-blue-500 hover:underline"
-                onClick={() => handleOpenModal(f)}
-              >
-                <FaRegEye size={16} />
-              </button>
             </div>
           ))}
         </div>

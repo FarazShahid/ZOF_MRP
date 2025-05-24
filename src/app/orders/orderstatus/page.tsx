@@ -11,40 +11,34 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { formatDate } from "../../interfaces";
-import useSleeveType, { SleeveType } from "@/store/useSleeveType";
-import DeleteSleeveType from "./DeleteSleeveType";
-import AddSleeveType from "./AddSleeveType";
 import { FiPlus } from "react-icons/fi";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { GoPencil } from "react-icons/go";
-import AdminLayout from "../../adminDashboard/lauout";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import AddButton from "../../components/common/AddButton";
+import useOrderStatusStore from "@/store/useOrderStatusStore";
+import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
+import AddStatus from "./components/AddStatus";
 
-const Sleeve = () => {
+const page = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [selectedSleeveTypeId, setSelectedSleeveTypeId] = useState<number>(0);
+  const [selectedStatusId, setSelectedStatusId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [sortColumn, setSortColumn] =
-    useState<keyof SleeveType>("sleeveTypeName");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  const { fetchSleeveType, sleeveTypeData, loading } = useSleeveType();
+  const { fetchStatuses, statuses, loading } = useOrderStatusStore();
 
   useEffect(() => {
-    fetchSleeveType();
+    fetchStatuses();
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(sleeveTypeData!.length / rowsPerPage);
+  const pages = Math.ceil(statuses!.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
-  const handleOpenDeleteModal = (productCatagoryId: number) => {
-    setSelectedSleeveTypeId(productCatagoryId);
+  const handleOpenDeleteModal = (sizeOptionId: number) => {
+    setSelectedStatusId(sizeOptionId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -52,66 +46,24 @@ const Sleeve = () => {
     setIsAddModalOpen(false);
     setIsEdit(false);
   };
-  const openEditModal = (clientId: number) => {
-    setSelectedSleeveTypeId(clientId);
+  const openEditModal = (Id: number) => {
+    setSelectedStatusId(Id);
     setIsAddModalOpen(true);
     setIsEdit(true);
   };
 
   const items = useMemo(() => {
-    const sorted = [...(sleeveTypeData || [])].sort((a, b) => {
-      const aValue = a[sortColumn];
-      const bValue = b[sortColumn];
-
-      // String sorting
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      }
-
-      // Number sorting
-      if (typeof aValue === "number" && typeof bValue === "number") {
-        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
-      }
-
-      // Date sorting (for fields like CreatedOn)
-      if (
-        sortColumn === "CreatedOn" &&
-        typeof aValue === "string" &&
-        typeof bValue === "string"
-      ) {
-        const aDate = new Date(aValue).getTime();
-        const bDate = new Date(bValue).getTime();
-        return sortDirection === "asc" ? aDate - bDate : bDate - aDate;
-      }
-
-      return 0;
-    });
-
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return sorted.slice(start, end);
-  }, [page, sleeveTypeData, sortColumn, sortDirection]);
 
-  const handleSort = (column: keyof SleeveType) => {
-    if (column === sortColumn) {
-      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
-    }
-  };
-
-  useEffect(() => {
-    setPage(1);
-  }, [sortColumn, sortDirection]);
+    return statuses?.slice(start, end);
+  }, [page, statuses]);
 
   return (
-    <>
+    <AdminDashboardLayout>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">Sleeve Type</h6>
+          <h6 className="font-sans text-lg font-semibold">Statues</h6>
           <AddButton title="Add New" onClick={openAddModal} />
         </div>
         <Table
@@ -125,7 +77,7 @@ const Sleeve = () => {
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {sleeveTypeData.length || 0}
+                Total: {statuses.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -143,31 +95,20 @@ const Sleeve = () => {
             <TableColumn key="Sr" className="text-medium font-bold">
               Sr
             </TableColumn>
-            <TableColumn
-              key="sleeveTypeName"
-              className="text-medium font-bold cursor-pointer"
-              onClick={() => handleSort("sleeveTypeName")}
-            >
-              <div className="flex items-center gap-1">
-                Sleeve Type
-                {sortColumn === "sleeveTypeName" &&
-                  (sortDirection === "asc" ? (
-                    <TiArrowSortedUp />
-                  ) : (
-                    <TiArrowSortedDown />
-                  ))}
-              </div>
+            <TableColumn key="StatusName" className="text-medium font-bold">
+              Name
             </TableColumn>
-            <TableColumn key="categoryName" className="text-medium font-bold">
-              Category Name
+            <TableColumn key="Description" className="text-medium font-bold">
+              Description
             </TableColumn>
+
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
             {(items ?? []).map((item: any, index: number) => (
-              <TableRow key={index}>
+              <TableRow key={item.Id}>
                 {(columnKey) => (
                   <TableCell>
                     {columnKey === "Sr" ? (
@@ -178,14 +119,14 @@ const Sleeve = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => openEditModal(item.id)}
+                          onClick={() => openEditModal(item.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.id)}
+                          onClick={() => handleOpenDeleteModal(item.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>
@@ -198,20 +139,26 @@ const Sleeve = () => {
           </TableBody>
         </Table>
 
-        <AddSleeveType
+        {/* <AddSizeOptions
           isOpen={isAddModalOpen}
           closeAddModal={closeAddModal}
           isEdit={isEdit}
-          sleeveTypeId={selectedSleeveTypeId}
+          sizeOptionId={selectedSizeOptionId}
         />
-        <DeleteSleeveType
+        <DeleteSizeOptions
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
-          sleeveTypeId={selectedSleeveTypeId}
+          sizeOptionId={selectedSizeOptionId}
+        /> */}
+        <AddStatus
+          isOpen={isAddModalOpen}
+          closeAddModal={closeAddModal}
+          isEdit={isEdit}
+          Id={selectedStatusId}
         />
       </div>
-    </>
+    </AdminDashboardLayout>
   );
 };
 
-export default Sleeve;
+export default page;

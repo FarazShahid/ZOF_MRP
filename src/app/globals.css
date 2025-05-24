@@ -1035,17 +1035,28 @@ span.flatpickr-weekday,
   opacity: 1;
 }
 .selectedNavItem{
-  background: #3f3f3f;
+  background: #4ade80;
+    border-radius: 10px;
 }
 .selectedNavItem svg > path {
-  fill: #039855;
+  fill: black;
 }
 .selectedNavItem span {
-  color: white;
+  color: black;
+    font-weight: bold;
 }
 .activeListing{
   border: 2px solid #4ade80;
 }
 .activeListing svg > path {
   fill: #4ade80;
+}
+.stockDataShip{
+  padding: 4px 2px;
+  border-radius: 10px;
+  text-align: center;
+}
+.lowStock {
+  background: #FF800030;
+  color: #FF8000;
 }

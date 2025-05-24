@@ -39,7 +39,7 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
     sleeveType,
     loading,
   } = useSleeveType();
-  const {fetchCategories, productCategories} = useCategoryStore();
+  const { fetchCategories, productCategories } = useCategoryStore();
 
   useEffect(() => {
     if (sleeveTypeId && isEdit) {
@@ -47,13 +47,14 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
     }
   }, [sleeveTypeId, isEdit]);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchCategories();
-  },[])
+  }, []);
 
   const InitialValues = {
     sleeveTypeName: isEdit && sleeveType ? sleeveType.sleeveTypeName : "",
-    productCategoryId: isEdit && sleeveType ?  Number(sleeveType.productCategoryId) : 0,
+    productCategoryId:
+      isEdit && sleeveType ? Number(sleeveType.productCategoryId) : 0,
   };
 
   const handleAddFabric = async (values: AddFabricType) => {
@@ -72,11 +73,7 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {!isEdit ? (
-                <> Add Sleeve Type</>
-              ) : (
-                <> Edit Sleeve Type</>
-              )}
+              {!isEdit ? <> Add Sleeve Type</> : <> Edit Sleeve Type</>}
             </ModalHeader>
             <Formik
               validationSchema={SleeveTypeSchema}
@@ -93,7 +90,11 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                             <Label isRequired={true} label="Sleeve Type Name" labelForm="Sleeve Type Name" />
+                            <Label
+                              isRequired={true}
+                              label="Sleeve Type Name"
+                              labelForm="Sleeve Type Name"
+                            />
                             <Field
                               name="sleeveTypeName"
                               type="text"
@@ -107,20 +108,24 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true} label="Product Category" labelForm="Product Category" />
+                            <Label
+                              isRequired={true}
+                              label="Product Category"
+                              labelForm="Product Category"
+                            />
                             <Field
                               name="productCategoryId"
                               as="select"
                               className="formInputdefault"
                             >
                               <option value={""}>Select a type</option>
-                              {
-                                productCategories?.map((category, index)=>{
-                                  return(
-                                    <option value={index}>{category.type}</option>
-                                  )
-                                })
-                              }
+                              {productCategories?.map((category, index) => {
+                                return (
+                                  <option value={category.id} key={index}>
+                                    {category.type}
+                                  </option>
+                                );
+                              })}
                             </Field>
                             <ErrorMessage
                               name="productCategoryId"

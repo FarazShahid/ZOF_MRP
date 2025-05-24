@@ -18,6 +18,7 @@ import { GoPencil } from "react-icons/go";
 import useFabricStore, { FabricType } from "@/store/useFabricStore";
 import DeleteFabricType from "./DeleteFabricType";
 import AddFabricType from "./AddFabricType";
+import AddButton from "../../components/common/AddButton";
 
 const Fabric = () => {
   const [page, setPage] = useState<number>(1);
@@ -101,18 +102,10 @@ const Fabric = () => {
   }, [sortColumn, sortDirection]);
 
   return (
-
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <h6 className="font-sans text-lg font-semibold">Fabric Type</h6>
-        <button
-          type="button"
-          className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
-          onClick={openAddModal}
-        >
-          <FiPlus />
-          Add New
-        </button>
+        <AddButton title="Add New" onClick={openAddModal} />
       </div>
       <Table
         isStriped

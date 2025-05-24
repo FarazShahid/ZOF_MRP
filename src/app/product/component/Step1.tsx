@@ -31,9 +31,25 @@ export default function Step1({ formik }: any) {
         String(colorOption.Id)
       );
       setSelectedColorOptions(allKeys || []);
+      formik.setFieldValue(
+        "productColors",
+        allKeys.map((colorId, idx) => ({
+          Id: idx,
+          colorId: Number(colorId),
+          ImageId: "1",
+        }))
+      );
     } else {
       const keyArray = Array.from(keys).map(String);
       setSelectedColorOptions(keyArray);
+      formik.setFieldValue(
+        "productColors",
+        keyArray.map((colorId, idx) => ({
+          Id: idx,
+          colorId: Number(colorId),
+          ImageId: "1",
+        }))
+      );
     }
   };
 
@@ -56,6 +72,8 @@ export default function Step1({ formik }: any) {
     };
     fetchData();
   }, []);
+
+
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
@@ -133,7 +151,7 @@ export default function Step1({ formik }: any) {
           Choose
         </button>
       </div>
-       <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         {customColors.map((color, index) => (
           <div key={index} className="flex items-center gap-2">
             <div

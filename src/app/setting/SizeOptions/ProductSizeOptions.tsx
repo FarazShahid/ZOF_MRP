@@ -17,7 +17,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import AddSizeOptions from "./AddSizeOptions";
 import DeleteSizeOptions from "./DeleteSizeOptions";
-
+import AddButton from "../../components/common/AddButton";
 
 const ProductSizeOptions = () => {
   const [page, setPage] = useState<number>(1);
@@ -64,14 +64,7 @@ const ProductSizeOptions = () => {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">Size Options</h6>
-          <button
-            type="button"
-            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
-            onClick={openAddModal}
-          >
-            <FiPlus />
-            Add New
-          </button>
+          <AddButton title="Add New" onClick={openAddModal} />
         </div>
         <Table
           isStriped
@@ -83,9 +76,9 @@ const ProductSizeOptions = () => {
           }}
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
-            <span className="w-[30%] text-small text-gray-500">
-              Total: {sizeOptions.length || 0}
-            </span>
+              <span className="w-[30%] text-small text-gray-500">
+                Total: {sizeOptions.length || 0}
+              </span>
               <Pagination
                 isCompact
                 showControls
@@ -108,7 +101,7 @@ const ProductSizeOptions = () => {
             >
               Size Option
             </TableColumn>
-            
+
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>

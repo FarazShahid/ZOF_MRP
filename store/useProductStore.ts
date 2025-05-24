@@ -49,6 +49,11 @@ interface ProductById {
   ];
 }
 
+interface GetAvailableColorResponse {
+  data: ProductAvailableColors[];
+}
+
+
 interface ProductAvailableColors {
   Id: number;
   ColorName: string;
@@ -121,8 +126,8 @@ const useProductStore = create<CategoryState>((set, get) => ({
         const error = await response.json();
         toast.error(error.message || "Fail to fetch data.");
       }
-      const data: ProductAvailableColors[] = await response.json();
-      set({ productAvailableColors: data, loading: false });
+      const data: GetAvailableColorResponse = await response.json();
+      set({ productAvailableColors: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch product colors", loading: false });
     }

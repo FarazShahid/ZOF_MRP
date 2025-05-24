@@ -1,63 +1,49 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
-import { Form, Formik } from "formik";
-import { IoCaretBackSharp } from "react-icons/io5";
 import { FaRegFileLines } from "react-icons/fa6";
 import { FaRuler } from "react-icons/fa";
-import { GrDocumentImage } from "react-icons/gr";
+import GoBackButton from "../../components/common/GoBackButton";
+import { Form, Formik } from "formik";
+import { OrderValidationSchemas } from "../../schema";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
-import Step3 from "./Step3";
-import { ProductValidationSchemas } from "../../schema";
-import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
-import useProductStore from "@/store/useProductStore";
+import { Link, Spinner } from "@heroui/react";
+import { IoCaretBackSharp } from "react-icons/io5";
+import { useFileUploadStore } from "@/store/useFileUploadStore";
 import { useRouter } from "next/navigation";
+import useOrderStore from "@/store/useOrderStore";
 
-const steps = ["General Information", "Product Details", "Description"];
 
+const steps = ["Order Details", "Order Items",];
 const formSteps = [
-  { id: 1, name: "General Information", icon: <FaRegFileLines size={20} /> },
-  { id: 2, name: "Product Details", icon: <FaRuler size={20} /> },
-  { id: 3, name: "Description", icon: <GrDocumentImage size={20} /> },
+  { id: 1, name: "Order Details", icon: <FaRegFileLines size={20} /> },
+  { id: 2, name: "Order Items", icon: <FaRuler size={20} /> },
 ];
 
-const ProductForm = () => {
-
+const OrderForm = () => {
+  const {uploadedFiles} = useFileUploadStore();
   const [currentStep, setCurrentStep] = useState(1);
-  const { addProduct } = useProductStore();
+  const {addOrder} = useOrderStore();
+
   const router = useRouter();
 
   const initialValues = {
-    ProductCategoryId: "",
-    FabricTypeId: "",
+    ClientId: "",
+    OrderEventId: "",
     Description: "",
+    Deadline: "",
+    OrderPriority: "",
 
-    productColors: [
-      {
-        Id: 0,
-        colorId: 0,
-        ImageId: "1",
-      },
-    ],
-    productDetails: [
-      {
-        ProductCutOptionId: 0,
-        ProductSizeMeasurementId: 0,
-        SleeveTypeId: 1,
-      },
-    ],
+    items: [],
   };
 
-  const renderStep = (formikProps: any) => {
+const renderStep = (formikProps: any) => {
     switch (currentStep) {
       case 1:
         return <Step1 formik={formikProps} />;
       case 2:
         return <Step2 formik={formikProps} />;
-      case 3:
-        return <Step3 formik={formikProps} />;
       default:
         return null;
     }
@@ -70,7 +56,7 @@ const ProductForm = () => {
   ) => {
     const errors = await validateForm();
 
-    const currentSchema = ProductValidationSchemas[currentStep - 1];
+    const currentSchema = OrderValidationSchemas[currentStep - 1];
 
     if (!currentSchema) {
       setCurrentStep(prev => prev + 1);
@@ -96,19 +82,22 @@ const ProductForm = () => {
   };
 
   const handleBoBack = () => {
-    router.push('/product')
+    router.push('/orders')
   }
   const handleSubmit = async (values: any) => {
-    await addProduct(values, () => handleBoBack())
+    values.Description = values.ClientId + "order description";
+    console.log("values", values);
+    console.log("uploadedfile", uploadedFiles);
+    await addOrder(values, () => handleBoBack())
   };
 
   return (
-    <AdminDashboardLayout>
+    <>
       <div className="flex">
         <aside className="w-1/4 p-6">
           <div className="flex items-center mb-10">
             <Link
-              href={"/product"}
+              href={"/orders"}
               className="flex items-center gap-1 text-gray-400 hover:text-white"
             >
               <IoCaretBackSharp /> <span>Back to listing</span>
@@ -148,12 +137,12 @@ const ProductForm = () => {
         </aside>
         <main className="flex flex-col justify-center items-center w-full">
           <h1 className="text-sm font-bold text-gray-500 mb-2">
-            Add New Product
+            Add New Order
           </h1>
           <h2 className="text-xl font-semibold mb-4">{steps[currentStep - 1]}</h2>
           <div className="flex flex-col bg-gray-900 rounded-xl p-10">
             <Formik
-              validationSchema={ProductValidationSchemas[currentStep - 1]}
+              validationSchema={OrderValidationSchemas[currentStep - 1]}
               initialValues={initialValues}
               enableReinitialize
               onSubmit={handleSubmit}
@@ -172,7 +161,7 @@ const ProductForm = () => {
                       </button>
                     )}
 
-                    {currentStep < 3 && (
+                    {currentStep < 2 && (
                       <button
                         type="button"
                         onClick={() =>
@@ -184,7 +173,7 @@ const ProductForm = () => {
                       </button>
                     )}
 
-                    {currentStep === 3 && (
+                    {currentStep === 2 && (
                       <button
                         type="submit"
                         disabled={isSubmitting}
@@ -200,8 +189,8 @@ const ProductForm = () => {
           </div>
         </main>
       </div>
-    </AdminDashboardLayout>
+    </>
   );
 };
 
-export default ProductForm;
+export default OrderForm;

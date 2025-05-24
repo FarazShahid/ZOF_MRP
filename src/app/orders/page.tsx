@@ -1,26 +1,15 @@
 "use client";
-
-import { useState } from "react";
-import { Tooltip } from "@heroui/react";
-import { FaList } from "react-icons/fa6";
-import { FiRefreshCw, FiSettings } from "react-icons/fi";
+import { FiRefreshCw } from "react-icons/fi";
 
 import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
-import Link from "next/link";
-import { AiFillProduct } from "react-icons/ai";
-import AddButton from "../components/common/AddButton";
 import { MdOutlineFilterAlt } from "react-icons/md";
-import Orders from "./components/Orders";
+import OrderTable from "./components/OrderTable";
 
 const page = () => {
-  const [selectedListType, setSelectedListType] = useState(1);
-
-  const handleClick = () => {};
-
   return (
     <AdminDashboardLayout>
       <div className="space-x-2">
-        <div className="flex items-center justify-between w-full">
+        {/* <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-5">
             <h6 className="text-white text-xl font-semibold">Orders</h6>
             <div className="border-1 border-gray-600 px-2 py-1 rounded-full flex items-center gap-1">
@@ -28,9 +17,9 @@ const page = () => {
               <span className="text-gray-500 text-[10px]">total Orders</span>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="flex gap-7 w-full mt-5 h-full">
-          <div className="bg-gray-900 p-6 h-full rounded-lg flex flex-col gap-6">
+          {/* <div className="bg-gray-900 p-6 h-full rounded-lg flex flex-col gap-6">
             <span className="text-gray-50 uppercase text-sm flex items-center gap-2">
               <MdOutlineFilterAlt size={19} /> Filters
             </span>
@@ -69,9 +58,9 @@ const page = () => {
             >
               <FiRefreshCw /> Reset Filters
             </button>
-          </div>
+          </div> */}
           <div className="flex-1">
-            {selectedListType === 1 ? <Orders /> : <></>}
+            <OrderTable />
           </div>
         </div>
       </div>

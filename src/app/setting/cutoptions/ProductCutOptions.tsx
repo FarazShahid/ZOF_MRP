@@ -18,6 +18,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import useCutOptionsStore, { CutOptions } from "@/store/useCutOptionsStore";
 import AddCutOptions from "./AddCutOptions";
 import DeleteCutOptions from "./DeleteCutOptions";
+import AddButton from "../../components/common/AddButton";
 
 const ProductCutOptions = () => {
   const [page, setPage] = useState<number>(1);
@@ -109,14 +110,7 @@ const ProductCutOptions = () => {
           <h6 className="font-sans text-lg font-semibold">
             Product Cut Options
           </h6>
-          <button
-            type="button"
-            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
-            onClick={openAddModal}
-          >
-            <FiPlus />
-            Add New
-          </button>
+          <AddButton title="Add New" onClick={openAddModal} />
         </div>
         <Table
           isStriped
