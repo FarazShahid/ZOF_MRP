@@ -25,6 +25,7 @@ import DeleteModal from "../../components/DeleteModal";
 import ViewOrderComponent from "../../components/ViewOrderComponent";
 import Link from "next/link";
 import PriorityChip from "./PriorityChip";
+import ViewDrawer from "./ViewDrawer";
 
 const OrderTable = () => {
   const [clientId, setClientId] = useState<number>(0);
@@ -239,11 +240,20 @@ const OrderTable = () => {
         <></>
       )}
 
-      {isOpenViewModal ? (
+      {/* {isOpenViewModal ? (
         <ViewOrderComponent
           isOpen={isOpenViewModal}
           onClose={closeViewModal}
           selectedOrderId={selectedOrderId}
+        />
+      ) : (
+        <></>
+      )} */}
+      {isOpenViewModal ? (
+        <ViewDrawer
+          Id={selectedOrderId}
+          isOpen={isOpenViewModal}
+          onClose={closeViewModal}
         />
       ) : (
         <></>

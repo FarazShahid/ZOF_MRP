@@ -11,13 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { FiPlus } from "react-icons/fi";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import AddButton from "../../components/common/AddButton";
 import useOrderStatusStore from "@/store/useOrderStatusStore";
 import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
 import AddStatus from "./components/AddStatus";
+import DeleteStatus from "./components/DeleteStatus";
 
 const page = () => {
   const [page, setPage] = useState<number>(1);
@@ -37,8 +37,8 @@ const page = () => {
 
   const openAddModal = () => setIsAddModalOpen(true);
 
-  const handleOpenDeleteModal = (sizeOptionId: number) => {
-    setSelectedStatusId(sizeOptionId);
+  const handleOpenDeleteModal = (Id: number) => {
+    setSelectedStatusId(Id);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
@@ -139,23 +139,20 @@ const page = () => {
           </TableBody>
         </Table>
 
-        {/* <AddSizeOptions
-          isOpen={isAddModalOpen}
-          closeAddModal={closeAddModal}
-          isEdit={isEdit}
-          sizeOptionId={selectedSizeOptionId}
-        />
-        <DeleteSizeOptions
-          isOpen={isOpenDeletModal}
-          onClose={closeDeleteModal}
-          sizeOptionId={selectedSizeOptionId}
-        /> */}
+       
         <AddStatus
           isOpen={isAddModalOpen}
           closeAddModal={closeAddModal}
           isEdit={isEdit}
           Id={selectedStatusId}
         />
+
+        <DeleteStatus
+          isOpen={isOpenDeletModal}
+          onClose={closeDeleteModal}
+          Id={selectedStatusId}
+        />
+        
       </div>
     </AdminDashboardLayout>
   );

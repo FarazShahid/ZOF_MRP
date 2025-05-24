@@ -15,6 +15,11 @@ import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 
+export interface ChangeOrderStatusType{
+  id: number;
+  statusId: number
+}
+
 interface StoreState {
   Orders: GetOrdersType[];
   OrderById: GetOrderByIdType;
@@ -30,6 +35,7 @@ interface StoreState {
   getOrderById: (id: number) => Promise<void>;
   getOrderStatus: () => Promise<void>;
   getAvailableColorByProductId: (id: number) => Promise<void>;
+  changeOrderStatus:(orderStatus: ChangeOrderStatusType) => Promise<void>;
   addOrder: (category: AddOrderType, onSuccess: () => void) => Promise<void>;
   updateOrder: (
     id: number,
@@ -170,6 +176,32 @@ const useOrderStore = create<StoreState>((set, get) => ({
       }));
     } catch (error) {
       set({ error: "Failed to fetch available colors", loading: false });
+    }
+  },
+
+  changeOrderStatus: async (ChangeOrderStatus: ChangeOrderStatusType) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/change-status${ChangeOrderStatus.id}/${ChangeOrderStatus.statusId}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if(response.ok){
+        set({ loading: false, error: null });
+        toast.success("Order status updated successfully.");
+        await get().fetchOrders(0);
+      }else{
+        set({ loading: false, error: null });
+        const error = await response.json();
+        toast.error(error.message || "Fail to add Order");
+      }
+    
+    } catch (error) {
+      set({ error: "Fail to add Order", loading: false });
+      toast.error("Fail to add Order");
     }
   },
 
