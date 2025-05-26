@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   getKeyValue,
+  Link,
   Pagination,
   Table,
   TableBody,
@@ -18,6 +19,7 @@ import useOrderStatusStore from "@/store/useOrderStatusStore";
 import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
 import AddStatus from "./components/AddStatus";
 import DeleteStatus from "./components/DeleteStatus";
+import { IoCaretBackSharp } from "react-icons/io5";
 
 const page = () => {
   const [page, setPage] = useState<number>(1);
@@ -63,7 +65,16 @@ const page = () => {
     <AdminDashboardLayout>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">Statues</h6>
+          <div className="flex items-center gap-1">
+            <Link
+              href={"/orders"}
+              className="flex items-center gap-1 text-gray-400 hover:text-white"
+            >
+              <IoCaretBackSharp />
+              <h6 className="font-sans text-lg font-semibold">Statues</h6>
+            </Link>
+          </div>
+
           <AddButton title="Add New" onClick={openAddModal} />
         </div>
         <Table
@@ -139,7 +150,6 @@ const page = () => {
           </TableBody>
         </Table>
 
-       
         <AddStatus
           isOpen={isAddModalOpen}
           closeAddModal={closeAddModal}
@@ -152,7 +162,6 @@ const page = () => {
           onClose={closeDeleteModal}
           Id={selectedStatusId}
         />
-        
       </div>
     </AdminDashboardLayout>
   );

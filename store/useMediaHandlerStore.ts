@@ -40,7 +40,6 @@ const useMediaHandlerStore = create<MediaHandlerState>((set) => ({
         `${process.env.NEXT_PUBLIC_API_URL}/media-handler/upload?typeId=${typeId}`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
           body: formData,
         }
       );

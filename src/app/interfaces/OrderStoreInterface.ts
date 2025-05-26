@@ -37,9 +37,7 @@ export interface GetOrderByIdType {
   OrderEventId: number;
   EventName: string;
   OrderPriority: number;
-
   Description: string;
-
   OrderNumber: string;
   OrderName: string;
   ExternalOrderId: string;
@@ -61,8 +59,11 @@ export interface GetOrderByIdType {
     ExternalOrderId: string;
     OrderItemPriority: number;
     ImageId: number;
+    ImagePath: string;
     FileId: number;
+    FilePath: string;
     VideoId: number;
+    VideoPath: string;
     printingOptions: {
       PrintingOptionId: number;
       PrintingOptionName: string;

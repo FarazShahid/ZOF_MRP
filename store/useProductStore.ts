@@ -2,6 +2,10 @@ import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 
+interface ProductColorMap {
+  [productId: number]: ProductAvailableColors[];
+}
+
 interface GetProductsResponse {
   data: Product[];
   message: string;
@@ -54,11 +58,12 @@ interface GetAvailableColorResponse {
 }
 
 
-interface ProductAvailableColors {
+export interface ProductAvailableColors {
   Id: number;
   ColorName: string;
   ImageId: number;
 }
+
 interface AddProduct {
   ProductCategoryId: number;
   FabricTypeId: number;
@@ -72,6 +77,7 @@ interface CategoryState {
   products: Product[];
   productType: Product | null;
   productById: ProductById | null;
+  productColorMap: ProductColorMap;
   productAvailableColors: ProductAvailableColors[];
   loading: boolean;
   error: string | null;
@@ -92,6 +98,7 @@ const useProductStore = create<CategoryState>((set, get) => ({
   products: [],
   productType: null,
   productById: null,
+  productColorMap: {},
   productAvailableColors: [],
   loading: false,
   error: null,
@@ -122,12 +129,16 @@ const useProductStore = create<CategoryState>((set, get) => ({
         `${process.env.NEXT_PUBLIC_API_URL}/products/availablecolors/${id}`
       );
       if (!response.ok) {
-        set({ loading: false, error: null });
+        set({ loading: false });
         const error = await response.json();
         toast.error(error.message || "Fail to fetch data.");
+        return;
       }
       const data: GetAvailableColorResponse = await response.json();
-      set({ productAvailableColors: data.data, loading: false });
+      set((state) => ({
+        productColorMap: { ...state.productColorMap, [id]: data.data },
+        loading: false,
+      }));
     } catch (error) {
       set({ error: "Failed to fetch product colors", loading: false });
     }

@@ -7,22 +7,22 @@ export type UploadedFile = {
   zipContents?: string[];
 };
 
-interface FileUploadStore {
-  uploadedFiles: UploadedFile[];
-  setUploadedFiles: (files: UploadedFile[]) => void;
-  addUploadedFile: (file: UploadedFile) => void;
-  removeUploadedFile: (index: number) => void;
-  resetUploadedFiles: () => void;
-}
+type FileUploadState = {
+  uploadedFilesByIndex: Record<number, UploadedFile[]>;
+  setUploadedFilesByIndex: (index: number, files: UploadedFile[]) => void;
+  removeUploadedFileByIndex: (index: number) => void;
+};
 
-export const useFileUploadStore = create<FileUploadStore>((set) => ({
-  uploadedFiles: [],
-  setUploadedFiles: (files) => set({ uploadedFiles: files }),
-  addUploadedFile: (file) =>
-    set((state) => ({ uploadedFiles: [...state.uploadedFiles, file] })),
-  removeUploadedFile: (index) =>
+export const useFileUploadStore = create<FileUploadState>((set) => ({
+  uploadedFilesByIndex: {},
+  setUploadedFilesByIndex: (index, files) =>
     set((state) => ({
-      uploadedFiles: state.uploadedFiles.filter((_, i) => i !== index),
+      uploadedFilesByIndex: { ...state.uploadedFilesByIndex, [index]: files },
     })),
-  resetUploadedFiles: () => set({ uploadedFiles: [] }),
+  removeUploadedFileByIndex: (index) =>
+    set((state) => {
+      const newState = { ...state.uploadedFilesByIndex };
+      delete newState[index];
+      return { uploadedFilesByIndex: newState };
+    }),
 }));

@@ -11,13 +11,17 @@ import {
   Avatar,
   AvatarGroup,
 } from "@heroui/react";
+import { CgFileDocument } from "react-icons/cg";
 import { IoIosStats } from "react-icons/io";
+import { FaVideo } from "react-icons/fa6";
 import { MdCancel } from "react-icons/md";
 import { FaFileImage } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import OrderDeadline from "./OrderDeadline";
 import UpdateOrderStatus from "./UpdateOrderStatus";
 import PriorityChip from "./PriorityChip";
+import { handleView } from "@/interface/GetFileType";
+import FilePreviewModal from "../../product/component/FilePreviewModal";
 
 export interface ViewDrawerComponentProps {
   isOpen: boolean;
@@ -141,7 +145,10 @@ const ViewDrawer: React.FC<ViewDrawerComponentProps> = ({
                                 {orderItem?.orderItemDetails?.map(
                                   (orderDetail, index) => {
                                     return (
-                                      <div className="grid grid-cols-3 gap-2" key={index}>
+                                      <div
+                                        className="grid grid-cols-3 gap-2"
+                                        key={index}
+                                      >
                                         <div className="flex items-center gap-3 text-xs">
                                           <p className="">Color:</p>
                                           <span>
@@ -177,108 +184,75 @@ const ViewDrawer: React.FC<ViewDrawerComponentProps> = ({
                                   }
                                 )}
                               </div>
+                              <div className="flex flex-col mt-4 gap-3 items-start">
+                                <span className="text-small text-default-500">
+                                  Attachments
+                                </span>
+                                <div className="flex flex-wrap gap-2 items-center">
+                                  {/* <Image
+                                        isBlurred
+                                        isZoomed
+                                        alt="Event image"
+                                        className="aspect-square w-full hover:scale-110"
+                                        height={300}
+                                        src={orderItem.ImagePath}
+                                      /> */}
+                                    
+                                  {orderItem.ImagePath &&
+                                  orderItem.ImagePath ? (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleView(orderItem.ImagePath)
+                                      }
+                                      className="flex gap-2 bg-gray-dark p-2 rounded-lg cursor-pointer text-blue-500"
+                                    >
+                                      <FaFileImage />
+                                      <span className="text-xs">
+                                        Image File
+                                      </span>
+                                    </button>
+                                  ) : (
+                                    <></>
+                                  )}
+                                  {orderItem.FilePath && orderItem.FilePath ? (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleView(orderItem.FilePath)
+                                      }
+                                      className="flex gap-2 bg-gray-dark p-2 rounded-lg cursor-pointer text-blue-500"
+                                    >
+                                      <CgFileDocument />
+                                      <span className="text-xs">Doc File</span>
+                                    </button>
+                                  ) : (
+                                    <></>
+                                  )}
+                                  {orderItem.VideoPath &&
+                                  orderItem.VideoPath ? (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleView(orderItem.VideoPath)
+                                      }
+                                      className="flex gap-2 bg-gray-dark p-2 rounded-lg cursor-pointer text-blue-500"
+                                    >
+                                      <FaVideo />
+                                      <span className="text-xs">
+                                        Video File
+                                      </span>
+                                    </button>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           );
                         })}
-                        {/* <p>
-                          Hey Bay Area! We are excited to announce our next
-                          meetup on Tuesday, November 19th.
-                        </p>
-                        <p>
-                          Join us for an evening of insightful discussions and
-                          hands-on workshops focused on the latest developments
-                          in web development and design. Our featured speakers
-                          will share their experiences with modern frontend
-                          frameworks, responsive design patterns, and emerging
-                          web technologies. You&apos;ll have the opportunity to
-                          network with fellow developers and designers while
-                          enjoying refreshments and snacks.
-                        </p>
-                        <p>
-                          During the main session, we&apos;ll dive deep into
-                          practical examples of building scalable applications,
-                          exploring best practices for component architecture,
-                          and understanding advanced state management
-                          techniques. Our interactive workshop portion will let
-                          you apply these concepts directly, with experienced
-                          mentors available to provide guidance and answer your
-                          questions. Whether you&apos;re a seasoned developer or
-                          just starting your journey, you&apos;ll find valuable
-                          takeaways from this session.
-                        </p>
-
-                        <p className="mt-4">
-                          Brought to you by the{" "}
-                          <Link
-                            className="text-default-700"
-                            href="https://heroui.com"
-                          >
-                            HeroUI team
-                          </Link>
-                          .
-                        </p> */}
                       </div>
                     </div>
-                    <div className="flex flex-col mt-4 gap-3 items-start">
-                      <span className="text-small text-default-500">
-                        Attachments
-                      </span>
-                      <div className="flex flex-wrap gap-2 items-center">
-                        <div className="flex gap-2 bg-gray-dark p-2 rounded-lg cursor-pointer">
-                          <FaFileImage />
-                          <span className="text-xs">Design File</span>
-                        </div>
-                        <div className="flex gap-2 bg-gray-dark p-2 rounded-lg cursor-pointer">
-                          <FaFileImage />
-                          <span className="text-xs">Jersy No.</span>
-                        </div>
-                      </div>
-                    </div>
-                    {/* <div className="flex flex-col mt-4 gap-3 items-start">
-                      <span className="text-small text-default-500">
-                        105 Going
-                      </span>
-                      <div className="flex gap-2 items-center">
-                        <AvatarGroup
-                          isBordered
-                          classNames={{
-                            base: "pl-2",
-                            count: "text-default-500 text-tiny bg-default-100",
-                          }}
-                          size="sm"
-                          total={101}
-                        >
-                          <Tooltip content="Alex">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="Alex"
-                              src="https://i.pravatar.cc/150?u=a04258114e29026708c"
-                            />
-                          </Tooltip>
-                          <Tooltip content="Joe">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="Joe"
-                              src="https://i.pravatar.cc/150?u=a04258114e290267084"
-                            />
-                          </Tooltip>
-                          <Tooltip content="John">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="John"
-                              src="https://i.pravatar.cc/150?u=a04258a2462d826712d"
-                            />
-                          </Tooltip>
-                          <Tooltip content="Jane">
-                            <Avatar
-                              className="data-[hover=true]:!translate-x-0"
-                              name="Jane"
-                              src="https://i.pravatar.cc/150?u=a04258114e29026702d"
-                            />
-                          </Tooltip>
-                        </AvatarGroup>
-                      </div>
-                    </div> */}
                   </div>
                 </div>
               </DrawerBody>
@@ -302,6 +276,7 @@ const ViewDrawer: React.FC<ViewDrawerComponentProps> = ({
           )}
         </DrawerContent>
       </Drawer>
+
     </>
   );
 };

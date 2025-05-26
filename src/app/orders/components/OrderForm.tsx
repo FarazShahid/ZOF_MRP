@@ -1,30 +1,31 @@
 "use client";
 
 import React, { useState } from "react";
+import { Link } from "@heroui/react";
+import { Form, Formik } from "formik";
+import { useRouter } from "next/navigation";
 import { FaRegFileLines } from "react-icons/fa6";
 import { FaRuler } from "react-icons/fa";
-import GoBackButton from "../../components/common/GoBackButton";
-import { Form, Formik } from "formik";
-import { OrderValidationSchemas } from "../../schema";
+import { IoCaretBackSharp } from "react-icons/io5";
+
+import useOrderStore from "@/store/useOrderStore";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
-import { Link, Spinner } from "@heroui/react";
-import { IoCaretBackSharp } from "react-icons/io5";
-import { useFileUploadStore } from "@/store/useFileUploadStore";
-import { useRouter } from "next/navigation";
-import useOrderStore from "@/store/useOrderStore";
+import { OrderValidationSchemas } from "../../schema";
+import { getFileTypeCode } from "@/interface/GetFileType";
+import useMediaHandlerStore from "@/store/useMediaHandlerStore";
 
-
-const steps = ["Order Details", "Order Items",];
+const steps = ["Order Details", "Order Items"];
 const formSteps = [
   { id: 1, name: "Order Details", icon: <FaRegFileLines size={20} /> },
   { id: 2, name: "Order Items", icon: <FaRuler size={20} /> },
 ];
 
 const OrderForm = () => {
-  const {uploadedFiles} = useFileUploadStore();
+  const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
+
   const [currentStep, setCurrentStep] = useState(1);
-  const {addOrder} = useOrderStore();
+  const { addOrder } = useOrderStore();
 
   const router = useRouter();
 
@@ -38,15 +39,25 @@ const OrderForm = () => {
     items: [],
   };
 
-const renderStep = (formikProps: any) => {
+  const renderStep = (formikProps: any) => {
     switch (currentStep) {
       case 1:
         return <Step1 formik={formikProps} />;
       case 2:
-        return <Step2 formik={formikProps} />;
+        return (
+          <Step2
+            formik={formikProps}
+            itemFiles={itemFiles}
+            onFileSelect={handleFileSelect}
+          />
+        );
       default:
         return null;
     }
+  };
+
+  const handleFileSelect = (file: File, index: number) => {
+    setItemFiles((prev) => ({ ...prev, [index]: file }));
   };
 
   const handleNext = async (
@@ -59,12 +70,12 @@ const renderStep = (formikProps: any) => {
     const currentSchema = OrderValidationSchemas[currentStep - 1];
 
     if (!currentSchema) {
-      setCurrentStep(prev => prev + 1);
+      setCurrentStep((prev) => prev + 1);
       return;
     }
 
     const stepFields = Object.keys(currentSchema.fields);
-    const stepErrors = Object.keys(errors).filter(key =>
+    const stepErrors = Object.keys(errors).filter((key) =>
       stepFields.includes(key)
     );
 
@@ -82,13 +93,39 @@ const renderStep = (formikProps: any) => {
   };
 
   const handleBoBack = () => {
-    router.push('/orders')
-  }
+    router.push("/orders");
+  };
   const handleSubmit = async (values: any) => {
     values.Description = values.ClientId + "order description";
-    console.log("values", values);
-    console.log("uploadedfile", uploadedFiles);
-    await addOrder(values, () => handleBoBack())
+    const { uploadFile } = useMediaHandlerStore.getState();
+
+    const updatedItems = await Promise.all(
+      values.items.map(async (item: any, index: number) => {
+        const file = itemFiles[index];
+        if (file) {
+          const typeId = getFileTypeCode(file.type);
+          const uploaded = await uploadFile(file, typeId);
+
+          if (!uploaded) return item;
+
+        
+          if (typeId === 1) {
+            return { ...item, ImageId: uploaded.Id };
+          } else if (typeId === 2) {
+            return { ...item, FileId: uploaded.Id };
+          } else if (typeId === 3) {
+            return { ...item, ImageId: uploaded.Id };
+          } else {
+            return item;
+          }
+        }
+        return item;
+      })
+    );
+
+    const finalPayload = { ...values, items: updatedItems };
+    console.log("finalPayload", finalPayload);
+    await addOrder(finalPayload, () => handleBoBack());
   };
 
   return (
@@ -111,10 +148,11 @@ const renderStep = (formikProps: any) => {
                 className={`flex items-center gap-4 mb-4 w-[230px] bg-gray-900 p-2 rounded-lg cursor-pointer`}
               >
                 <div
-                  className={` ${label.id === currentStep
+                  className={` ${
+                    label.id === currentStep
                       ? "text-green-400 font-bold"
                       : "text-gray-400"
-                    }`}
+                  }`}
                 >
                   {label.icon}
                 </div>
@@ -123,10 +161,11 @@ const renderStep = (formikProps: any) => {
                     STEP {index + 1}
                   </span>
                   <span
-                    className={` ${label.id === currentStep
+                    className={` ${
+                      label.id === currentStep
                         ? "text-green-400 font-bold"
                         : "text-gray-400"
-                      }`}
+                    }`}
                   >
                     {label.name}
                   </span>
@@ -139,7 +178,9 @@ const renderStep = (formikProps: any) => {
           <h1 className="text-sm font-bold text-gray-500 mb-2">
             Add New Order
           </h1>
-          <h2 className="text-xl font-semibold mb-4">{steps[currentStep - 1]}</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            {steps[currentStep - 1]}
+          </h2>
           <div className="flex flex-col bg-gray-900 rounded-xl p-10">
             <Formik
               validationSchema={OrderValidationSchemas[currentStep - 1]}

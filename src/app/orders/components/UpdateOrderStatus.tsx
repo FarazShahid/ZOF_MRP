@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import useOrderStatusStore from "@/store/useOrderStatusStore";
 import {
   Dropdown,
@@ -5,10 +6,9 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@heroui/react";
-import React, { useEffect, useState } from "react";
 
 interface ChangeStatusDropdownProps {
-  statusName: string; // Initial status name
+  statusName: string;
   onChangeStatus?: (statusId: number) => void;
 }
 

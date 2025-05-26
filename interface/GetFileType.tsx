@@ -38,3 +38,8 @@ export const getFileTypeCode = (type: string): number => {
   if (type.startsWith("video/")) return 3;
   return 0;
 };
+
+export const handleView = (path: string) => {
+    if (!path) return;
+    window.open(path, "_blank");
+  };

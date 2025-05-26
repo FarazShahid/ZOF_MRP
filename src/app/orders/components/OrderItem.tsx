@@ -1,14 +1,13 @@
 import React from "react";
+import { PRIORITY_ENUM } from "@/interface/GetFileType";
+import { useProductColorsByProductId } from "@/interface/useHandleProdcutColors";
 import { ProductProp } from "./Step2";
-import Label from "../../components/common/Label";
-import SearchableProductSelect, { Product } from "./SearchableProductSelect";
-import { ErrorMessage } from "formik";
 import TextAreaField from "./TextAreaField";
 import SelectField from "./SelectField";
-import { PRIORITY_ENUM } from "@/interface/GetFileType";
 import PrintingOptionsMultiSelect from "./PrintingOptionsMultiSelect";
 import OrderItemDetailsFieldArray from "./OrderItemDetailsFieldArray";
 import DropZone from "../../components/DropZone/DropZone";
+
 
 interface OrderItemProps {
   index: number;
@@ -16,9 +15,10 @@ interface OrderItemProps {
   values: any;
   selectedProduct: ProductProp | undefined;
   removeItem: () => void;
-  productAvailableColors: any[];
   printingOptions: any[];
   setFieldValue: (field: string, value: any) => void;
+  handleFileSelect: (file: File, index: number) => void;
+  selectedFile: File | null;
 }
 
 const OrderItem: React.FC<OrderItemProps> = ({
@@ -27,15 +27,17 @@ const OrderItem: React.FC<OrderItemProps> = ({
   values,
   selectedProduct,
   removeItem,
-  productAvailableColors,
   printingOptions,
   setFieldValue,
+  handleFileSelect,
+  selectedFile,
 }) => {
+  const currentProductColors = useProductColorsByProductId(item.ProductId);
+
   return (
     <div className="space-y-3 border-1 border-gray-800 p-4 rounded relative">
       {item && (
         <>
-         
           <button
             type="button"
             onClick={removeItem}
@@ -45,14 +47,12 @@ const OrderItem: React.FC<OrderItemProps> = ({
             &minus;
           </button>
 
-          <h4 className="font-semibold mb-3">
-            {item?.Description}
-          </h4>
+          <h4 className="font-semibold mb-3">{item?.Description}</h4>
 
           <OrderItemDetailsFieldArray
             index={index}
             item={item}
-            productAvailableColors={productAvailableColors}
+            productAvailableColors={currentProductColors}
             setFieldValue={setFieldValue}
           />
           <div className="grid grid-cols-2 gap-2">
@@ -68,7 +68,10 @@ const OrderItem: React.FC<OrderItemProps> = ({
               setFieldValue={setFieldValue}
             />
           </div>
-          <DropZone />
+          <DropZone
+            index={index}
+            onFileSelect={handleFileSelect}
+          />
           <TextAreaField
             label="Description"
             name={`items[${index}].Description`}

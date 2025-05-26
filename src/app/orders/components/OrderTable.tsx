@@ -9,32 +9,28 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  Tooltip,
   getKeyValue,
 } from "@heroui/react";
+import Link from "next/link";
 import { FaRegEye } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { FiPlus } from "react-icons/fi";
-import { GoPencil } from "react-icons/go";
+import { FiPlus, FiSettings } from "react-icons/fi";
 
 import useOrderStore from "@/store/useOrderStore";
 import useClientStore from "@/store/useClientStore";
 import { formatDate } from "../../interfaces";
 import StatusChip from "../../components/StatusChip";
-import AddOrderComponent from "../../components/AddOrderComponent";
 import DeleteModal from "../../components/DeleteModal";
-import ViewOrderComponent from "../../components/ViewOrderComponent";
-import Link from "next/link";
 import PriorityChip from "./PriorityChip";
 import ViewDrawer from "./ViewDrawer";
 
 const OrderTable = () => {
   const [clientId, setClientId] = useState<number>(0);
-  const [isAddOrderModalOpen, setIsAddOrderModalOpen] = useState(false);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenViewModal, setIsOpenViewModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
   const [refreshKey, setRefreshKey] = useState<number>(0);
-  const [isEditOrder, setIsisEditOrder] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
 
   const { fetchOrders, loading, Orders } = useOrderStore();
@@ -67,21 +63,6 @@ const OrderTable = () => {
     setSelectedOrderId(0);
     setIsOpenViewModal(false);
   };
-  const openAddOrderModal = () => {
-    setIsisEditOrder(false);
-    setSelectedOrderId(0);
-    setIsAddOrderModalOpen(true);
-  };
-  const closeAddOrderModal = () => {
-    setIsAddOrderModalOpen(false);
-  };
-
-  const openEditOrderModal = (OrderId: number) => {
-    setIsisEditOrder(true);
-    setRefreshKey((prev) => prev + 1);
-    setSelectedOrderId(OrderId);
-    setIsAddOrderModalOpen(true);
-  };
 
   const refreshData = () => {
     setRefreshKey((prev) => prev + 1);
@@ -111,14 +92,25 @@ const OrderTable = () => {
               );
             })}
           </select>
-          <Link
-            href={"/orders/addorder"}
-            type="button"
-            className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
-          >
-            <FiPlus />
-            Add New
-          </Link>
+
+          <div className="flex items-center gap-2">
+            <Tooltip content="Order Status">
+              <Link
+                href={"/orders/orderstatus"}
+                className="bg-gray-700 rounded-lg p-2"
+              >
+                <FiSettings size={20} />
+              </Link>
+            </Tooltip>
+            <Link
+              href={"/orders/addorder"}
+              type="button"
+              className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
+            >
+              <FiPlus />
+              Add New
+            </Link>
+          </div>
         </div>
         <Table
           isStriped
@@ -194,12 +186,6 @@ const OrderTable = () => {
                         </button>
                         <button
                           type="button"
-                          onClick={() => openEditOrderModal(item.Id)}
-                        >
-                          <GoPencil color="green" />
-                        </button>
-                        <button
-                          type="button"
                           onClick={() => openDeleteModal(item.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
@@ -214,20 +200,6 @@ const OrderTable = () => {
         </Table>
       </div>
 
-      {isAddOrderModalOpen ? (
-        <AddOrderComponent
-          isOpen={isAddOrderModalOpen}
-          clientId={clientId}
-          onClose={closeAddOrderModal}
-          onOrderAdded={refreshData}
-          isEditOrder={isEditOrder}
-          refreshKey={refreshKey}
-          orderId={selectedOrderId}
-        />
-      ) : (
-        <></>
-      )}
-
       {isOpenDeletModal ? (
         <DeleteModal
           isOpen={isOpenDeletModal}
@@ -239,16 +211,6 @@ const OrderTable = () => {
       ) : (
         <></>
       )}
-
-      {/* {isOpenViewModal ? (
-        <ViewOrderComponent
-          isOpen={isOpenViewModal}
-          onClose={closeViewModal}
-          selectedOrderId={selectedOrderId}
-        />
-      ) : (
-        <></>
-      )} */}
       {isOpenViewModal ? (
         <ViewDrawer
           Id={selectedOrderId}
