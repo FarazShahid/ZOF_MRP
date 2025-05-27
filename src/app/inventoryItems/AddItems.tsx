@@ -9,16 +9,14 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import { SupplierSchema } from "../schema/SupplierSchema";
-import useInventoryCategoryStore, {
-  AddInventoryCategoryOptions,
-} from "@/store/useInventoryCategoryStore";
 import useInventoryItemsStore, {
   AddInventoryItemOptions,
 } from "@/store/useInventoryItemsStore";
-import { InventoryItemSchema } from "../schema/InventoryItemSchema";
 import useInventorySubCategoryStore from "@/store/useInventorySubCategoryStore";
 import useSupplierStore from "@/store/useSupplierStore";
+import useUnitOfMeasureStore from "@/store/useUnitOfMeasureStore";
+import { InventoryItemSchema } from "../schema/InventoryItemSchema";
+import Label from "../components/common/Label";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -43,6 +41,7 @@ const AddItems: React.FC<AddComponentProps> = ({
 
   const { fetchSubCategories, subCategories } = useInventorySubCategoryStore();
   const { fetchSuppliers, suppliers } = useSupplierStore();
+  const {fetchUnitOfMeasures, unitMeasures} = useUnitOfMeasureStore();
 
   useEffect(() => {
     if (Id && isEdit) {
@@ -53,14 +52,15 @@ const AddItems: React.FC<AddComponentProps> = ({
   useEffect(() => {
     fetchSubCategories();
     fetchSuppliers();
+    fetchUnitOfMeasures();
   }, []);
 
   const InitialValues = {
     Name: isEdit && inventoryItemById ? inventoryItemById.Name : "",
     SubCategoryId:
       isEdit && inventoryItemById ? inventoryItemById.SubCategoryId : 0,
-    UnitOfMeasure:
-      isEdit && inventoryItemById ? inventoryItemById.UnitOfMeasure : "",
+    UnitOfMeasureId:
+      isEdit && inventoryItemById ? inventoryItemById.UnitOfMeasureId : "",
     SupplierId: isEdit && inventoryItemById ? inventoryItemById.SupplierId : 0,
     ReorderLevel:
       isEdit && inventoryItemById ? Number(inventoryItemById.ReorderLevel) : 0,
@@ -68,7 +68,6 @@ const AddItems: React.FC<AddComponentProps> = ({
   };
 
   const handleAdd = async (values: AddInventoryItemOptions) => {
-    console.log("values", values);
     isEdit
       ? updateInventoryItem(Id, values, () => {
           closeAddModal();
@@ -99,12 +98,11 @@ const AddItems: React.FC<AddComponentProps> = ({
                       <Spinner />
                     ) : (
                       <>
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} 
+                              label="Name" 
+                              labelForm="Name" />
                             <Field
                               name="Name"
                               type="text"
@@ -118,20 +116,19 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Sub Category
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true}
+                               label="Sub Category" 
+                               labelForm="Sub Category" />
                             <Field
                               name="SubCategoryId"
                               as="select"
                               className="formInputdefault"
                             >
                               <option value={0}>Select sub category</option>
-                              {subCategories.map((category) => {
+                              {subCategories.map((category, index) => {
                                 return (
-                                  <option value={category.Id}>
-                                    {category.Name}
+                                  <option value={category?.Id} key={index}>
+                                    {category?.Name}
                                   </option>
                                 );
                               })}
@@ -143,20 +140,19 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Supplier
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true}
+                               label="Supplier" 
+                               labelForm="Supplier" />
                             <Field
                               name="SupplierId"
                               as="select"
                               className="formInputdefault"
                             >
                               <option value={0}>Select Supplier</option>
-                              {suppliers.map((supplier) => {
+                              {suppliers?.map((supplier, index) => {
                                 return (
-                                  <option value={supplier.Id}>
-                                    {supplier.Name}
+                                  <option value={supplier?.Id} key={index}>
+                                    {supplier?.Name}
                                   </option>
                                 );
                               })}
@@ -168,15 +164,23 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Unit Of Measure
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                             <Label isRequired={true}
+                               label="Unit Of Measure" 
+                               labelForm="Unit Of Measure" />
                             <Field
-                              name="UnitOfMeasure"
-                              type="number"
+                              name="UnitOfMeasureId"
+                              as="select"
                               className="formInputdefault"
-                            />
+                            >
+                              <option value={0}>Select Unit of measure</option>
+                              {unitMeasures?.map((unitMeasure, index) => {
+                                return (
+                                  <option value={unitMeasure?.Id} key={index}>
+                                    {unitMeasure?.Name}
+                                  </option>
+                                );
+                              })}
+                            </Field>
                             <ErrorMessage
                               name="UnitOfMeasure"
                               component="div"
@@ -184,10 +188,9 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Reorder Level
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true}
+                               label="Reorder Level" 
+                               labelForm="Reorder Level" />
                             <Field
                               name="ReorderLevel"
                               type="number"
@@ -195,22 +198,6 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                             <ErrorMessage
                               name="ReorderLevel"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Stock
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
-                            <Field
-                              name="Stock"
-                              type="number"
-                              className="formInputdefault"
-                            />
-                            <ErrorMessage
-                              name="Stock"
                               component="div"
                               className="text-red-400 text-sm"
                             />

@@ -13,15 +13,16 @@ import {
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { IoChevronBackOutline } from "react-icons/io5";
 import { FiPlus } from "react-icons/fi";
-import AdminLayout from "../adminDashboard/lauout";
-import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 import useInventoryTransection from "@/store/useInventoryTransection";
 import { formatDate } from "../interfaces";
 import DeleteItem from "./DeleteItem";
 import AddInventoryTransaction from "./AddInventoryTransaction";
-// import DeleteInventoryItem from "./DeleteInventoryItem";
-// import AddItems from "./AddItems";
+import TransactionTypeChip from "./TransactionTypeChip";
+import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
+import Link from "next/link";
+
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -63,15 +64,17 @@ const page = () => {
   }, []);
 
   return (
-    <AdminLayout>
+    <AdminDashboardLayout>
       <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">
+          
+          <Link href={'/inventoryItems'} className="font-sans text-lg font-semibold flex items-center gap-1">
+            <IoChevronBackOutline />
             Inventory Transaction
-          </h6>
+          </Link>
           <button
             type="button"
-            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
+           className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
             onClick={openAddModal}
           >
             <FiPlus />
@@ -144,6 +147,8 @@ const page = () => {
                       formatDate(item[columnKey])
                     ) : columnKey === "Sr" ? (
                       index + 1
+                    ): columnKey === "TransactionType" ? (
+                      <TransactionTypeChip type={item.TransactionType} />
                     ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
                     ) : (
@@ -190,7 +195,7 @@ const page = () => {
           Id={selectedItemId}
         />
       </div>
-    </AdminLayout>
+    </AdminDashboardLayout>
   );
 };
 

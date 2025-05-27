@@ -18,7 +18,7 @@ import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import useClientStore, { GetClientsType } from "@/store/useClientStore";
 import AddClients from "../components/AddClients";
 import DeleteClient from "../components/DeleteClient";
-import AdminLayout from "../adminDashboard/lauout";
+import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -108,12 +108,12 @@ const page = () => {
   }, [sortColumn, sortDirection]);
 
   return (
-    <AdminLayout>
+    <AdminDashboardLayout>
       <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-end">
           <button
             type="button"
-            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
+            className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
             onClick={openAddModal}
           >
             <FiPlus />
@@ -256,7 +256,7 @@ const page = () => {
           onDeleteSuccess={refetchData}
         />
       </div>
-    </AdminLayout>
+    </AdminDashboardLayout>
   );
 };
 

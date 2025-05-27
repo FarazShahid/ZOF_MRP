@@ -99,17 +99,29 @@ const page = () => {
           }}
         >
           <TableHeader>
+            <TableColumn key="Sr" className="text-medium font-bold">
+            Sr
+            </TableColumn>
             <TableColumn key="Name" className="text-medium font-bold">
               Name
             </TableColumn>
-            <TableColumn key="CreatedOn" className="text-medium font-bold">
-              Created On
+            <TableColumn key="Phone" className="text-medium font-bold">
+              Phone
             </TableColumn>
-            <TableColumn key="CreatedBy" className="text-medium font-bold">
-              Created By
+            <TableColumn key="Email" className="text-medium font-bold">
+              Email
             </TableColumn>
-            <TableColumn key="UpdatedOn" className="text-medium font-bold">
-              Updated On
+            <TableColumn key="City" className="text-medium font-bold">
+            City
+            </TableColumn>
+            <TableColumn key="State" className="text-medium font-bold">
+            State
+            </TableColumn>
+            <TableColumn key="Country" className="text-medium font-bold">
+            Country
+            </TableColumn>
+            <TableColumn key="CompleteAddress" className="text-medium font-bold">
+           Address
             </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">
               Action

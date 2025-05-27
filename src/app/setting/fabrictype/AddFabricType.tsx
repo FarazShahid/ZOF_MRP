@@ -11,6 +11,7 @@ import {
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import { FabricTypeSchema } from "../../schema/FabricTypeSchema";
 import useFabricStore from "@/store/useFabricStore";
+import Label from "../../components/common/Label";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -88,10 +89,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Type
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Type" labelForm="Type" />
                             <Field
                               name="type"
                               type="text"
@@ -105,10 +103,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Name" labelForm="Name" />
                             <Field
                               name="name"
                               type="text"
@@ -122,10 +117,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              GSM
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="GSM" labelForm="GSM" />
                             <Field
                               name="gsm"
                               type="number"

@@ -74,7 +74,7 @@ export default function StatisticsChart() {
       position: "top",
       horizontalAlign: "left",
     },
-    colors: ["#3B82F6", "#EF4444", "#10B981", "#FBBF24", "#6366F1"],
+    colors: ["#80ff80", "#EF4444", "#009900", "#FBBF24", "#ff7800"],
     chart: {
       fontFamily: "Outfit, sans-serif",
       height: 310,
@@ -154,7 +154,7 @@ export default function StatisticsChart() {
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Transations Statistics
+          Inventory Transations
           </h3>
           <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
             Inventory transactions grouped by month

@@ -2,12 +2,14 @@
 
 import { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import Image from "next/image";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import Spinner from "./components/Spinner";
 import { LoginSchemaValidation } from "./schema/loginSchema";
 import AuthContext from "./services/authservice";
 import { loginInitialValues } from "./interfaces";
 import LoginAnimator from "./components/LoginAnimator";
+import Logo from "../../public/logoDark.png";
 
 export default function Home() {
   const authContext = useContext(AuthContext);
@@ -29,12 +31,12 @@ export default function Home() {
   return (
     <>
       <div className="relative min-h-screen flex ">
-        <div className="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 bg-white">
+        <div className="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 bg-black ">
           <LoginAnimator />
-          <div className="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full xl:w-2/5 p-8  md:p-10 lg:p-14 sm:rounded-lg md:rounded-none bg-white">
+          <div className="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full xl:w-2/5 p-8  md:p-10 lg:p-14 sm:rounded-lg md:rounded-none bg-black">
             <div className="max-w-md w-full space-y-8">
               <div className="text-center">
-                <h2 className="mt-6 text-3xl font-bold text-gray-900">
+                <h2 className="mt-6 text-3xl font-bold text-blue-300">
                   Welcom Back!
                 </h2>
                 <p className="mt-2 text-sm text-gray-500">
@@ -44,9 +46,7 @@ export default function Home() {
 
               <div className="flex items-center justify-center space-x-2">
                 <span className="h-px w-16 bg-gray-200"></span>
-                <span className="text-gray-300 font-normal">
-                  ZeroOneForge MRP
-                </span>
+                <Image alt="MRP" src={Logo} className="w-10 h-10" />
                 <span className="h-px w-16 bg-gray-200"></span>
               </div>
               <Formik
@@ -76,7 +76,7 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="mt-8 content-center">
-                      <label className="ml-3 text-sm font-bold text-gray-700 tracking-wide">
+                      <label className="ml-3 text-sm font-bold text-gray-500 tracking-wide">
                         Password
                       </label>
                       <div className="flex flex-col w-full">
@@ -111,7 +111,7 @@ export default function Home() {
                           type="checkbox"
                           className="h-4 w-4 bg-blue-500 focus:ring-blue-400 border-gray-300 rounded"
                         />
-                        <label className="ml-2 block text-sm text-gray-900">
+                        <label className="ml-2 block text-sm text-gray-500">
                           Remember me
                         </label>
                       </div>

@@ -9,11 +9,12 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import useInventoryItemsStore, {
-  AddInventoryItemOptions,
-} from "@/store/useInventoryItemsStore";
+import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 import { InventoryTransactionSchema } from "../schema/InventoryItemSchema";
-import useInventoryTransection, { AddInventoryTransactionType, TRANSACTION_TYPES } from "@/store/useInventoryTransection";
+import useInventoryTransection, {
+  AddInventoryTransactionType,
+  TRANSACTION_TYPES,
+} from "@/store/useInventoryTransection";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -28,21 +29,19 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
   isEdit,
   Id,
 }) => {
-//   const {
-//     loading,
-//     getInventoryItemById,
-//     inventoryItemById,
-//     updateInventoryItem,
-//     addInventoryItem,
-//   } = useInventoryItemsStore();
-
-const {loading, getInventoryTransactionById, inventoryTransactionById, addInventoryTransaction, updateInventoryTransaction} = useInventoryTransection();
+  const {
+    loading,
+    getInventoryTransactionById,
+    inventoryTransactionById,
+    addInventoryTransaction,
+    updateInventoryTransaction,
+  } = useInventoryTransection();
 
   const { fetchInventoryItems, inventoryItems } = useInventoryItemsStore();
 
   useEffect(() => {
     if (Id && isEdit) {
-        getInventoryTransactionById(Id);
+      getInventoryTransactionById(Id);
     }
   }, [Id, isEdit]);
 
@@ -51,9 +50,18 @@ const {loading, getInventoryTransactionById, inventoryTransactionById, addInvent
   }, []);
 
   const InitialValues = {
-    InventoryItemId: isEdit && inventoryTransactionById ? inventoryTransactionById.InventoryItemId : 0,
-    Quantity: isEdit && inventoryTransactionById ? Number(inventoryTransactionById.Quantity) : 0,
-    TransactionType: isEdit && inventoryTransactionById ? inventoryTransactionById.TransactionType : "",
+    InventoryItemId:
+      isEdit && inventoryTransactionById
+        ? inventoryTransactionById.InventoryItemId
+        : 0,
+    Quantity:
+      isEdit && inventoryTransactionById
+        ? Number(inventoryTransactionById.Quantity)
+        : 0,
+    TransactionType:
+      isEdit && inventoryTransactionById
+        ? inventoryTransactionById.TransactionType
+        : "",
   };
 
   const handleAdd = async (values: AddInventoryTransactionType) => {
@@ -99,9 +107,9 @@ const {loading, getInventoryTransactionById, inventoryTransactionById, addInvent
                               className="formInputdefault"
                             >
                               <option value={0}>Select inventory item</option>
-                              {inventoryItems.map((inventoryItem) => {
+                              {inventoryItems.map((inventoryItem, index) => {
                                 return (
-                                  <option value={inventoryItem.Id}>
+                                  <option value={inventoryItem.Id} key={index}>
                                     {inventoryItem.Name}
                                   </option>
                                 );
@@ -140,9 +148,9 @@ const {loading, getInventoryTransactionById, inventoryTransactionById, addInvent
                               className="formInputdefault"
                             >
                               <option value={0}>Select Transaction Type</option>
-                              {TRANSACTION_TYPES.map((type) => {
+                              {TRANSACTION_TYPES.map((type, index) => {
                                 return (
-                                  <option value={type.value}>
+                                  <option value={type.value} key={index}>
                                     {type.label}
                                   </option>
                                 );

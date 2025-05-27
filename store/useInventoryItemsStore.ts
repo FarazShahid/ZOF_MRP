@@ -20,7 +20,9 @@ interface InventoryItemResponse {
   ItemCode: string;
   SubCategoryId: number;
   SubCategoryName: string;
-  UnitOfMeasure: string;
+  UnitOfMeasureId: string;
+  UnitOfMeasureName: string;
+  UnitOfMeasureShortForm: string;
   SupplierId: number;
   SupplierName: string;
   ReorderLevel: string | number;
@@ -34,7 +36,7 @@ interface InventoryItemResponse {
 export interface AddInventoryItemOptions {
   Name: string;
   SubCategoryId: number;
-  UnitOfMeasure: string;
+  UnitOfMeasureId: string;
   SupplierId: number;
   ReorderLevel: number;
   Stock: number;
@@ -43,6 +45,7 @@ export interface AddInventoryItemOptions {
 interface StoreState {
   inventoryItems: InventoryItemResponse[];
   inventoryItemById: InventoryItemResponse | null;
+  stockStatusMap: Record<string, "low" | "normal" | "high">;
   loading: boolean;
   error: string | null;
 
@@ -58,11 +61,14 @@ interface StoreState {
     onSuccess: () => void
   ) => Promise<void>;
   deleteInventoryItem: (id: number, onSuccess: () => void) => Promise<void>;
+  updateStockLevelStatus: (itemCode: string, stockLevel: "low" | "normal" | "high") => void;
+  getStockLevelStatus: () => { itemCode: string; statusLevel: "low" | "normal" | "high" }[];
 }
 
 const useInventoryItemsStore = create<StoreState>((set, get) => ({
   inventoryItems: [],
   inventoryItemById: null,
+  stockStatusMap: {},
   loading: false,
   error: null,
 
@@ -186,6 +192,23 @@ const useInventoryItemsStore = create<StoreState>((set, get) => ({
       toast.error("Failed to delete Item");
     }
   },
+  updateStockLevelStatus: (itemCode, stockLevel) => {
+    set((state) => ({
+      stockStatusMap: {
+        ...state.stockStatusMap,
+        [itemCode]: stockLevel,
+      },
+    }));
+  },
+  
+  getStockLevelStatus: () => {
+    const stockStatusMap = get().stockStatusMap;
+    return Object.entries(stockStatusMap).map(([itemCode, statusLevel]) => ({
+      itemCode,
+      statusLevel,
+    }));
+  },
+
 }));
 
 export default useInventoryItemsStore;

@@ -1,7 +1,8 @@
 import React from 'react'
 import { AiOutlineProduct } from 'react-icons/ai';
 import { MdIncompleteCircle, MdOutlinePendingActions, MdOutlineCancel } from "react-icons/md";
-import { GetOrdersType } from '@/store/useOrderStore';
+import { GetOrdersType } from '../interfaces/OrderStoreInterface';
+
 
 interface HeaderWidgetsProps {
     orders: GetOrdersType[] | null;

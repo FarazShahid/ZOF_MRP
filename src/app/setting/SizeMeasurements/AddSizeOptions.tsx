@@ -13,8 +13,10 @@ import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import useSizeMeasurementsStore, {
   AddSizeMeasurementType,
 } from "@/store/useSizeMeasurementsStore";
-import { SizeMeasurementSchema } from "../../schema/SizeMeasurementSchema";
 import useClientStore from "@/store/useClientStore";
+import { SizeMeasurementSchema } from "../../schema/SizeMeasurementSchema";
+import Label from "../../components/common/Label";
+
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -113,8 +115,6 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
         });
   };
 
-
-  console.log("sizeId", sizeId);
   return (
     <Modal isOpen={isOpen} size="5xl" onOpenChange={closeAddModal}>
       <ModalContent>
@@ -142,10 +142,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-3 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Name" labelForm="Name" />
                             <Field
                               name="Measurement1"
                               type="text"
@@ -159,9 +156,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Client
-                            </label>
+                            <Label isRequired={true} label="Client" labelForm="Client" />
                             <Field
                               name="ClientId"
                               as="select"
@@ -169,20 +164,17 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                               className="formInputdefault border-1"
                             >
                               <option value={""}>Select a Client</option>
-                              {clients.map((client) => {
+                              {clients?.map((client, index) => {
                                 return (
-                                  <option value={client.Id} key={client.Id}>
-                                    {client.Name}
+                                  <option value={client?.Id} key={index}>
+                                    {client?.Name}
                                   </option>
                                 );
                               })}
                             </Field>
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Size Option
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Size Option" labelForm="Size Option" />
                             <Field
                               name="SizeOptionId"
                               as="select"
@@ -205,12 +197,9 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                         </div>
-                        <div className="grid grid-cols-4 gap-2 bg-gray-50 rounded p-1">
+                        <div className="grid grid-cols-4 gap-2 border-1 border-gray-700 rounded-lg p-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Front Length HPS
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Front Length HPS" labelForm="Front Length HPS" />
                             <Field
                               name="FrontLengthHPS"
                               type="text"
@@ -224,10 +213,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Back Length HPS
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Back Length HPS" labelForm="Back Length HPS" />
                             <Field
                               name="BackLengthHPS"
                               type="text"
@@ -241,10 +227,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Across Shoulders
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Across Shoulders" labelForm="Across Shoulders" />
                             <Field
                               name="AcrossShoulders"
                               type="text"
@@ -258,10 +241,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Arm Hole
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                             <Label isRequired={true} label="Arm Hole" labelForm="Arm Hole" />
                             <Field
                               name="ArmHole"
                               type="text"
@@ -275,10 +255,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Upper Chest
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Upper Chest" labelForm="Upper Chest" />
                             <Field
                               name="UpperChest"
                               type="text"
@@ -292,10 +269,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Lower Chest
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Lower Chest" labelForm="Lower Chest" />
                             <Field
                               name="LowerChest"
                               type="text"
@@ -309,10 +283,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Waist
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Waist" labelForm="Waist" />
                             <Field
                               name="Waist"
                               type="text"
@@ -326,10 +297,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Bottom Width
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Bottom Width" labelForm="Bottom Width" />
                             <Field
                               name="BottomWidth"
                               type="text"
@@ -343,10 +311,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Sleeve Length
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Sleeve Length" labelForm="Sleeve Length" />
                             <Field
                               name="SleeveLength"
                               type="text"
@@ -360,10 +325,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Sleeve Opening
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Sleeve Opening" labelForm="Sleeve Opening" />
                             <Field
                               name="SleeveOpening"
                               type="text"
@@ -377,10 +339,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Neck Size
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Neck Size" labelForm="Neck Size" />
                             <Field
                               name="NeckSize"
                               type="text"
@@ -394,10 +353,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Collar Height
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Collar Height" labelForm="Collar Height" />
                             <Field
                               name="CollarHeight"
                               type="text"
@@ -411,10 +367,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Collar Point Height
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Collar Point Height" labelForm="Collar Point Height" />
                             <Field
                               name="CollarPointHeight"
                               type="text"
@@ -428,10 +381,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Stand Height Back
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Stand Height Back" labelForm="Stand Height Back" />
                             <Field
                               name="StandHeightBack"
                               type="text"
@@ -445,10 +395,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Collar Stand Length
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Collar Stand Length" labelForm="Collar Stand Length" />
                             <Field
                               name="CollarStandLength"
                               type="text"
@@ -462,10 +409,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Side Vent Front
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Side Vent Front" labelForm="Side Vent Front" />
                             <Field
                               name="SideVentFront"
                               type="text"
@@ -479,10 +423,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Side Vent Back
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Side Vent Back" labelForm="Side Vent Back" />
                             <Field
                               name="SideVentBack"
                               type="text"
@@ -496,10 +437,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Placket Length
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Placket Length" labelForm="Placket Length" />
                             <Field
                               name="PlacketLength"
                               type="text"
@@ -513,10 +451,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Two Button Distance
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                             <Label isRequired={true} label="Two Button Distance" labelForm="Two Button Distance" />
                             <Field
                               name="TwoButtonDistance"
                               type="text"
@@ -530,10 +465,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Placket Width
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Placket Width" labelForm="Placket Width" />
                             <Field
                               name="PlacketWidth"
                               type="text"
@@ -547,10 +479,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Bottom Hem
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Bottom Hem" labelForm="Bottom Hem" />
                             <Field
                               name="BottomHem"
                               type="text"

@@ -37,6 +37,11 @@ const AddSupplier: React.FC<AddComponentProps> = ({
 
   const InitialValues = {
     Name: isEdit && supplierById ? supplierById.Name : "",
+    Phone: isEdit && supplierById ? supplierById?.Phone : "",
+    Country: isEdit && supplierById ? supplierById?.Country : "",
+    State: isEdit && supplierById ? supplierById?.State : "",
+    City: isEdit && supplierById ? supplierById?.City : "",
+    CompleteAddress: isEdit && supplierById ? supplierById?.CompleteAddress : "",
   };
 
   const handleAdd = async (values: AddSupplierOptions) => {
@@ -50,7 +55,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} size="lg" onOpenChange={closeAddModal}>
+    <Modal isOpen={isOpen} size="2xl" onOpenChange={closeAddModal}>
       <ModalContent>
         {() => (
           <>
@@ -70,7 +75,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                       <Spinner />
                     ) : (
                       <>
-                        <div className="grid grid-cols-1 gap-3">
+                        <div className="grid grid-cols-2 gap-3">
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
                               Name
@@ -88,7 +93,73 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               className="text-red-400 text-sm"
                             />
                           </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <label className="text-sm text-gray-600 font-sans">
+                              Phone
+                            </label>
+                            <Field
+                              name="Phone"
+                              type="text"
+                              placeholder="Enter Phone No."
+                              className="formInputdefault"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <label className="text-sm text-gray-600 font-sans">
+                              Email
+                            </label>
+                            <Field
+                              name="Email"
+                              type="text"
+                              placeholder="Enter Email"
+                              className="formInputdefault"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <label className="text-sm text-gray-600 font-sans">
+                              Country
+                            </label>
+                            <Field
+                              name="Country"
+                              type="text"
+                              placeholder="Enter Country"
+                              className="formInputdefault"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <label className="text-sm text-gray-600 font-sans">
+                            State
+                            </label>
+                            <Field
+                              name="State"
+                              type="text"
+                              placeholder="Enter State"
+                              className="formInputdefault"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <label className="text-sm text-gray-600 font-sans">
+                            City
+                            </label>
+                            <Field
+                              name="City"
+                              type="text"
+                              placeholder="Enter City"
+                              className="formInputdefault"
+                            />
+                          </div>
                         </div>
+                        <div className="flex flex-col gap-1 w-full">
+                            <label className="text-sm text-gray-600 font-sans">
+                            Address
+                            </label>
+                            <Field
+                              name="CompleteAddress"
+                              as="textarea"
+                              placeholder="Enter Address"
+                              className="formInputdefault !h-24"
+                            />
+                          </div>
                       </>
                     )}
                   </ModalBody>

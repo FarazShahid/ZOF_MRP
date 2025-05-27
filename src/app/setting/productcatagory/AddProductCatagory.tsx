@@ -1,3 +1,5 @@
+
+import { useEffect } from "react";
 import {
   Button,
   Modal,
@@ -8,9 +10,9 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import { CatagorySchema } from "../../schema/CatagorySchema";
 import useCategoryStore from "@/store/useCategoryStore";
-import { useEffect } from "react";
+import { CatagorySchema } from "../../schema/CatagorySchema";
+import Label from "../../components/common/Label";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -35,7 +37,6 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
     addCategory,
     updateCategory,
     loading,
-    isResolved,
   } = useCategoryStore();
 
   useEffect(() => {
@@ -85,10 +86,7 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Name" labelForm="Name" />
                             <Field
                               name="type"
                               type="text"

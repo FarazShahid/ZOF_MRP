@@ -11,6 +11,7 @@ import {
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import useCutOptionsStore from "@/store/useCutOptionsStore";
 import { CutOptionSchema } from "../../schema/CutOptionSchema";
+import Label from "../../components/common/Label";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -89,6 +90,7 @@ const AddCutOptions: React.FC<AddClientComponentProps> = ({
                               Name
                               <span className="text-red-500 text-sm">*</span>
                             </label>
+                            <Label isRequired={true} label="Name" labelForm="Name" />
                             <Field
                               name="OptionProductCutOptions"
                               type="text"

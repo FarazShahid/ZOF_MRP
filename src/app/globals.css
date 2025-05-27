@@ -253,8 +253,7 @@
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #344054;
 }
-@layer utilities {
-  /* For Remove Date Icon */
+/* @layer utilities {
   input[type="date"]::-webkit-inner-spin-button,
   input[type="time"]::-webkit-inner-spin-button,
   input[type="date"]::-webkit-calendar-picker-indicator,
@@ -262,7 +261,7 @@
     display: none;
     -webkit-appearance: none;
   }
-}
+} */
 
 /* third-party libraries CSS */
 .apexcharts-legend-text {
@@ -833,7 +832,7 @@ span.flatpickr-weekday,
   border-radius: 10px;
   padding: 0px 6px;
   height: 40px;
-  background: #f6f6f6;
+  /* background: #f6f6f6; */
 }
 .formContainerWrapper {
   background: rgb(252 251 251);
@@ -873,4 +872,191 @@ span.flatpickr-weekday,
   background-color: lightblue;
   padding: 20px;
   text-align: center;
+}
+
+.color-tag {
+  padding: 0 16px;
+  border-radius: 8px;
+  margin: 4px;
+  display: inline-flex;
+  background: #f2f2f3;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  height: 36px;
+  white-space: nowrap;
+  color: black;
+  text-decoration: none;
+  text-transform: capitalize;
+}
+.color-tag span {
+  flex-grow: 1;
+  font-variation-settings: "wght" 500;
+  font-size: 14px;
+}
+.tagIsActive {
+  background: #e6f0ff;
+  color: #0066ff;
+}
+.color-tag:hover {
+  background: #ededee;
+}
+.color-tag div {
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  margin-right: 10px;
+  box-shadow: inset rgba(0, 0, 0, 0.08) 0 0 0 1px;
+}
+
+@media (min-width: 768px) {
+  .card-Color-grid {
+      grid-gap: 20px 35px;
+  }
+}
+.card-grid--350 {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 10px 35px;
+}
+.popupColorGrid{
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  grid-gap: 10px 35px;
+}
+.color-card {
+  display: block;
+  opacity: 1;
+  transition: all 0.3s ease;
+  position: relative;
+}
+.color-card_color {
+  width: 100%;
+  height: 104px;
+  box-shadow: inset rgba(0, 0, 0, 0.05) 0 0 0 1px;
+  cursor: pointer;
+  position: relative;
+  border-radius: 10px;
+}
+.color-card_color span {
+  width: 100%;
+  text-align: center;
+  display: block;
+  position: absolute;
+  top: 50%;
+  margin-top: -7px;
+  color: white;
+  font-variation-settings: "wght" 600;
+  opacity: 0;
+  transition: all 0.1s ease-in-out;
+}
+.color-card_color:after {
+  display: inline-block;
+  font: normal normal normal 1em / 1 'Nucleo';
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate3d(-50%, -50%, 0) scale(0);
+  font-size: 40px;
+  opacity: 1;
+  transition: none;
+  color: white;
+  visibility: hidden;
+}
+.color-card_info {
+  position: relative;
+  padding: 0 10px;
+  height: 36px;
+}
+.color-card_name {
+  line-height: 36px;
+  height: 100%;
+  position: absolute;
+  left: 10px;
+  max-width: calc(100% - 65px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+}
+
+.link--black {
+  color: black;
+}
+.link {
+  display: inline-block;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer !important;
+  position: relative;
+  transition: color 0.1s;
+}
+.color-card_btns {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  font-size: 14px;
+  display: flex;
+  padding-right: 4px;
+}
+.color-card_btns a {
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  cursor: pointer;
+}
+.link--secondary {
+  color: #7d7c83;
+}
+.color-card_select-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 104px;
+  display: none;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all .1s;
+  box-shadow: white 0 0 0 3px, rgba(0, 0, 0, 0) 0 0 0 5px;
+  z-index: 2;
+}
+.color-card_color:hover span {
+  opacity: 1;
+}
+
+.color-card:hover .color-card_select-overlay {
+  display: block;
+}
+.color-card:hover .color-card_color span {
+  opacity: 1;
+}
+.selectedNavItem{
+  background: #4ade80;
+    border-radius: 10px;
+}
+.selectedNavItem svg > path {
+  fill: black;
+}
+.selectedNavItem span {
+  color: black;
+    font-weight: bold;
+}
+.activeListing{
+  border: 2px solid #4ade80;
+}
+.activeListing svg > path {
+  fill: #4ade80;
+}
+.stockDataShip{
+  padding: 4px 2px;
+  border-radius: 10px;
+  text-align: center;
+}
+.lowStock {
+  background: #FF800030;
+  color: #FF8000;
 }

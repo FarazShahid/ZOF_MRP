@@ -53,7 +53,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
         localStorage.setItem("email", data?.data?.user?.email);
         setToken(token);
         setIsAuthenticated(true);
-        router.push("/adminDashboard");
+        router.push("/dashboard");
       } else {
         const error = await response.json();
         toast.error(error.message || "Login failed");

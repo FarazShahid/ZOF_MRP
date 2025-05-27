@@ -11,6 +11,7 @@ import {
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import { SizeOptionSchema } from "../../schema/SizeOptionSchema";
+import Label from "../../components/common/Label";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -79,10 +80,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                            Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Name" labelForm="Name" />
                             <Field
                               name="OptionSizeOptions"
                               type="text"

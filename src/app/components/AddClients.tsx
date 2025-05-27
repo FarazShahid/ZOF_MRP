@@ -11,6 +11,7 @@ import React, { useEffect } from "react";
 import { SchemaValidation } from "../schema/ClientSchema";
 import Spinner from "./Spinner";
 import useClientStore, { AddClientType } from "@/store/useClientStore";
+import Label from "./common/Label";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -27,9 +28,8 @@ const AddClients: React.FC<AddClientComponentProps> = ({
   isEdit,
   clientId,
 }) => {
-  
-
-  const {getClientById,addClient,updateClient,loading, clientById} = useClientStore();
+  const { getClientById, addClient, updateClient, loading, clientById } =
+    useClientStore();
 
   const InitialValues = {
     Name: isEdit && clientById ? clientById?.Name : "",
@@ -42,9 +42,8 @@ const AddClients: React.FC<AddClientComponentProps> = ({
     ClientStatusId: isEdit && clientById ? clientById?.ClientStatusId : "",
   };
 
-
   const handleAddClient = async (values: AddClientType) => {
-      isEdit
+    isEdit
       ? updateClient(clientId, values, () => {
           closeAddModal();
         })
@@ -52,13 +51,12 @@ const AddClients: React.FC<AddClientComponentProps> = ({
           closeAddModal();
         });
   };
- 
-  useEffect(()=>{
-    if(clientId){
+
+  useEffect(() => {
+    if (clientId) {
       getClientById(clientId);
     }
-    
-  },[isEdit, clientId])
+  }, [isEdit, clientId]);
 
   return (
     <Modal isOpen={isOpen} size="2xl" onOpenChange={closeAddModal}>
@@ -83,10 +81,11 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label
+                              label="Name"
+                              labelForm="Name"
+                              isRequired={true}
+                            />
                             <Field
                               name="Name"
                               type="text"
@@ -100,10 +99,11 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Email
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label
+                              label="Email"
+                              labelForm="Email"
+                              isRequired={true}
+                            />
                             <Field
                               type="text"
                               name="Email"
@@ -117,10 +117,11 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Phone Number
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label
+                              label="Phone Number"
+                              labelForm="Phone Number"
+                              isRequired={true}
+                            />
                             <Field
                               type="text"
                               name="Phone"
@@ -134,10 +135,11 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Country
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label
+                              label="Country"
+                              labelForm="Country"
+                              isRequired={true}
+                            />
                             <Field
                               type="text"
                               name="Country"
@@ -151,10 +153,11 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              State
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label
+                              label="State"
+                              labelForm="State"
+                              isRequired={true}
+                            />
                             <Field
                               type="text"
                               name="State"
@@ -168,10 +171,11 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              City
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label
+                              label="City"
+                              labelForm="City"
+                              isRequired={true}
+                            />
                             <Field
                               type="text"
                               name="City"
@@ -186,10 +190,11 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                           </div>
                         </div>
                         <div className="flex flex-col gap-1">
-                          <label className="text-sm text-gray-600 font-sans">
-                            Address
-                            <span className="text-red-500 text-sm">*</span>
-                          </label>
+                          <Label
+                            label="Address"
+                            labelForm="Address"
+                            isRequired={true}
+                          />
                           <Field
                             as="textarea"
                             name="CompleteAddress"

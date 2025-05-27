@@ -61,10 +61,7 @@ function OrderProductForm({ index, remove }: OrderProductFormProps) {
               return (
                 <option key={product.Id} value={product.Id}>
                   {formatedProductName(
-                    product.FabricTypeName,
-                    product.FabricName,
-                    product.FabricGSM,
-                    product.ProductCategoryName
+                    product.Name,
                   )}
                 </option>
               );

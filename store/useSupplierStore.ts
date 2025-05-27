@@ -17,6 +17,11 @@ interface AddSupplierResponse {
 interface SuppliersResponse {
   Id: number;
   Name: string;
+  Phone: string;
+  Country: string;
+  State: string;
+  City: string;
+  CompleteAddress: string;
   CreatedOn: string;
   CreatedBy: string;
   UpdatedOn: string;
@@ -25,6 +30,12 @@ interface SuppliersResponse {
 
 export interface AddSupplierOptions {
     Name: string;
+    Email?: string;
+    Phone?: string;
+    Country?: string;
+    State?: string;
+    City?: string;
+    CompleteAddress?: string;
 }
 
 interface StoreState {

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Accordion,
-  AccordionItem,
   Button,
   Modal,
   ModalBody,
@@ -24,6 +22,13 @@ import useCutOptionsStore from "@/store/useCutOptionsStore";
 import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import useProductRegionStore from "@/store/useProductRegionStore";
 import useSleeveType from "@/store/useSleeveType";
+import {
+  GetSizeOptionsResponse,
+  SizeMeasurements,
+} from "@/store/useSizeMeasurementsStore";
+import useClientStore from "@/store/useClientStore";
+import { fetchWithAuth } from "../services/authservice";
+import toast from "react-hot-toast";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -40,6 +45,7 @@ interface productDetailsType {
   ProductSizeMeasurementId: number | null;
   ProductRegionId: number | null;
   SleeveTypeId: number | null;
+  ClientId?: number | null;
 }
 
 const AddProduct: React.FC<AddClientComponentProps> = ({
@@ -59,13 +65,8 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
     UpdatedBy: string;
   }
 
-  const {
-    addProduct,
-    getProductById,
-    updateProduct,
-    productById,
-    loading,
-  } = useProductStore();
+  const { addProduct, getProductById, updateProduct, productById, loading } =
+    useProductStore();
   const { fetchCategories, productCategories } = useCategoryStore();
   const { fetchFabricType, fabricTypeData } = useFabricStore();
   const { colorOptions, fetchColorOptions } = useColorOptionsStore();
@@ -73,7 +74,17 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
   const { fetchsizeOptions, sizeOptions } = useSizeOptionsStore();
   const { fetchProductRegions, productRegions } = useProductRegionStore();
   const { fetchSleeveType, sleeveTypeData } = useSleeveType();
-  const [selectedColorOptions, setSelectedColorOptions] = useState<string[]>([]);
+  const { fetchClients, clients } = useClientStore();
+
+  const [measurementsMap, setMeasurementsMap] = useState<
+    Record<number, SizeMeasurements[]>
+  >({});
+  const [allMeasurements, setAllMeasurements] = useState<SizeMeasurements[]>(
+    []
+  );
+  const [selectedColorOptions, setSelectedColorOptions] = useState<string[]>(
+    []
+  );
 
   useEffect(() => {
     if (productId && isEdit) {
@@ -83,7 +94,9 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
 
   useEffect(() => {
     if (isEdit && productById?.productColors) {
-      const selectedColors = productById.productColors.map((color) => String(color.colorId));
+      const selectedColors = productById.productColors.map((color) =>
+        String(color.colorId)
+      );
       setSelectedColorOptions(selectedColors);
     }
   }, [isEdit, productById]);
@@ -102,7 +115,6 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
     };
     fetchData();
   }, []);
-  
 
   const handleColorOptionChange = (
     keys:
@@ -111,7 +123,9 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
       | (Set<React.Key> & { anchorKey?: string; currentKey?: string })
   ) => {
     if (keys === "all") {
-      const allKeys = colorOptions?.map((colorOption) => String(colorOption.Id));
+      const allKeys = colorOptions?.map((colorOption) =>
+        String(colorOption.Id)
+      );
       setSelectedColorOptions(allKeys || []);
     } else {
       const keyArray = Array.from(keys).map(String);
@@ -170,6 +184,75 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
         });
   };
 
+  const handleClientChange = async (clientId: number, index: number) => {
+    if (clientId) {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/by-client/${clientId}`
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        toast.error(error.message || "Failed to fetch data");
+        return;
+      }
+      const data: GetSizeOptionsResponse = await response.json();
+      setMeasurementsMap((prev) => ({
+        ...prev,
+        [index]: data.data,
+      }));
+    } else {
+      setMeasurementsMap((prev) => ({
+        ...prev,
+        [index]: [],
+      }));
+    }
+  };
+
+  const fetchSizeMeasurements = async () => {
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements`
+      );
+      if (!response.ok) {
+        toast.error("Error Fetching Data");
+      }
+      const data: GetSizeOptionsResponse = await response.json();
+      setAllMeasurements(data.data);
+    } catch (error) {
+      toast.error("Error Fetching Data");
+    }
+  };
+
+  useEffect(() => {
+    if (productId && isEdit) {
+      getProductById(productId);
+    }
+  }, [productId, isEdit]);
+
+
+  useEffect(() => {
+    if (isEdit && productById?.productColors) {
+      const selectedColors = productById.productColors.map((color) =>
+        String(color.colorId)
+      );
+      setSelectedColorOptions(selectedColors);
+    }
+  }, [isEdit, productById]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await Promise.all([
+        fetchCategories(),
+        fetchFabricType(),
+        fetchColorOptions(),
+        fetchcutOptions(),
+        fetchSizeMeasurements(),
+        fetchSleeveType(),
+        fetchClients(),
+      ]);
+    };
+    fetchData();
+  }, []);
+
   return (
     <Modal isOpen={isOpen} size="5xl" onOpenChange={closeAddModal}>
       <ModalContent>
@@ -192,23 +275,6 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                     ) : (
                       <>
                         <div className="grid grid-cols-3 gap-3">
-                          {/* <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
-                            <Field
-                              name="Name"
-                              type="text"
-                              placeholder="Enter Name"
-                              className="formInputdefault"
-                            />
-                            <ErrorMessage
-                              name="Name"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
-                          </div> */}
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
                               Product Category
@@ -220,10 +286,10 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               className="formInputdefault"
                             >
                               <option value={""}>Select a type</option>
-                              {productCategories.map((category) => {
+                              {productCategories?.map((category, index) => {
                                 return (
-                                  <option value={category.id}>
-                                    {category.type}
+                                  <option value={category?.id} key={index}>
+                                    {category?.type}
                                   </option>
                                 );
                               })}
@@ -245,10 +311,10 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               className="formInputdefault"
                             >
                               <option value={""}>Select a type</option>
-                              {fabricTypeData.map((category) => {
+                              {fabricTypeData?.map((category, index) => {
                                 return (
-                                  <option value={category.id}>
-                                    {`${category.name}_${category.type}_${category.gsm}`}
+                                  <option value={category?.id} key={index}>
+                                    {`${category?.name}_${category?.type}_${category?.gsm}`}
                                   </option>
                                 );
                               })}
@@ -259,44 +325,47 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                               className="text-red-400 text-sm"
                             />
                           </div>
-                          <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Color
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
-                            <Select
-                              className="max-w-xs"
-                              name="ColorName"
-                              placeholder="Select Color Options"
-                              selectionMode="multiple"
-                              aria-label="printing option"
-                              selectedKeys={new Set(selectedColorOptions)} 
-                              onSelectionChange={(keys) =>
-                                handleColorOptionChange(keys)
-                              }
-                            >
-                              {colorOptions!.map((colorOptions) => (
-                                <SelectItem key={colorOptions?.Id}>
-                                  {colorOptions.Name}
-                                </SelectItem>
-                              ))}
-                            </Select>
-                            <ErrorMessage
-                              name="ColorName"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
+                          <div className="flex gap-1 items-end">
+                            <div className="flex flex-col gap-1 w-full">
+                              <label className="text-sm text-gray-600 font-sans">
+                                Available Colors
+                                <span className="text-red-500 text-sm">*</span>
+                              </label>
+                              <Select
+                                className="max-w-xs"
+                                name="ColorName"
+                                placeholder="Select Color Options"
+                                selectionMode="multiple"
+                                aria-label="printing option"
+                                selectedKeys={new Set(selectedColorOptions)}
+                                onSelectionChange={(keys) =>
+                                  handleColorOptionChange(keys)
+                                }
+                              >
+                                {colorOptions!.map((colorOptions) => (
+                                  <SelectItem key={colorOptions?.Id}>
+                                    {colorOptions.Name}
+                                  </SelectItem>
+                                ))}
+                              </Select>
+                              <ErrorMessage
+                                name="ColorName"
+                                component="div"
+                                className="text-red-400 text-sm"
+                              />
+                            </div>
+                            <input type="color" />
                           </div>
                         </div>
                         <FieldArray name="productDetails">
                           {({ push, remove }) => (
                             <div className="flex flex-col gap-3">
-                              {values.productDetails.map((_, index) => (
+                              {values?.productDetails?.map((_, index) => (
                                 <div
                                   key={index}
                                   className="flex flex-col gap-1 bg-gray-50 p-3 rounded-md border border-gray-300"
                                 >
-                                  <div className="grid grid-cols-3 gap-3">
+                                  <div className="grid grid-cols-4 gap-3">
                                     {/* Cut Option */}
                                     <div className="flex flex-col gap-1">
                                       <label className="text-sm text-gray-600 font-sans">
@@ -310,12 +379,43 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                                         <option value="">
                                           Select an option
                                         </option>
-                                        {cutOptions.map((cutOption) => (
+                                        {cutOptions?.map((cutOption) => (
                                           <option
-                                            key={cutOption.Id}
-                                            value={cutOption.Id}
+                                            key={cutOption?.Id}
+                                            value={cutOption?.Id}
                                           >
-                                            {cutOption.OptionProductCutOptions}
+                                            {cutOption?.OptionProductCutOptions}
+                                          </option>
+                                        ))}
+                                      </Field>
+                                    </div>
+                                    {/* Clients */}
+                                    <div className="flex flex-col gap-1">
+                                      <label className="text-sm text-gray-600 font-sans">
+                                        Client
+                                      </label>
+                                      <Field
+                                        as="select"
+                                        name={`productDetails[${index}].ClientId`}
+                                        className="formInputdefault"
+                                        onChange={(e: {
+                                          target: { value: any };
+                                        }) =>
+                                          handleClientChange(
+                                            Number(e.target.value),
+                                            index
+                                          )
+                                        }
+                                      >
+                                        <option value="">
+                                          Select a client
+                                        </option>
+                                        {clients?.map((client) => (
+                                          <option
+                                            key={client?.Id}
+                                            value={client?.Id}
+                                          >
+                                            {client?.Name}
                                           </option>
                                         ))}
                                       </Field>
@@ -334,40 +434,19 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                                         <option value="">
                                           Select an option
                                         </option>
-                                        {sizeOptions.map((sizeOption) => (
+                                        {(
+                                          measurementsMap[index] ??
+                                          allMeasurements
+                                        )?.map((sizeMeasurement, index) => (
                                           <option
-                                            key={sizeOption.Id}
-                                            value={sizeOption.Id}
+                                            key={index}
+                                            value={sizeMeasurement?.Id}
                                           >
-                                            {sizeOption.OptionSizeOptions}
+                                            {sizeMeasurement?.Measurement1}
                                           </option>
                                         ))}
                                       </Field>
                                     </div>
-
-                                    {/* Region */}
-                                    {/* <div className="flex flex-col gap-1">
-                                      <label className="text-sm text-gray-600 font-sans">
-                                        Region
-                                      </label>
-                                      <Field
-                                        as="select"
-                                        name={`productDetails[${index}].ProductRegionId`}
-                                        className="formInputdefault"
-                                      >
-                                        <option value="">
-                                          Select an option
-                                        </option>
-                                        {productRegions.map((region) => (
-                                          <option
-                                            key={region.Id}
-                                            value={region.Id}
-                                          >
-                                            {region.Name}
-                                          </option>
-                                        ))}
-                                      </Field>
-                                    </div> */}
 
                                     {/* Sleeve Type */}
                                     <div className="flex flex-col gap-1">
@@ -382,12 +461,12 @@ const AddProduct: React.FC<AddClientComponentProps> = ({
                                         <option value="">
                                           Select an option
                                         </option>
-                                        {sleeveTypeData.map((sleeve) => (
+                                        {sleeveTypeData?.map((sleeve, index) => (
                                           <option
-                                            key={sleeve.id}
-                                            value={sleeve.id}
+                                            key={index}
+                                            value={sleeve?.id}
                                           >
-                                            {sleeve.sleeveTypeName}
+                                            {sleeve?.sleeveTypeName}
                                           </option>
                                         ))}
                                       </Field>

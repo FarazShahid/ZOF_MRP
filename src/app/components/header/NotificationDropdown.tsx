@@ -1,13 +1,45 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
+import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 
 export default function NotificationDropdown() {
+  const ALERT_LEVELS = ["low", "normal"] as const;
   const [isOpen, setIsOpen] = useState(false);
-  const [notifying, setNotifying] = useState(true);
+  const [notifying, setNotifying] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+
+  const getStockLevelStatus = useInventoryItemsStore(
+    (state) => state.getStockLevelStatus
+  );
+  const stockLevels = getStockLevelStatus();
+
+
+ // Check for "low" or "normal" stock levels
+ useEffect(() => {
+  const hasAlerts = stockLevels.some(
+    (item) => item.statusLevel === "low" || item.statusLevel === "normal"
+  );
+  setNotifying(hasAlerts);
+}, [stockLevels]);
+ // Hide dot when dropdown opens
+ useEffect(() => {
+  if (isOpen) {
+    setNotifying(false);
+  }
+}, [isOpen]);
+
+
+  // useEffect(() => {
+  //   const hasAlertStock = stockLevels.some(
+  //     (item) => item.statusLevel === "low" || item.statusLevel === "normal"
+  //   );
+  //   if (hasAlertStock) {
+  //     setNotifying(true);
+  //   }
+  // }, [stockLevels]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -21,6 +53,13 @@ export default function NotificationDropdown() {
     toggleDropdown();
     setNotifying(false);
   };
+  // // Clear notifying when dropdown opens
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     setNotifying(false);
+  //   }
+  // }, [isOpen]);
+
   return (
     <div className="relative">
       <button
@@ -78,44 +117,37 @@ export default function NotificationDropdown() {
             </svg>
           </button>
         </div>
-        <ul className="flex flex-col h-auto overflow-y-auto custom-scrollbar">         
-          {/* <li>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
-              href="#"
-            >
-              <span className="relative block w-full h-10 rounded-full z-1 max-w-10">
-                <Image
-                  width={40}
-                  height={40}
-                  src="/images/user/user-05.jpg"
-                  alt="User"
-                  className="overflow-hidden rounded-full"
-                />
-                <span className="absolute bottom-0 right-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white bg-error-500 dark:border-gray-900"></span>
-              </span>
-
-              <span className="block">
-                <span className="mb-1.5 space-x-1 block text-theme-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Brandon Philips
+        <ul className="flex flex-col h-auto overflow-y-auto custom-scrollbar">
+        {stockLevels
+            .filter(
+              (stock) =>
+                stock.statusLevel === "low" || stock.statusLevel === "normal"
+            )
+            .map((stock) => (
+              <li key={stock.itemCode}>
+                <DropdownItem
+                  onItemClick={closeDropdown}
+                  className={`Notification_${stock.statusLevel} flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5`}
+                  href="#"
+                >
+                  <span className="block w-full">
+                    <span className="mb-1.5 space-x-1 w-full text-theme-sm text-gray-500 dark:text-gray-400 flex justify-between items-center">
+                      <span className="font-medium text-gray-800 dark:text-white/90">
+                        {stock.statusLevel === "low"
+                          ? "❗ Danger: Stock is below reorder level!"
+                          : "⚠️ Warning: Stock is at reorder level."}
+                      </span>
+                      <Link href="/inventoryItems" className="underline">
+                        View
+                      </Link>
+                    </span>
+                    <span className="flex items-center gap-2 text-gray-500 text-theme-xs dark:text-gray-400">
+                      <span>Item Code - {stock.itemCode}</span>
+                    </span>
                   </span>
-                  <span>requests permission to change</span>
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Project - Nganter App
-                  </span>
-                </span>
-
-                <span className="flex items-center gap-2 text-gray-500 text-theme-xs dark:text-gray-400">
-                  <span>Project</span>
-                  <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                  <span>1 hr ago</span>
-                </span>
-              </span>
-            </DropdownItem>
-          </li> */}
-        
+                </DropdownItem>
+              </li>
+            ))}
         </ul>
         <Link
           href="/inventoryItems"
