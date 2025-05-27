@@ -8,12 +8,13 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/react";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   filterBtns,
   PantoneColor,
 } from "../../setting/coloroptions/PantoneColorPicker";
 import rawPantoneColors from "../../../../lib/pantone-colors.json";
+import { useColorPickerStore } from "@/store/useColorPickerStore";
 
 interface ComponentProps {
   isOpen: boolean;
@@ -78,9 +79,12 @@ const pantoneColors: PantoneColor[] = Object.entries(
 const ColorPickerModal: React.FC<ComponentProps> = ({
   isOpen,
   closeAddModal,
-  onSaveColors,
 }) => {
-  const [selectedColors, setSelectedColors] = useState<PantoneColor[]>([]);
+  const {
+    selectedColors,
+    toggleSelectedColor,
+    resetSelectedColors,
+  } = useColorPickerStore();
   const [search, setSearch] = useState("");
   const [selectedBtnId, setSelectedBtnId] = useState(1);
 
@@ -92,18 +96,11 @@ const ColorPickerModal: React.FC<ComponentProps> = ({
   }, [search]);
 
   const handleToggleSelect = (color: PantoneColor) => {
-    setSelectedColors((prev) => {
-      const exists = prev.find((c) => c.code === color.code);
-      return exists
-        ? prev.filter((c) => c.code !== color.code)
-        : [...prev, color];
-    });
+    toggleSelectedColor(color);
   };
 
   const handleAddColors = () => {
-    const values = selectedColors.map((c) => ({ name: c.name, hex: c.hex }));
-    onSaveColors(values);
-    setSelectedColors([]);
+    closeAddModal();
   };
 
   const handleSelectFilter = (id: number, name: string) => {
@@ -112,6 +109,14 @@ const ColorPickerModal: React.FC<ComponentProps> = ({
     setSelectedBtnId(id);
     setSearch(colorName);
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      resetSelectedColors();
+      setSelectedBtnId(1);
+      setSearch("");
+    }
+  }, [isOpen]);
 
   return (
     <Modal isOpen={isOpen} size="4xl" onOpenChange={closeAddModal}>
@@ -125,10 +130,11 @@ const ColorPickerModal: React.FC<ComponentProps> = ({
               <div className="flex flex-col gap-4 ">
                 <div className="w-full lg:max-w-[992px] mb-[50px] px-5">
                   <ul className="flex flex-wrap items-center justify-center">
-                    {filterBtns.map((btn) => {
+                    {filterBtns.map((btn, index) => {
                       return (
-                        <li className="m-1" key={btn.id}>
+                        <li className="m-1" key={index}>
                           <button
+                            type="button"
                             className={`color-tag ${
                               btn.id === selectedBtnId ? "tagIsActive" : ""
                             }`}
@@ -147,22 +153,22 @@ const ColorPickerModal: React.FC<ComponentProps> = ({
                     })}
                   </ul>
                 </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {selectedColors.map((items) => {
-                      return (
-                        <div className="flex items-center gap-4">
-                          <div
-                            className="w-10 h-10 rounded border shadow-inner"
-                            style={{ backgroundColor: items.hex }}
-                          />
-                          <div className="text-sm text-gray-500">
-                            <strong>{items.name}</strong> ({items.code}) —{" "}
-                            <span>{items.hex.toUpperCase()}</span>
-                          </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {selectedColors?.map((items, index) => {
+                    return (
+                      <div className="flex items-center gap-4" key={index}>
+                        <div
+                          className="w-10 h-10 rounded border shadow-inner"
+                          style={{ backgroundColor: items.hex }}
+                        />
+                        <div className="text-sm text-gray-500">
+                          <strong>{items.name}</strong> ({items.code}) —{" "}
+                          <span>{items.hex.toUpperCase()}</span>
                         </div>
-                      );
-                    })}
-                  </div>
+                      </div>
+                    );
+                  })}
+                </div>
                 <div className="grid card-grid popupColorGrid h-80 overflow-x-auto">
                   {filteredColors?.map((color) => (
                     <button

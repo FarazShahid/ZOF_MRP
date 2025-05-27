@@ -8,17 +8,18 @@ import { Select, SelectItem } from "@heroui/react";
 import useColorOptionsStore from "@/store/useColorOptionsStore";
 import ColorPickerModal from "./ColorPickerModal";
 import Label from "../../components/common/Label";
+import { useColorPickerStore } from "@/store/useColorPickerStore";
 
 export default function Step1({ formik }: any) {
   const [isColorModalOpen, setIsColorModalOpen] = useState(false);
   const [selectedColorOptions, setSelectedColorOptions] = useState<string[]>(
     []
   );
-  const [customColors, setCustomColors] = useState<{ name: string; hex: string }[]>([]);
 
   const { fetchCategories, productCategories } = useCategoryStore();
   const { fetchFabricType, fabricTypeData } = useFabricStore();
   const { fetchColorOptions, colorOptions } = useColorOptionsStore();
+  const {selectedColors} = useColorPickerStore();
 
   const handleColorOptionChange = (
     keys:
@@ -58,9 +59,10 @@ export default function Step1({ formik }: any) {
   };
 
   const handleSaveCustomColors = (colors: { name: string; hex: string }[]) => {
-    setCustomColors(colors);
     setIsColorModalOpen(false);
   };
+
+  console.log("selectedColors", selectedColors);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -152,7 +154,7 @@ export default function Step1({ formik }: any) {
         </button>
       </div>
       <div className="grid grid-cols-3 gap-2">
-        {customColors.map((color, index) => (
+        {selectedColors?.map((color, index) => (
           <div key={index} className="flex items-center gap-2">
             <div
               className="w-6 h-6 rounded border shadow-inner"

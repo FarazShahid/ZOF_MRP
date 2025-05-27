@@ -14,6 +14,9 @@ import { ProductValidationSchemas } from "../../schema";
 import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
 import useProductStore from "@/store/useProductStore";
 import { useRouter } from "next/navigation";
+import { useColorPickerStore } from "@/store/useColorPickerStore";
+import useColorOptionsStore from "@/store/useColorOptionsStore";
+import { Spinner } from "@heroui/react";
 
 const steps = ["General Information", "Product Details", "Description"];
 
@@ -26,7 +29,9 @@ const formSteps = [
 const ProductForm = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
-  const { addProduct } = useProductStore();
+  const { addProduct} = useProductStore();
+  const {selectedColors} = useColorPickerStore();
+  const {addColorOption, loading} = useColorOptionsStore();
   const router = useRouter();
 
   const initialValues = {
@@ -98,7 +103,21 @@ const ProductForm = () => {
   const handleBoBack = () => {
     router.push('/product')
   }
+
+  const handleAddColor = () => {
+
+  }
+
   const handleSubmit = async (values: any) => {
+    // if(selectedColors){
+    //   selectedColors.map((color)=>{
+    //     const payload = {
+    //       Name: color.name,
+    //       HexCode: color.hex
+    //     }
+    //     addColorOption(payload, ()=>handleAddColor()) 
+    //   })
+    // }
     await addProduct(values, () => handleBoBack())
   };
 
@@ -188,8 +207,9 @@ const ProductForm = () => {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="flex items-center justify-center text-white bg-[#584BDD] w-[80px] h-[30px] rounded-lg text-sm"
+                        className="flex items-center justify-center gap-1 text-white bg-[#584BDD] w-[80px] h-[30px] rounded-lg text-sm"
                       >
+                        {loading ? <Spinner /> :<></>}
                         Submit
                       </button>
                     )}
