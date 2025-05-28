@@ -107,10 +107,10 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
                               className="formInputdefault"
                             >
                               <option value={0}>Select inventory item</option>
-                              {inventoryItems.map((inventoryItem, index) => {
+                              {inventoryItems?.map((inventoryItem, index) => {
                                 return (
-                                  <option value={inventoryItem.Id} key={index}>
-                                    {inventoryItem.Name}
+                                  <option value={inventoryItem?.Id} key={index}>
+                                    {inventoryItem?.Name}
                                   </option>
                                 );
                               })}
@@ -148,10 +148,10 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
                               className="formInputdefault"
                             >
                               <option value={0}>Select Transaction Type</option>
-                              {TRANSACTION_TYPES.map((type, index) => {
+                              {TRANSACTION_TYPES?.map((type, index) => {
                                 return (
-                                  <option value={type.value} key={index}>
-                                    {type.label}
+                                  <option value={type?.value} key={index}>
+                                    {type?.label}
                                   </option>
                                 );
                               })}

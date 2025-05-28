@@ -20,7 +20,7 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
   const [page, setPage] = useState<number>(1);
 
   const rowsPerPage = 13;
-  const pages = Math.ceil(products!.length / rowsPerPage);
+  const pages = Math.ceil(products?.length / rowsPerPage);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -55,7 +55,7 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
         bottomContent={
           <div className="grid grid-cols-3">
             <span className="w-[20%] text-small text-gray-500">
-              Total: {products.length || 0}
+              Total: {products?.length || 0}
             </span>
             <Pagination
               isCompact
@@ -97,12 +97,12 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
           </TableColumn>
         </TableHeader>
         <TableBody items={items}>
-          {(items ?? []).map((item: any, index: number) => (
-            <TableRow key={item.Id}>
+          {(items ?? [])?.map((item: any, index: number) => (
+            <TableRow key={item?.Id}>
               {(columnKey) => (
                 <TableCell>
                   {columnKey === "Name" ? (
-                    `${item.FabricName} ${item.ProductCategoryName} ${item?.GSM}`
+                    `${item?.FabricName} ${item?.ProductCategoryName} ${item?.GSM}`
                   ) : columnKey === "Sr" ? (
                     index + 1
                   ) : columnKey !== "action" ? (
@@ -111,14 +111,14 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        onClick={() => openEditModal(item.Id)}
+                        onClick={() => openEditModal(item?.Id)}
                       >
                         <GoPencil color="green" />
                       </button>
                       <button
                         type="button"
                         className="hover:text-red-500 cursor-pointer"
-                        onClick={() => handleOpenDeleteModal(item.Id)}
+                        onClick={() => handleOpenDeleteModal(item?.Id)}
                       >
                         <RiDeleteBin6Line color="red" />
                       </button>

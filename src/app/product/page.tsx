@@ -74,26 +74,6 @@ const page = () => {
                 <FiSettings size={20} />
               </Link>
             </Tooltip>
-            {/* <div className="flex items-center bg-gray-700 rounded-lg">
-              <button
-                type="button"
-                onClick={() => setSelectedListType(1)}
-                className={`p-2 rounded-lg text-gray-200 ${
-                  selectedListType === 1 ? "activeListing" : ""
-                }`}
-              >
-                <FaList />
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedListType(2)}
-                className={`p-2 rounded-lg text-gray-200 ${
-                  selectedListType === 2 ? "activeListing" : ""
-                }`}
-              >
-                <AiFillProduct />
-              </button>
-            </div> */}
             <AddButton title={"Add Product"} onClick={handleClick} />
           </div>
         </div>

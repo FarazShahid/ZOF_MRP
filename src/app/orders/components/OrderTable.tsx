@@ -37,7 +37,7 @@ const OrderTable = () => {
   const { fetchClients, clients } = useClientStore();
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(Orders!.length / rowsPerPage);
+  const pages = Math.ceil(Orders?.length / rowsPerPage);
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
@@ -165,28 +165,28 @@ const OrderTable = () => {
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
             {(item) => (
-              <TableRow key={`${item.Id}_${item.OrderNumber}`}>
+              <TableRow key={`${item?.Id}_${item?.OrderNumber}`}>
                 {(columnKey) => (
                   <TableCell>
                     {columnKey === "Deadline" ? (
                       formatDate(item[columnKey])
                     ) : columnKey === "OrderPriority" ? (
-                      <PriorityChip priority={item.OrderPriority} />
+                      <PriorityChip priority={item?.OrderPriority} />
                     ) : columnKey === "StatusName" ? (
-                      <StatusChip OrderStatus={item.StatusName} />
+                      <StatusChip OrderStatus={item?.StatusName} />
                     ) : columnKey !== "Action" ? (
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => OpenViewModal(item.Id)}
+                          onClick={() => OpenViewModal(item?.Id)}
                         >
                           <FaRegEye color="blue" />
                         </button>
                         <button
                           type="button"
-                          onClick={() => openDeleteModal(item.Id)}
+                          onClick={() => openDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>

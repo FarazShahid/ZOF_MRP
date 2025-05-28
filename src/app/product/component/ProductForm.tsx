@@ -134,7 +134,7 @@ const ProductForm = () => {
             </Link>
           </div>
           <ul>
-            {formSteps.map((label, index) => (
+            {formSteps?.map((label, index) => (
               <li
                 key={index}
                 onClick={() => setCurrentStep(label.id)}
