@@ -1,6 +1,7 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
+import useUIStore from "./useUIStore";
 
 interface GetColorsResponse {
   data: ColorOption[];
@@ -8,7 +9,7 @@ interface GetColorsResponse {
   message: string;
 }
 
-interface GetColorByIdResponse{
+interface GetColorByIdResponse {
   data: ColorOption;
   statusCode: number;
   message: string;
@@ -81,7 +82,7 @@ const useColorOptionsStore = create<ColorOptionState>((set, get) => ({
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/coloroption/${id}`
       );
-      if(!response.ok){
+      if (!response.ok) {
         const error = await response.json();
         toast.error(error.message || "Fail to fetch data");
       }
@@ -109,6 +110,8 @@ const useColorOptionsStore = create<ColorOptionState>((set, get) => ({
       if (response.ok) {
         set({ loading: false, error: null });
         toast.success("Color add successfully");
+        const setSelectedItem = useUIStore.getState().setSelectedItem;
+        setSelectedItem(7);
         if (onSuccess) onSuccess();
         await get().fetchColorOptions();
       } else {

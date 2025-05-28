@@ -18,16 +18,8 @@ import ProductSizeOptions from '../../setting/SizeOptions/ProductSizeOptions';
 import ProductSizeMeasurements from '../../setting/SizeMeasurements/ProductSizeMeasurements';
 import PrintingOptions from '../../setting/printingoptions/PrintingOptions';
 import ProductRegionComponent from '../../setting/productregionstandard/ProductRegionComponent';
+import useUIStore from '@/store/useUIStore';
 
-
-// Dummy component placeholders (replace with actual components)
-const FabricType = () => <div>Fabric Type Component</div>
-const SleeveType = () => <div>Sleeve Type Component</div>
-const ProductCategory = () => <div>Product Category Component</div>
-const CutOptions = () => <div>Cut Options Component</div>
-const SizeOptions = () => <div>Size Options Component</div>
-const SizeMeasurements = () => <div>Size Measurements Component</div>
-const ProductRegion = () => <div>Product Region Component</div>
 
 const ListItems = [
   { id: 1, name: "Fabric Type", icon: <GiRolledCloth size={20} /> },
@@ -43,7 +35,9 @@ const ListItems = [
 
 
 const page = () => {
-  const [selectedItem, setSelectedItem] = useState(1);
+  const selectedItem = useUIStore((state) => state.selectedItem);
+  const setSelectedItem = useUIStore((state) => state.setSelectedItem);
+  // const [selectedItem, setSelectedItem] = useState(1);
 
 
   return (

@@ -68,7 +68,7 @@ const InventoryItemsTable = () => {
           <div className="flex items-center gap-2">
             <Tooltip content="Inventory Settings">
               <Link
-                href={"/inventoryTransaction"}
+                href={"/inventoryItems/Inventorysetup"}
                 className="bg-gray-700 rounded-lg p-2"
               >
                 <FiSettings size={20} />

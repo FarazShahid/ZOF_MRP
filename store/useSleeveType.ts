@@ -1,6 +1,7 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
+import useUIStore from "./useUIStore";
 
 interface GetSleeveTypeResponse {
   data: SleeveType[];
@@ -108,6 +109,7 @@ const useSleeveType = create<CategoryState>((set, get) => ({
       } else {
         set({ loading: false, error: null });
         toast.success("Sleeve type added successfully.");
+   
         if (onSuccess) onSuccess();
         await get().fetchSleeveType();
       }
@@ -139,6 +141,7 @@ const useSleeveType = create<CategoryState>((set, get) => ({
       } else {
         set({ loading: false, error: null });
         toast.success("Sleeve type update successfully.");
+        
         if (onSuccess) onSuccess();
         await get().fetchSleeveType();
       }

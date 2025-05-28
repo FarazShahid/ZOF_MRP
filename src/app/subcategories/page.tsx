@@ -14,15 +14,12 @@ import {
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
-import { formatDate } from "../interfaces";
-import AdminLayout from "../adminDashboard/lauout";
 import useInventorySubCategoryStore from "@/store/useInventorySubCategoryStore";
 import AddSubCategory from "./AddSubCategory";
 import DeleteSubCategory from "./DeleteSubCategory";
 
-const page = () => {
+const Subcategories = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState<number>(0);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
@@ -32,7 +29,7 @@ const page = () => {
     useInventorySubCategoryStore();
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(subCategories!.length / rowsPerPage);
+  const pages = Math.ceil(subCategories?.length / rowsPerPage);
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
@@ -61,13 +58,12 @@ const page = () => {
   }, []);
 
   return (
-    <AdminLayout>
+    <>
       <div className="w-full flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">Sub Categories</h6>
+        <div className="flex items-center justify-end">
           <button
             type="button"
-            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
+           className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
             onClick={openAddModal}
           >
             <FiPlus />
@@ -81,7 +77,7 @@ const page = () => {
           bottomContent={
             <div className="grid grid-cols-2">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {items.length || 0}
+                Total: {items?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -112,8 +108,8 @@ const page = () => {
             </TableColumn>
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
-            {(items ?? []).map((item: any, index: number) => (
-              <TableRow key={item.Id}>
+            {(items ?? [])?.map((item: any, index: number) => (
+              <TableRow key={item?.Id}>
                 {(columnKey) => (
                   <TableCell>
                     {columnKey === "Sr" ? (
@@ -124,14 +120,14 @@ const page = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => handleOpenEditModal(item.Id)}
+                          onClick={() => handleOpenEditModal(item?.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.Id)}
+                          onClick={() => handleOpenDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>
@@ -161,8 +157,8 @@ const page = () => {
           Id={selectedItemId}
         />
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
-export default page;
+export default Subcategories;

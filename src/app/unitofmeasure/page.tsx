@@ -20,7 +20,7 @@ import useUnitOfMeasureStore from "@/store/useUnitOfMeasureStore";
 import DeleteModal from "./DeleteModal";
 import AddUnitOfMeasure from "./AddUnitOfMeasure";
 
-const page = () => {
+const UnitofMeasure = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedSupplierId, setSelectedSupplierId] = useState<number>(0);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
@@ -59,13 +59,12 @@ const page = () => {
   }, []);
 
   return (
-    <AdminLayout>
+    <>
       <div className="w-full flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">Suppliers</h6>
+      <div className="flex items-center justify-end">
           <button
             type="button"
-            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
+           className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
             onClick={openAddModal}
           >
             <FiPlus />
@@ -158,8 +157,8 @@ const page = () => {
           supplierId={selectedSupplierId}
         />
       </div>
-    </AdminLayout>
+    </>
   );
 };
 
-export default page;
+export default UnitofMeasure;
