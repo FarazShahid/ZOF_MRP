@@ -19,7 +19,7 @@ export default function Step1({ formik }: any) {
   const { fetchCategories, productCategories } = useCategoryStore();
   const { fetchFabricType, fabricTypeData } = useFabricStore();
   const { fetchColorOptions, colorOptions } = useColorOptionsStore();
-  const {selectedColors} = useColorPickerStore();
+  const { selectedColors } = useColorPickerStore();
 
   const handleColorOptionChange = (
     keys:
@@ -62,8 +62,6 @@ export default function Step1({ formik }: any) {
     setIsColorModalOpen(false);
   };
 
-  console.log("selectedColors", selectedColors);
-
   useEffect(() => {
     const fetchData = async () => {
       await Promise.all([
@@ -74,7 +72,6 @@ export default function Step1({ formik }: any) {
     };
     fetchData();
   }, []);
-
 
   return (
     <div className="space-y-6 w-[500px]">

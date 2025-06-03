@@ -23,8 +23,8 @@ import useUIStore from '@/store/useUIStore';
 
 const ListItems = [
   { id: 1, name: "Fabric Type", icon: <GiRolledCloth size={20} /> },
-  { id: 2, name: "Sleeve Type", icon: <GiSleevelessJacket size={20} /> },
-  { id: 3, name: "Product Category", icon: <TbCategory2 size={20} /> },
+  { id: 2, name: "Product Category", icon: <TbCategory2 size={20} /> },
+  { id: 3, name: "Sleeve Type", icon: <GiSleevelessJacket size={20} /> }, 
   { id: 4, name: "Cut Options", icon: <IoCut size={20} /> },
   { id: 5, name: "Size Options", icon: <GiClothes size={20} /> },
   { id: 6, name: "Size Measurements", icon: <TbRulerMeasure2 size={20} /> },
@@ -37,7 +37,6 @@ const ListItems = [
 const page = () => {
   const selectedItem = useUIStore((state) => state.selectedItem);
   const setSelectedItem = useUIStore((state) => state.setSelectedItem);
-  // const [selectedItem, setSelectedItem] = useState(1);
 
 
   return (
@@ -76,9 +75,9 @@ const page = () => {
                   case 1:
                     return <Fabric />
                   case 2:
-                    return <Sleeve />
-                  case 3:
                     return <ProductCategoryComponent />
+                  case 3:
+                    return <Sleeve />
                   case 4:
                     return <ProductCutOptions />
                   case 5:

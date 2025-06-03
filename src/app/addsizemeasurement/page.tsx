@@ -4,8 +4,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import HumanBody from "../../../../../public/humanBody.png";
+import HumanBody from "../../../public/humanBody.png";
 import AdminLayout from "@/src/app/adminDashboard/lauout";
+import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
 
 type MeasurementData = {
   chest?: number;
@@ -32,7 +33,7 @@ export default function MeasurementsPage() {
   };
 
   return (
-    <AdminLayout>
+    <AdminDashboardLayout>
       <div className="relative w-[400px] mx-auto p-4">
         <div className="relative">
           {/* Human Image */}
@@ -88,12 +89,12 @@ export default function MeasurementsPage() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-white border rounded shadow-lg p-3 w-44 z-50"
                   >
-                    <label className="text-sm font-semibold">
+                    <label className="text-sm font-semibold text-black">
                       {part.label}
                     </label>
                     <input
                       type="number"
-                      className="w-full mt-2 border rounded px-2 py-1 text-black z-20"
+                      className="w-full mt-2 border rounded px-2 py-1 text-white z-20"
                       defaultValue={
                         measurements[part.key as keyof MeasurementData] || ""
                       }
@@ -118,6 +119,6 @@ export default function MeasurementsPage() {
         {/* Debug */}
         {/* <pre className="mt-6 bg-gray-100 p-3 rounded text-xs">{JSON.stringify(measurements, null, 2)}</pre> */}
       </div>
-    </AdminLayout>
+    </AdminDashboardLayout>
   );
 }

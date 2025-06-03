@@ -10,6 +10,7 @@ import { IoCalendarNumber } from "react-icons/io5";
 
 import Logo from "../../../../public/logoDark.png";
 import UserDropdown from "../header/UserDropdown";
+import { ThemeToggleButton } from "./ThemeToggleButton";
 
 const CutomNavBar = () => {
   const pathname = usePathname();
@@ -51,7 +52,7 @@ const CutomNavBar = () => {
       route: "/client",
       isNested: false,
     },
-     {
+    {
       id: 6,
       label: "Events",
       icon: <IoCalendarNumber size={14} />,
@@ -64,7 +65,7 @@ const CutomNavBar = () => {
     router.push(path);
   };
   return (
-    <div className="bg-black border-b-1 border-gray-800 p-5 flex items-center justify-between">
+    <div className="p-5 bg-slate-900 flex items-center justify-between">
       <div className="w-7 h-7">
         <Image src={Logo} alt="logo" />
       </div>
@@ -73,19 +74,24 @@ const CutomNavBar = () => {
           const isActive = pathname.startsWith(item.route);
           return (
             <div
-              className={`flex items-center gap-2 px-2 py-1 cursor-pointer rounded-full transition-all duration-150 ${
-                isActive ? "selectedNavItem" : ""
+              className={`flex items-center gap-2 px-2 py-1 cursor-pointer rounded-full text-gray-900 transition-all duration-150 ${
+                isActive ? "selectedNavItem" : "!text-white"
               }`}
               key={item.id}
               onClick={() => handleRoute(item.route)}
             >
               {item.icon}
-              <span className="text-gray-400 font-bold text-sm">{item.label}</span>
+              <span className="!text-white font-bold text-sm">
+                {item.label}
+              </span>
             </div>
           );
         })}
       </div>
-      <UserDropdown />
+      <div className="flex items-center gap-5">
+        <ThemeToggleButton />
+        <UserDropdown />
+      </div>
     </div>
   );
 };

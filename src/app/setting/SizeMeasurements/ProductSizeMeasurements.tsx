@@ -20,8 +20,8 @@ import DeleteSizeOptions from "./DeleteSizeOptions";
 import AddSizeOptions from "./AddSizeOptions";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { GoPencil } from "react-icons/go";
-import { FiPlus } from "react-icons/fi";
 import AddButton from "../../components/common/AddButton";
+import { useRouter } from "next/navigation";
 
 const ProductSizeMeasurements = () => {
   const [page, setPage] = useState<number>(1);
@@ -34,6 +34,9 @@ const ProductSizeMeasurements = () => {
     useState<keyof SizeMeasurements>("Measurement1");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
+
+  const router = useRouter();
+
   const { fetchSizeMeasurements, sizeMeasurement, loading } =
     useSizeMeasurementsStore();
 
@@ -44,7 +47,10 @@ const ProductSizeMeasurements = () => {
   const rowsPerPage = 10;
   const pages = Math.ceil(sizeMeasurement!.length / rowsPerPage);
 
-  const openAddModal = () => setIsAddModalOpen(true);
+  const openAddModal = () => {
+     router.push("/addsize");
+    // setIsAddModalOpen(true)
+  };
 
   const handleOpenDeleteModal = (sizeOptionId: number) => {
     setSelectedSizeOptionId(sizeOptionId);
@@ -56,9 +62,7 @@ const ProductSizeMeasurements = () => {
     setIsEdit(false);
   };
   const openEditModal = (sizeId: number) => {
-    setSelectedSizeOptionId(sizeId);
-    setIsAddModalOpen(true);
-    setIsEdit(true);
+    router.push(`/editsizemeasurement/${sizeId}`);
   };
   const openViewModal = (sizeId: number) => {
     setSelectedSizeOptionId(sizeId);

@@ -24,6 +24,7 @@ import StatusChip from "../../components/StatusChip";
 import DeleteModal from "../../components/DeleteModal";
 import PriorityChip from "./PriorityChip";
 import ViewDrawer from "./ViewDrawer";
+import { useRouter } from "next/navigation";
 
 const OrderTable = () => {
   const [clientId, setClientId] = useState<number>(0);
@@ -32,6 +33,7 @@ const OrderTable = () => {
   const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
   const [refreshKey, setRefreshKey] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
+  const router = useRouter();
 
   const { fetchOrders, loading, Orders } = useOrderStore();
   const { fetchClients, clients } = useClientStore();
@@ -56,8 +58,9 @@ const OrderTable = () => {
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
 
   const OpenViewModal = (orderId: number) => {
-    setSelectedOrderId(orderId);
-    setIsOpenViewModal(true);
+    router.push(`/orders/vieworder/${orderId}`)
+    // setSelectedOrderId(orderId);
+    // setIsOpenViewModal(true);
   };
   const closeViewModal = () => {
     setSelectedOrderId(0);
@@ -69,8 +72,12 @@ const OrderTable = () => {
   };
 
   useEffect(() => {
-    fetchOrders(clientId);
-  }, [clientId]);
+    if (clientId) {
+      fetchOrders(clientId);
+    } else {
+      fetchOrders();
+    }
+  }, [fetchOrders,clientId]);
 
   useEffect(() => {
     fetchClients();
@@ -97,7 +104,7 @@ const OrderTable = () => {
             <Tooltip content="Order Status">
               <Link
                 href={"/orders/orderstatus"}
-                className="bg-gray-700 rounded-lg p-2"
+                className="dark:bg-slate-500 bg-slate-600 text-white rounded-lg p-2"
               >
                 <FiSettings size={20} />
               </Link>
@@ -105,7 +112,7 @@ const OrderTable = () => {
             <Link
               href={"/orders/addorder"}
               type="button"
-              className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
+              className="text-sm rounded-full bg-green-900 text-white font-semibold px-3 py-2 flex items-center gap-1"
             >
               <FiPlus />
               Add New

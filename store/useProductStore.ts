@@ -44,13 +44,14 @@ interface ProductById {
   productDetails: [
     {
       Id: number;
-      ProductId: number;
+      // ProductId: number;
       ProductCutOptionId: number;
-      ProductSizeMeasurementId: number;
-      ProductRegionId: number;
+      // ProductSizeMeasurementId: number;
+      // ProductRegionId: number;
       SleeveTypeId: number;
     }
   ];
+  productSizes: [{ Id: number; sizeId: number}];
 }
 
 interface GetAvailableColorResponse {

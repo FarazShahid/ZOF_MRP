@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Form, Formik } from "formik";
 import { IoCaretBackSharp } from "react-icons/io5";
@@ -14,8 +14,6 @@ import { ProductValidationSchemas } from "../../schema";
 import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
 import useProductStore from "@/store/useProductStore";
 import { useRouter } from "next/navigation";
-import { useColorPickerStore } from "@/store/useColorPickerStore";
-import useColorOptionsStore from "@/store/useColorOptionsStore";
 import { Spinner } from "@heroui/react";
 
 const steps = ["General Information", "Product Details", "Description"];
@@ -26,31 +24,39 @@ const formSteps = [
   { id: 3, name: "Description", icon: <GrDocumentImage size={20} /> },
 ];
 
-const ProductForm = () => {
-
+const ProductForm = ({ productId }: { productId?: string }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const { addProduct} = useProductStore();
-  const {selectedColors} = useColorPickerStore();
-  const {addColorOption, loading} = useColorOptionsStore();
+
+  const { addProduct, getProductById, productById } = useProductStore();
   const router = useRouter();
 
   const initialValues = {
-    ProductCategoryId: "",
-    FabricTypeId: "",
-    Description: "",
-
-    productColors: [
+    ProductCategoryId: productById?.ProductCategoryId ?? "",
+    FabricTypeId: productById?.FabricTypeId ?? "",
+    Description: productById?.Description ?? "",
+    productColors: productById?.productColors ?? [
       {
         Id: 0,
         colorId: 0,
         ImageId: "1",
       },
     ],
-    productDetails: [
+    productDetails: productById?.productDetails?.map((detail) => ({
+      ProductCutOptionId: detail.ProductCutOptionId,
+      SleeveTypeId: detail.SleeveTypeId,
+    })) ?? [
       {
         ProductCutOptionId: 0,
         ProductSizeMeasurementId: 0,
         SleeveTypeId: 1,
+      },
+    ],
+    productSizes: productById?.productSizes?.map((sizes) => ({
+      Id: sizes.Id,
+      sizeId: sizes.sizeId,
+    })) ?? [
+      {
+        sizeId: 0,
       },
     ],
   };
@@ -78,12 +84,12 @@ const ProductForm = () => {
     const currentSchema = ProductValidationSchemas[currentStep - 1];
 
     if (!currentSchema) {
-      setCurrentStep(prev => prev + 1);
+      setCurrentStep((prev) => prev + 1);
       return;
     }
 
     const stepFields = Object.keys(currentSchema.fields);
-    const stepErrors = Object.keys(errors).filter(key =>
+    const stepErrors = Object.keys(errors).filter((key) =>
       stepFields.includes(key)
     );
 
@@ -101,25 +107,18 @@ const ProductForm = () => {
   };
 
   const handleBoBack = () => {
-    router.push('/product')
-  }
-
-  const handleAddColor = () => {
-
-  }
+    router.push("/product");
+  };
 
   const handleSubmit = async (values: any) => {
-    // if(selectedColors){
-    //   selectedColors.map((color)=>{
-    //     const payload = {
-    //       Name: color.name,
-    //       HexCode: color.hex
-    //     }
-    //     addColorOption(payload, ()=>handleAddColor()) 
-    //   })
-    // }
-    await addProduct(values, () => handleBoBack())
+    await addProduct(values, () => handleBoBack());
   };
+
+  useEffect(() => {
+    if (productId) {
+      getProductById(Number(productId));
+    }
+  }, [productId]);
 
   return (
     <AdminDashboardLayout>
@@ -141,10 +140,11 @@ const ProductForm = () => {
                 className={`flex items-center gap-4 mb-4 w-[230px] bg-gray-900 p-2 rounded-lg cursor-pointer`}
               >
                 <div
-                  className={` ${label.id === currentStep
+                  className={` ${
+                    label.id === currentStep
                       ? "text-green-400 font-bold"
                       : "text-gray-400"
-                    }`}
+                  }`}
                 >
                   {label.icon}
                 </div>
@@ -153,10 +153,11 @@ const ProductForm = () => {
                     STEP {index + 1}
                   </span>
                   <span
-                    className={` ${label.id === currentStep
+                    className={` ${
+                      label.id === currentStep
                         ? "text-green-400 font-bold"
                         : "text-gray-400"
-                      }`}
+                    }`}
                   >
                     {label.name}
                   </span>
@@ -169,7 +170,9 @@ const ProductForm = () => {
           <h1 className="text-sm font-bold text-gray-500 mb-2">
             Add New Product
           </h1>
-          <h2 className="text-xl font-semibold mb-4">{steps[currentStep - 1]}</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            {steps[currentStep - 1]}
+          </h2>
           <div className="flex flex-col bg-gray-900 rounded-xl p-10">
             <Formik
               validationSchema={ProductValidationSchemas[currentStep - 1]}
@@ -209,7 +212,7 @@ const ProductForm = () => {
                         disabled={isSubmitting}
                         className="flex items-center justify-center gap-1 text-white bg-[#584BDD] w-[80px] h-[30px] rounded-lg text-sm"
                       >
-                        {loading ? <Spinner /> :<></>}
+                        {isSubmitting ? <Spinner /> : <></>}
                         Submit
                       </button>
                     )}

@@ -68,10 +68,10 @@ const page = () => {
           <div className="flex items-center gap-1">
             <Link
               href={"/orders"}
-              className="flex items-center gap-1 text-gray-400 hover:text-white"
+              className="flex items-center gap-1 dark:text-gray-400 text-gray-900 hover:text-gray-900 dark:hover:text-white"
             >
               <IoCaretBackSharp />
-              <h6 className="font-sans text-lg font-semibold">Statues</h6>
+              <h6 className="font-sans text-lg font-semibold">Status</h6>
             </Link>
           </div>
 

@@ -13,11 +13,14 @@ import { productComponentProp } from "./ProductGrid";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DeleteProduct from "../../products/DeleteProduct";
+import { useRouter } from "next/navigation";
 
 const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [selectedProductId, setSelectedProductId] = useState(0);
   const [page, setPage] = useState<number>(1);
+
+  const router = useRouter();
 
   const rowsPerPage = 13;
   const pages = Math.ceil(products?.length / rowsPerPage);
@@ -30,6 +33,7 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
   }, [page, products]);
 
   const openEditModal = (productId: number) => {
+    router.push(`product/editproduct/${productId}`)
     // setSelectedProductId(productId);
     // setIsAddModalOpen(true);
     // setIsEdit(true);
