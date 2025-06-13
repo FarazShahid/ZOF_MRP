@@ -22,8 +22,8 @@ const OrderDeadline: React.FC<OrderDeadlineProps> = ({ deadline }) => {
   return (
     <div className="flex gap-3 items-center">
       {/* Calendar Tile */}
-      <div className="flex-none border-1 dark:border-default-200/50 border-gray-600 rounded-small text-center w-11 overflow-hidden">
-        <div className="text-tiny text-white dark:text-default-500 dark:bg-default-100 bg-gray-500 py-0.5 ">
+      <div className="flex-none border-1 dark:border-default-200/50 border-gray-400 rounded-small text-center w-11 overflow-hidden">
+        <div className="text-tiny text-gray-800 dark:text-default-500 dark:bg-default-100 bg-gray-300 py-0.5 ">
           {month}
         </div>
         <div className="flex items-center justify-center font-semibold text-medium h-6 text-default-500">

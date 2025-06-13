@@ -10,7 +10,7 @@ interface LayoutProps {
       <div className="sticky top-0 z-10">
         <CutomNavBar />
       </div>
-        <div className=" overflow-auto h-[calc(100vh-73px)] dark:bg-black bg-gray-100 p-5">
+        <div className=" overflow-auto h-[calc(100vh-85px)] dark:bg-black bg-gray-100 p-5">
           {children}
         </div>
     </div>

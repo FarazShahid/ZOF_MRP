@@ -20,18 +20,18 @@ interface AddClientComponentProps {
   closeAddModal: () => void;
 }
 
+interface AddCutOptionsType {
+  OptionProductCutOptions: string;
+  CreatedBy: string;
+  UpdatedBy: string;
+}
+
 const AddCutOptions: React.FC<AddClientComponentProps> = ({
   isOpen,
   closeAddModal,
   isEdit,
   cutOptionId,
 }) => {
-  interface AddCutOptionsType {
-    OptionProductCutOptions: string;
-    CreatedBy: string;
-    UpdatedBy: string;
-  }
-
   const {
     getCutOptionById,
     updateCutOption,
@@ -86,12 +86,16 @@ const AddCutOptions: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true} label="Name" labelForm="Name" />
+                            <Label
+                              isRequired={true}
+                              label="Name"
+                              labelForm="Name"
+                            />
                             <Field
                               name="OptionProductCutOptions"
                               type="text"
                               placeholder="Enter Cut Option Name"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="OptionProductCutOptions"

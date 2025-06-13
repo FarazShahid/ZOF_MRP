@@ -104,7 +104,7 @@ const OrderTable = () => {
             <Tooltip content="Order Status">
               <Link
                 href={"/orders/orderstatus"}
-                className="dark:bg-slate-500 bg-slate-600 text-white rounded-lg p-2"
+                className="dark:bg-slate-500 bg-slate-300 dark:text-white text-gray-800 rounded-lg p-2"
               >
                 <FiSettings size={20} />
               </Link>
@@ -112,7 +112,7 @@ const OrderTable = () => {
             <Link
               href={"/orders/addorder"}
               type="button"
-              className="text-sm rounded-full bg-green-900 text-white font-semibold px-3 py-2 flex items-center gap-1"
+              className="text-sm rounded-full dark:bg-blue-600 bg-blue-800 text-white font-semibold px-3 py-2 flex items-center gap-2"
             >
               <FiPlus />
               Add New

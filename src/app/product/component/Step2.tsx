@@ -6,7 +6,7 @@ import { FaCirclePlus } from "react-icons/fa6";
 import useSleeveType from "@/store/useSleeveType";
 import useCutOptionsStore from "@/store/useCutOptionsStore";
 import useSizeOptionsStore from "@/store/useSizeOptionsStore";
-
+import Label from "../../components/common/Label";
 
 export default function Step2({ formik }: any) {
   const [selectedSizeIds, setSelectedSizeIds] = useState<string[]>([]);
@@ -82,11 +82,9 @@ export default function Step2({ formik }: any) {
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-semibold text-gray-400">
-          Size Options
-        </label>
+        <Label isRequired={false} label="Size Options" />
         <Select
-          className="rounded-xl text-gray-400 text-sm w-full outline-none"
+          className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
           name="SizeOptions"
           placeholder="Select Size Options"
           variant="bordered"
@@ -109,18 +107,17 @@ export default function Step2({ formik }: any) {
               return (
                 <div
                   key={index}
-                  className="border-1 border-gray-800 space-y-6 rounded p-4"
+                  className="border-1 dark:border-gray-800 border-gray-400 space-y-6 rounded-lg p-4"
                   id="productDetails"
                 >
                   <div className="grid grid-cols-2 gap-2">
                     <div className="flex flex-col gap-1">
-                      <label className="text-xs font-semibold text-gray-400">
-                        Cut Options
-                      </label>
+                      <Label isRequired={false} label="Cut Options" />
                       <Field
                         as="select"
                         name={`productDetails[${index}].ProductCutOptionId`}
-                        className="rounded-xl text-gray-400 text-sm p-2 w-full outline-none bg-gray-950 border-1 border-gray-600"
+                         className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+       
                       >
                         <option value={""}>Select an option</option>
                         {cutOptions?.map((cutOption, i) => (
@@ -136,13 +133,12 @@ export default function Step2({ formik }: any) {
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-xs font-semibold text-gray-400">
-                        Sleeve Type
-                      </label>
+                      <Label isRequired={false} label=" Sleeve Type" />
                       <Field
                         as="select"
                         name={`productDetails[${index}].SleeveTypeId`}
-                        className="rounded-xl text-gray-400 text-sm p-2 w-full outline-none bg-gray-950 border-1 border-gray-600"
+                        className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+       
                       >
                         <option value={""}>Select an option</option>
                         {sleeveTypeData?.map((sleeve, index) => (

@@ -167,7 +167,7 @@ export default function PantoneColorDropdown({
             className="w-10 h-10 rounded border shadow-inner"
             style={{ backgroundColor: selectedColor.hex }}
           />
-          <div className="text-sm text-gray-300">
+          <div className="text-sm dark:text-gray-300 text-gray-800">
             <strong>{selectedColor.name}</strong> ({selectedColor.code}) —{" "}
             <span>{selectedColor.hex.toUpperCase()}</span>
           </div>
@@ -180,7 +180,7 @@ export default function PantoneColorDropdown({
             filterBtns.map((btn)=>{
               return(
               <li className="m-1" key={btn.id}>
-                <button className={`color-tag ${btn.id === selectedBtnId ? "tagIsActive":""}`} onClick={() => handleSelectFilter(btn.id, btn.name)}>
+                <button className={`color-tag !bg-[#d7d7d7] ${btn.id === selectedBtnId ? "tagIsActive":""}`} onClick={() => handleSelectFilter(btn.id, btn.name)}>
                   {
                     btn.name !== "All Shades" ? <div  style={{ backgroundColor: btn.color }} /> :<></>
                   }

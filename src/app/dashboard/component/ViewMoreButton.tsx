@@ -6,7 +6,7 @@ const ViewMoreButton = ({ path }: { path: string }) => {
   return (
     <Link
       href={path}
-      className="text-green-400 flex items-center gap-1 text-xs"
+      className="dark:text-green-400 text-green-900 flex items-center gap-1 text-xs"
     >
       View More <FaCaretRight />
     </Link>

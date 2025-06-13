@@ -4,15 +4,15 @@ export const pinConfigs = [
   {
     fieldName: "NeckSize",
     label: "Neck Size",
-    top: "11%",
-    left: "50%",
+    top: "14%",
+    left: "48%",
     colorClass: "bg-green-600",
   },
   {
     fieldName: "CollarHeight",
     label: "Collar Height",
-    top: "13%",
-    left: "63%",
+    top: "14%",
+    left: "61%",
     colorClass: "bg-green-600",
   },
   {
@@ -26,8 +26,8 @@ export const pinConfigs = [
   {
     fieldName: "CollarStandLength",
     label: "Collar Stand Length",
-    top: "17%",
-    left: "40%",
+    top: "18%",
+    left: "37%",
     colorClass: "bg-green-600",
   },
 
@@ -36,17 +36,17 @@ export const pinConfigs = [
   {
     fieldName: "UpperChest",
     label: "Upper Chest",
-    top: "20%",
+    top: "25%",
     left: "50%",
-    colorClass: "bg-blue-500",
+    colorClass: "bg-green-600",
   },
 
   {
     fieldName: "LowerChest",
     label: "Lower Chest",
     top: "29%",
-    left: "50%",
-    colorClass: "bg-blue-500",
+    left: "37%",
+    colorClass: "bg-green-600",
   },
 
   // Shoulders and Arms measuremnts
@@ -54,47 +54,47 @@ export const pinConfigs = [
   {
     fieldName: "AcrossShoulders",
     label: "Across Shoulders",
-    top: "19%",
-    left: "30%",
-    colorClass: "bg-gray-400",
+    top: "16%",
+    left: "27%",
+    colorClass: "bg-green-600",
   },
 
   {
     fieldName: "ArmHole",
     label: "Arm Hole",
-    top: "45%",
-    left: "25%",
-    colorClass: "bg-gray-400",
+    top: "41%",
+    left: "18%",
+    colorClass: "bg-green-600",
   },
 
   {
     fieldName: "FrontLengthHPS",
     label: "Front Length HPS",
-    top: "42%",
+    top: "44%",
     left: "35%",
-    colorClass: "bg-purple-900",
+    colorClass: "bg-green-600",
   },
   {
     fieldName: "BackLengthHPS",
     label: "Back Length HPS",
-    top: "42%",
+    top: "44%",
     left: "65%",
-    colorClass: "bg-purple-900",
+    colorClass: "bg-green-600",
   },
 
   {
     fieldName: "SleeveLength",
     label: "Sleeve Length",
-    top: "25%",
-    left: "75%",
-    colorClass: "bg-purple-900",
+    top: "33%",
+    left: "10%",
+    colorClass: "bg-green-600",
   },
   {
     fieldName: "SleeveOpening",
     label: "Sleeve Opening",
     top: "48%",
-    left: "78%",
-    colorClass: "bg-purple-900",
+    left: "82%",
+    colorClass: "bg-green-600",
   },
 
   //
@@ -102,16 +102,16 @@ export const pinConfigs = [
   {
     fieldName: "Waist",
     label: "Waist",
-    top: "48%",
-    left: "35%",
-    colorClass: "bg-green-400",
+    top: "65%",
+    left: "68%",
+    colorClass: "bg-green-600",
   },
   {
     fieldName: "BottomWidth",
-    label: "BottomWidth",
-    top: "48%",
-    left: "60%",
-    colorClass: "bg-green-400",
+    label: "Bottom Width",
+    top: "67%",
+    left: "37%",
+    colorClass: "bg-green-600",
   },
 
   //
@@ -120,7 +120,7 @@ export const pinConfigs = [
     label: "Stand Height Back",
     top: "35%",
     left: "25%",
-    colorClass: "bg-yellow-500",
+    colorClass: "bg-green-600",
   },
 
   // Side Vent
@@ -129,45 +129,82 @@ export const pinConfigs = [
     fieldName: "SideVentFront",
     label: "Side Vent Front",
     top: "53%",
-    left: "65%",
-    colorClass: "bg-red-400",
+    left: "71%",
+    colorClass: "bg-green-600",
   },
   {
     fieldName: "SideVentBack",
     label: "Side Vent Back",
     top: "54%",
-    left: "35%",
-    colorClass: "bg-red-400",
+    left: "25%",
+    colorClass: "bg-green-600",
   },
 
   // Pocket
   {
     fieldName: "PlacketLength",
     label: "Placket Length",
-    top: "24%",
+    top: "29%",
     left: "58%",
-    colorClass: "bg-red-400",
+    colorClass: "bg-green-600",
   },
   {
     fieldName: "TwoButtonDistance",
     label: "Two Button Distance",
-    top: "24%",
+    top: "29%",
     left: "64%",
-    colorClass: "bg-red-400",
+    colorClass: "bg-green-600",
   },
   {
     fieldName: "PlacketWidth",
     label: " Placket Width",
-    top: "24%",
+    top: "29%",
     left: "52%",
-    colorClass: "bg-red-400",
+    colorClass: "bg-green-600",
   },
 
   {
     fieldName: "BottomHem",
     label: "Bottom Hem",
-    top: "48%",
-    left: "45%",
-    colorClass: "bg-green-400",
+    top: "63%",
+    left: "24%",
+    colorClass: "bg-green-600",
+  },
+
+  // Bottom Unit
+  {
+    fieldName: "Hem",
+    label: "Hem",
+    top: "69%",
+    left: "27%",
+    colorClass: "bg-green-600",
+  },
+  {
+    fieldName: "Hip",
+    label: "Hip",
+    top: "74%",
+    left: "24%",
+    colorClass: "bg-green-600",
+  },
+  {
+    fieldName: "FrontRise",
+    label: "Front Rise",
+    top: "65%",
+    left: "77%",
+    colorClass: "bg-green-600",
+  },
+  {
+    fieldName: "Inseam",
+    label: "Inseam",
+    top: "81%",
+    left: "77%",
+    colorClass: "bg-green-600",
+  },
+  {
+    fieldName: "HemBottom",
+    label: "HemBottom",
+    top: "91%",
+    left: "21%",
+    colorClass: "bg-green-600",
   },
 ];

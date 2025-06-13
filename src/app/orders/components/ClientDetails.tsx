@@ -15,7 +15,7 @@ const ClientDetails: FC<ClientDetailsProp> = ({ clientId }) => {
     }
   }, [clientId]);
   return (
-    <div className="p-3 bg-[#161616] shadow-lg  flex flex-col gap-5 rounded text-gray-400">
+    <div className="p-3  flex flex-col gap-5 dark:text-gray-400 text-gray-800 dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 shadow-lg">
       <p className="text-sm">Client</p>
       {loading ? (
         <Spinner />

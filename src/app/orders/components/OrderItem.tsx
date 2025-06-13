@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PRIORITY_ENUM } from "@/interface/GetFileType";
 import { useProductColorsByProductId } from "@/interface/useHandleProdcutColors";
 import { ProductProp } from "./Step2";
@@ -7,7 +7,6 @@ import SelectField from "./SelectField";
 import PrintingOptionsMultiSelect from "./PrintingOptionsMultiSelect";
 import OrderItemDetailsFieldArray from "./OrderItemDetailsFieldArray";
 import DropZone from "../../components/DropZone/DropZone";
-
 
 interface OrderItemProps {
   index: number;
@@ -32,10 +31,18 @@ const OrderItem: React.FC<OrderItemProps> = ({
   handleFileSelect,
   selectedFile,
 }) => {
-  const currentProductColors = useProductColorsByProductId(item.ProductId);
+  const currentProductColors = useProductColorsByProductId(item?.ProductId);
+  const [productName, setProductName] = useState("");
+
+
+  useEffect(()=>{
+    if(item?.Description){
+      setProductName(item?.Description);
+    }
+  },[])
 
   return (
-    <div className="space-y-3 border-1 border-gray-800 p-4 rounded relative">
+    <div className="space-y-3 border-1 dark:border-gray-800 border-gray-400 p-4 rounded relative">
       {item && (
         <>
           <button
@@ -47,11 +54,12 @@ const OrderItem: React.FC<OrderItemProps> = ({
             &minus;
           </button>
 
-          <h4 className="font-semibold mb-3">{item?.Description}</h4>
+          <h4 className="font-semibold mb-3">{productName}</h4>
 
           <OrderItemDetailsFieldArray
             index={index}
             item={item}
+            values={values}
             productAvailableColors={currentProductColors}
             setFieldValue={setFieldValue}
           />
@@ -68,10 +76,7 @@ const OrderItem: React.FC<OrderItemProps> = ({
               setFieldValue={setFieldValue}
             />
           </div>
-          <DropZone
-            index={index}
-            onFileSelect={handleFileSelect}
-          />
+          <DropZone index={index} onFileSelect={handleFileSelect} />
           <TextAreaField
             label="Description"
             name={`items[${index}].Description`}

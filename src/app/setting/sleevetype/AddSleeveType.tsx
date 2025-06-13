@@ -99,7 +99,7 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                               name="sleeveTypeName"
                               type="text"
                               placeholder="Enter Sleeve Type Name"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="sleeveTypeName"
@@ -116,7 +116,7 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="productCategoryId"
                               as="select"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             >
                               <option value={""}>Select a type</option>
                               {productCategories?.map((category, index) => {

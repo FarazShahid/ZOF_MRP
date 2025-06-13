@@ -86,7 +86,7 @@ const AddCategoires: React.FC<AddComponentProps> = ({
                               name="Name"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="Name"

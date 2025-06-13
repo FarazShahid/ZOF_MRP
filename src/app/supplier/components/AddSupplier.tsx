@@ -85,7 +85,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               name="Name"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="Name"
@@ -101,7 +101,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               name="Phone"
                               type="text"
                               placeholder="Enter Phone No."
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
@@ -112,7 +112,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               name="Email"
                               type="text"
                               placeholder="Enter Email"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
@@ -123,7 +123,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               name="Country"
                               type="text"
                               placeholder="Enter Country"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
@@ -134,7 +134,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               name="State"
                               type="text"
                               placeholder="Enter State"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
@@ -145,7 +145,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               name="City"
                               type="text"
                               placeholder="Enter City"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                           </div>
                         </div>
@@ -157,7 +157,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               name="CompleteAddress"
                               as="textarea"
                               placeholder="Enter Address"
-                              className="formInputdefault !h-24"
+                              className="formInputdefault !h-24 bg-gray-100"
                             />
                           </div>
                       </>

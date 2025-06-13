@@ -135,7 +135,7 @@ const OrderForm = () => {
           <div className="flex items-center mb-10">
             <Link
               href={"/orders"}
-              className="flex items-center gap-1 text-gray-400 hover:text-white"
+              className="flex items-center gap-1 dark:text-gray-400 text-gray-800"
             >
               <IoCaretBackSharp /> <span>Back to listing</span>
             </Link>
@@ -145,26 +145,26 @@ const OrderForm = () => {
               <li
                 key={index}
                 onClick={() => setCurrentStep(label.id)}
-                className={`flex items-center gap-4 mb-4 w-[230px] bg-gray-900 p-2 rounded-lg cursor-pointer`}
+                className={`flex items-center gap-4 mb-4 w-[230px] dark:bg-slate-900 bg-gray-300 p-2 rounded-lg cursor-pointer`}
               >
                 <div
                   className={` ${
                     label.id === currentStep
-                      ? "text-green-400 font-bold"
-                      : "text-gray-400"
+                      ? "dark:text-green-400 text-green-800 font-bold"
+                      : "dark:text-gray-400 text-gray-800"
                   }`}
                 >
                   {label.icon}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs dark:text-gray-500 text-gray-800">
                     STEP {index + 1}
                   </span>
                   <span
                     className={` ${
                       label.id === currentStep
-                        ? "text-green-400 font-bold"
-                        : "text-gray-400"
+                        ? "dark:text-green-400 text-green-800 font-bold"
+                        : "dark:text-gray-400 text-gray-800"
                     }`}
                   >
                     {label.name}
@@ -181,7 +181,7 @@ const OrderForm = () => {
           <h2 className="text-xl font-semibold mb-4">
             {steps[currentStep - 1]}
           </h2>
-          <div className="flex flex-col bg-gray-900 rounded-xl p-10">
+          <div className="flex flex-col dark:bg-slate-900 bg-gray-300 rounded-xl p-10">
             <Formik
               validationSchema={OrderValidationSchemas[currentStep - 1]}
               initialValues={initialValues}
@@ -189,7 +189,7 @@ const OrderForm = () => {
               onSubmit={handleSubmit}
             >
               {({ isSubmitting, validateForm, setTouched, ...formikProps }) => (
-                <Form className="flex flex-col gap-5 px-5 w-full dark:border-1 dark:border-gray-800  shadow-2xl pt-5 pb-5 rounded-lg h-fit ">
+                <Form className="flex flex-col gap-5 px-5 w-full dark:shadow-2xl shadow-lg pt-5 pb-5 rounded-lg h-fit ">
                   {renderStep(formikProps)}
                   <div className="flex items-center justify-end gap-5 mt-5">
                     {currentStep > 1 && (

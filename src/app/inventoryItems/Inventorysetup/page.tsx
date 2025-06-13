@@ -15,8 +15,8 @@ import UnitofMeasure from "../../unitofmeasure/page";
 
 const ListItems = [
   { id: 1, name: "Inventory Transections", icon: <GiClothes size={20} /> },
-  { id: 2, name: "Inventory Sub Category", icon: <GiRolledCloth size={20} /> },
-  { id: 3, name: "Inventory Category", icon: <GiSleevelessJacket size={20} /> },
+  { id: 2, name: "Inventory Category", icon: <GiSleevelessJacket size={20} /> },
+  { id: 3, name: "Inventory Sub Category", icon: <GiRolledCloth size={20} /> },
   { id: 4, name: "Supplier", icon: <TbCategory2 size={20} /> },
   { id: 5, name: "Unit of Measure", icon: <IoCut size={20} /> },
 ];
@@ -30,7 +30,7 @@ const page = () => {
         <div className="flex items-center">
           <Link
             href={"/inventoryItems"}
-            className="flex items-center gap-1 text-gray-400 hover:text-white"
+            className="flex items-center gap-1 dark:text-gray-400 text-gray-800"
           >
             <IoCaretBackSharp /> <span>Back to listing</span>
           </Link>
@@ -42,7 +42,9 @@ const page = () => {
                 return (
                   <div
                     className={`${
-                      selectedItem === item.id ? "bg-green-800" : "bg-[#18181b]"
+                      selectedItem === item.id
+                        ? "bg-green-800 text-white"
+                        : "dark:bg-[#18181b] bg-gray-300 text-gray-800"
                     } rounded-lg p-2 text-gray-300 flex items-center gap-3 cursor-pointer`}
                     onClick={() => setSelectedItem(item.id)}
                     key={item.id}
@@ -60,9 +62,9 @@ const page = () => {
                 case 1:
                   return <InventoryTransaction />;
                 case 2:
-                  return <Subcategories />;
-                case 3:
                   return <InventoryCategories />;
+                case 3:
+                  return <Subcategories />;
                 case 4:
                   return <Supplier />;
                 case 5:

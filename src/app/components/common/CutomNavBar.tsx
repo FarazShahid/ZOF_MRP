@@ -9,6 +9,7 @@ import { AiOutlineProduct } from "react-icons/ai";
 import { IoCalendarNumber } from "react-icons/io5";
 
 import Logo from "../../../../public/logoDark.png";
+import LogoLight from "../../../../public/logo.png";
 import UserDropdown from "../header/UserDropdown";
 import { ThemeToggleButton } from "./ThemeToggleButton";
 
@@ -65,9 +66,10 @@ const CutomNavBar = () => {
     router.push(path);
   };
   return (
-    <div className="p-5 bg-slate-900 flex items-center justify-between">
+    <div className="p-5 dark:bg-slate-900 bg-gray-100 border-b-1 border-gray-300 flex items-center justify-between">
       <div className="w-7 h-7">
-        <Image src={Logo} alt="logo" />
+        <Image src={Logo} alt="logo" className="hidden dark:block" />
+        <Image src={LogoLight} alt="logo" className="dark:hidden" />
       </div>
       <div className="flex items-center gap-4">
         {Navlist.map((item) => {
@@ -75,13 +77,13 @@ const CutomNavBar = () => {
           return (
             <div
               className={`flex items-center gap-2 px-2 py-1 cursor-pointer rounded-full text-gray-900 transition-all duration-150 ${
-                isActive ? "selectedNavItem" : "!text-white"
+                isActive ? "selectedNavItem" : "dark:!text-white !text-black" 
               }`}
               key={item.id}
               onClick={() => handleRoute(item.route)}
             >
               {item.icon}
-              <span className="!text-white font-bold text-sm">
+              <span className="dark:text-white text-black font-bold text-sm">
                 {item.label}
               </span>
             </div>

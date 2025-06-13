@@ -8,7 +8,7 @@ interface LabelProps {
 
 const Label: React.FC<LabelProps> = ({ labelForm, label, isRequired }) => {
     return (
-        <label form={labelForm} className="text-sm text-gray-400 font-sans font-bold">
+        <label form={labelForm} className="text-sm dark:text-gray-400 text-gray-600 font-sans font-bold">
             {label}
             {isRequired ? <span className="text-red-500 text-sm">*</span> : <></>}
         </label>

@@ -91,7 +91,7 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
                               name="type"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="type"

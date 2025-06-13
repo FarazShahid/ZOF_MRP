@@ -11,7 +11,7 @@ const OrderStatusLogs = [
 const OrderStatusTimeline = () => {
   return (
     <div className="ml-5">
-      <div className="space-y-6 border-l-2 border-dashed border-gray-700">
+      <div className="space-y-6 border-l-2 border-dashed dark:border-gray-800 border-gray-300">
         {OrderStatusLogs.map((log, index) => {
           return (
             <div className="relative w-full" key={index}>
@@ -19,7 +19,7 @@ const OrderStatusTimeline = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="absolute -top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full text-blue-500"
+                className="absolute -top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full text-green-500"
               >
                 <path
                   fillRule="evenodd"
@@ -28,7 +28,7 @@ const OrderStatusTimeline = () => {
                 />
               </svg>
               <div className="ml-6">
-                <h6 className="font-bold text-gray-400 text-sm">
+                <h6 className="font-bold dark:text-gray-400 text-gray-600 text-sm">
                   {log.status_name}
                 </h6>
                 <span className="mt-1 block text-xs font-semibold text-gray-400">

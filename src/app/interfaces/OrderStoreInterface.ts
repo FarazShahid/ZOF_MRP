@@ -72,6 +72,11 @@ export interface GetOrderByIdType {
     orderItemDetails: {
       ColorOptionName: string;
       ColorOptionId: number;
+      HexCode:string;
+      MeasurementId: number;
+      MeasurementName: string;
+      SizeOptionId: number;
+      SizeOptionName: string;
       Quantity: number;
       Priority: number;
     }[];

@@ -34,9 +34,6 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
 
   const openEditModal = (productId: number) => {
     router.push(`product/editproduct/${productId}`)
-    // setSelectedProductId(productId);
-    // setIsAddModalOpen(true);
-    // setIsEdit(true);
   };
   const handleOpenDeleteModal = (productId: number) => {
     setSelectedProductId(productId);
@@ -105,9 +102,7 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
             <TableRow key={item?.Id}>
               {(columnKey) => (
                 <TableCell>
-                  {columnKey === "Name" ? (
-                    `${item?.FabricName} ${item?.ProductCategoryName} ${item?.GSM}`
-                  ) : columnKey === "Sr" ? (
+                  {columnKey === "Sr" ? (
                     index + 1
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)

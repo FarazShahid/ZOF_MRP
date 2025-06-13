@@ -1,10 +1,18 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { IoCaretBackOutline } from "react-icons/io5";
 import HumanBody from "../../../public/humanBody.png";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import ModalImage from "../../../public/modal.svg";
+import {
+  Formik,
+  Field,
+  Form,
+  ErrorMessage,
+  FieldInputProps,
+  FormikProps,
+} from "formik";
 import { SizeMeasurementSchema } from "../schema/SizeMeasurementSchema";
 import useSizeMeasurementsStore, {
   AddSizeMeasurementType,
@@ -16,6 +24,23 @@ import MeasurementPin from "./MeasurementPin";
 import { pinConfigs } from "@/lib/pinConfigs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import TopUnit from "./TopUnit";
+import BottomUnit from "./BottomUnit";
+import useCategoryStore from "@/store/useCategoryStore";
+import ShirtAndShortsModal from "@/public/svgs/ShirtAndShortsModal";
+
+const PRODUCTCATERGORYENUM = [
+  { id: 1, name: "Jersey", unitType: "Top" },
+  { id: 2, name: "Hoodies", unitType: "Top" },
+  { id: 3, name: "Sweatshirts", unitType: "Top" },
+  { id: 4, name: "Tracksuits", unitType: "Both" },
+  { id: 5, name: "Shorts", unitType: "Bottom" },
+  { id: 6, name: "Trousers", unitType: "Bottom" },
+  { id: 7, name: "Puffer Jackets", unitType: "Top" },
+  { id: 9, name: "Polos", unitType: "Top" },
+  { id: 10, name: "Scrubs", unitType: "Both" },
+  { id: 11, name: "Doctor Long Coats", unitType: "Top" },
+];
 
 const SizeMeasurementForm = ({
   isEdit,
@@ -25,15 +50,21 @@ const SizeMeasurementForm = ({
   sizeId?: number;
 }) => {
   const router = useRouter();
+  const [unitType, setUnitType] = useState<"Top" | "Bottom" | "Both" | null>(
+    null
+  );
+  const [selectedUnitType, setSelectedUnitType] = useState(1);
+  const [showMeasurementPin, setShowMeasurementPin] = useState(false);
+
   const { fetchsizeOptions, sizeOptions } = useSizeOptionsStore();
   const { fetchClients, clients } = useClientStore();
   const {
-    loading,
     addSizeMeasurement,
     updateMeasurement,
     getSizeMeasurementById,
     sizeMeasurementById,
   } = useSizeMeasurementsStore();
+  const { fetchCategories, productCategories } = useCategoryStore();
 
   useEffect(() => {
     if (sizeId && isEdit) {
@@ -44,7 +75,29 @@ const SizeMeasurementForm = ({
   useEffect(() => {
     fetchsizeOptions();
     fetchClients();
+    fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const matchedCategory = PRODUCTCATERGORYENUM.find(
+      (cat) => cat.id === sizeMeasurementById?.ProductCategoryId
+    );
+    if (matchedCategory) {
+      setShowMeasurementPin(true);
+      const matchedUnitType = matchedCategory.unitType as
+        | "Top"
+        | "Bottom"
+        | "Both";
+      setUnitType(matchedUnitType);
+      if (matchedUnitType === "Top" || matchedUnitType === "Both") {
+        setSelectedUnitType(1);
+      } else if (matchedUnitType === "Bottom") {
+        setSelectedUnitType(2);
+      }
+    } else {
+      setUnitType(null);
+    }
+  }, [sizeMeasurementById, sizeId]);
 
   const closeAddModal = () => {
     router.push("/product/productdefination");
@@ -56,6 +109,10 @@ const SizeMeasurementForm = ({
     ClientId: isEdit && sizeMeasurementById ? sizeMeasurementById.ClientId : 0,
     Measurement1:
       isEdit && sizeMeasurementById ? sizeMeasurementById.Measurement1 : "",
+    ProductCategoryId:
+      isEdit && sizeMeasurementById
+        ? sizeMeasurementById.ProductCategoryId
+        : "",
     FrontLengthHPS:
       isEdit && sizeMeasurementById ? sizeMeasurementById.FrontLengthHPS : "",
     BackLengthHPS:
@@ -101,6 +158,12 @@ const SizeMeasurementForm = ({
       isEdit && sizeMeasurementById ? sizeMeasurementById.PlacketWidth : "",
     BottomHem:
       isEdit && sizeMeasurementById ? sizeMeasurementById.BottomHem : "",
+
+    Hip: "",
+    Hem:"",
+    FrontRise: "",
+    Inseam:"",
+    HemBottom:""
   };
 
   const handleAddSizeOption = async (values: AddSizeMeasurementType) => {
@@ -122,10 +185,10 @@ const SizeMeasurementForm = ({
         <div className="grid grid-cols-12 gap-4 w-full">
           <div className="col-span-8">
             <Form>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <Link
                   href={"/product/productdefination"}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 w-fit"
                 >
                   <IoCaretBackOutline />
                   <h6 className="text-2xl font-semibold">
@@ -133,7 +196,7 @@ const SizeMeasurementForm = ({
                   </h6>
                 </Link>
 
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-4 gap-3">
                   {/* Measurement1 (Name) */}
                   <div className="flex flex-col gap-1 w-full">
                     <Label isRequired label="Name" labelForm="Name" />
@@ -145,6 +208,70 @@ const SizeMeasurementForm = ({
                     />
                     <ErrorMessage
                       name="Measurement1"
+                      component="div"
+                      className="text-red-400 text-sm"
+                    />
+                  </div>
+
+                  {/* Product Category */}
+                  <div className="flex flex-col gap-1 w-full">
+                    <Label
+                      isRequired
+                      label="Product Category"
+                      labelForm="Product Category"
+                    />
+                    <Field name="ProductCategoryId">
+                      {({
+                        field,
+                        form,
+                      }: {
+                        field: FieldInputProps<any>;
+                        form: FormikProps<any>;
+                      }) => (
+                        <select
+                          {...field}
+                          className="formInputdefault border-1"
+                          onChange={(e) => {
+                            const selectedId = Number(e.target.value);
+                            form.setFieldValue("ProductCategoryId", selectedId);
+
+                            const matchedCategory = PRODUCTCATERGORYENUM.find(
+                              (cat) => cat.id === selectedId
+                            );
+
+                            if (matchedCategory) {
+                              setShowMeasurementPin(true);
+                              const matchedUnitType =
+                                matchedCategory.unitType as
+                                  | "Top"
+                                  | "Bottom"
+                                  | "Both";
+                              setUnitType(matchedUnitType);
+                              if (
+                                matchedUnitType === "Top" ||
+                                matchedUnitType === "Both"
+                              ) {
+                                setSelectedUnitType(1);
+                              } else if (matchedUnitType === "Bottom") {
+                                setSelectedUnitType(2);
+                              }
+                            } else {
+                              setUnitType(null);
+                            }
+                          }}
+                        >
+                          <option value="">Select a Product Category</option>
+                          {productCategories?.map((category, idx) => (
+                            <option value={category.id} key={idx}>
+                              {category.type}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </Field>
+
+                    <ErrorMessage
+                      name="ProductCategoryId"
                       component="div"
                       className="text-red-400 text-sm"
                     />
@@ -199,431 +326,42 @@ const SizeMeasurementForm = ({
                   </div>
                 </div>
 
-                {/* Toggle Buttons */}
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    className="bg-gray-700 px-2 py-1 rounded text-white"
-                  >
-                    Top Unit
-                  </button>
-                  <button
-                    type="button"
-                    className="bg-gray-700 px-2 py-1 rounded text-white"
-                  >
-                    Bottom Unit
-                  </button>
+                  {(unitType === "Top" || unitType === "Both") && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedUnitType(1)}
+                      className={`${
+                        selectedUnitType === 1
+                          ? "bg-green-800 text-white"
+                          : "bg-gray-300 text-gray-800"
+                      } px-2 py-1 rounded`}
+                    >
+                      Top Unit
+                    </button>
+                  )}
+
+                  {(unitType === "Bottom" || unitType === "Both") && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedUnitType(2)}
+                      className={`${
+                        selectedUnitType === 2
+                          ? "bg-green-800 text-white"
+                          : "bg-gray-300 text-gray-800"
+                      } px-2 py-1 rounded`}
+                    >
+                      Bottom Unit
+                    </button>
+                  )}
                 </div>
 
-                <div className="grid grid-cols-4 gap-2 border-1 border-gray-700 rounded-lg p-3">
-                  {/* FrontLengthHPS */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Front Length HPS"
-                      labelForm="Front Length HPS"
-                    />
-                    <Field
-                      name="FrontLengthHPS"
-                      type="number"
-                      placeholder="Enter Front Length HPS"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="FrontLengthHPS"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* BackLengthHPS */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Back Length HPS"
-                      labelForm="Back Length HPS"
-                    />
-                    <Field
-                      name="BackLengthHPS"
-                      type="number"
-                      placeholder="Enter Back Length HPS"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="BackLengthHPS"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* AcrossShoulders */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Across Shoulders"
-                      labelForm="Across Shoulders"
-                    />
-                    <Field
-                      name="AcrossShoulders"
-                      type="number"
-                      placeholder="Enter Across Shoulders"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="AcrossShoulders"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* ArmHole */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label isRequired label="Arm Hole" labelForm="Arm Hole" />
-                    <Field
-                      name="ArmHole"
-                      type="number"
-                      placeholder="Enter Arm Hole"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="ArmHole"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* UpperChest */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Upper Chest"
-                      labelForm="Upper Chest"
-                    />
-                    <Field
-                      name="UpperChest"
-                      type="number"
-                      placeholder="Enter Upper Chest"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="UpperChest"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* LowerChest */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Lower Chest"
-                      labelForm="Lower Chest"
-                    />
-                    <Field
-                      name="LowerChest"
-                      type="number"
-                      placeholder="Enter Lower Chest"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="LowerChest"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* Waist */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label isRequired label="Waist" labelForm="Waist" />
-                    <Field
-                      name="Waist"
-                      type="number"
-                      placeholder="Enter Waist"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="Waist"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* BottomWidth */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Bottom Width"
-                      labelForm="Bottom Width"
-                    />
-                    <Field
-                      name="BottomWidth"
-                      type="number"
-                      placeholder="Enter Bottom Width"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="BottomWidth"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* SleeveLength */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Sleeve Length"
-                      labelForm="Sleeve Length"
-                    />
-                    <Field
-                      name="SleeveLength"
-                      type="number"
-                      placeholder="Enter Sleeve Length"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="SleeveLength"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* SleeveOpening */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Sleeve Opening"
-                      labelForm="Sleeve Opening"
-                    />
-                    <Field
-                      name="SleeveOpening"
-                      type="number"
-                      placeholder="Enter Sleeve Opening"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="SleeveOpening"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* NeckSize */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label isRequired label="Neck Size" labelForm="Neck Size" />
-                    <Field
-                      name="NeckSize"
-                      type="number"
-                      placeholder="Enter Neck Size"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="NeckSize"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* CollarHeight */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Collar Height"
-                      labelForm="Collar Height"
-                    />
-                    <Field
-                      name="CollarHeight"
-                      type="number"
-                      placeholder="Enter Collar Height"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="CollarHeight"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* CollarPointHeight */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Collar Point Height"
-                      labelForm="Collar Point Height"
-                    />
-                    <Field
-                      name="CollarPointHeight"
-                      type="number"
-                      placeholder="Enter Collar Point Height"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="CollarPointHeight"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* StandHeightBack */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Stand Height Back"
-                      labelForm="Stand Height Back"
-                    />
-                    <Field
-                      name="StandHeightBack"
-                      type="number"
-                      placeholder="Enter Stand Height Back"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="StandHeightBack"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* CollarStandLength */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Collar Stand Length"
-                      labelForm="Collar Stand Length"
-                    />
-                    <Field
-                      name="CollarStandLength"
-                      type="number"
-                      placeholder="Enter Collar Stand Length"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="CollarStandLength"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* SideVentFront */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Side Vent Front"
-                      labelForm="Side Vent Front"
-                    />
-                    <Field
-                      name="SideVentFront"
-                      type="number"
-                      placeholder="Enter Side Vent Front"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="SideVentFront"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* SideVentBack */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Side Vent Back"
-                      labelForm="Side Vent Back"
-                    />
-                    <Field
-                      name="SideVentBack"
-                      type="number"
-                      placeholder="Enter Side Vent Back"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="SideVentBack"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* PlacketLength */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Placket Length"
-                      labelForm="Placket Length"
-                    />
-                    <Field
-                      name="PlacketLength"
-                      type="number"
-                      placeholder="Enter Placket Length"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="PlacketLength"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* TwoButtonDistance */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Two Button Distance"
-                      labelForm="Two Button Distance"
-                    />
-                    <Field
-                      name="TwoButtonDistance"
-                      type="number"
-                      placeholder="Enter Two Button Distance"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="TwoButtonDistance"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* PlacketWidth */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Placket Width"
-                      labelForm="Placket Width"
-                    />
-                    <Field
-                      name="PlacketWidth"
-                      type="number"
-                      placeholder="Enter Placket Width"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="PlacketWidth"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-
-                  {/* BottomHem */}
-                  <div className="flex flex-col gap-1 w-full">
-                    <Label
-                      isRequired
-                      label="Bottom Hem"
-                      labelForm="Bottom Hem"
-                    />
-                    <Field
-                      name="BottomHem"
-                      type="number"
-                      placeholder="Enter Bottom Hem"
-                      className="formInputdefault border-1"
-                    />
-                    <ErrorMessage
-                      name="BottomHem"
-                      component="div"
-                      className="text-red-400 text-sm"
-                    />
-                  </div>
-                </div>
+                {selectedUnitType === 1 &&
+                  (unitType === "Top" || unitType === "Both") && <TopUnit />}
+                {selectedUnitType === 2 &&
+                  (unitType === "Bottom" || unitType === "Both") && (
+                    <BottomUnit />
+                  )}
 
                 {/* Submit Button */}
                 <div className="flex justify-end w-full">
@@ -639,24 +377,32 @@ const SizeMeasurementForm = ({
             </Form>
           </div>
 
-          <div className="col-span-4 relative h-[calc(100vh-115px)]">
-            <Image
-              alt="human"
-              src={HumanBody}
-              fill
-              style={{ objectFit: "contain" }}
-              className="pointer-events-none"
-            />
-            <div className="absolute inset-0">
-              {pinConfigs.map((cfg) => (
-                <MeasurementPin
-                  key={cfg.fieldName}
-                  config={cfg}
-                  value={values[cfg.fieldName as keyof typeof values]}
-                />
-              ))}
+          {showMeasurementPin ? (
+            <div className="col-span-4 relative h-[calc(100vh-115px)]">
+              <h3 className="">Measurements (inches)</h3>
+              {/* <Image
+                alt="human"
+                src={ModalImage}
+                fill
+                style={{ objectFit: "contain" }}
+                className="pointer-events-none"
+              /> */}
+              <div className="w-full h-full dark:text-gray-100 text-gray-800">
+                <ShirtAndShortsModal />
+              </div>
+              <div className="absolute inset-0">
+                {pinConfigs.map((cfg) => (
+                  <MeasurementPin
+                    key={cfg.fieldName}
+                    config={cfg}
+                    value={values[cfg.fieldName as keyof typeof values]}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          ) : (
+            <></>
+          )}
         </div>
       )}
     </Formik>

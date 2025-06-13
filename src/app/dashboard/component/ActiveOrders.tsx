@@ -37,9 +37,9 @@ const ActiveOrders = () => {
   ];
 
   return (
-    <div className="bg-gray-950 rounded-lg p-3 shadow-md space-y-3">
+    <div className="rounded-2xl border border-gray-200 bg-white p-3 dark:border-[#1d2939] dark:bg-white/[0.03] shadow-md space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-white">Active Order</span>
+        <span className="dark:text-white text-gray-800">Active Order</span>
         <ViewMoreButton path="/orders" />
       </div>
       <div className="space-y-3 h-[450px] overflow-x-auto px-2">

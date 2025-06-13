@@ -2,6 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 
 export interface Product {
   Id: number;
+  Name: string;
   ProductCategoryName: string;
   FabricType: string;
   FabricName: string;
@@ -57,18 +58,15 @@ const SearchableProductSelect: React.FC<SearchableProductSelectProps> = ({
 
     return products.filter((p) => {
       return (
-        p.ProductCategoryName.toLowerCase().includes(lowerQuery) ||
-        p.FabricType.toLowerCase().includes(lowerQuery) ||
-        p.FabricName.toLowerCase().includes(lowerQuery)
+        p.Name.toLowerCase().includes(lowerQuery)
       );
     });
   }, [query, products]);
 
   const handleSelect = (product: Product) => {
-    const productName = formatProductName(product);
-    onSelect({ Id: product.Id, productName });
+    onSelect({ Id: product.Id, productName: product.Name });
     setIsOpen(false);
-    setQuery(productName);
+    setQuery(product.Name);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,7 +119,7 @@ const SearchableProductSelect: React.FC<SearchableProductSelectProps> = ({
           <button
             type="button"
             onClick={clearInput}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-100  focus:outline-none"
+            className="absolute right-2 top-1/2 -translate-y-1/2 dark:text-gray-100 text-gray-800  focus:outline-none"
             aria-label="Clear search"
           >
             &#10005;
@@ -173,7 +171,6 @@ const SearchableProductSelect: React.FC<SearchableProductSelectProps> = ({
           className="absolute z-10 w-full max-h-60 overflow-auto border border-gray-300  rounded-md mt-1 shadow-lg"
         >
           {filteredProducts.map((product, idx) => {
-            const productName = formatProductName(product);
             const isHighlighted = idx === highlightedIndex;
 
             return (
@@ -182,8 +179,8 @@ const SearchableProductSelect: React.FC<SearchableProductSelectProps> = ({
                 id={`product-option-${idx}`}
                 role="option"
                 aria-selected={isHighlighted}
-                className={`cursor-pointer px-4 text-white py-2 ${
-                  isHighlighted ? "bg-[#56688f]" : "bg-gray-950"
+                className={`cursor-pointer px-4 dark:text-white text-gray-800 py-2 ${
+                  isHighlighted ? "dark:bg-[#56688f] bg-gray-400" : "dark:bg-black bg-gray-300"
                 }`}
                 onMouseDown={(e) => {
                   e.preventDefault();
@@ -191,7 +188,7 @@ const SearchableProductSelect: React.FC<SearchableProductSelectProps> = ({
                 }}
                 onMouseEnter={() => setHighlightedIndex(idx)}
               >
-                {productName}
+                {product.Name}
               </li>
             );
           })}

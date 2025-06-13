@@ -8,14 +8,20 @@ const priorityStyles: Record<number, string> = {
   3: "text-green-600", // Low
 };
 
-const PriorityChip = ({ priority }: { priority: number }) => {
+const PriorityChip = ({
+  priority,
+  showLabel,
+}: {
+  priority: number;
+  showLabel?: boolean;
+}) => {
   const priorityData = PRIORITY_ENUM.find((p) => p.id === priority);
   const colorClass = priorityStyles[priority] || "text-gray-500";
 
   return (
     <div className={`flex items-center gap-1 text-sm ${colorClass}`}>
       <FaFlag />
-      <span>{priorityData?.label || "Unknown"}</span>
+      {!showLabel ? <span>{priorityData?.label || "Unknown"}</span> : <></>}
     </div>
   );
 };

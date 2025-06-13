@@ -1187,15 +1187,14 @@ span.flatpickr-weekday,
   opacity: 1;
 }
 .selectedNavItem{
-  background: #4ade80;
+  background: #1e40af;
     border-radius: 10px;
 }
 .selectedNavItem svg > path {
-  fill: black;
+  fill: rgb(255, 255, 255);
 }
 .selectedNavItem span {
-  color: black !important;
-    font-weight: bold;
+  color: rgb(255, 255, 255) !important;
 }
 .activeListing{
   border: 2px solid #4ade80;

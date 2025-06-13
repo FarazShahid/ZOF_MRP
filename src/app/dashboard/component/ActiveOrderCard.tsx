@@ -25,12 +25,12 @@ const ActiveOrderCard: React.FC<ComponentProp> = ({
   clientName,
 }) => {
   return (
-    <div className="bg-gray-800 rounded-lg p-3 space-y-4">
+    <div className="rounded-2xl bg-gray-100 p-3 dark:border-[#1d2939] dark:bg-[#353535] space-y-4">
       <div className="flex items-center gap-5">
-        <span className="text-white">{orderNo}</span>
+        <span className="dark:text-white text-gray-800">{orderNo}</span>
         <div className="h-6 w-0 border-1 border-gray-700" />
         <div className="flex items-center gap-2">
-          <span className="text- text-gray-500">Total finished: {totalOrderItems}pcs</span>
+          <span className="text-gray-500">Total finished: {totalOrderItems}pcs</span>
           <span className="text-xs text-gray-500">.__.</span>
           <span className="text-sm text-gray-500">
             Requaired qunatity: {remaingOrderItems}pcs
@@ -49,23 +49,23 @@ const ActiveOrderCard: React.FC<ComponentProp> = ({
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-3 text-xs text-gray-500">
             <IoCalendarNumber size={18} />
-            <span className="uppercase">expected finished date</span>
+            <span className="uppercase dark:text-gray-500 text-gray-800">expected finished date</span>
           </div>
-          <span className="text-sm text-white pl-7">{formatDate(deadline)}</span>
+          <span className="text-sm dark:text-white text-black pl-7">{formatDate(deadline)}</span>
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-3 text-xs text-gray-500">
             <GiProgression size={18} />
-            <span className="uppercase">current status</span>
+            <span className="uppercase dark:text-gray-500 text-gray-800">current status</span>
           </div>
-          <span className="text-sm text-white pl-7">{orderStatus}</span>
+          <span className="text-sm dark:text-white text-black pl-7">{orderStatus}</span>
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-3 text-xs text-gray-500">
             <FaUserCircle size={18} />
-            <span className="uppercase">client Name</span>
+            <span className="uppercase  dark:text-gray-500 text-gray-800">client Name</span>
           </div>
-          <span className="text-sm text-white pl-7">{clientName}</span>
+          <span className="text-sm dark:text-white text-black pl-7">{clientName}</span>
         </div>
       </div>
     </div>

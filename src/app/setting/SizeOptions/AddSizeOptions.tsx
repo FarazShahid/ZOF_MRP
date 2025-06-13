@@ -12,6 +12,7 @@ import { Field, Formik, Form, ErrorMessage } from "formik";
 import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import { SizeOptionSchema } from "../../schema/SizeOptionSchema";
 import Label from "../../components/common/Label";
+import useProductRegionStore from "@/store/useProductRegionStore";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -29,8 +30,16 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
   interface AddSizeOptionsType {
     OptionSizeOptions: string;
   }
-  
-  const {getSizeOptionById, addSizeOption, updateSizeOption, sizeOptionsType,loading} = useSizeOptionsStore();
+
+  const {
+    getSizeOptionById,
+    addSizeOption,
+    updateSizeOption,
+    sizeOptionsType,
+    loading,
+  } = useSizeOptionsStore();
+
+  const {fetchProductRegions, productRegions} = useProductRegionStore();
 
   useEffect(() => {
     if (sizeOptionId && isEdit) {
@@ -38,9 +47,13 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
     }
   }, [sizeOptionId, isEdit]);
 
+  useEffect(()=>{
+    fetchProductRegions()
+  },[])
 
   const InitialValues = {
-    OptionSizeOptions:  isEdit && sizeOptionsType ? sizeOptionsType.OptionSizeOptions : "",
+    OptionSizeOptions:
+      isEdit && sizeOptionsType ? sizeOptionsType.OptionSizeOptions : "",
   };
 
   const handleAddSizeOption = async (values: AddSizeOptionsType) => {
@@ -59,11 +72,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {!isEdit ? (
-                <> Add Size Option</>
-              ) : (
-                <> Edit Size Option</>
-              )}
+              {!isEdit ? <> Add Size Option</> : <> Edit Size Option</>}
             </ModalHeader>
             <Formik
               validationSchema={SizeOptionSchema}
@@ -80,13 +89,41 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true} label="Name" labelForm="Name" />
+                            <Label
+                              isRequired={true}
+                              label="Name"
+                              labelForm="Name"
+                            />
                             <Field
                               name="OptionSizeOptions"
                               type="text"
                               placeholder="Enter Size Option Name"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
+                            <ErrorMessage
+                              name="OptionSizeOptions"
+                              component="div"
+                              className="text-red-400 text-sm"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <Label
+                              isRequired={true}
+                              label="Product Region"
+                              labelForm="ProductRegionId"
+                            />
+                            <Field
+                              name="ProductRegionId"
+                              as="select"
+                              className="formInputdefault bg-gray-100"
+                            >
+                              <option value={""}>Select region</option>
+                              {productRegions?.map((region, index)=>{
+                                return(
+                                  <option value={region.Id} key={index}>{region.Name}</option>
+                                )
+                              })}
+                            </Field>
                             <ErrorMessage
                               name="OptionSizeOptions"
                               component="div"

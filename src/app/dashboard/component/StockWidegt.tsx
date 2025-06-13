@@ -53,10 +53,9 @@ const StockWidegt = () => {
   ];
 
   return (
-    <div className="bg-gray-950 rounded-lg p-3 shadow-md">
-      <span className="text-white">Stock level</span>
-
-      <div className=" text-white p-4 rounded-xl flex flex-col lg:flex-row gap-6">
+    <div className="rounded-2xl border border-gray-200 bg-white p-3 dark:border-[#1d2939] dark:bg-white/[0.03] shadow-md">
+      <span className="dark:text-white text-gray-900">Stock level</span>
+      <div className=" dark:text-white text-gray-800 p-4 rounded-xl flex flex-col lg:flex-row gap-6">
         <div className="lg:w-1/2 flex justify-center items-center">
           <Chart
             options={donutOptions}

@@ -22,7 +22,7 @@ import AddInventoryTransaction from "./AddInventoryTransaction";
 import TransactionTypeChip from "./TransactionTypeChip";
 import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
 import Link from "next/link";
-
+import AddButton from "../components/common/AddButton";
 
 const InventoryTransaction = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -66,15 +66,11 @@ const InventoryTransaction = () => {
   return (
     <>
       <div className="w-full flex flex-col gap-3">
-        <div className="flex items-center justify-end">
-          <button
-            type="button"
-           className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
-            onClick={openAddModal}
-          >
-            <FiPlus />
-            Add New
-          </button>
+        <div className="flex items-center justify-between">
+          <h6 className="font-sans text-lg font-semibold">
+            Inventory Transections
+          </h6>
+          <AddButton title="Add New" onClick={openAddModal} />
         </div>
         <Table
           isStriped
@@ -142,7 +138,7 @@ const InventoryTransaction = () => {
                       formatDate(item[columnKey])
                     ) : columnKey === "Sr" ? (
                       index + 1
-                    ): columnKey === "TransactionType" ? (
+                    ) : columnKey === "TransactionType" ? (
                       <TransactionTypeChip type={item?.TransactionType} />
                     ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
@@ -180,9 +176,6 @@ const InventoryTransaction = () => {
         ) : (
           <></>
         )}
-
-
-
 
         <DeleteItem
           isOpen={isOpenDeletModal}

@@ -33,14 +33,14 @@ export default function UserDropdown() {
         onClick={toggleDropdown}
         className="flex items-center text-gray-400 dropdown-toggle"
       >
-        <span className="mr-3 overflow-hidden rounded-full flex items-center justify-center h-8 w-8 border-1 border-gray-400">
-          <FaUserTie className="w-4 h-4 text-gray-400" />
+        <span className="mr-3 overflow-hidden rounded-full flex items-center justify-center h-11 w-11 border-1 border-gray-400">
+          <FaUserTie className="w-4 h-4 hover:text-gray-800 text-gray-400" />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm text-gray-400">Admin</span>
+        <span className="block mr-1 font-medium text-theme-sm dark:text-gray-400 text-gray-800">Admin</span>
 
         <svg
-          className={`stroke-gray-400 transition-transform duration-200 ${
+          className={`dark:stroke-gray-400 stroke-gray-800 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
           }`}
           width="18"
@@ -62,20 +62,20 @@ export default function UserDropdown() {
       <Dropdown
         isOpen={isOpen}
         onClose={closeDropdown}
-        className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border p-3 shadow-theme-lg border-gray-800 !bg-black"
+        className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border p-3 shadow-theme-lg border-gray-100 dark:!bg-black"
       >
         <div>
-          <span className="block font-medium text-theme-sm text-gray-400">
+          <span className="block font-medium text-theme-sm dark:text-gray-400 text-gray-800">
             Admin
           </span>
-          <span className="mt-0.5 block text-theme-xs text-gray-400">
+          <span className="mt-0.5 block text-theme-xs dark:text-gray-400 text-gray-800">
             {email}
           </span>
         </div>
         <button
           type="button"
           onClick={logout}
-          className="flex items-center gap-3 px-3 py-2 mt-3 font-medium rounded-lg group text-theme-sm text-gray-400 border-1 border-gray-700 hover:bg-white/5"
+          className="flex items-center gap-3 px-3 py-2 mt-3 font-medium rounded-lg group text-theme-sm dark:text-gray-400 text-gray-800 border-1 border-gray-700 hover:bg-white/5"
         >
           <svg
             className="fill-gray-500 group-hover:fill-gray-300"

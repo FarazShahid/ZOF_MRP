@@ -94,7 +94,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                               name="type"
                               type="text"
                               placeholder="Enter Type"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="type"
@@ -108,7 +108,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                               name="name"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="name"
@@ -122,7 +122,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                               name="gsm"
                               type="number"
                               placeholder="Enter GSM"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="gsm"

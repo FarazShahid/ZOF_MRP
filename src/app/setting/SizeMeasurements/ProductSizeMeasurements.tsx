@@ -22,6 +22,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { GoPencil } from "react-icons/go";
 import AddButton from "../../components/common/AddButton";
 import { useRouter } from "next/navigation";
+import { ViewMeasurementChart } from "../../orders/components/ViewMeasurementChart";
 
 const ProductSizeMeasurements = () => {
   const [page, setPage] = useState<number>(1);
@@ -33,7 +34,6 @@ const ProductSizeMeasurements = () => {
   const [sortColumn, setSortColumn] =
     useState<keyof SizeMeasurements>("Measurement1");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-
 
   const router = useRouter();
 
@@ -48,8 +48,7 @@ const ProductSizeMeasurements = () => {
   const pages = Math.ceil(sizeMeasurement!.length / rowsPerPage);
 
   const openAddModal = () => {
-     router.push("/addsize");
-    // setIsAddModalOpen(true)
+    router.push("/product/addsizeOptions");
   };
 
   const handleOpenDeleteModal = (sizeOptionId: number) => {
@@ -62,7 +61,7 @@ const ProductSizeMeasurements = () => {
     setIsEdit(false);
   };
   const openEditModal = (sizeId: number) => {
-    router.push(`/editsizemeasurement/${sizeId}`);
+    router.push(`/product/editsizeoptions/${sizeId}`);
   };
   const openViewModal = (sizeId: number) => {
     setSelectedSizeOptionId(sizeId);
@@ -169,6 +168,15 @@ const ProductSizeMeasurements = () => {
                   ))}
               </div>
             </TableColumn>
+            <TableColumn
+              key="ProductCategoryType"
+              className="text-medium font-bold"
+            >
+              Product Category
+            </TableColumn>
+            <TableColumn key="SizeOptionName" className="text-medium font-bold">
+              Size Option
+            </TableColumn>
             <TableColumn key="ClientName" className="text-medium font-bold">
               Client Name
             </TableColumn>
@@ -217,10 +225,11 @@ const ProductSizeMeasurements = () => {
         </Table>
 
         {isViewModal ? (
-          <ViewModal
+          <ViewMeasurementChart
             isOpen={isViewModal}
-            closeAddModal={handleCloseModal}
-            sizeOptionId={selectedSizeOptionId}
+            measurementId={selectedSizeOptionId}
+            sizeOptionName={""}
+            onCloseViewModal={handleCloseModal}
           />
         ) : (
           <></>

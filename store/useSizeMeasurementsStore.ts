@@ -14,7 +14,7 @@ export interface SizeOptionsIdRepsonse {
   message: string;
 }
 
-export interface AddSizeMeasurementType{
+export interface AddSizeMeasurementType {
   SizeOptionId: number;
   ClientId?: number;
   Measurement1: string;
@@ -45,6 +45,8 @@ export interface SizeMeasurements {
   Id: number;
   ClientName: string;
   ClientId: number;
+  ProductCategoryId: number;
+  ProductCategoryType: string;
   SizeOptionId: number;
   SizeOptionName: string;
   Measurement1: string;
@@ -82,28 +84,34 @@ interface StoreState {
   sizeMeasurement: SizeMeasurements[];
   sizeMeasurementById: SizeMeasurements | null;
   sizeMeasurementsByClientId: SizeMeasurements[];
+  sizeMeasurementByClientAndSize: SizeMeasurements | null;
   loading: boolean;
   error: string | null;
 
   fetchSizeMeasurements: () => Promise<void>;
   getSizeMeasurementById: (id: number) => Promise<void>;
   getSizeMeasurementByClientId: (id: number) => Promise<void>;
-    addSizeMeasurement: (
-      sizeMeasurement: AddSizeMeasurementType,
-      onSuccess: () => void
-    ) => Promise<void>;
-    updateMeasurement: (
-      id: number,
-      sizeMeasurement: AddSizeMeasurementType,
-      onSuccess: () => void
-    ) => Promise<void>;
-    deleteSizeOption: (id: number, onSuccess: () => void) => Promise<void>;
+  fetchSizeMeasurementByClientAndSize: (
+    clientId: number,
+    sizeOptionId: number
+  ) => Promise<SizeMeasurements | null>;
+  addSizeMeasurement: (
+    sizeMeasurement: AddSizeMeasurementType,
+    onSuccess: () => void
+  ) => Promise<void>;
+  updateMeasurement: (
+    id: number,
+    sizeMeasurement: AddSizeMeasurementType,
+    onSuccess: () => void
+  ) => Promise<void>;
+  deleteSizeOption: (id: number, onSuccess: () => void) => Promise<void>;
 }
 
 const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
   sizeMeasurement: [],
   sizeMeasurementById: null,
   sizeMeasurementsByClientId: [],
+  sizeMeasurementByClientAndSize: null,
   loading: false,
   error: null,
 
@@ -161,90 +169,129 @@ const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
       toast.error("Failed to fetch data");
     }
   },
+
+  fetchSizeMeasurementByClientAndSize: async (
+    clientId: number,
+    sizeOptionId: number
+  ): Promise<SizeMeasurements | null> => {
+    set({ loading: true, error: null });
+
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/by-client/${clientId}`
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: error.message || "Failed to fetch data" });
+        toast.error(error.message || "Failed to fetch size measurement");
+        return null;
+      }
+
+      const data: GetSizeOptionsResponse = await response.json();
+
+      const matched = data.data.find(
+        (item) => Number(item.SizeOptionId) === Number(sizeOptionId)
+      );
+
+      if (!matched) {
+        toast.error("Size measurement not found for selected size option");
+        set({ sizeMeasurementByClientAndSize: null, loading: false });
+        return null;
+      } else {
+        set({ sizeMeasurementByClientAndSize: matched, loading: false });
+        return matched;
+      }
+    } catch (error) {
+      set({ error: "Failed to fetch data", loading: false });
+      toast.error("Failed to fetch data");
+      return null;
+    }
+  },
+
   addSizeMeasurement: async (
     sizeMeasurement: AddSizeMeasurementType,
-      onSuccess?: () => void
-    ) => {
-      set({ loading: true, error: null });
-      try {
-        const response = await fetchWithAuth(
-          `${process.env.NEXT_PUBLIC_API_URL}/size-measurements`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(sizeMeasurement),
-          }
-        );
-        if (!response.ok) {
-          const error = await response.json();
-          set({ loading: false, error: null });
-          toast.error(error.message || "Failed to add size measurement");
-        } else {
-          set({ loading: false, error: null });
-          if (onSuccess) onSuccess();
-          await get().fetchSizeMeasurements();
-          toast.success("Size measurement added successfully");
+    onSuccess?: () => void
+  ) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sizeMeasurement),
         }
-      } catch (error) {
-        set({ error: "Failed to add size measurement", loading: false });
-        toast.error("Failed to add size measurement");
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to add size measurement");
+      } else {
+        set({ loading: false, error: null });
+        if (onSuccess) onSuccess();
+        await get().fetchSizeMeasurements();
+        toast.success("Size measurement added successfully");
       }
-    },
+    } catch (error) {
+      set({ error: "Failed to add size measurement", loading: false });
+      toast.error("Failed to add size measurement");
+    }
+  },
 
-    updateMeasurement: async (
-      id: number,
-      sizeMeasurement: AddSizeMeasurementType,
-      onSuccess?: () => void
-    ) => {
-      
-      set({ loading: true, error: null });
-      try {
-        const response = await fetchWithAuth(
-          `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/${id}`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(sizeMeasurement),
-          }
-        );
-        if (!response.ok) {
-          const error = await response.json();
-          set({ loading: false, error: null });
-          toast.error(error.message || "Failed to update size measurement");
-        } else {
-          set({ loading: false, error: null });
-          if (onSuccess) onSuccess();
-          await get().fetchSizeMeasurements();
-          toast.success("Size measurement update successfully");
+  updateMeasurement: async (
+    id: number,
+    sizeMeasurement: AddSizeMeasurementType,
+    onSuccess?: () => void
+  ) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sizeMeasurement),
         }
-      } catch (error) {
-        set({ error: "Failed to update size measurement", loading: false });
-        toast.error("Failed to update size measurement");
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to update size measurement");
+      } else {
+        set({ loading: false, error: null });
+        if (onSuccess) onSuccess();
+        await get().fetchSizeMeasurements();
+        toast.success("Size measurement update successfully");
       }
-    },
+    } catch (error) {
+      set({ error: "Failed to update size measurement", loading: false });
+      toast.error("Failed to update size measurement");
+    }
+  },
 
-    deleteSizeOption: async (id: number, onSuccess?: () => void) => {
-      set({ loading: true, error: null });
-      try {
-        const response = await fetchWithAuth(
-          `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/${id}`,
-          { method: "DELETE" }
-        );
-        if (!response.ok) {
-          const error = await response.json();
-          set({ loading: false, error: null });
-          toast.error(error.message || "Failed to delete size");
-        } else {
-          set({ loading: false, error: null });
-          if (onSuccess) onSuccess();
-          await get().fetchSizeMeasurements();
-          toast.success("Size deleted successfully");
-        }
-      } catch (error) {
-        set({ error: "Failed to delete size", loading: false });
-        toast.error("Failed to delete size");
+  deleteSizeOption: async (id: number, onSuccess?: () => void) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/${id}`,
+        { method: "DELETE" }
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        set({ loading: false, error: null });
+        toast.error(error.message || "Failed to delete size");
+      } else {
+        set({ loading: false, error: null });
+        if (onSuccess) onSuccess();
+        await get().fetchSizeMeasurements();
+        toast.success("Size deleted successfully");
       }
-    },
+    } catch (error) {
+      set({ error: "Failed to delete size", loading: false });
+      toast.error("Failed to delete size");
+    }
+  },
 }));
 
 export default useSizeMeasurementsStore;

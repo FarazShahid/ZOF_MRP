@@ -14,8 +14,7 @@ type Props = {
 };
 
 const MeasurementPin: React.FC<Props> = ({ config, value }) => {
-  // Don’t render anything if there’s no value
-  if (!value) return null;
+   if (value === undefined || value === null || Number(value) === 0) return null;
 
   return (
     <div
