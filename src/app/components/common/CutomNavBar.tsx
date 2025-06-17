@@ -9,7 +9,9 @@ import { AiOutlineProduct } from "react-icons/ai";
 import { IoCalendarNumber } from "react-icons/io5";
 
 import Logo from "../../../../public/logoDark.png";
+import LogoLight from "../../../../public/logo.png";
 import UserDropdown from "../header/UserDropdown";
+import { ThemeToggleButton } from "./ThemeToggleButton";
 
 const CutomNavBar = () => {
   const pathname = usePathname();
@@ -51,7 +53,7 @@ const CutomNavBar = () => {
       route: "/client",
       isNested: false,
     },
-     {
+    {
       id: 6,
       label: "Events",
       icon: <IoCalendarNumber size={14} />,
@@ -64,28 +66,34 @@ const CutomNavBar = () => {
     router.push(path);
   };
   return (
-    <div className="bg-black border-b-1 border-gray-800 p-5 flex items-center justify-between">
+    <div className="p-5 dark:bg-slate-900 bg-gray-100 border-b-1 border-gray-300 flex items-center justify-between">
       <div className="w-7 h-7">
-        <Image src={Logo} alt="logo" />
+        <Image src={Logo} alt="logo" className="hidden dark:block" />
+        <Image src={LogoLight} alt="logo" className="dark:hidden" />
       </div>
       <div className="flex items-center gap-4">
         {Navlist.map((item) => {
           const isActive = pathname.startsWith(item.route);
           return (
             <div
-              className={`flex items-center gap-2 px-2 py-1 cursor-pointer rounded-full transition-all duration-150 ${
-                isActive ? "selectedNavItem" : ""
+              className={`flex items-center gap-2 px-2 py-1 cursor-pointer rounded-full text-gray-900 transition-all duration-150 ${
+                isActive ? "selectedNavItem" : "dark:!text-white !text-black" 
               }`}
               key={item.id}
               onClick={() => handleRoute(item.route)}
             >
               {item.icon}
-              <span className="text-gray-400 font-bold text-sm">{item.label}</span>
+              <span className="dark:text-white text-black font-bold text-sm">
+                {item.label}
+              </span>
             </div>
           );
         })}
       </div>
-      <UserDropdown />
+      <div className="flex items-center gap-5">
+        <ThemeToggleButton />
+        <UserDropdown />
+      </div>
     </div>
   );
 };

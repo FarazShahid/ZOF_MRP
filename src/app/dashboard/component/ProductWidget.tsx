@@ -36,9 +36,9 @@ const products = [
 
 const ProductWidget = ({ loading }: { loading: boolean }) => {
   return (
-    <div className="bg-gray-950 rounded-lg p-3 shadow-md space-y-3">
+    <div className=" border border-gray-200 bg-white p-3 dark:border-[#1d2939] dark:bg-white/[0.03] shadow-md space-y-3 rounded-2xl">
       <div className="flex items-center justify-between">
-        <span className="text-white">Top products</span>
+        <span className="dark:text-white text-gray-800">Top products</span>
         <ViewMoreButton path="/product" />
       </div>
       <div className="space-y-2 h-[290px] overflow-x-auto px-2">
@@ -52,16 +52,16 @@ const ProductWidget = ({ loading }: { loading: boolean }) => {
           products.map((item) => {
             return (
               <div
-                className="bg-gray-800 w-full rounded-lg p-2 flex items-center gap-4"
+                className=" bg-gray-100 dark:bg-[#353535] w-full rounded-2xl p-2 flex items-center gap-4"
                 key={item.id}
               >
                 <Image
                   alt="product"
                   src={item.img}
-                  className="w-16 h-16 rounded border-1 border-gray-700"
+                  className="w-16 h-16 rounded border-1 dark:border-gray-700 border-gray-300"
                 />
                 <div className="flex flex-col gap-1">
-                  <h6 className="text-white text-lg">{item.name}</h6>
+                  <h6 className="dark:text-white text-gray-800 text-lg">{item.name}</h6>
                   <div className="flex items-center gap-4">
                     <div
                       className="rounded h-5 w-10"

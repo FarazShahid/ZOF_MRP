@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import {
   Button,
@@ -13,6 +12,7 @@ import { Field, Formik, Form, ErrorMessage } from "formik";
 import useCategoryStore from "@/store/useCategoryStore";
 import { CatagorySchema } from "../../schema/CatagorySchema";
 import Label from "../../components/common/Label";
+import { MEASUREMENT_UNIT_TYPE } from "@/interface";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -86,15 +86,47 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true} label="Name" labelForm="Name" />
+                            <Label
+                              isRequired={true}
+                              label="Name"
+                              labelForm="Name"
+                            />
                             <Field
                               name="type"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="type"
+                              component="div"
+                              className="text-red-400 text-sm"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <Label
+                              isRequired={true}
+                              label="Measurement Unit"
+                              labelForm="Measurement Unit"
+                            />
+                            <Field
+                              name="measurementUnit"
+                              as="select"
+                              className="formInputdefault bg-gray-100"
+                            >
+                              <option value={""}>
+                                Select a measurement unit
+                              </option>
+                              {MEASUREMENT_UNIT_TYPE.map((unit) => {
+                                return (
+                                  <option value={unit.name} key={unit.id}>
+                                    {unit.name}
+                                  </option>
+                                );
+                              })}
+                            </Field>
+                            <ErrorMessage
+                              name="measurementUnit"
                               component="div"
                               className="text-red-400 text-sm"
                             />

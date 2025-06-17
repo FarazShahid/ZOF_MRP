@@ -77,10 +77,10 @@ const OrderSummaryChart = () => {
   ];
 
   return (
-    <div className="bg-gray-900 p-4 rounded-xl shadow-md text-white">
+    <div className="p-4 rounded-2xl border border-gray-200 bg-white dark:border-[#1d2939] dark:bg-white/[0.03] shadow-md">
       <div className="flex justify-between items-center mb-4">
-        <span className="text-white">Orders Summary</span>
-        <span className="text-sm text-gray-400">Jan - Dec</span>
+        <span className="dark:text-white text-gray-800">Orders Summary</span>
+        <span className="text-sm dark:text-gray-400 text-gray-600">Jan - Dec</span>
       </div>
       <Chart options={options} series={series} type="bar" height={420} />
     </div>

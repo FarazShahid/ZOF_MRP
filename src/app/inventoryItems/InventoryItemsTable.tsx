@@ -20,6 +20,7 @@ import AddItems from "./AddItems";
 import StockDataVisulizer from "./StockDataVisulizer";
 import { FiPlus, FiSettings } from "react-icons/fi";
 import Link from "next/link";
+import AddButton from "../components/common/AddButton";
 
 const InventoryItemsTable = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -69,19 +70,12 @@ const InventoryItemsTable = () => {
             <Tooltip content="Inventory Settings">
               <Link
                 href={"/inventoryItems/Inventorysetup"}
-                className="bg-gray-700 rounded-lg p-2"
+                className="dark:bg-slate-500 bg-slate-300 dark:text-white text-gray-800 rounded-lg p-2"
               >
                 <FiSettings size={20} />
               </Link>
             </Tooltip>
-            <button
-              type="button"
-              className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
-              onClick={openAddModal}
-            >
-              <FiPlus />
-              Add New
-            </button>
+            <AddButton title="Add New" onClick={openAddModal} />
           </div>
         </div>
         <Table

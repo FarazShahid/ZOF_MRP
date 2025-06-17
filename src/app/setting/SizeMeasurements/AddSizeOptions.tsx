@@ -147,7 +147,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                               name="Measurement1"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault border-1"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="Measurement1"
@@ -161,7 +161,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                               name="ClientId"
                               as="select"
                               type="text"
-                              className="formInputdefault border-1"
+                              className="formInputdefault bg-gray-100"
                             >
                               <option value={""}>Select a Client</option>
                               {clients?.map((client, index) => {
@@ -179,7 +179,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                               name="SizeOptionId"
                               as="select"
                               type="text"
-                              className="formInputdefault border-1"
+                              className="formInputdefault bg-gray-100"
                             >
                               <option value={""}>Select an option</option>
                               {sizeOptions.map((size) => {

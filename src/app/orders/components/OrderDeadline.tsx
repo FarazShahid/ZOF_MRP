@@ -22,8 +22,8 @@ const OrderDeadline: React.FC<OrderDeadlineProps> = ({ deadline }) => {
   return (
     <div className="flex gap-3 items-center">
       {/* Calendar Tile */}
-      <div className="flex-none border-1 border-default-200/50 rounded-small text-center w-11 overflow-hidden">
-        <div className="text-tiny bg-default-100 py-0.5 text-default-500">
+      <div className="flex-none border-1 dark:border-default-200/50 border-gray-400 rounded-small text-center w-11 overflow-hidden">
+        <div className="text-tiny text-gray-800 dark:text-default-500 dark:bg-default-100 bg-gray-300 py-0.5 ">
           {month}
         </div>
         <div className="flex items-center justify-center font-semibold text-medium h-6 text-default-500">
@@ -32,13 +32,13 @@ const OrderDeadline: React.FC<OrderDeadlineProps> = ({ deadline }) => {
       </div>
 
       {/* Text */}
-      <div className="flex flex-col gap-0.5">
-        <p className="text-medium text-foreground font-medium">
+      <div className="flex flex-col gap-0.5 text-gray-400">
+        <p className="text-medium dark:text-foreground text-gray-800 font-medium">
           {date.format("DD MMM YYYY")}
         </p>
         <p
           className={`text-small font-medium ${
-            isPast ? "text-danger" : "text-success"
+            isPast ? "text-danger" : "dark:text-success text-green-700"
           }`}
         >
           {diffText}

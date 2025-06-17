@@ -95,7 +95,7 @@ const AddSubCategory: React.FC<AddComponentProps> = ({
                               name="Name"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="Name"
@@ -111,7 +111,7 @@ const AddSubCategory: React.FC<AddComponentProps> = ({
                             <Field
                               name="CategoryId"
                               as="select"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             >
                               <option value={0}>Select a category</option>
                               {inventoryCategories?.map((category, index) => {

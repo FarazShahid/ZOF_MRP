@@ -95,7 +95,7 @@ const DropZone: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
         <div
           {...getRootProps()}
           className={`border-2 border-dashed p-6 rounded-md text-center cursor-pointer ${
-            isDragActive ? "bg-gray-800" : "bg-gray-900"
+            isDragActive ? "dark:bg-gray-800 bg-gray-500" : "dark:bg-slate-800 bg-gray-400"
           }`}
         >
           <input {...getInputProps()} />

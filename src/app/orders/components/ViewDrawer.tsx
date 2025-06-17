@@ -189,15 +189,6 @@ const ViewDrawer: React.FC<ViewDrawerComponentProps> = ({
                                   Attachments
                                 </span>
                                 <div className="flex flex-wrap gap-2 items-center">
-                                  {/* <Image
-                                        isBlurred
-                                        isZoomed
-                                        alt="Event image"
-                                        className="aspect-square w-full hover:scale-110"
-                                        height={300}
-                                        src={orderItem.ImagePath}
-                                      /> */}
-                                    
                                   {orderItem.ImagePath &&
                                   orderItem.ImagePath ? (
                                     <button
@@ -276,7 +267,6 @@ const ViewDrawer: React.FC<ViewDrawerComponentProps> = ({
           )}
         </DrawerContent>
       </Drawer>
-
     </>
   );
 };

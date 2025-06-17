@@ -65,7 +65,7 @@ const MultiCheckboxSelect: React.FC<MultiCheckboxSelectProps> = ({
     <div className="relative w-full max-w-md" ref={containerRef}>
       <Label isRequired={isRequired} label={label} />
       <div
-        className="rounded-xl text-gray-400 text-sm p-2 w-full outline-none bg-gray-950 border-1 min-h-[37px] border-gray-600 cursor-pointer select-none"
+        className="rounded-xl dark:text-gray-400 text-black dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 min-h-[37px] cursor-pointer select-none"
         onClick={() => setIsOpen((o) => !o)}
         role="combobox"
         aria-haspopup="listbox"
@@ -88,14 +88,14 @@ const MultiCheckboxSelect: React.FC<MultiCheckboxSelectProps> = ({
         <ul
           role="listbox"
           aria-multiselectable="true"
-          className="absolute z-10 w-full max-h-60 overflow-auto bg-gray-950 border-1 border-gray-600 rounded-md mt-1 p-2 shadow-lg"
+          className="absolute z-10 w-full max-h-60 overflow-auto dark:bg-slate-900 bg-gray-100 border-1 border-gray-600 rounded-md mt-1 p-2 shadow-lg"
         >
           {printingOptions.map((option) => {
             const checked = value.some((v) => v.PrintingOptionId === option.Id);
             return (
               <li
                 key={option.Id}
-                className="flex items-center gap-2 cursor-pointer py-1 px-2 hover:bg-gray-800 rounded"
+                className="flex items-center gap-2 cursor-pointer py-1 px-2 hover:bg-gray-300 rounded"
                 onClick={() => toggleOption(option.Id)}
                 role="option"
                 aria-selected={checked}
@@ -108,7 +108,7 @@ const MultiCheckboxSelect: React.FC<MultiCheckboxSelectProps> = ({
                   className="cursor-pointer"
                   id={`${name}-option-${option.Id}`}
                 />
-                <label htmlFor={`${name}-option-${option.Id}`} className="cursor-pointer select-none text-gray-400 text-sm">
+                <label htmlFor={`${name}-option-${option.Id}`} className="cursor-pointer select-none dark:text-gray-500 text-gray-800 text-sm">
                   {option.Type}
                 </label>
               </li>

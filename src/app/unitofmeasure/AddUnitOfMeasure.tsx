@@ -86,7 +86,7 @@ const {
                               name="Name"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="Name"
@@ -102,7 +102,7 @@ const {
                               name="ShortForm"
                               type="text"
                               placeholder="Enter Short Form"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                           </div>
                         </div>

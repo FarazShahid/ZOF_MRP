@@ -19,6 +19,7 @@ import AdminLayout from "../adminDashboard/lauout";
 import useUnitOfMeasureStore from "@/store/useUnitOfMeasureStore";
 import DeleteModal from "./DeleteModal";
 import AddUnitOfMeasure from "./AddUnitOfMeasure";
+import AddButton from "../components/common/AddButton";
 
 const UnitofMeasure = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -27,7 +28,8 @@ const UnitofMeasure = () => {
   const [page, setPage] = useState<number>(1);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const {loading ,fetchUnitOfMeasures, unitMeasures} = useUnitOfMeasureStore();
+  const { loading, fetchUnitOfMeasures, unitMeasures } =
+    useUnitOfMeasureStore();
 
   const rowsPerPage = 15;
   const pages = Math.ceil(unitMeasures!.length / rowsPerPage);
@@ -61,15 +63,11 @@ const UnitofMeasure = () => {
   return (
     <>
       <div className="w-full flex flex-col gap-3">
-      <div className="flex items-center justify-end">
-          <button
-            type="button"
-           className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
-            onClick={openAddModal}
-          >
-            <FiPlus />
-            Add New
-          </button>
+        <div className="flex items-center justify-between">
+          <h6 className="font-sans text-lg font-semibold">
+            Unit of measure
+          </h6>
+          <AddButton title="Add New" onClick={openAddModal} />
         </div>
         <Table
           isStriped
@@ -98,13 +96,13 @@ const UnitofMeasure = () => {
         >
           <TableHeader>
             <TableColumn key="Sr" className="text-medium font-bold">
-            Sr
+              Sr
             </TableColumn>
             <TableColumn key="Name" className="text-medium font-bold">
-            Name
+              Name
             </TableColumn>
             <TableColumn key="ShortForm" className="text-medium font-bold">
-            Short Form
+              Short Form
             </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">
               Action
@@ -143,7 +141,6 @@ const UnitofMeasure = () => {
           </TableBody>
         </Table>
 
-        
         <AddUnitOfMeasure
           isOpen={isAddModalOpen}
           closeAddModal={closeAddModal}
@@ -151,7 +148,7 @@ const UnitofMeasure = () => {
           Id={selectedSupplierId}
         />
 
-         <DeleteModal
+        <DeleteModal
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
           supplierId={selectedSupplierId}

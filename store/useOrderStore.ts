@@ -30,7 +30,7 @@ interface StoreState {
   error: string | null;
   isResolved: boolean;
 
-  fetchOrders: (clientId: number) => Promise<void>;
+  fetchOrders: (clientId?: number) => Promise<void>;
   getOrderEvents: (clientId: number) => Promise<void>;
   getOrderById: (id: number) => Promise<void>;
   getOrderStatus: () => Promise<void>;
@@ -74,10 +74,10 @@ const useOrderStore = create<StoreState>((set, get) => ({
   error: null,
   isResolved: false,
 
-  fetchOrders: async (clientId: number) => {
+  fetchOrders: async (clientId?: number) => {
     set({ loading: true, error: null });
     let endpoint = "";
-    if(clientId > 0){
+    if(clientId && clientId > 0){
       endpoint = `orders/${clientId}`
     }else{
       endpoint = "orders"

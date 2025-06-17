@@ -66,7 +66,7 @@ const ColorOptions = () => {
         <h6 className="font-sans text-lg font-semibold">Color Options</h6>
         <Link
           href={"/setting/coloroptions/addColor"}
-          className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
+          className="text-sm rounded-full dark:bg-blue-600 bg-blue-800 text-white font-semibold px-3 py-2 flex items-center gap-2"
         >
           <FiPlus />
           Add New

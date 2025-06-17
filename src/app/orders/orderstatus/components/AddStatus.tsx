@@ -11,7 +11,9 @@ import {
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import Label from "@/src/app/components/common/Label";
 import { StatusSchema } from "@/src/app/schema";
-import useOrderStatusStore, { AddOrUpdateOrderStatus } from "@/store/useOrderStatusStore";
+import useOrderStatusStore, {
+  AddOrUpdateOrderStatus,
+} from "@/store/useOrderStatusStore";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -26,17 +28,14 @@ const AddStatus: React.FC<AddClientComponentProps> = ({
   isEdit,
   Id,
 }) => {
-  
-  
-  const {getStatusById, addStatus, updateStatus, statusById,loading} = useOrderStatusStore();
-
+  const { getStatusById, addStatus, updateStatus, statusById, loading } =
+    useOrderStatusStore();
 
   useEffect(() => {
     if (Id && isEdit) {
       getStatusById(Id);
     }
   }, [Id, isEdit]);
-
 
   const InitialValues = {
     Name: isEdit && statusById ? statusById.Name : "",
@@ -59,11 +58,7 @@ const AddStatus: React.FC<AddClientComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {!isEdit ? (
-                <> Add</>
-              ) : (
-                <> Edit</>
-              )} Status
+              {!isEdit ? <> Add</> : <> Edit</>} Status
             </ModalHeader>
             <Formik
               validationSchema={StatusSchema}
@@ -80,12 +75,16 @@ const AddStatus: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true} label="Name" labelForm="Name" />
+                            <Label
+                              isRequired={true}
+                              label="Name"
+                              labelForm="Name"
+                            />
                             <Field
                               name="Name"
                               type="text"
                               placeholder="Enter Status Name"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="Name"
@@ -94,12 +93,16 @@ const AddStatus: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={false} label="Name" labelForm="Name" />
+                            <Label
+                              isRequired={false}
+                              label="Name"
+                              labelForm="Name"
+                            />
                             <Field
                               name="Description"
                               as="textarea"
                               placeholder="Description"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                           </div>
                         </div>

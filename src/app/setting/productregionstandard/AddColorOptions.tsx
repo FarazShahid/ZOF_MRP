@@ -85,7 +85,7 @@ const AddProductRegion: React.FC<AddClientComponentProps> = ({
                               name="Name"
                               type="text"
                               placeholder="Enter Type"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="Name"

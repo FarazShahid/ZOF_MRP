@@ -101,7 +101,9 @@ const ProductSizeOptions = () => {
             >
               Size Option
             </TableColumn>
-
+            <TableColumn key="ProductRegionName" className="text-medium font-bold">
+              Region
+            </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
@@ -139,12 +141,17 @@ const ProductSizeOptions = () => {
           </TableBody>
         </Table>
 
-        <AddSizeOptions
-          isOpen={isAddModalOpen}
-          closeAddModal={closeAddModal}
-          isEdit={isEdit}
-          sizeOptionId={selectedSizeOptionId}
-        />
+        {isAddModalOpen ? (
+          <AddSizeOptions
+            isOpen={isAddModalOpen}
+            closeAddModal={closeAddModal}
+            isEdit={isEdit}
+            sizeOptionId={selectedSizeOptionId}
+          />
+        ) : (
+          <></>
+        )}
+
         <DeleteSizeOptions
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}

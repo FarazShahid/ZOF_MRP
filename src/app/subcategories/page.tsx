@@ -17,6 +17,7 @@ import { FiPlus } from "react-icons/fi";
 import useInventorySubCategoryStore from "@/store/useInventorySubCategoryStore";
 import AddSubCategory from "./AddSubCategory";
 import DeleteSubCategory from "./DeleteSubCategory";
+import AddButton from "../components/common/AddButton";
 
 const Subcategories = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -60,15 +61,11 @@ const Subcategories = () => {
   return (
     <>
       <div className="w-full flex flex-col gap-3">
-        <div className="flex items-center justify-end">
-          <button
-            type="button"
-           className="text-sm rounded-full bg-green-400 text-black font-semibold px-3 py-2 flex items-center gap-1"
-            onClick={openAddModal}
-          >
-            <FiPlus />
-            Add New
-          </button>
+        <div className="flex items-center justify-between">
+          <h6 className="font-sans text-lg font-semibold">
+            Inventory Sub Category
+          </h6>
+          <AddButton title="Add New" onClick={openAddModal} />
         </div>
         <Table
           isStriped

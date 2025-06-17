@@ -15,11 +15,12 @@ export default function Step1({ formik }: any) {
   const [selectedColorOptions, setSelectedColorOptions] = useState<string[]>(
     []
   );
+  
 
   const { fetchCategories, productCategories } = useCategoryStore();
   const { fetchFabricType, fabricTypeData } = useFabricStore();
   const { fetchColorOptions, colorOptions } = useColorOptionsStore();
-  const {selectedColors} = useColorPickerStore();
+  const { selectedColors } = useColorPickerStore();
 
   const handleColorOptionChange = (
     keys:
@@ -62,8 +63,6 @@ export default function Step1({ formik }: any) {
     setIsColorModalOpen(false);
   };
 
-  console.log("selectedColors", selectedColors);
-
   useEffect(() => {
     const fetchData = async () => {
       await Promise.all([
@@ -75,15 +74,29 @@ export default function Step1({ formik }: any) {
     fetchData();
   }, []);
 
+  console.log("selectedColorOptions", selectedColorOptions);
 
   return (
     <div className="space-y-6 w-[500px]">
+      <div className="flex flex-col gap-1">
+        <Label isRequired={true} label="Product Name" />
+        <Field
+          type="text"
+          name="Name"
+          className="rounded-xl dark:text-gray-400 text-gray-800 text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+        />
+        <ErrorMessage
+          name="Name"
+          component="div"
+          className="text-red-500 text-sm"
+        />
+      </div>
       <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Product Category" />
         <Field
           as="select"
           name="ProductCategoryId"
-          className="rounded-xl text-gray-400 text-sm p-2 w-full outline-none bg-gray-950 border-1 border-gray-600"
+          className="rounded-xl dark:text-gray-400 text-gray-800 text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
         >
           <option value={""}>Select a type</option>
           {productCategories?.map((category, index) => {
@@ -105,7 +118,7 @@ export default function Step1({ formik }: any) {
         <Field
           as="select"
           name="FabricTypeId"
-          className="rounded-xl text-gray-400 text-sm p-2 w-full outline-none bg-gray-950 border-1 border-gray-600"
+          className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
         >
           <option value={""}>Select an option</option>
           {fabricTypeData?.map((category, index) => {
@@ -123,11 +136,9 @@ export default function Step1({ formik }: any) {
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-semibold text-gray-400">
-          Available Colors
-        </label>
+        <Label isRequired={false} label="Available Colors" />
         <Select
-          className="rounded-xl text-gray-400 text-sm w-full outline-none"
+          className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100 "
           name="ColorName"
           placeholder="Select Color Options"
           variant="bordered"
@@ -141,18 +152,18 @@ export default function Step1({ formik }: any) {
           ))}
         </Select>
       </div>
-      <div className="flex items-center justify-center gap-4 mt-3">
-        <span className=" text-center text-gray-400 text-sm">
+      {/* <div className="flex items-center justify-center gap-4 mt-3">
+        <span className=" text-center dark:text-gray-400 text-gray-800 text-sm">
           Or Choose a Cutom Color
         </span>
         <button
           type="button"
           onClick={() => setIsColorModalOpen(true)}
-          className="bg-green-800 p-1 rounded"
+          className="bg-green-800 p-1 rounded text-white"
         >
           Choose
         </button>
-      </div>
+      </div> */}
       <div className="grid grid-cols-3 gap-2">
         {selectedColors?.map((color, index) => (
           <div key={index} className="flex items-center gap-2">
@@ -166,11 +177,11 @@ export default function Step1({ formik }: any) {
           </div>
         ))}
       </div>
-      <ColorPickerModal
+      {/* <ColorPickerModal
         isOpen={isColorModalOpen}
         closeAddModal={handleCloseColorModal}
         onSaveColors={handleSaveCustomColors}
-      />
+      /> */}
     </div>
   );
 }

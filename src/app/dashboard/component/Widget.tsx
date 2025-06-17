@@ -10,13 +10,13 @@ interface WidgetProps {
 
 const Widget: FC<WidgetProps> = ({ icon, percentage, title, number }) => {
   return (
-    <div className="bg-gray-950 rounded-lg p-4 shadow-md flex flex-col gap-3">
+    <div className="rounded-2xl border border-gray-200 bg-white p-3 dark:border-[#1d2939] dark:bg-white/[0.03] shadow-md flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <div className="bg-gray-800 rounded-xl p-2">{icon}</div>
+        <div className="dark:bg-[#353535] bg-gray-300 rounded-xl p-2">{icon}</div>
         <PercentageWidget percentage={percentage} />
       </div>
       <span className="text-gray-500 uppercase">{title}</span>
-      <span className="text-white text-3xl">{number}</span>
+      <span className="dark:text-white text-gray-800 text-3xl">{number}</span>
     </div>
   );
 };

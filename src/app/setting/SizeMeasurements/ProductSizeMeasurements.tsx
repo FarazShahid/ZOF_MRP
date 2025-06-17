@@ -20,8 +20,9 @@ import DeleteSizeOptions from "./DeleteSizeOptions";
 import AddSizeOptions from "./AddSizeOptions";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { GoPencil } from "react-icons/go";
-import { FiPlus } from "react-icons/fi";
 import AddButton from "../../components/common/AddButton";
+import { useRouter } from "next/navigation";
+import { ViewMeasurementChart } from "../../orders/components/ViewMeasurementChart";
 
 const ProductSizeMeasurements = () => {
   const [page, setPage] = useState<number>(1);
@@ -34,6 +35,8 @@ const ProductSizeMeasurements = () => {
     useState<keyof SizeMeasurements>("Measurement1");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
+  const router = useRouter();
+
   const { fetchSizeMeasurements, sizeMeasurement, loading } =
     useSizeMeasurementsStore();
 
@@ -44,7 +47,9 @@ const ProductSizeMeasurements = () => {
   const rowsPerPage = 10;
   const pages = Math.ceil(sizeMeasurement!.length / rowsPerPage);
 
-  const openAddModal = () => setIsAddModalOpen(true);
+  const openAddModal = () => {
+    router.push("/product/addsizeOptions");
+  };
 
   const handleOpenDeleteModal = (sizeOptionId: number) => {
     setSelectedSizeOptionId(sizeOptionId);
@@ -56,9 +61,7 @@ const ProductSizeMeasurements = () => {
     setIsEdit(false);
   };
   const openEditModal = (sizeId: number) => {
-    setSelectedSizeOptionId(sizeId);
-    setIsAddModalOpen(true);
-    setIsEdit(true);
+    router.push(`/product/editsizeoptions/${sizeId}`);
   };
   const openViewModal = (sizeId: number) => {
     setSelectedSizeOptionId(sizeId);
@@ -165,6 +168,15 @@ const ProductSizeMeasurements = () => {
                   ))}
               </div>
             </TableColumn>
+            <TableColumn
+              key="ProductCategoryType"
+              className="text-medium font-bold"
+            >
+              Product Category
+            </TableColumn>
+            <TableColumn key="SizeOptionName" className="text-medium font-bold">
+              Size Option
+            </TableColumn>
             <TableColumn key="ClientName" className="text-medium font-bold">
               Client Name
             </TableColumn>
@@ -213,10 +225,11 @@ const ProductSizeMeasurements = () => {
         </Table>
 
         {isViewModal ? (
-          <ViewModal
+          <ViewMeasurementChart
             isOpen={isViewModal}
-            closeAddModal={handleCloseModal}
-            sizeOptionId={selectedSizeOptionId}
+            measurementId={selectedSizeOptionId}
+            sizeOptionName={""}
+            onCloseViewModal={handleCloseModal}
           />
         ) : (
           <></>

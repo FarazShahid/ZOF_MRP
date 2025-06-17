@@ -11,6 +11,17 @@ interface GetProductsResponse {
   message: string;
 }
 
+interface GetAvailablSizesResponse{
+  data: AvailableSizes[];
+   message: string;
+}
+
+interface AvailableSizes {
+  Id: number,
+  SizeId: number,
+  SizeName: string;
+}
+
 interface Product {
   Id: number;
   Name: string;
@@ -44,13 +55,14 @@ interface ProductById {
   productDetails: [
     {
       Id: number;
-      ProductId: number;
+      // ProductId: number;
       ProductCutOptionId: number;
-      ProductSizeMeasurementId: number;
-      ProductRegionId: number;
+      // ProductSizeMeasurementId: number;
+      // ProductRegionId: number;
       SleeveTypeId: number;
     }
   ];
+  productSizes: [{ Id: number; sizeId: number}];
 }
 
 interface GetAvailableColorResponse {
@@ -79,11 +91,13 @@ interface CategoryState {
   productById: ProductById | null;
   productColorMap: ProductColorMap;
   productAvailableColors: ProductAvailableColors[];
+  availableSizes: AvailableSizes[];
   loading: boolean;
   error: string | null;
 
   fetchProducts: () => Promise<void>;
   fetchProductAvailableColors: (id: number) => Promise<void>;
+  fetchAvailableSizes: (id: number) => Promise<void>;
   getProductById: (id: number) => Promise<void>;
   addProduct: (productType: AddProduct, onSuccess: () => void) => Promise<void>;
   updateProduct: (
@@ -100,6 +114,7 @@ const useProductStore = create<CategoryState>((set, get) => ({
   productById: null,
   productColorMap: {},
   productAvailableColors: [],
+  availableSizes:[],
   loading: false,
   error: null,
 
@@ -141,6 +156,25 @@ const useProductStore = create<CategoryState>((set, get) => ({
       }));
     } catch (error) {
       set({ error: "Failed to fetch product colors", loading: false });
+    }
+  },
+
+  fetchAvailableSizes: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/available-sizes/${id}`
+      );
+      if (!response.ok) {
+        set({ loading: false });
+        const error = await response.json();
+        toast.error(error.message || "Fail to fetch data.");
+        return;
+      }
+      const data: GetAvailablSizesResponse = await response.json();
+      set({ availableSizes: data.data, loading: false });
+    } catch (error) {
+      set({ error: "Failed to fetch data", loading: false });
     }
   },
 

@@ -78,7 +78,7 @@ const Step2: React.FC<Step2Props> = ({
                 item={item}
                 values={values}
                 removeItem={() =>
-                  values.items.length > 1 && itemsHelpers.remove(index)
+                  itemsHelpers.remove(index)
                 }
                 printingOptions={printingOptions}
                 setFieldValue={setFieldValue}

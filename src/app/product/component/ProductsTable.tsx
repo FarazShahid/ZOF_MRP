@@ -13,11 +13,14 @@ import { productComponentProp } from "./ProductGrid";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DeleteProduct from "../../products/DeleteProduct";
+import { useRouter } from "next/navigation";
 
 const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [selectedProductId, setSelectedProductId] = useState(0);
   const [page, setPage] = useState<number>(1);
+
+  const router = useRouter();
 
   const rowsPerPage = 13;
   const pages = Math.ceil(products?.length / rowsPerPage);
@@ -30,9 +33,7 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
   }, [page, products]);
 
   const openEditModal = (productId: number) => {
-    // setSelectedProductId(productId);
-    // setIsAddModalOpen(true);
-    // setIsEdit(true);
+    router.push(`product/editproduct/${productId}`)
   };
   const handleOpenDeleteModal = (productId: number) => {
     setSelectedProductId(productId);
@@ -101,9 +102,7 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
             <TableRow key={item?.Id}>
               {(columnKey) => (
                 <TableCell>
-                  {columnKey === "Name" ? (
-                    `${item?.FabricName} ${item?.ProductCategoryName} ${item?.GSM}`
-                  ) : columnKey === "Sr" ? (
+                  {columnKey === "Sr" ? (
                     index + 1
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)

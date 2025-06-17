@@ -14,28 +14,24 @@ const Step1 = ({ formik }: { formik: any }) => {
     fetchEvents();
   }, []);
 
+  const selectedClientId = Number(formik.values.ClientId);
+
   const filteredEvents = [...Events].sort((a, b) => {
-    if (!formik.values.ClientId) return 0;
-
-    const selectedClientId = Number(formik.values.ClientId);
-
-    if (a.ClientId === selectedClientId && b.ClientId !== selectedClientId)
-      return -1;
-    if (a.ClientId !== selectedClientId && b.ClientId === selectedClientId)
-      return 1;
-
-    return 0;
+    if (!selectedClientId) return 0;
+    return (
+      (b.ClientId === selectedClientId ? 1 : 0) -
+      (a.ClientId === selectedClientId ? 1 : 0)
+    );
   });
+
+  const fieldStyle =
+    "rounded-xl dark:text-gray-400 text-gray-800 text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100";
 
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Client" />
-        <Field
-          as="select"
-          name="ClientId"
-          className="rounded-xl text-gray-400 text-sm p-2 w-full outline-none bg-gray-950 border-1 border-gray-600"
-        >
+        <Field as="select" name="ClientId" className={fieldStyle}>
           <option value={""}>Select a client</option>
           {clients?.map((client, index) => {
             return (
@@ -51,15 +47,12 @@ const Step1 = ({ formik }: { formik: any }) => {
           className="text-red-500 text-sm"
         />
       </div>
+
       <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Event" />
-        <Field
-          as="select"
-          name="OrderEventId"
-          className="rounded-xl text-gray-400 text-sm p-2 w-full outline-none bg-gray-950 border-1 border-gray-600"
-        >
+        <Field as="select" name="OrderEventId" className={fieldStyle}>
           <option value="">Select an event</option>
-          {filteredEvents.map((event, index) => (
+          {filteredEvents?.map((event, index) => (
             <option value={event?.Id} key={index}>
               {event?.EventName} _ ({event.ClientName})
             </option>
@@ -73,11 +66,7 @@ const Step1 = ({ formik }: { formik: any }) => {
       </div>
       <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Deadline" />
-        <Field
-          type="date"
-          name="Deadline"
-          className="rounded-xl text-gray-400 text-sm p-2 w-full outline-none bg-gray-950 border-1 border-gray-600"
-        />
+        <Field type="date" name="Deadline" className={fieldStyle} />
         <ErrorMessage
           name="Deadline"
           component="div"
@@ -86,11 +75,7 @@ const Step1 = ({ formik }: { formik: any }) => {
       </div>
       <div className="flex flex-col gap-1">
         <Label isRequired={false} label="Order Priority" />
-        <Field
-          as="select"
-          name="OrderPriority"
-          className="rounded-xl text-gray-400 text-sm p-2 w-full outline-none bg-gray-950 border-1 border-gray-600"
-        >
+        <Field as="select" name="OrderPriority" className={fieldStyle}>
           <option value="">Select a priority</option>
           {PRIORITY_ENUM.map((priority, index) => (
             <option value={priority.id} key={index}>

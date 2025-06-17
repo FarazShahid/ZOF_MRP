@@ -104,7 +104,7 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
                             <Field
                               name="InventoryItemId"
                               as="select"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             >
                               <option value={0}>Select inventory item</option>
                               {inventoryItems?.map((inventoryItem, index) => {
@@ -129,7 +129,7 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
                             <Field
                               name="Quantity"
                               type="number"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="Quantity"
@@ -145,7 +145,7 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
                             <Field
                               name="TransactionType"
                               as="select"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             >
                               <option value={0}>Select Transaction Type</option>
                               {TRANSACTION_TYPES?.map((type, index) => {

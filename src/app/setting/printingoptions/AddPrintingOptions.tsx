@@ -87,7 +87,7 @@ const AddPrintingOptions: React.FC<AddClientComponentProps> = ({
                               name="Name"
                               type="text"
                               placeholder="Enter Printing Option"
-                              className="formInputdefault"
+                              className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
                               name="Name"

@@ -23,7 +23,7 @@ const page = () => {
     <AdminDashboardLayout>
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h6 className="text-white text-xl font-semibold">Dashboard</h6>
+          <h6 className="dark:text-white text-gray-800 text-xl font-semibold">Dashboard</h6>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
           <div className="col-span-1 md:col-span-2 lg:col-span-8">
