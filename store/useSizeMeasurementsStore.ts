@@ -50,6 +50,14 @@ export interface SizeMeasurements {
   SizeOptionId: number;
   SizeOptionName: string;
   Measurement1: string;
+  BackNeckDrop: string;
+  FrontNeckDrop: string;
+  ShoulderSeam: string;
+  ShoulderSlope: string;
+  Hem: string;
+  Inseam: string;
+  Hip: string;
+  FrontRise: string;
   FrontLengthHPS: string;
   BackLengthHPS: string;
   AcrossShoulders: string;

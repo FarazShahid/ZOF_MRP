@@ -16,7 +16,6 @@ import { FiPlus } from "react-icons/fi";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DeleteProduct from "./DeleteProduct";
-import AddProduct from "./AddProduct";
 import AdminLayout from "../adminDashboard/lauout";
 
 const page = () => {
@@ -162,16 +161,6 @@ const page = () => {
           </TableBody>
         </Table>
 
-        {isAddModalOpen ? (
-          <AddProduct
-            isOpen={isAddModalOpen}
-            closeAddModal={closeAddModal}
-            isEdit={isEdit}
-            productId={selectedProductId}
-          />
-        ) : (
-          <></>
-        )}
         {isOpenDeletModal ? (
           <DeleteProduct
             isOpen={isOpenDeletModal}

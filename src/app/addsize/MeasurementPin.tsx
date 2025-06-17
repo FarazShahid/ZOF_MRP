@@ -33,7 +33,7 @@ const MeasurementPin: React.FC<Props> = ({ config, value }) => {
         </div>
 
         {/* Tooltip: hidden by default, shown when parent (.group) is hovered */}
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap z-99999">
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white dark:text-black text-xs rounded px-2 py-1 whitespace-nowrap z-99999">
           {config.label}
         </div>
       </div>

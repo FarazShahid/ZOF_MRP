@@ -9,3 +9,9 @@ export function formatNumber(value: number | null | undefined): string {
 }
 
 
+export const MEASUREMENT_UNIT_TYPE = [
+  {id: 1, name: "Top Unit"},
+  {id: 2, name: "Bottom Unit"},
+  {id: 3, name: "Both"}
+]
+

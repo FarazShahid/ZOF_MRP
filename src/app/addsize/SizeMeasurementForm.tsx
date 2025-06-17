@@ -1,10 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { IoCaretBackOutline } from "react-icons/io5";
-import HumanBody from "../../../public/humanBody.png";
-import ModalImage from "../../../public/modal.svg";
 import {
   Formik,
   Field,
@@ -113,24 +110,33 @@ const SizeMeasurementForm = ({
       isEdit && sizeMeasurementById
         ? sizeMeasurementById.ProductCategoryId
         : "",
-    FrontLengthHPS:
-      isEdit && sizeMeasurementById ? sizeMeasurementById.FrontLengthHPS : "",
-    BackLengthHPS:
-      isEdit && sizeMeasurementById ? sizeMeasurementById.BackLengthHPS : "",
-    AcrossShoulders:
-      isEdit && sizeMeasurementById ? sizeMeasurementById.AcrossShoulders : "",
-    ArmHole: isEdit && sizeMeasurementById ? sizeMeasurementById.ArmHole : "",
+
+    BackNeckDrop:  isEdit && sizeMeasurementById
+        ? sizeMeasurementById.BackNeckDrop
+        : "",
+    FrontNeckDrop:  isEdit && sizeMeasurementById
+        ? sizeMeasurementById.FrontNeckDrop
+        : "",
+    ShoulderSeam:  isEdit && sizeMeasurementById
+        ? sizeMeasurementById.ShoulderSeam
+        : "",
+    ShoulderSlope:  isEdit && sizeMeasurementById
+        ? sizeMeasurementById.ShoulderSlope
+        : "",
     UpperChest:
       isEdit && sizeMeasurementById ? sizeMeasurementById.UpperChest : "",
     LowerChest:
       isEdit && sizeMeasurementById ? sizeMeasurementById.LowerChest : "",
-    Waist: isEdit && sizeMeasurementById ? sizeMeasurementById.Waist : "",
-    BottomWidth:
-      isEdit && sizeMeasurementById ? sizeMeasurementById.BottomWidth : "",
     SleeveLength:
       isEdit && sizeMeasurementById ? sizeMeasurementById.SleeveLength : "",
     SleeveOpening:
       isEdit && sizeMeasurementById ? sizeMeasurementById.SleeveOpening : "",
+    ArmHole: isEdit && sizeMeasurementById ? sizeMeasurementById.ArmHole : "",
+    FrontLengthHPS:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.FrontLengthHPS : "",
+    FrontRise: "",
+    BottomHem:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.BottomHem : "",
     NeckSize: isEdit && sizeMeasurementById ? sizeMeasurementById.NeckSize : "",
     CollarHeight:
       isEdit && sizeMeasurementById ? sizeMeasurementById.CollarHeight : "",
@@ -138,12 +144,19 @@ const SizeMeasurementForm = ({
       isEdit && sizeMeasurementById
         ? sizeMeasurementById.CollarPointHeight
         : "",
-    StandHeightBack:
-      isEdit && sizeMeasurementById ? sizeMeasurementById.StandHeightBack : "",
     CollarStandLength:
       isEdit && sizeMeasurementById
         ? sizeMeasurementById.CollarStandLength
         : "",
+    AcrossShoulders:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.AcrossShoulders : "",
+    BackLengthHPS:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.BackLengthHPS : "",
+    
+    BottomWidth:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.BottomWidth : "",
+    StandHeightBack:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.StandHeightBack : "",
     SideVentFront:
       isEdit && sizeMeasurementById ? sizeMeasurementById.SideVentFront : "",
     SideVentBack:
@@ -154,16 +167,16 @@ const SizeMeasurementForm = ({
       isEdit && sizeMeasurementById
         ? sizeMeasurementById.TwoButtonDistance
         : "",
+
     PlacketWidth:
       isEdit && sizeMeasurementById ? sizeMeasurementById.PlacketWidth : "",
-    BottomHem:
-      isEdit && sizeMeasurementById ? sizeMeasurementById.BottomHem : "",
 
-    Hip: "",
-    Hem:"",
-    FrontRise: "",
-    Inseam:"",
-    HemBottom:""
+    // bottom unit
+    Waist: isEdit && sizeMeasurementById ? sizeMeasurementById.Waist : "",
+    Hip:  isEdit && sizeMeasurementById ? sizeMeasurementById.Hip : "",
+    Hem:  isEdit && sizeMeasurementById ? sizeMeasurementById.Hem : "",
+    Inseam: isEdit && sizeMeasurementById ? sizeMeasurementById.Inseam : "",
+    HemBottom:  isEdit && sizeMeasurementById ? sizeMeasurementById.BottomHem : "",
   };
 
   const handleAddSizeOption = async (values: AddSizeMeasurementType) => {
@@ -380,13 +393,7 @@ const SizeMeasurementForm = ({
           {showMeasurementPin ? (
             <div className="col-span-4 relative h-[calc(100vh-115px)]">
               <h3 className="">Measurements (inches)</h3>
-              {/* <Image
-                alt="human"
-                src={ModalImage}
-                fill
-                style={{ objectFit: "contain" }}
-                className="pointer-events-none"
-              /> */}
+
               <div className="w-full h-full dark:text-gray-100 text-gray-800">
                 <ShirtAndShortsModal />
               </div>
