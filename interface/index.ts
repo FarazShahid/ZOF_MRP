@@ -15,3 +15,4 @@ export const MEASUREMENT_UNIT_TYPE = [
   {id: 3, name: "Both"}
 ]
 
+export type MeasurementType = 'chest' | 'neck' | 'sleeveLength';
