@@ -6,8 +6,7 @@ import TShirtViewer from '../../components/ui/Modals/TshirtViewer'
 const page = () => {
   return (
     <AdminDashboardLayout>
-      {/* <SizeMeasurementForm isEdit={false} /> */}
-      <TShirtViewer />
+      <SizeMeasurementForm isEdit={false} />
     </AdminDashboardLayout>
   )
 }
