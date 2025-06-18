@@ -9,6 +9,9 @@ const BottomUnit = () => {
     { id: 3, name: "Outseam", label: "Outseam" },
     { id: 4, name: "Inseam", label: "Inseam" },
     { id: 5, name: "HemBottom", label: "Hem Bottom" },
+    {id: 6, name: "KneeWidth", label: "Knee Width"},
+    {id: 7, name: "LegOpening", label: "Leg Opening"},
+    
   ];
   return (
     <div className="grid grid-cols-4 gap-2 border-1 dark:border-gray-300 shadow-lg rounded-lg p-3">
