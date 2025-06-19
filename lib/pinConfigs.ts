@@ -72,8 +72,8 @@ export const pinConfigs = [
     colorClass: "bg-green-600",
   },
   {
-    fieldName: "BottomHem",
-    label: "Bottom Hem",
+    fieldName: "Hem",
+    label: "Hem",
     top: "69%",
     left: "32%",
     colorClass: "bg-green-600",
@@ -92,6 +92,13 @@ export const pinConfigs = [
   {
     fieldName: "Inseam",
     label: "Inseam",
+    top: "81%",
+    left: "77%",
+    colorClass: "bg-green-600",
+  },
+  {
+    fieldName: "Outseam",
+    label: "Outseam",
     top: "81%",
     left: "46%",
     colorClass: "bg-green-600",

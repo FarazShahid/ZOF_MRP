@@ -134,7 +134,7 @@ const SizeMeasurementForm = ({
     ArmHole: isEdit && sizeMeasurementById ? sizeMeasurementById.ArmHole : "",
     FrontLengthHPS:
       isEdit && sizeMeasurementById ? sizeMeasurementById.FrontLengthHPS : "",
-    FrontRise: "",
+    FrontRise:  isEdit && sizeMeasurementById ? sizeMeasurementById.FrontRise : "",
     BottomHem:
       isEdit && sizeMeasurementById ? sizeMeasurementById.BottomHem : "",
     NeckSize: isEdit && sizeMeasurementById ? sizeMeasurementById.NeckSize : "",
@@ -167,16 +167,19 @@ const SizeMeasurementForm = ({
       isEdit && sizeMeasurementById
         ? sizeMeasurementById.TwoButtonDistance
         : "",
-
+   Hem:  isEdit && sizeMeasurementById ? sizeMeasurementById.Hem : "",
     PlacketWidth:
       isEdit && sizeMeasurementById ? sizeMeasurementById.PlacketWidth : "",
 
     // bottom unit
-    Waist: isEdit && sizeMeasurementById ? sizeMeasurementById.Waist : "",
+   
     Hip:  isEdit && sizeMeasurementById ? sizeMeasurementById.Hip : "",
-    Hem:  isEdit && sizeMeasurementById ? sizeMeasurementById.Hem : "",
+    Waist: isEdit && sizeMeasurementById ? sizeMeasurementById.Waist : "",
+    Outseam: isEdit && sizeMeasurementById ? sizeMeasurementById.Outseam : "",
     Inseam: isEdit && sizeMeasurementById ? sizeMeasurementById.Inseam : "",
     HemBottom:  isEdit && sizeMeasurementById ? sizeMeasurementById.BottomHem : "",
+    KneeWidth: isEdit && sizeMeasurementById ? sizeMeasurementById.KneeWidth : "",
+    LegOpening: isEdit && sizeMeasurementById ? sizeMeasurementById.LegOpening : "",
   };
 
   const handleAddSizeOption = async (values: AddSizeMeasurementType) => {

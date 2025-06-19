@@ -14,7 +14,7 @@ const TopUnit = () => {
     { id: 8, name: "SleeveOpening", label: "Sleeve Opening" },
     { id: 9, name: "FrontLengthHPS", label: "Front Length HPS" },
     { id: 10, name: "FrontRise", label: "Front Rise" },
-    { id: 11, name: "BottomHem", label: "Hem" },
+    { id: 11, name: "Hem", label: "Hem" },
     { id: 12, name: "NeckSize", label: " NeckSize" },
     { id: 13, name: "CollarHeight", label: " Collar Height" },
     { id: 14, name: "CollarPointHeight", label: "Collar Point Height" },
