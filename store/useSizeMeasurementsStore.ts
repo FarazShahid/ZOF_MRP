@@ -78,6 +78,9 @@ export interface SizeMeasurements {
   PlacketLength: string;
   TwoButtonDistance: string;
   PlacketWidth: string;
+  LegOpening: string;
+  KneeWidth: string;
+  Outseam: string;
   BottomHem: string;
   CreatedOn: string;
   CreatedBy: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IoCaretBackOutline } from "react-icons/io5";
 import {
   Formik,
@@ -25,6 +25,11 @@ import TopUnit from "./TopUnit";
 import BottomUnit from "./BottomUnit";
 import useCategoryStore from "@/store/useCategoryStore";
 import ShirtAndShortsModal from "@/public/svgs/ShirtAndShortsModal";
+import ShirtBackImg from "./ShirtBackImg";
+import ShirtAndShortsBackViewModa from "@/public/svgs/ShirtAndShortsBackViewModa";
+import ShortsModal from "@/public/svgs/ShortsModal";
+import TrouserModal from "@/public/svgs/TrouserModal";
+import ShirtShortsView from "./ShirtShortsView";
 
 const PRODUCTCATERGORYENUM = [
   { id: 1, name: "Jersey", unitType: "Top" },
@@ -52,6 +57,10 @@ const SizeMeasurementForm = ({
   );
   const [selectedUnitType, setSelectedUnitType] = useState(1);
   const [showMeasurementPin, setShowMeasurementPin] = useState(false);
+  const [shirtFrontView, setShirtFrontView] = useState(true);
+  // const [matchedCategoryId, setMatchedCategoryId] = useState<number | null>(
+  //   null
+  // );
 
   const { fetchsizeOptions, sizeOptions } = useSizeOptionsStore();
   const { fetchClients, clients } = useClientStore();
@@ -75,29 +84,23 @@ const SizeMeasurementForm = ({
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const matchedCategory = PRODUCTCATERGORYENUM.find(
-      (cat) => cat.id === sizeMeasurementById?.ProductCategoryId
-    );
-    if (matchedCategory) {
-      setShowMeasurementPin(true);
-      const matchedUnitType = matchedCategory.unitType as
-        | "Top"
-        | "Bottom"
-        | "Both";
-      setUnitType(matchedUnitType);
-      if (matchedUnitType === "Top" || matchedUnitType === "Both") {
-        setSelectedUnitType(1);
-      } else if (matchedUnitType === "Bottom") {
-        setSelectedUnitType(2);
-      }
-    } else {
-      setUnitType(null);
-    }
-  }, [sizeMeasurementById, sizeId]);
+  // Derive matched category and unit type using useMemo
+  // const matchedCategory = useMemo(() => {
+  //   if (!sizeMeasurementById?.ProductCategoryId) return null;
+  //   return PRODUCTCATERGORYENUM.find(
+  //     (cat) => cat.id === sizeMeasurementById.ProductCategoryId
+  //   );
+  // }, [sizeMeasurementById]);
+
+  // const matchedCategoryId = matchedCategory?.id || null;
+
 
   const closeAddModal = () => {
     router.push("/product/productdefination");
+  };
+
+  const handleToggleShirtView = () => {
+    setShirtFrontView((prev) => !prev);
   };
 
   const InitialValues = {
@@ -111,18 +114,14 @@ const SizeMeasurementForm = ({
         ? sizeMeasurementById.ProductCategoryId
         : "",
 
-    BackNeckDrop:  isEdit && sizeMeasurementById
-        ? sizeMeasurementById.BackNeckDrop
-        : "",
-    FrontNeckDrop:  isEdit && sizeMeasurementById
-        ? sizeMeasurementById.FrontNeckDrop
-        : "",
-    ShoulderSeam:  isEdit && sizeMeasurementById
-        ? sizeMeasurementById.ShoulderSeam
-        : "",
-    ShoulderSlope:  isEdit && sizeMeasurementById
-        ? sizeMeasurementById.ShoulderSlope
-        : "",
+    BackNeckDrop:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.BackNeckDrop : "",
+    FrontNeckDrop:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.FrontNeckDrop : "",
+    ShoulderSeam:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.ShoulderSeam : "",
+    ShoulderSlope:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.ShoulderSlope : "",
     UpperChest:
       isEdit && sizeMeasurementById ? sizeMeasurementById.UpperChest : "",
     LowerChest:
@@ -134,7 +133,8 @@ const SizeMeasurementForm = ({
     ArmHole: isEdit && sizeMeasurementById ? sizeMeasurementById.ArmHole : "",
     FrontLengthHPS:
       isEdit && sizeMeasurementById ? sizeMeasurementById.FrontLengthHPS : "",
-    FrontRise: "",
+    FrontRise:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.FrontRise : "",
     BottomHem:
       isEdit && sizeMeasurementById ? sizeMeasurementById.BottomHem : "",
     NeckSize: isEdit && sizeMeasurementById ? sizeMeasurementById.NeckSize : "",
@@ -152,7 +152,7 @@ const SizeMeasurementForm = ({
       isEdit && sizeMeasurementById ? sizeMeasurementById.AcrossShoulders : "",
     BackLengthHPS:
       isEdit && sizeMeasurementById ? sizeMeasurementById.BackLengthHPS : "",
-    
+
     BottomWidth:
       isEdit && sizeMeasurementById ? sizeMeasurementById.BottomWidth : "",
     StandHeightBack:
@@ -167,16 +167,22 @@ const SizeMeasurementForm = ({
       isEdit && sizeMeasurementById
         ? sizeMeasurementById.TwoButtonDistance
         : "",
-
+    Hem: isEdit && sizeMeasurementById ? sizeMeasurementById.Hem : "",
     PlacketWidth:
       isEdit && sizeMeasurementById ? sizeMeasurementById.PlacketWidth : "",
 
     // bottom unit
+
+    Hip: isEdit && sizeMeasurementById ? sizeMeasurementById.Hip : "",
     Waist: isEdit && sizeMeasurementById ? sizeMeasurementById.Waist : "",
-    Hip:  isEdit && sizeMeasurementById ? sizeMeasurementById.Hip : "",
-    Hem:  isEdit && sizeMeasurementById ? sizeMeasurementById.Hem : "",
+    Outseam: isEdit && sizeMeasurementById ? sizeMeasurementById.Outseam : "",
     Inseam: isEdit && sizeMeasurementById ? sizeMeasurementById.Inseam : "",
-    HemBottom:  isEdit && sizeMeasurementById ? sizeMeasurementById.BottomHem : "",
+    HemBottom:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.BottomHem : "",
+    KneeWidth:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.KneeWidth : "",
+    LegOpening:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.LegOpening : "",
   };
 
   const handleAddSizeOption = async (values: AddSizeMeasurementType) => {
@@ -186,6 +192,11 @@ const SizeMeasurementForm = ({
       addSizeMeasurement(values, () => closeAddModal());
     }
   };
+
+  // useEffect(() => {
+  //   console.log("Category ID:", sizeMeasurementById?.ProductCategoryId);
+  //   console.log("Matched Category ID:", matchedCategoryId);
+  // }, [matchedCategoryId]);
 
   return (
     <Formik
@@ -392,12 +403,35 @@ const SizeMeasurementForm = ({
 
           {showMeasurementPin ? (
             <div className="col-span-4 relative h-[calc(100vh-115px)]">
-              <h3 className="">Measurements (inches)</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="">Measurements (inches)</h3>
+                <button
+                  className="bg-blue-600 text-white px-1 text-sm py-1 rounded"
+                  type="button"
+                  onClick={handleToggleShirtView}
+                >
+                  {shirtFrontView === true ? "Back View" : "Front View"}
+                </button>
+              </div>
 
               <div className="w-full h-full dark:text-gray-100 text-gray-800">
-                <ShirtAndShortsModal />
+                <div className="w-full h-full dark:text-gray-100 text-gray-800">
+                  {(() => {
+                    const selectedId = values.ProductCategoryId;
+
+                    if (selectedId === 5) {
+                      return <ShortsModal />;
+                    }
+
+                    if (selectedId === 6) {
+                      return <TrouserModal />;
+                    }
+
+                    return <ShirtShortsView shirtFrontView={shirtFrontView} />;
+                  })()}
+                </div>
               </div>
-              <div className="absolute inset-0">
+              <div className="absolute inset-0 top-[30px]">
                 {pinConfigs.map((cfg) => (
                   <MeasurementPin
                     key={cfg.fieldName}

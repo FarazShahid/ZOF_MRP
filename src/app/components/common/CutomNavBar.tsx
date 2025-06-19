@@ -7,7 +7,7 @@ import { IoStorefrontOutline } from "react-icons/io5";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { AiOutlineProduct } from "react-icons/ai";
 import { IoCalendarNumber } from "react-icons/io5";
-
+import { FaUserTie } from "react-icons/fa";
 import Logo from "../../../../public/logoDark.png";
 import LogoLight from "../../../../public/logo.png";
 import UserDropdown from "../header/UserDropdown";
@@ -58,6 +58,13 @@ const CutomNavBar = () => {
       label: "Events",
       icon: <IoCalendarNumber size={14} />,
       route: "/events",
+      isNested: false,
+    },
+    {
+      id: 7,
+      label: "Users",
+      icon: <FaUserTie size={14} />,
+      route: "/users",
       isNested: false,
     },
   ];

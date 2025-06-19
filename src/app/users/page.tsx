@@ -13,15 +13,12 @@ import {
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { FiPlus } from "react-icons/fi";
-import AdminLayout from "../adminDashboard/lauout";
-import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 import useUserStore from "@/store/useUserStore";
 import { formatDate } from "../interfaces";
 import DeleteUser from "./DeleteUser";
 import AddUser from "./AddUser";
-// import DeleteInventoryItem from "./DeleteInventoryItem";
-// import AddItems from "./AddItems";
+import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
+import AddButton from "../components/common/AddButton";
 
 const page = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -62,18 +59,11 @@ const page = () => {
   }, []);
 
   return (
-    <AdminLayout>
+    <AdminDashboardLayout>
       <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">Users</h6>
-          <button
-            type="button"
-            className="flex items-center gap-2 text-white bg-[#584BDD] px-2 py-1 rounded-lg text-sm"
-            onClick={openAddModal}
-          >
-            <FiPlus />
-            Add New
-          </button>
+           <AddButton title={"Add New"} onClick={openAddModal} />
         </div>
         <Table
           isStriped
@@ -161,7 +151,7 @@ const page = () => {
           Id={selectedItemId}
         />
       </div>
-    </AdminLayout>
+    </AdminDashboardLayout>
   );
 };
 
