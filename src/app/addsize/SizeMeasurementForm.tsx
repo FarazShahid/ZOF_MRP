@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoCaretBackOutline } from "react-icons/io5";
 import {
   Formik,
@@ -17,19 +17,14 @@ import useSizeMeasurementsStore, {
 import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import useClientStore from "@/store/useClientStore";
 import Label from "../components/common/Label";
-import MeasurementPin from "./MeasurementPin";
-import { pinConfigs } from "@/lib/pinConfigs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import TopUnit from "./TopUnit";
 import BottomUnit from "./BottomUnit";
 import useCategoryStore from "@/store/useCategoryStore";
-import ShirtAndShortsModal from "@/public/svgs/ShirtAndShortsModal";
-import ShirtBackImg from "./ShirtBackImg";
-import ShirtAndShortsBackViewModa from "@/public/svgs/ShirtAndShortsBackViewModa";
-import ShortsModal from "@/public/svgs/ShortsModal";
-import TrouserModal from "@/public/svgs/TrouserModal";
-import ShirtShortsView from "./ShirtShortsView";
+import { ShirtShortsMeasurementPin } from "./ShirtShortsMeasurementPin";
+import ShortsMeasurementPin from "./ShortsMeasurementPin";
+import TrouserMeasurementPin from "./TrouserMeasurementPin";
 
 const PRODUCTCATERGORYENUM = [
   { id: 1, name: "Jersey", unitType: "Top" },
@@ -57,10 +52,6 @@ const SizeMeasurementForm = ({
   );
   const [selectedUnitType, setSelectedUnitType] = useState(1);
   const [showMeasurementPin, setShowMeasurementPin] = useState(false);
-  const [shirtFrontView, setShirtFrontView] = useState(true);
-  // const [matchedCategoryId, setMatchedCategoryId] = useState<number | null>(
-  //   null
-  // );
 
   const { fetchsizeOptions, sizeOptions } = useSizeOptionsStore();
   const { fetchClients, clients } = useClientStore();
@@ -84,24 +75,10 @@ const SizeMeasurementForm = ({
     fetchCategories();
   }, []);
 
-  // Derive matched category and unit type using useMemo
-  // const matchedCategory = useMemo(() => {
-  //   if (!sizeMeasurementById?.ProductCategoryId) return null;
-  //   return PRODUCTCATERGORYENUM.find(
-  //     (cat) => cat.id === sizeMeasurementById.ProductCategoryId
-  //   );
-  // }, [sizeMeasurementById]);
-
-  // const matchedCategoryId = matchedCategory?.id || null;
-
-
   const closeAddModal = () => {
     router.push("/product/productdefination");
   };
 
-  const handleToggleShirtView = () => {
-    setShirtFrontView((prev) => !prev);
-  };
 
   const InitialValues = {
     SizeOptionId:
@@ -183,6 +160,8 @@ const SizeMeasurementForm = ({
       isEdit && sizeMeasurementById ? sizeMeasurementById.KneeWidth : "",
     LegOpening:
       isEdit && sizeMeasurementById ? sizeMeasurementById.LegOpening : "",
+    bFrontRise:
+      isEdit && sizeMeasurementById ? sizeMeasurementById.LegOpening : "",
   };
 
   const handleAddSizeOption = async (values: AddSizeMeasurementType) => {
@@ -192,11 +171,6 @@ const SizeMeasurementForm = ({
       addSizeMeasurement(values, () => closeAddModal());
     }
   };
-
-  // useEffect(() => {
-  //   console.log("Category ID:", sizeMeasurementById?.ProductCategoryId);
-  //   console.log("Matched Category ID:", matchedCategoryId);
-  // }, [matchedCategoryId]);
 
   return (
     <Formik
@@ -402,45 +376,20 @@ const SizeMeasurementForm = ({
           </div>
 
           {showMeasurementPin ? (
-            <div className="col-span-4 relative h-[calc(100vh-115px)]">
-              <div className="flex items-center justify-between">
-                <h3 className="">Measurements (inches)</h3>
-                <button
-                  className="bg-blue-600 text-white px-1 text-sm py-1 rounded"
-                  type="button"
-                  onClick={handleToggleShirtView}
-                >
-                  {shirtFrontView === true ? "Back View" : "Front View"}
-                </button>
-              </div>
+            <>
+              {(() => {
+                const selectedId = values.ProductCategoryId;
+                if (selectedId === 5) {
+                  return <ShortsMeasurementPin values={values} />;
+                }
 
-              <div className="w-full h-full dark:text-gray-100 text-gray-800">
-                <div className="w-full h-full dark:text-gray-100 text-gray-800">
-                  {(() => {
-                    const selectedId = values.ProductCategoryId;
+                if (selectedId === 6) {
+                  return <TrouserMeasurementPin values={values} />;
+                }
 
-                    if (selectedId === 5) {
-                      return <ShortsModal />;
-                    }
-
-                    if (selectedId === 6) {
-                      return <TrouserModal />;
-                    }
-
-                    return <ShirtShortsView shirtFrontView={shirtFrontView} />;
-                  })()}
-                </div>
-              </div>
-              <div className="absolute inset-0 top-[30px]">
-                {pinConfigs.map((cfg) => (
-                  <MeasurementPin
-                    key={cfg.fieldName}
-                    config={cfg}
-                    value={values[cfg.fieldName as keyof typeof values]}
-                  />
-                ))}
-              </div>
-            </div>
+                return <ShirtShortsMeasurementPin values={values} />;
+              })()}
+            </>
           ) : (
             <></>
           )}
