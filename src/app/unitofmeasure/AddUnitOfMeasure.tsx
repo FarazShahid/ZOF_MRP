@@ -10,7 +10,9 @@ import {
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import { UnitOfMeasureSchema } from "../schema/SupplierSchema";
-import useUnitOfMeasureStore, { AddUnitOfMeasureType } from "@/store/useUnitOfMeasureStore";
+import useUnitOfMeasureStore, {
+  AddUnitOfMeasureType,
+} from "@/store/useUnitOfMeasureStore";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -25,18 +27,17 @@ const AddUnitOfMeasure: React.FC<AddComponentProps> = ({
   isEdit,
   Id,
 }) => {
-
-const {
+  const {
     loading,
-    getUnitOfMeasuresById, 
+    getUnitOfMeasuresById,
     updateUnitOfMeasure,
     addUnitOfMeasure,
-    unitMeasureById
-} = useUnitOfMeasureStore();
+    unitMeasureById,
+  } = useUnitOfMeasureStore();
 
   useEffect(() => {
     if (Id && isEdit) {
-        getUnitOfMeasuresById(Id);
+      getUnitOfMeasuresById(Id);
     }
   }, [Id, isEdit]);
 
@@ -79,14 +80,14 @@ const {
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                            Name
+                              Name
                               <span className="text-red-500 text-sm">*</span>
                             </label>
                             <Field
                               name="Name"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault bg-gray-100"
+                              className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="Name"
@@ -96,13 +97,13 @@ const {
                           </div>
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                                Short Form
+                              Short Form
                             </label>
                             <Field
                               name="ShortForm"
                               type="text"
                               placeholder="Enter Short Form"
-                              className="formInputdefault bg-gray-100"
+                              className="formInputdefault border-1"
                             />
                           </div>
                         </div>

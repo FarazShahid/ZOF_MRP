@@ -107,7 +107,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                               name="Name"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault"
+                              className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="Name"
@@ -122,10 +122,10 @@ const AddItems: React.FC<AddComponentProps> = ({
                             <Field
                               name="SubCategoryId"
                               as="select"
-                              className="formInputdefault"
+                              className="formInputdefault border-1"
                             >
                               <option value={0}>Select sub category</option>
-                              {subCategories.map((category, index) => {
+                              {subCategories?.map((category, index) => {
                                 return (
                                   <option value={category?.Id} key={index}>
                                     {category?.Name}
@@ -146,7 +146,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                             <Field
                               name="SupplierId"
                               as="select"
-                              className="formInputdefault"
+                              className="formInputdefault border-1"
                             >
                               <option value={0}>Select Supplier</option>
                               {suppliers?.map((supplier, index) => {
@@ -170,7 +170,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                             <Field
                               name="UnitOfMeasureId"
                               as="select"
-                              className="formInputdefault"
+                               className="formInputdefault border-1"
                             >
                               <option value={0}>Select Unit of measure</option>
                               {unitMeasures?.map((unitMeasure, index) => {
@@ -194,7 +194,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                             <Field
                               name="ReorderLevel"
                               type="number"
-                              className="formInputdefault"
+                               className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="ReorderLevel"

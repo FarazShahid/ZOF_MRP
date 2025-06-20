@@ -10,7 +10,7 @@ type PinConfig = {
 
 type Props = {
   config: PinConfig;
-  value: string | number;
+  value: string | number | undefined;
 };
 
 const MeasurementPin: React.FC<Props> = ({ config, value }) => {

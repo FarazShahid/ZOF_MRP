@@ -31,6 +31,7 @@ const Subcategories = () => {
 
   const rowsPerPage = 15;
   const pages = Math.ceil(subCategories?.length / rowsPerPage);
+  
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;

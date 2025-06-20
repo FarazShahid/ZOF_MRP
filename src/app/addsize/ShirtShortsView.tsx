@@ -8,7 +8,9 @@ const ShirtShortsView = ({ shirtFrontView }: { shirtFrontView: boolean }) => {
       {shirtFrontView ? (
         <ShirtAndShortsModal />
       ) : (
-        <ShirtAndShortsBackViewModa />
+        <div className="w-full h-full dark:text-gray-100 text-gray-800 pt-[40px]">
+          <ShirtAndShortsBackViewModa />
+        </div>
       )}
     </>
   );

@@ -10,7 +10,8 @@ const BottomUnit = () => {
     { id: 4, name: "Inseam", label: "Inseam" },
     { id: 5, name: "HemBottom", label: "Hem Bottom" },
     {id: 6, name: "KneeWidth", label: "Knee Width"},
-    {id: 7, name: "LegOpening", label: "Leg Opening"},
+     {id: 7, name: "bFrontRise", label: "Front Rise"},
+    {id: 8, name: "LegOpening", label: "Leg Opening"},
     
   ];
   return (

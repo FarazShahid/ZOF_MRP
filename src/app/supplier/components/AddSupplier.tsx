@@ -25,13 +25,17 @@ const AddSupplier: React.FC<AddComponentProps> = ({
   isEdit,
   supplierId,
 }) => {
-
-
-  const {loading,supplierById ,getSupplierById, updateSupplier, addSupplier} = useSupplierStore();
+  const {
+    loading,
+    supplierById,
+    getSupplierById,
+    updateSupplier,
+    addSupplier,
+  } = useSupplierStore();
 
   useEffect(() => {
     if (supplierId && isEdit) {
-        getSupplierById(supplierId);
+      getSupplierById(supplierId);
     }
   }, [supplierId, isEdit]);
 
@@ -41,7 +45,8 @@ const AddSupplier: React.FC<AddComponentProps> = ({
     Country: isEdit && supplierById ? supplierById?.Country : "",
     State: isEdit && supplierById ? supplierById?.State : "",
     City: isEdit && supplierById ? supplierById?.City : "",
-    CompleteAddress: isEdit && supplierById ? supplierById?.CompleteAddress : "",
+    CompleteAddress:
+      isEdit && supplierById ? supplierById?.CompleteAddress : "",
   };
 
   const handleAdd = async (values: AddSupplierOptions) => {
@@ -85,7 +90,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               name="Name"
                               type="text"
                               placeholder="Enter Name"
-                              className="formInputdefault bg-gray-100"
+                              className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="Name"
@@ -101,7 +106,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               name="Phone"
                               type="text"
                               placeholder="Enter Phone No."
-                              className="formInputdefault bg-gray-100"
+                            className="formInputdefault border-1"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
@@ -112,7 +117,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               name="Email"
                               type="text"
                               placeholder="Enter Email"
-                              className="formInputdefault bg-gray-100"
+                              className="formInputdefault border-1"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
@@ -123,43 +128,43 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                               name="Country"
                               type="text"
                               placeholder="Enter Country"
-                              className="formInputdefault bg-gray-100"
+                               className="formInputdefault border-1"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                            State
+                              State
                             </label>
                             <Field
                               name="State"
                               type="text"
                               placeholder="Enter State"
-                              className="formInputdefault bg-gray-100"
+                           className="formInputdefault border-1"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
                             <label className="text-sm text-gray-600 font-sans">
-                            City
+                              City
                             </label>
                             <Field
                               name="City"
                               type="text"
                               placeholder="Enter City"
-                              className="formInputdefault bg-gray-100"
+                               className="formInputdefault border-1"
                             />
                           </div>
                         </div>
                         <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
+                          <label className="text-sm text-gray-600 font-sans">
                             Address
-                            </label>
-                            <Field
-                              name="CompleteAddress"
-                              as="textarea"
-                              placeholder="Enter Address"
-                              className="formInputdefault !h-24 bg-gray-100"
-                            />
-                          </div>
+                          </label>
+                          <Field
+                            name="CompleteAddress"
+                            as="textarea"
+                            placeholder="Enter Address"
+                             className="formInputdefault border-1"
+                          />
+                        </div>
                       </>
                     )}
                   </ModalBody>
