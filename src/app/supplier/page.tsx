@@ -23,7 +23,6 @@ import AddButton from "../components/common/AddButton";
 
 const Supplier = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState<number>(0);
   const [selectedSupplierId, setSelectedSupplierId] = useState<number>(0);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
@@ -33,6 +32,7 @@ const Supplier = () => {
 
   const rowsPerPage = 15;
   const pages = Math.ceil(suppliers!.length / rowsPerPage);
+  
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;

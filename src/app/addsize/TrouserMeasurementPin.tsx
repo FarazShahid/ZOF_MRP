@@ -1,10 +1,14 @@
-import TrouserModal from '@/public/svgs/TrouserModal'
-import React from 'react'
-import MeasurementPin from './MeasurementPin'
-import { AddSizeMeasurementType } from '@/store/useSizeMeasurementsStore'
-import { trouserPinConfigs } from '@/lib/trouserPinConfigs'
+import TrouserModal from "@/public/svgs/TrouserModal";
+import React from "react";
+import MeasurementPin from "./MeasurementPin";
+import { AddSizeMeasurementType } from "@/store/useSizeMeasurementsStore";
+import { trouserPinConfigs } from "@/lib/trouserPinConfigs";
 
-const TrouserMeasurementPin = ({values}:{values: AddSizeMeasurementType}) => {
+const TrouserMeasurementPin = ({
+  values,
+}: {
+  values: AddSizeMeasurementType;
+}) => {
   return (
     <div className="col-span-4 relative h-[calc(100vh-115px)]">
       <div className="flex items-center justify-between">
@@ -12,7 +16,7 @@ const TrouserMeasurementPin = ({values}:{values: AddSizeMeasurementType}) => {
       </div>
 
       <div className="w-full h-full dark:text-gray-100 text-gray-800">
-        <TrouserModal  />
+        <TrouserModal />
       </div>
       <div className="absolute inset-0 top-[30px]">
         {trouserPinConfigs.map((cfg) => (
@@ -24,7 +28,7 @@ const TrouserMeasurementPin = ({values}:{values: AddSizeMeasurementType}) => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TrouserMeasurementPin
+export default TrouserMeasurementPin;

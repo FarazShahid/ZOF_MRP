@@ -4,7 +4,11 @@ import { pinConfigs } from "@/lib/pinConfigs";
 import MeasurementPin from "./MeasurementPin";
 import { AddSizeMeasurementType } from "@/store/useSizeMeasurementsStore";
 
-export const ShirtShortsMeasurementPin = ({values}:{values: AddSizeMeasurementType}) => {
+export const ShirtShortsMeasurementPin = ({
+  values,
+}: {
+  values: AddSizeMeasurementType;
+}) => {
   const [shirtFrontView, setShirtFrontView] = useState(true);
   const handleToggleShirtView = () => {
     setShirtFrontView((prev) => !prev);
