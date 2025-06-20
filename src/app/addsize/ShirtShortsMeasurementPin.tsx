@@ -28,10 +28,8 @@ export const ShirtShortsMeasurementPin = ({
       </div>
 
       <div className="w-full h-full dark:text-gray-100 text-gray-800">
-        <div className="w-full h-full dark:text-gray-100 text-gray-800">
           <ShirtShortsView shirtFrontView={shirtFrontView} />
         </div>
-      </div>
       <div className="absolute inset-0 top-[30px]">
         {pinConfigs.map((cfg) => (
           <MeasurementPin

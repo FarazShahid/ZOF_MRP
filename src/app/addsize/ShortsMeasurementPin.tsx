@@ -1,10 +1,14 @@
-import ShortsModal from '@/public/svgs/ShortsModal'
-import React from 'react'
-import MeasurementPin from './MeasurementPin'
-import { AddSizeMeasurementType } from '@/store/useSizeMeasurementsStore'
-import { shortsPinConfigs } from '@/lib/shortsPinConfigs'
+import ShortsModal from "@/public/svgs/ShortsModal";
+import React from "react";
+import MeasurementPin from "./MeasurementPin";
+import { AddSizeMeasurementType } from "@/store/useSizeMeasurementsStore";
+import { shortsPinConfigs } from "@/lib/shortsPinConfigs";
 
-const ShortsMeasurementPin = ({values}:{values: AddSizeMeasurementType}) => {
+const ShortsMeasurementPin = ({
+  values,
+}: {
+  values: AddSizeMeasurementType;
+}) => {
   return (
     <div className="col-span-4 relative h-[calc(100vh-115px)]">
       <div className="flex items-center justify-between">
@@ -12,9 +16,7 @@ const ShortsMeasurementPin = ({values}:{values: AddSizeMeasurementType}) => {
       </div>
 
       <div className="w-full h-full dark:text-gray-100 text-gray-800">
-        <div className="w-full h-full dark:text-gray-100 text-gray-800">
-          <ShortsModal  />
-        </div>
+        <ShortsModal />
       </div>
       <div className="absolute inset-0 top-[30px]">
         {shortsPinConfigs.map((cfg) => (
@@ -26,7 +28,7 @@ const ShortsMeasurementPin = ({values}:{values: AddSizeMeasurementType}) => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ShortsMeasurementPin
+export default ShortsMeasurementPin;
