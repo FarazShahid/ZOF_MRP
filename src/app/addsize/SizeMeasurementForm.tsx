@@ -25,6 +25,7 @@ import useCategoryStore from "@/store/useCategoryStore";
 import { ShirtShortsMeasurementPin } from "./ShirtShortsMeasurementPin";
 import ShortsMeasurementPin from "./ShortsMeasurementPin";
 import TrouserMeasurementPin from "./TrouserMeasurementPin";
+import LogoMeasurement from "./LogoMeasurement";
 
 const PRODUCTCATERGORYENUM = [
   { id: 1, name: "Jersey", unitType: "Top" },
@@ -161,6 +162,14 @@ const SizeMeasurementForm = ({
       isEdit && sizeMeasurementById ? sizeMeasurementById.LegOpening : "",
     bFrontRise:
       isEdit && sizeMeasurementById ? sizeMeasurementById.LegOpening : "",
+
+    // Logo Placement
+
+    TopRight: "",
+    TopLeft: "",
+    BottomRight: "",
+    BottomLeft: "",
+    Back: "",
   };
 
   const handleAddSizeOption = async (values: AddSizeMeasurementType) => {
@@ -351,6 +360,20 @@ const SizeMeasurementForm = ({
                       Bottom Unit
                     </button>
                   )}
+
+                  {/* Logo Measurement */}
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedUnitType(3)}
+                    className={`${
+                      selectedUnitType === 3
+                        ? "bg-green-800 text-white"
+                        : "bg-gray-300 text-gray-800"
+                    } px-2 py-1 rounded`}
+                  >
+                    Logo
+                  </button>
                 </div>
 
                 {selectedUnitType === 1 &&
@@ -359,6 +382,7 @@ const SizeMeasurementForm = ({
                   (unitType === "Bottom" || unitType === "Both") && (
                     <BottomUnit />
                   )}
+                {selectedUnitType === 3 && <LogoMeasurement />}
 
                 {/* Submit Button */}
                 <div className="flex justify-end w-full">
