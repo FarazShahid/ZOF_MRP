@@ -15,9 +15,21 @@ import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 
-export interface ChangeOrderStatusType{
+export interface ChangeOrderStatusType {
   id: number;
-  statusId: number
+  statusId: number;
+}
+
+interface OrderStatusLogsData {
+  message: string;
+  data: OrderStatusLogsType[];
+  status: number;
+}
+
+export interface OrderStatusLogsType {
+  StatusId: number;
+  StatusName: string;
+  Timestamp: string;
 }
 
 interface StoreState {
@@ -26,6 +38,7 @@ interface StoreState {
   events: Event[];
   statuses: OderStatus[];
   availableColors: { [productId: number]: AvailableColor[] };
+  OrderStatusLogs: OrderStatusLogsType[];
   loading: boolean;
   error: string | null;
   isResolved: boolean;
@@ -35,7 +48,11 @@ interface StoreState {
   getOrderById: (id: number) => Promise<void>;
   getOrderStatus: () => Promise<void>;
   getAvailableColorByProductId: (id: number) => Promise<void>;
-  changeOrderStatus:(orderStatus: ChangeOrderStatusType) => Promise<void>;
+  getOrderStatusLog: (id: number) => Promise<void>;
+  changeOrderStatus: (
+    orderStatus: ChangeOrderStatusType,
+    onSuccess: () => void
+  ) => Promise<void>;
   addOrder: (category: AddOrderType, onSuccess: () => void) => Promise<void>;
   updateOrder: (
     id: number,
@@ -68,8 +85,9 @@ const useOrderStore = create<StoreState>((set, get) => ({
     items: [],
   },
   events: [],
-  statuses:[],
+  statuses: [],
   availableColors: {},
+  OrderStatusLogs: [],
   loading: false,
   error: null,
   isResolved: false,
@@ -77,10 +95,10 @@ const useOrderStore = create<StoreState>((set, get) => ({
   fetchOrders: async (clientId?: number) => {
     set({ loading: true, error: null });
     let endpoint = "";
-    if(clientId && clientId > 0){
-      endpoint = `orders/${clientId}`
-    }else{
-      endpoint = "orders"
+    if (clientId && clientId > 0) {
+      endpoint = `orders/${clientId}`;
+    } else {
+      endpoint = "orders";
     }
     try {
       const response = await fetchWithAuth(
@@ -97,8 +115,6 @@ const useOrderStore = create<StoreState>((set, get) => ({
       set({ loading: false, error: "Error Fetching Data" });
     }
   },
-
-
 
   getOrderEvents: async (clientId: number) => {
     set({ loading: true, error: null });
@@ -179,7 +195,28 @@ const useOrderStore = create<StoreState>((set, get) => ({
     }
   },
 
-  changeOrderStatus: async (ChangeOrderStatus: ChangeOrderStatusType) => {
+  getOrderStatusLog: async (OrderId: number) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/order-status-log/${OrderId}`
+      );
+      if (!response.ok) {
+        set({ error: null, loading: false });
+        const error = await response.json();
+        toast.error(error.message || "Error fetching colors");
+      }
+      const data: OrderStatusLogsData = await response.json();
+      set({ OrderStatusLogs: data.data, loading: false });
+    } catch (error) {
+      set({ error: "Failed to fetch available colors", loading: false });
+    }
+  },
+
+  changeOrderStatus: async (
+    ChangeOrderStatus: ChangeOrderStatusType,
+    onSuccess?: () => void
+  ) => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
@@ -189,16 +226,16 @@ const useOrderStore = create<StoreState>((set, get) => ({
           headers: { "Content-Type": "application/json" },
         }
       );
-      if(response.ok){
+      if (response.ok) {
         set({ loading: false, error: null });
         toast.success("Order status updated successfully.");
-        await get().fetchOrders(0);
-      }else{
+        if (onSuccess) onSuccess();
+        // await get().getOrderById(ChangeOrderStatus.id);
+      } else {
         set({ loading: false, error: null });
         const error = await response.json();
         toast.error(error.message || "Fail to add Order");
       }
-    
     } catch (error) {
       set({ error: "Fail to add Order", loading: false });
       toast.error("Fail to add Order");
@@ -216,17 +253,16 @@ const useOrderStore = create<StoreState>((set, get) => ({
           body: JSON.stringify(orderType),
         }
       );
-      if(response.ok){
+      if (response.ok) {
         set({ loading: false, error: null });
         toast.success("Order added successfully.");
         if (onSuccess) onSuccess();
         await get().fetchOrders(orderType?.ClientId);
-      }else{
+      } else {
         set({ loading: false, error: null });
         const error = await response.json();
         toast.error(error.message || "Fail to add Order");
       }
-    
     } catch (error) {
       set({ error: "Fail to add Order", loading: false });
       toast.error("Fail to add Order");

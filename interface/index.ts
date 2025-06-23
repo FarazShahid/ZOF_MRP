@@ -15,3 +15,8 @@ export const MEASUREMENT_UNIT_TYPE = [
   {id: 3, name: "Both"}
 ]
 
+export const PRODUCT_STATUS_ENUM = [
+  {id: 1, name: "Approved"},
+  {id: 2, name: "Rejected"},
+  {id: 3, name: "Sample"}
+]

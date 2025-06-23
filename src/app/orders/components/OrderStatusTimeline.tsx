@@ -1,3 +1,4 @@
+import { OrderStatusLogsType } from "@/store/useOrderStore";
 import React from "react";
 
 const OrderStatusLogs = [
@@ -8,7 +9,7 @@ const OrderStatusLogs = [
   { id: 5, status_name: "Packing", date: "25 Aug 2025 07: 45 PM" },
 ];
 
-const OrderStatusTimeline = () => {
+const OrderStatusTimeline = ({OrderStatusLogs}:{OrderStatusLogs:OrderStatusLogsType[]}) => {
   return (
     <div className="ml-5">
       <div className="space-y-6 border-l-2 border-dashed dark:border-gray-800 border-gray-300">
@@ -29,10 +30,10 @@ const OrderStatusTimeline = () => {
               </svg>
               <div className="ml-6">
                 <h6 className="font-bold dark:text-gray-400 text-gray-600 text-sm">
-                  {log.status_name}
+                  {log.StatusName}
                 </h6>
                 <span className="mt-1 block text-xs font-semibold text-gray-400">
-                  {log.date}
+                  {log.Timestamp}
                 </span>
               </div>
             </div>

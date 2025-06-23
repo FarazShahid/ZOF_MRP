@@ -15,39 +15,6 @@ export default function Step2({ formik }: any) {
   const { fetchSleeveType, sleeveTypeData } = useSleeveType();
   const { fetchsizeOptions, sizeOptions } = useSizeOptionsStore();
 
-  //  const handleSizeOptionChange = (
-  //   keys:
-  //     | "all"
-  //     | Set<React.Key>
-  //     | (Set<React.Key> & { anchorKey?: string; currentKey?: string })
-  // ) => {
-  //   if (keys === "all") {
-  //     const allKeys = sizeOptions?.map((sizeOption) =>
-  //       String(sizeOption.Id)
-  //     );
-  //     setSelectedSizeOptions(allKeys || []);
-  //     formik.setFieldValue(
-  //       "productSizes",
-  //       allKeys.map((colorId, idx) => ({
-  //         Id: idx,
-  //         colorId: Number(colorId),
-  //         ImageId: "1",
-  //       }))
-  //     );
-  //   } else {
-  //     const keyArray = Array.from(keys).map(String);
-  //     setSelectedSizeOptions(keyArray);
-  //     formik.setFieldValue(
-  //       "productSizes",
-  //       keyArray.map((colorId, idx) => ({
-  //         Id: idx,
-  //         colorId: Number(colorId),
-  //         ImageId: "1",
-  //       }))
-  //     );
-  //   }
-  // };
-
   const handleSizeChange = (keys: Set<React.Key> | "all") => {
     let sizeIds: string[] = [];
 
@@ -82,7 +49,7 @@ export default function Step2({ formik }: any) {
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
-        <Label isRequired={false} label="Size Options" />
+        <Label isRequired={true} label="Size Options" />
         <Select
           className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
           name="SizeOptions"
@@ -93,7 +60,7 @@ export default function Step2({ formik }: any) {
           selectedKeys={new Set(selectedSizeIds)}
           onSelectionChange={(keys) => handleSizeChange(keys)}
         >
-          {sizeOptions!.map((sizeOption) => (
+          {sizeOptions?.map((sizeOption) => (
             <SelectItem key={sizeOption?.Id}>
               {sizeOption.OptionSizeOptions}
             </SelectItem>
@@ -112,7 +79,7 @@ export default function Step2({ formik }: any) {
                 >
                   <div className="grid grid-cols-2 gap-2">
                     <div className="flex flex-col gap-1">
-                      <Label isRequired={false} label="Cut Options" />
+                      <Label isRequired={true} label="Cut Options" />
                       <Field
                         as="select"
                         name={`productDetails[${index}].ProductCutOptionId`}

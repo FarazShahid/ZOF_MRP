@@ -2,11 +2,9 @@ import React, { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { IoIosStats } from "react-icons/io";
 import { FaUserTie } from "react-icons/fa6";
-import { FaFileImage, FaVideo } from "react-icons/fa";
-import { CgFileDocument } from "react-icons/cg";
+import { FaVideo } from "react-icons/fa";
 import { IoReturnDownBack } from "react-icons/io5";
-import { FaRegEye } from "react-icons/fa";
-import { IoArrowDownOutline } from "react-icons/io5";
+import { TbStatusChange } from "react-icons/tb";
 import useOrderStore from "@/store/useOrderStore";
 import PriorityChip from "./PriorityChip";
 import OrderDeadline from "./OrderDeadline";
@@ -16,6 +14,7 @@ import OrderStatusTimeline from "./OrderStatusTimeline";
 import { handleView } from "@/interface/GetFileType";
 import { ViewMeasurementChart } from "./ViewMeasurementChart";
 import DocumentCard from "./DocumentCard";
+import OrderStatus from "./OrderStatus";
 
 interface ViewOrderProps {
   orderId: number;
@@ -25,8 +24,17 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const [openViewModal, setOpenViewModal] = useState<boolean>(false);
   const [measurementId, setMeasurementId] = useState<number>(0);
   const [sizeOptionName, setSizeOptionName] = useState<string>("");
+  const [localStatusName, setLocalStatusName] = useState<string>("");
+  const [openUpdateStatusModal, setOpenUpdateStatusModal] =
+    useState<boolean>(false);
 
-  const { getOrderById, OrderById } = useOrderStore();
+  const {
+    changeOrderStatus,
+    getOrderById,
+    getOrderStatusLog,
+    OrderById,
+    OrderStatusLogs,
+  } = useOrderStore();
 
   const handleOpenViewModal = (id: number, sizeName: string) => {
     setMeasurementId(id);
@@ -38,9 +46,23 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     setOpenViewModal(false);
   };
 
+  const handleCloseStatusModal = () => {
+    setOpenUpdateStatusModal(false);
+  };
+
+  const handleStatusChange = (statusId: number, statusName: string) => {
+    const selectedStatusId = {
+      id: orderId,
+      statusId: statusId,
+    };
+    changeOrderStatus(selectedStatusId, handleCloseStatusModal);
+    setLocalStatusName(statusName);
+  };
+
   useEffect(() => {
     if (orderId) {
       getOrderById(orderId);
+      getOrderStatusLog(orderId);
     }
   }, [orderId]);
 
@@ -59,10 +81,11 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           </h2>
         </div>
         <button
-          className="px-3 py-1 flex items-center gap-2 dark:bg-blue-600 bg-blue-800 rounded-lg text-sm text-white"
           type="button"
+          onClick={() => setOpenUpdateStatusModal(true)}
+          className="px-3 py-1 flex items-center gap-2 dark:bg-blue-600 bg-blue-800 rounded-lg text-sm text-white"
         >
-          <IoArrowDownOutline /> Download
+          <TbStatusChange /> Change Status
         </button>
       </div>
       <div className="flex gap-4 w-full">
@@ -75,7 +98,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
               </div>
               <div className="flex flex-col gap-0.5">
                 <p className="text-medium dark:text-foreground text-gray-700 font-medium">
-                  {OrderById?.StatusName}
+                  {localStatusName ? localStatusName : OrderById?.StatusName}
                 </p>
                 <p className="text-xs dark:text-foreground text-gray-700 font-medium">
                   Current Status
@@ -114,7 +137,10 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                       key={`${index}_${detail?.ColorOptionId}`}
                     >
                       <div className="flex items-center gap-3">
-                        <PriorityChip priority={detail?.Priority} showLabel={true} />
+                        <PriorityChip
+                          priority={detail?.Priority}
+                          showLabel={true}
+                        />
 
                         <ColorContainer
                           key={detail?.ColorOptionId}
@@ -201,18 +227,31 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
         <div className="w-[25%] flex flex-col gap-2">
           <div className="p-3 dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 shadow-lg flex flex-col gap-5 dark:text-gray-400 text-gray-800">
             <p className="text-sm">Status Timeline</p>
-            <OrderStatusTimeline />
+            <OrderStatusTimeline OrderStatusLogs={OrderStatusLogs} />
           </div>
           <ClientDetails clientId={OrderById?.ClientId} />
         </div>
       </div>
 
-      <ViewMeasurementChart
-        isOpen={openViewModal}
-        measurementId={measurementId}
-        sizeOptionName={sizeOptionName}
-        onCloseViewModal={handeCloseViewModal}
-      />
+      {openViewModal && (
+        <ViewMeasurementChart
+          isOpen={openViewModal}
+          measurementId={measurementId}
+          sizeOptionName={sizeOptionName}
+          onCloseViewModal={handeCloseViewModal}
+        />
+      )}
+
+      {openUpdateStatusModal && (
+        <OrderStatus
+          OrderId={orderId}
+          isOpen={openUpdateStatusModal}
+          onCloseStatusModal={handleCloseStatusModal}
+          onChangeStatus={(statusId, statusName) =>
+            handleStatusChange(statusId, statusName)
+          }
+        />
+      )}
     </div>
   );
 };

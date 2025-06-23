@@ -5,4 +5,9 @@ export const CutOptionSchema = Yup.object().shape({
 })
 
 
+export const ChangeStatusSchema =  Yup.object().shape({
+})
+
+
+
 

@@ -6,12 +6,11 @@ import { Tooltip } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { FiRefreshCw, FiSettings } from "react-icons/fi";
 import { MdOutlineFilterAlt } from "react-icons/md";
-import useProductStore from "@/store/useProductStore";
+import useProductStore, { Product } from "@/store/useProductStore";
 import useCategoryStore from "@/store/useCategoryStore";
 import ProductsTable from "./component/ProductsTable";
 import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
 import AddButton from "../components/common/AddButton";
-import { Product } from "../services/useFetchProducts";
 import useFabricStore from "@/store/useFabricStore";
 
 const page = () => {

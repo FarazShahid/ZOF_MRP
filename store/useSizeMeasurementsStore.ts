@@ -50,38 +50,59 @@ export interface SizeMeasurements {
   SizeOptionId: number;
   SizeOptionName: string;
   Measurement1: string;
+
+  // Top Unit
   BackNeckDrop: string;
   FrontNeckDrop: string;
   ShoulderSeam: string;
   ShoulderSlope: string;
-  Hem: string;
-  Inseam: string;
-  Hip: string;
-  FrontRise: string;
-  FrontLengthHPS: string;
-  BackLengthHPS: string;
-  AcrossShoulders: string;
-  ArmHole: string;
   UpperChest: string;
   LowerChest: string;
-  Waist: string;
-  BottomWidth: string;
   SleeveLength: string;
   SleeveOpening: string;
+  FrontLengthHPS: string;
+  FrontRise: string;
+  Hem: string;
+  BottomHem: string;
   NeckSize: string;
   CollarHeight: string;
   CollarPointHeight: string;
   StandHeightBack: string;
   CollarStandLength: string;
+  AcrossShoulders: string;
+  BackLengthHPS: string;
+  BottomWidth: string;
   SideVentFront: string;
   SideVentBack: string;
   PlacketLength: string;
   TwoButtonDistance: string;
   PlacketWidth: string;
-  LegOpening: string;
-  KneeWidth: string;
+  ArmHole: string;
+
+  // Bottom Unit
+  Hip: string;
+  Waist: string;
+  Inseam: string;
   Outseam: string;
-  BottomHem: string;
+  HemBottom: string;
+  KneeWidth: string;
+  LegOpening: string;
+  bFrontRise: string;
+
+  // Logo Placement for Top Uint
+  t_TopRight: string;
+  t_TopLeft: string;
+  t_BottomRight: string;
+  t_BottomLeft: string;
+  t_Back: string;
+  t_Center: string;
+
+  // Logo Placement for Bottom Unit
+  b_TopRight: string;
+  b_TopLeft: string;
+  b_BottomRight: string;
+  b_BottomLeft: string;
+
   CreatedOn: string;
   CreatedBy: string;
   UpdatedOn: string;
