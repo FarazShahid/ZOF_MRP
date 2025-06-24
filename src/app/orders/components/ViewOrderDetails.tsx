@@ -25,6 +25,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const [measurementId, setMeasurementId] = useState<number>(0);
   const [sizeOptionName, setSizeOptionName] = useState<string>("");
   const [localStatusName, setLocalStatusName] = useState<string>("");
+  const [refetchData, setRefetchData] = useState<boolean>(false);
   const [openUpdateStatusModal, setOpenUpdateStatusModal] =
     useState<boolean>(false);
 
@@ -47,7 +48,9 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   };
 
   const handleCloseStatusModal = () => {
+    setRefetchData(!refetchData);
     setOpenUpdateStatusModal(false);
+    
   };
 
   const handleStatusChange = (statusId: number, statusName: string) => {
@@ -64,7 +67,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
       getOrderById(orderId);
       getOrderStatusLog(orderId);
     }
-  }, [orderId]);
+  }, [orderId, refetchData]);
 
   return (
     <div className="space-y-5 p-3">

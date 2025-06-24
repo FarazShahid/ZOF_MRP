@@ -1,17 +1,11 @@
-import { OrderStatusLogsType } from "@/store/useOrderStore";
 import React from "react";
+import { formatDateToReadableDate } from "@/interface";
+import { OrderStatusLogsType } from "@/store/useOrderStore";
 
-const OrderStatusLogs = [
-  { id: 1, status_name: "Pending", date: "18 Aug 2025 09:10 AM" },
-  { id: 2, status_name: "Production", date: "19 Aug 2025 10:30 AM" },
-  { id: 3, status_name: "Printing", date: "20 Aug 2025 06:10 PM" },
-  { id: 4, status_name: "QA", date: "24 Aug 2025 06:10 PM" },
-  { id: 5, status_name: "Packing", date: "25 Aug 2025 07: 45 PM" },
-];
 
 const OrderStatusTimeline = ({OrderStatusLogs}:{OrderStatusLogs:OrderStatusLogsType[]}) => {
   return (
-    <div className="ml-5">
+    <div className="OrderStatusTimeLineWrapper">
       <div className="space-y-6 border-l-2 border-dashed dark:border-gray-800 border-gray-300">
         {OrderStatusLogs.map((log, index) => {
           return (
@@ -33,7 +27,7 @@ const OrderStatusTimeline = ({OrderStatusLogs}:{OrderStatusLogs:OrderStatusLogsT
                   {log.StatusName}
                 </h6>
                 <span className="mt-1 block text-xs font-semibold text-gray-400">
-                  {log.Timestamp}
+                  {formatDateToReadableDate(log.Timestamp)}
                 </span>
               </div>
             </div>

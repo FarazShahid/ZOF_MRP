@@ -1,10 +1,10 @@
 import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
-import InventoryItemsTable from "./InventoryItemsTable";
+import InventoryTransaction from "../inventoryTransaction/page";
 
 const page = () => {
   return (
     <AdminDashboardLayout>
-      <InventoryItemsTable />
+      <InventoryTransaction />
     </AdminDashboardLayout>
   );
 };

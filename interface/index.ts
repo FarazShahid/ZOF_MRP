@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export const UNITTYPES = [
   { id: 1, name: "Top Unit" },
   { id: 2, name: "Bottom Unit" },
@@ -20,3 +22,10 @@ export const PRODUCT_STATUS_ENUM = [
   {id: 2, name: "Rejected"},
   {id: 3, name: "Sample"}
 ]
+
+
+
+
+export function formatDateToReadableDate(dateString: string): string {
+  return dayjs(dateString).format("DD MMM YYYY hh:mm A");
+}
