@@ -14,6 +14,7 @@ import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DeleteProduct from "../../products/DeleteProduct";
 import { useRouter } from "next/navigation";
+import ProductStatusChip from "./ProductStatusChip";
 
 const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
@@ -93,6 +94,9 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
           <TableColumn key="GSM" className="text-medium font-bold">
             GSM
           </TableColumn>
+           <TableColumn key="productStatus" className="text-medium font-bold">
+            Status
+          </TableColumn>
           <TableColumn key="action" className="text-medium font-bold">
             Action
           </TableColumn>
@@ -104,6 +108,8 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
                 <TableCell>
                   {columnKey === "Sr" ? (
                     index + 1
+                  ):columnKey === "productStatus" ? (
+                    <ProductStatusChip status={item?.productStatus} />
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (

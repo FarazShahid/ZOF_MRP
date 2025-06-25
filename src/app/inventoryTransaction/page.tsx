@@ -10,11 +10,12 @@ import {
   TableCell,
   Pagination,
   getKeyValue,
+  Tooltip,
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { IoChevronBackOutline } from "react-icons/io5";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiSettings } from "react-icons/fi";
 import useInventoryTransection from "@/store/useInventoryTransection";
 import { formatDate } from "../interfaces";
 import DeleteItem from "./DeleteItem";
@@ -70,7 +71,17 @@ const InventoryTransaction = () => {
           <h6 className="font-sans text-lg font-semibold">
             Inventory Transections
           </h6>
-          <AddButton title="Add New" onClick={openAddModal} />
+          <div className="flex items-center gap-2">
+            <Tooltip content="Inventory Settings">
+              <Link
+                href={"/inventoryItems/Inventorysetup"}
+                className="dark:bg-slate-500 bg-slate-300 dark:text-white text-gray-800 rounded-lg p-2"
+              >
+                <FiSettings size={20} />
+              </Link>
+            </Tooltip>
+            <AddButton title="Add New" onClick={openAddModal} />
+          </div>
         </div>
         <Table
           isStriped

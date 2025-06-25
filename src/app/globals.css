@@ -168,8 +168,8 @@
 }
 
 .dark {
-  --background: #000000;      /* dark bg */
-  --foreground: #f9fafb;      /* light text */
+  --background: #000000; /* dark bg */
+  --foreground: #f9fafb; /* light text */
 
   --font-outfit: Outfit, sans-serif;
 
@@ -318,7 +318,6 @@
     0px 8px 8px -4px rgba(255 255 255 / 0.03);
 }
 
-
 @layer base {
   *,
   ::after,
@@ -400,7 +399,6 @@
 .custom-scrollbar::-webkit-scrollbar-thumb {
   @apply bg-gray-200 rounded-full dark:bg-gray-700;
 }
-
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #344054;
@@ -1063,14 +1061,14 @@ span.flatpickr-weekday,
 
 @media (min-width: 768px) {
   .card-Color-grid {
-      grid-gap: 20px 35px;
+    grid-gap: 20px 35px;
   }
 }
 .card-grid--350 {
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-gap: 10px 35px;
 }
-.popupColorGrid{
+.popupColorGrid {
   grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
   grid-gap: 10px 35px;
 }
@@ -1102,7 +1100,7 @@ span.flatpickr-weekday,
 }
 .color-card_color:after {
   display: inline-block;
-  font: normal normal normal 1em / 1 'Nucleo';
+  font: normal normal normal 1em / 1 "Nucleo";
   text-transform: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -1172,7 +1170,7 @@ span.flatpickr-weekday,
   display: none;
   cursor: pointer;
   border-radius: 10px;
-  transition: all .1s;
+  transition: all 0.1s;
   box-shadow: white 0 0 0 3px, rgba(0, 0, 0, 0) 0 0 0 5px;
   z-index: 2;
 }
@@ -1186,9 +1184,9 @@ span.flatpickr-weekday,
 .color-card:hover .color-card_color span {
   opacity: 1;
 }
-.selectedNavItem{
+.selectedNavItem {
   background: #1e40af;
-    border-radius: 10px;
+  border-radius: 10px;
 }
 .selectedNavItem svg > path {
   fill: rgb(255, 255, 255);
@@ -1196,19 +1194,24 @@ span.flatpickr-weekday,
 .selectedNavItem span {
   color: rgb(255, 255, 255) !important;
 }
-.activeListing{
+.activeListing {
   border: 2px solid #4ade80;
 }
 .activeListing svg > path {
   fill: #4ade80;
 }
-.stockDataShip{
+.stockDataShip {
   padding: 4px 2px;
   border-radius: 10px;
   text-align: center;
 }
 .lowStock {
-  background: #FF800030;
-  color: #FF8000;
+  background: #ff800030;
+  color: #ff8000;
 }
 
+.OrderStatusTimeLineWrapper {
+  height: calc(50vh - 100px);
+  overflow-y: auto;
+  padding-left: 30px;
+}

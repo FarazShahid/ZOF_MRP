@@ -8,14 +8,8 @@ import {
   ModalHeader,
   Spinner,
 } from "@heroui/react";
-import Image from "next/image";
-import useSizeMeasurementsStore, {
-  SizeMeasurements,
-} from "@/store/useSizeMeasurementsStore";
+import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
 import { CiRuler } from "react-icons/ci";
-import { pinConfigs } from "@/lib/pinConfigs";
-import ViewMeasurementPin from "./ViewMeasurementPin";
-import HumanBody from "../../../../public/humanBody.png";
 import { formatNumber } from "@/interface";
 import ShirtAndShortsModal from "@/public/svgs/ShirtAndShortsModal";
 
@@ -70,7 +64,6 @@ export const ViewMeasurementChart: React.FC<ComponentProps> = ({
                   <div className="w-full h-full dark:text-gray-100 text-gray-800">
                     <ShirtAndShortsModal />
                   </div>
-                  {/* <img src="/modal.svg" className="w-full h-full" /> */}
                 </div>
                 <div className="w-[30%] p-2">
                   <h3 className="mb-5 flex items-center gap-2">

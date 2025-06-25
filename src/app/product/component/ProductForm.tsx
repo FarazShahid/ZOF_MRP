@@ -27,11 +27,12 @@ const formSteps = [
 const ProductForm = ({ productId }: { productId?: string }) => {
   const [currentStep, setCurrentStep] = useState(1);
 
-  const { addProduct, getProductById, productById } = useProductStore();
+  const { addProduct, updateProduct, getProductById, productById } =
+    useProductStore();
   const router = useRouter();
 
   const initialValues = {
-    Name:  productById?.Name ?? "",
+    Name: productById?.Name ?? "",
     ProductCategoryId: productById?.ProductCategoryId ?? "",
     FabricTypeId: productById?.FabricTypeId ?? "",
     Description: productById?.Description ?? "",
@@ -112,7 +113,24 @@ const ProductForm = ({ productId }: { productId?: string }) => {
   };
 
   const handleSubmit = async (values: any) => {
-    await addProduct(values, () => handleBoBack());
+    const payload = { ...values };
+
+    // Check if productColors is still the default value
+    const isDefaultProductColors =
+      payload.productColors?.length === 1 &&
+      payload.productColors[0].Id === 0 &&
+      payload.productColors[0].colorId === 0 &&
+      payload.productColors[0].ImageId === "1";
+
+    if (isDefaultProductColors) {
+      delete payload.productColors;
+    }
+
+    if (productId) {
+      await updateProduct(Number(productId), payload, () => handleBoBack());
+    } else {
+      await addProduct(payload, () => handleBoBack());
+    }
   };
 
   useEffect(() => {
@@ -211,9 +229,9 @@ const ProductForm = ({ productId }: { productId?: string }) => {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="flex items-center justify-center gap-1 text-white bg-[#584BDD] w-[80px] h-[30px] rounded-lg text-sm"
+                        className="flex items-center justify-center gap-1 text-white bg-[#584BDD] min-w-[80px] h-[30px] rounded-lg text-sm"
                       >
-                        {isSubmitting ? <Spinner /> : <></>}
+                        {isSubmitting ? <Spinner size="sm" /> : <></>}
                         Submit
                       </button>
                     )}

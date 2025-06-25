@@ -22,7 +22,7 @@ interface AvailableSizes {
   SizeName: string;
 }
 
-interface Product {
+export interface Product {
   Id: number;
   Name: string;
   ProductCategoryId: number;
@@ -31,6 +31,7 @@ interface Product {
   FabricType: string;
   FabricName: string;
   GSM: number;
+  productStatus: string;
   Description: string;
   CreatedBy: string;
   UpdatedBy: string;

@@ -47,6 +47,9 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
 
   const InitialValues = {
     type: isEdit && productCategory ? productCategory.type : "",
+    IsTopUnit: isEdit && productCategory ? productCategory.IsTopUnit : false,
+    IsBottomUnit: isEdit && productCategory ? productCategory.IsBottomUnit : false,
+    SupportsLogo: isEdit && productCategory ? productCategory.SupportsLogo : false,
   };
 
   const handleAddCatagory = async (values: AddClientType) => {
@@ -103,33 +106,43 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
                               className="text-red-400 text-sm"
                             />
                           </div>
-                          <div className="flex flex-col gap-1 w-full">
-                            <Label
-                              isRequired={true}
-                              label="Measurement Unit"
-                              labelForm="Measurement Unit"
-                            />
-                            <Field
-                              name="measurementUnit"
-                              as="select"
-                              className="formInputdefault bg-gray-100"
-                            >
-                              <option value={""}>
-                                Select a measurement unit
-                              </option>
-                              {MEASUREMENT_UNIT_TYPE.map((unit) => {
-                                return (
-                                  <option value={unit.name} key={unit.id}>
-                                    {unit.name}
-                                  </option>
-                                );
-                              })}
-                            </Field>
-                            <ErrorMessage
-                              name="measurementUnit"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
+                          <div className="grid grid-cols-3 gap-3">
+                            <div className="flex items-center gap-2">
+                              <Field
+                                name="IsTopUnit"
+                                type="checkbox"
+                                className="w-4 h-4"
+                              />
+                              <Label
+                                isRequired={false}
+                                label="Top Unit"
+                                labelForm="IsTopUnit"
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Field
+                                name="IsBottomUnit"
+                                type="checkbox"
+                                className="w-4 h-4"
+                              />
+                              <Label
+                                isRequired={false}
+                                label="Bottom Unit"
+                                labelForm="IsBottomUnit"
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Field
+                                name="SupportsLogo"
+                                type="checkbox"
+                                className="w-4 h-4"
+                              />
+                              <Label
+                                isRequired={false}
+                                label="Supports Logo"
+                                labelForm="SupportsLogo"
+                              />
+                            </div>
                           </div>
                         </div>
                       </>

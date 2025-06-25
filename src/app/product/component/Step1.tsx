@@ -74,7 +74,6 @@ export default function Step1({ formik }: any) {
     fetchData();
   }, []);
 
-  console.log("selectedColorOptions", selectedColorOptions);
 
   return (
     <div className="space-y-6 w-[500px]">

@@ -23,7 +23,6 @@ import { formatDate } from "../../interfaces";
 import StatusChip from "../../components/StatusChip";
 import DeleteModal from "../../components/DeleteModal";
 import PriorityChip from "./PriorityChip";
-import ViewDrawer from "./ViewDrawer";
 import { useRouter } from "next/navigation";
 
 const OrderTable = () => {
@@ -214,15 +213,6 @@ const OrderTable = () => {
           orderId={selectedOrderId}
           clientId={clientId}
           onDeleteSuccess={refreshData}
-        />
-      ) : (
-        <></>
-      )}
-      {isOpenViewModal ? (
-        <ViewDrawer
-          Id={selectedOrderId}
-          isOpen={isOpenViewModal}
-          onClose={closeViewModal}
         />
       ) : (
         <></>

@@ -16,6 +16,9 @@ interface ProductCategoryIdRepsonse {
 export interface ProductCategory {
   id: number;
   type: string;
+  IsTopUnit: boolean;
+  IsBottomUnit: boolean;
+  SupportsLogo: boolean;
   createdOn: string;
   createdBy: string;
   updatedOn: string;
