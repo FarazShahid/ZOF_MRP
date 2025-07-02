@@ -112,14 +112,17 @@ const InventoryTransaction = () => {
             <TableColumn key="Sr" className="text-medium font-bold">
               Sr
             </TableColumn>
+             <TableColumn key="ItemCode" className="text-medium font-bold">
+              Code
+            </TableColumn>
             <TableColumn key="ItemName" className="text-medium font-bold">
               Item Name
             </TableColumn>
-            <TableColumn key="ItemCode" className="text-medium font-bold">
-              Code
+            <TableColumn key="ClientName" className="text-medium font-bold">
+              Client 
             </TableColumn>
-            <TableColumn key="UnitOfMeasure" className="text-medium font-bold">
-              Unit Of Measure
+            <TableColumn key="OrderName" className="text-medium font-bold">
+              Order Name
             </TableColumn>
             <TableColumn key="Quantity" className="text-medium font-bold">
               Quantity

@@ -13,6 +13,7 @@ import { UnitOfMeasureSchema } from "../schema/SupplierSchema";
 import useUnitOfMeasureStore, {
   AddUnitOfMeasureType,
 } from "@/store/useUnitOfMeasureStore";
+import Label from "../components/common/Label";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ const AddUnitOfMeasure: React.FC<AddComponentProps> = ({
     addUnitOfMeasure,
     unitMeasureById,
   } = useUnitOfMeasureStore();
+
 
   useEffect(() => {
     if (Id && isEdit) {
@@ -70,7 +72,7 @@ const AddUnitOfMeasure: React.FC<AddComponentProps> = ({
               enableReinitialize
               onSubmit={handleAdd}
             >
-              {({ isSubmitting }) => (
+              {({ isSubmitting, setFieldValue }) => (
                 <Form>
                   <ModalBody>
                     {loading ? (
@@ -79,10 +81,9 @@ const AddUnitOfMeasure: React.FC<AddComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                           <Label isRequired={true}
+                               label="Name" 
+                               labelForm="Name" />
                             <Field
                               name="Name"
                               type="text"
@@ -96,9 +97,9 @@ const AddUnitOfMeasure: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Short Form
-                            </label>
+                             <Label isRequired={false}
+                               label="Short Form" 
+                               labelForm="Short Form" />
                             <Field
                               name="ShortForm"
                               type="text"

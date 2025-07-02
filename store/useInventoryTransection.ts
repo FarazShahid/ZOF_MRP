@@ -6,9 +6,8 @@ import { create } from "zustand";
 export const TRANSACTION_TYPES = [
   { label: "IN", value: "IN" },
   { label: "OUT", value: "OUT" },
-  { label: "PRODUCTION", value: "PRODUCTION" },
   { label: "Opening Balance", value: "Opening Balance" },
-  { label: "Disposal", value: "Disposal" },
+  { label: "Returned", value: "Disposal" },
 ];
 
 
@@ -26,6 +25,9 @@ interface AddInventoryTransactionResponse {
 
 interface InventoryTransectionResponse {
   Id: number;
+  ClientId?: number;
+  OrderId?: number;
+  SupplierId?: number;
   InventoryItemId: number;
   ItemName: string;
   ItemCode: string;
@@ -40,6 +42,9 @@ interface InventoryTransectionResponse {
 }
 
 export interface AddInventoryTransactionType {
+  ClientId?: number;
+  OrderId?: number;
+  SupplierId?: number;
   InventoryItemId: number;
   Quantity: number;
   TransactionType: string;

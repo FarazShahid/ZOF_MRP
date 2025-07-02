@@ -79,62 +79,104 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                       <Spinner />
                     ) : (
                       <>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                          <div className="flex flex-col gap-1 w-full">
-                            <Label
-                              label="Name"
-                              labelForm="Name"
-                              isRequired={true}
-                            />
-                            <Field
-                              name="Name"
-                              type="text"
-                              placeholder="Enter Name"
-                              className="formInputdefault border-1"
-                            />
-                            <ErrorMessage
-                              name="Name"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
+                        <div className="grid grid-cols-1 gap-3">
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="flex flex-col gap-1 w-full">
+                              <Label
+                                label="Business Name"
+                                labelForm="Business Name"
+                                isRequired={true}
+                              />
+                              <Field
+                                name="Name"
+                                type="text"
+                                placeholder="Enter Business Name"
+                                className="formInputdefault border-1"
+                              />
+                              <ErrorMessage
+                                name="Name"
+                                component="div"
+                                className="text-red-400 text-sm"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1 w-full">
+                              <Label
+                                label="Business Email"
+                                labelForm="Business Email"
+                                isRequired={true}
+                              />
+                              <Field
+                                type="text"
+                                name="Email"
+                                placeholder="Enter Business Email"
+                                className="formInputdefault border-1"
+                              />
+                              <ErrorMessage
+                                name="Email"
+                                component="div"
+                                className="text-red-400 text-sm"
+                              />
+                            </div>
                           </div>
-                          <div className="flex flex-col gap-1 w-full">
-                            <Label
-                              label="Email"
-                              labelForm="Email"
-                              isRequired={true}
-                            />
-                            <Field
-                              type="text"
-                              name="Email"
-                              placeholder="Enter Email"
-                              className="formInputdefault border-1"
-                            />
-                            <ErrorMessage
-                              name="Email"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
+                          <p>POC: (Person Of Contact):</p>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="flex flex-col gap-1 w-full">
+                              <Label
+                                label="Name"
+                                labelForm="Name"
+                                isRequired={true}
+                              />
+                              <Field
+                                type="text"
+                                name="POCName"
+                                placeholder="Enter Name"
+                                className="formInputdefault border-1"
+                              />
+                              <ErrorMessage
+                                name="POCName"
+                                component="div"
+                                className="text-red-400 text-sm"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1 w-full">
+                              <Label
+                                label="Phone Number"
+                                labelForm="Phone Number"
+                                isRequired={true}
+                              />
+                              <Field
+                                type="text"
+                                name="Phone"
+                                placeholder="Enter Phone"
+                                className="formInputdefault border-1"
+                              />
+                              <ErrorMessage
+                                name="Phone"
+                                component="div"
+                                className="text-red-400 text-sm"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1 w-full">
+                              <Label
+                                label="Email"
+                                labelForm="Email"
+                                isRequired={true}
+                              />
+                              <Field
+                                type="text"
+                                name="POCEmail"
+                                placeholder="Enter Email"
+                                className="formInputdefault border-1"
+                              />
+                              <ErrorMessage
+                                name="POCEmail"
+                                component="div"
+                                className="text-red-400 text-sm"
+                              />
+                            </div>
                           </div>
-                          <div className="flex flex-col gap-1 w-full">
-                            <Label
-                              label="Phone Number"
-                              labelForm="Phone Number"
-                              isRequired={true}
-                            />
-                            <Field
-                              type="text"
-                              name="Phone"
-                              placeholder="Enter Phone"
-                              className="formInputdefault border-1"
-                            />
-                            <ErrorMessage
-                              name="Phone"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 w-full">
+                          <p>Business URLs:</p>
+                          {/* <div className="flex flex-col gap-1 w-full">
                             <Label
                               label="Country"
                               labelForm="Country"
@@ -187,9 +229,9 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               component="div"
                               className="text-red-400 text-sm"
                             />
-                          </div>
+                          </div> */}
                         </div>
-                        <div className="flex flex-col gap-1">
+                        {/* <div className="flex flex-col gap-1">
                           <Label
                             label="Address"
                             labelForm="Address"
@@ -207,7 +249,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                             component="div"
                             className="text-red-400 text-sm"
                           />
-                        </div>
+                        </div> */}
                       </>
                     )}
                   </ModalBody>

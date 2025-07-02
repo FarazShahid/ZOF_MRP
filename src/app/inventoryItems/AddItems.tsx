@@ -17,6 +17,7 @@ import useSupplierStore from "@/store/useSupplierStore";
 import useUnitOfMeasureStore from "@/store/useUnitOfMeasureStore";
 import { InventoryItemSchema } from "../schema/InventoryItemSchema";
 import Label from "../components/common/Label";
+import useInventoryCategoryStore from "@/store/useInventoryCategoryStore";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -42,6 +43,7 @@ const AddItems: React.FC<AddComponentProps> = ({
   const { fetchSubCategories, subCategories } = useInventorySubCategoryStore();
   const { fetchSuppliers, suppliers } = useSupplierStore();
   const {fetchUnitOfMeasures, unitMeasures} = useUnitOfMeasureStore();
+  const {fetchInventoryCategories, inventoryCategories} = useInventoryCategoryStore();
 
   useEffect(() => {
     if (Id && isEdit) {
@@ -50,9 +52,10 @@ const AddItems: React.FC<AddComponentProps> = ({
   }, [Id, isEdit]);
 
   useEffect(() => {
-    fetchSubCategories();
+   
     fetchSuppliers();
     fetchUnitOfMeasures();
+    fetchInventoryCategories();
   }, []);
 
   const InitialValues = {
@@ -91,14 +94,14 @@ const AddItems: React.FC<AddComponentProps> = ({
               enableReinitialize
               onSubmit={handleAdd}
             >
-              {({ isSubmitting }) => (
+              {({ isSubmitting, setFieldValue }) => (
                 <Form>
                   <ModalBody>
                     {loading ? (
                       <Spinner />
                     ) : (
                       <>
-                        <div className="grid grid-cols-1 gap-3">
+                        <div className="grid grid-cols-2 gap-3">
                           <div className="flex flex-col gap-1 w-full">
                             <Label isRequired={true} 
                               label="Name" 
@@ -111,6 +114,37 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                             <ErrorMessage
                               name="Name"
+                              component="div"
+                              className="text-red-400 text-sm"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <Label isRequired={true}
+                               label="Category" 
+                               labelForm="Category" />
+                            <Field
+                              name="CategoryId"
+                              as="select"
+                              className="formInputdefault border-1"
+                               onChange={(
+                                e: React.ChangeEvent<HTMLSelectElement>
+                              ) => {
+                                const value = Number(e.target.value);
+                                setFieldValue("CategoryId", value);
+                                 fetchSubCategories(value);
+                              }}
+                            >
+                              <option value={0}>Select category</option>
+                              {inventoryCategories?.map((category, index) => {
+                                return (
+                                  <option value={category?.Id} key={index}>
+                                    {category?.Name}
+                                  </option>
+                                );
+                              })}
+                            </Field>
+                            <ErrorMessage
+                              name="SubCategoryId"
                               component="div"
                               className="text-red-400 text-sm"
                             />

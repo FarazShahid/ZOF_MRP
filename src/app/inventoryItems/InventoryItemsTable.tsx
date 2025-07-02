@@ -21,6 +21,7 @@ import StockDataVisulizer from "./StockDataVisulizer";
 import { FiPlus, FiSettings } from "react-icons/fi";
 import Link from "next/link";
 import AddButton from "../components/common/AddButton";
+import { formatDate } from "../interfaces";
 
 const InventoryItemsTable = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -67,14 +68,6 @@ const InventoryItemsTable = () => {
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">Inventory Items</h6>
           <div className="flex items-center gap-2">
-            {/* <Tooltip content="Inventory Settings">
-              <Link
-                href={"/inventoryItems/Inventorysetup"}
-                className="dark:bg-slate-500 bg-slate-300 dark:text-white text-gray-800 rounded-lg p-2"
-              >
-                <FiSettings size={20} />
-              </Link>
-            </Tooltip> */}
             <AddButton title="Add New" onClick={openAddModal} />
           </div>
         </div>
@@ -104,9 +97,6 @@ const InventoryItemsTable = () => {
           }}
         >
           <TableHeader>
-            <TableColumn key="ItemCode" className="text-medium font-bold">
-              Code
-            </TableColumn>
             <TableColumn key="Name" className="text-medium font-bold">
               Name
             </TableColumn>
@@ -125,12 +115,17 @@ const InventoryItemsTable = () => {
             >
               Unit Of Measure
             </TableColumn>
-
             <TableColumn key="ReorderLevel" className="text-medium font-bold">
               Reorder Level
             </TableColumn>
             <TableColumn key="Stock" className="text-medium font-bold">
               Stock
+            </TableColumn>
+            <TableColumn key="CreatedOn" className="text-medium font-bold">
+              Created On
+            </TableColumn>
+            <TableColumn key="UpdatedOn" className="text-medium font-bold">
+              Updated On
             </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">
               Action
@@ -141,7 +136,9 @@ const InventoryItemsTable = () => {
               <TableRow key={index}>
                 {(columnKey) => (
                   <TableCell>
-                    {columnKey === "Sr" ? (
+                    {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
+                      formatDate(item[columnKey])
+                    ) : columnKey === "Sr" ? (
                       index + 1
                     ) : columnKey === "Stock" ? (
                       <StockDataVisulizer

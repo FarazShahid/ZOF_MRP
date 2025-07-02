@@ -13,7 +13,6 @@ import {
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { FiPlus } from "react-icons/fi";
 import { formatDate } from "../interfaces";
 import useInventoryCategoryStore from "@/store/useInventoryCategoryStore";
 import DeleteCategories from "./DeleteCategories";
@@ -97,7 +96,6 @@ const InventoryCategories = () => {
             <TableColumn key="Name" className="text-medium font-bold">
               Name
             </TableColumn>
-            
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
@@ -107,9 +105,7 @@ const InventoryCategories = () => {
               <TableRow key={item.Id}>
                 {(columnKey) => (
                   <TableCell>
-                    {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
-                      formatDate(item[columnKey])
-                    ) : columnKey === "Sr" ? (
+                    {columnKey === "Sr" ? (
                       index + 1
                     ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
