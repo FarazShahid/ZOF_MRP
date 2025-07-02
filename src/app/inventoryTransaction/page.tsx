@@ -14,14 +14,12 @@ import {
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { IoChevronBackOutline } from "react-icons/io5";
-import { FiPlus, FiSettings } from "react-icons/fi";
+import {  FiSettings } from "react-icons/fi";
 import useInventoryTransection from "@/store/useInventoryTransection";
 import { formatDate } from "../interfaces";
 import DeleteItem from "./DeleteItem";
 import AddInventoryTransaction from "./AddInventoryTransaction";
 import TransactionTypeChip from "./TransactionTypeChip";
-import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
 import Link from "next/link";
 import AddButton from "../components/common/AddButton";
 

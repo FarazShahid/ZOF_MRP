@@ -19,14 +19,17 @@ import DeleteInventoryItem from "./DeleteInventoryItem";
 import AddItems from "./AddItems";
 import StockDataVisulizer from "./StockDataVisulizer";
 import { FiPlus, FiSettings } from "react-icons/fi";
+import { IoEye } from "react-icons/io5";
 import Link from "next/link";
 import AddButton from "../components/common/AddButton";
 import { formatDate } from "../interfaces";
+import ViewItem from "./ViewItem";
 
 const InventoryItemsTable = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
+  const [isOpenViewModal, setIsOpenViewModal] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
@@ -56,6 +59,14 @@ const InventoryItemsTable = () => {
     setSelectedItemId(Id);
     setIsEdit(true);
     setIsAddModalOpen(true);
+  };
+
+  const handleViewModal = (Id: number) => {
+    setSelectedItemId(Id);
+    setIsOpenViewModal(true);
+  };
+  const closeViewModal = () => {
+    setIsOpenViewModal(false);
   };
 
   useEffect(() => {
@@ -152,6 +163,12 @@ const InventoryItemsTable = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
+                          onClick={() => handleViewModal(item?.Id)}
+                        >
+                          <IoEye color="blue" />
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => handleOpenEditModal(item?.Id)}
                         >
                           <GoPencil color="green" />
@@ -181,6 +198,14 @@ const InventoryItemsTable = () => {
         />
       ) : (
         <></>
+      )}
+
+      {isOpenViewModal && (
+        <ViewItem
+          Id={selectedItemId}
+          isOpen={isOpenViewModal}
+          closeAddModal={closeViewModal}
+        />
       )}
 
       <DeleteInventoryItem

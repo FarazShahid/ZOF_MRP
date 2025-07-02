@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -18,6 +18,9 @@ import useUnitOfMeasureStore from "@/store/useUnitOfMeasureStore";
 import { InventoryItemSchema } from "../schema/InventoryItemSchema";
 import Label from "../components/common/Label";
 import useInventoryCategoryStore from "@/store/useInventoryCategoryStore";
+import DropZoneMultiple from "../components/DropZone/DropZoneMultiple";
+import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
+import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -32,6 +35,8 @@ const AddItems: React.FC<AddComponentProps> = ({
   isEdit,
   Id,
 }) => {
+  const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
+
   const {
     loading,
     getInventoryItemById,
@@ -42,8 +47,11 @@ const AddItems: React.FC<AddComponentProps> = ({
 
   const { fetchSubCategories, subCategories } = useInventorySubCategoryStore();
   const { fetchSuppliers, suppliers } = useSupplierStore();
-  const {fetchUnitOfMeasures, unitMeasures} = useUnitOfMeasureStore();
-  const {fetchInventoryCategories, inventoryCategories} = useInventoryCategoryStore();
+  const { fetchUnitOfMeasures, unitMeasures } = useUnitOfMeasureStore();
+  const { fetchInventoryCategories, inventoryCategories } =
+    useInventoryCategoryStore();
+  const { uploadDocument } =
+    useDocumentCenterStore();
 
   useEffect(() => {
     if (Id && isEdit) {
@@ -52,7 +60,6 @@ const AddItems: React.FC<AddComponentProps> = ({
   }, [Id, isEdit]);
 
   useEffect(() => {
-   
     fetchSuppliers();
     fetchUnitOfMeasures();
     fetchInventoryCategories();
@@ -71,13 +78,40 @@ const AddItems: React.FC<AddComponentProps> = ({
   };
 
   const handleAdd = async (values: AddInventoryItemOptions) => {
-    isEdit
-      ? updateInventoryItem(Id, values, () => {
-          closeAddModal();
-        })
-      : addInventoryItem(values, () => {
-          closeAddModal();
-        });
+    if (isEdit) {
+      const updatedItem = await updateInventoryItem(Id, values);
+      if (updatedItem && Object.values(itemFiles).length > 0) {
+        for (const file of Object.values(itemFiles)) {
+          if (file) {
+            await uploadDocument(
+              file,
+              DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS,
+              updatedItem.Id
+            );
+          }
+        }
+      }
+      closeAddModal();
+    } else {
+      const result = await addInventoryItem(values);
+      if (result) {
+        for (const file of Object.values(itemFiles)) {
+          if (file) {
+            await uploadDocument(
+              file,
+              DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS,
+              result.Id
+            );
+          }
+        }
+
+        closeAddModal();
+      }
+    }
+  };
+
+  const handleFileSelect = (file: File, index: number) => {
+    setItemFiles((prev) => ({ ...prev, [index]: file }));
   };
 
   return (
@@ -103,9 +137,11 @@ const AddItems: React.FC<AddComponentProps> = ({
                       <>
                         <div className="grid grid-cols-2 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true} 
-                              label="Name" 
-                              labelForm="Name" />
+                            <Label
+                              isRequired={true}
+                              label="Name"
+                              labelForm="Name"
+                            />
                             <Field
                               name="Name"
                               type="text"
@@ -119,19 +155,21 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true}
-                               label="Category" 
-                               labelForm="Category" />
+                            <Label
+                              isRequired={true}
+                              label="Category"
+                              labelForm="Category"
+                            />
                             <Field
                               name="CategoryId"
                               as="select"
                               className="formInputdefault border-1"
-                               onChange={(
+                              onChange={(
                                 e: React.ChangeEvent<HTMLSelectElement>
                               ) => {
                                 const value = Number(e.target.value);
                                 setFieldValue("CategoryId", value);
-                                 fetchSubCategories(value);
+                                fetchSubCategories(value);
                               }}
                             >
                               <option value={0}>Select category</option>
@@ -150,9 +188,11 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true}
-                               label="Sub Category" 
-                               labelForm="Sub Category" />
+                            <Label
+                              isRequired={true}
+                              label="Sub Category"
+                              labelForm="Sub Category"
+                            />
                             <Field
                               name="SubCategoryId"
                               as="select"
@@ -174,9 +214,11 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true}
-                               label="Supplier" 
-                               labelForm="Supplier" />
+                            <Label
+                              isRequired={true}
+                              label="Supplier"
+                              labelForm="Supplier"
+                            />
                             <Field
                               name="SupplierId"
                               as="select"
@@ -198,13 +240,15 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                             <Label isRequired={true}
-                               label="Unit Of Measure" 
-                               labelForm="Unit Of Measure" />
+                            <Label
+                              isRequired={true}
+                              label="Unit Of Measure"
+                              labelForm="Unit Of Measure"
+                            />
                             <Field
                               name="UnitOfMeasureId"
                               as="select"
-                               className="formInputdefault border-1"
+                              className="formInputdefault border-1"
                             >
                               <option value={0}>Select Unit of measure</option>
                               {unitMeasures?.map((unitMeasure, index) => {
@@ -222,13 +266,15 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true}
-                               label="Reorder Level" 
-                               labelForm="Reorder Level" />
+                            <Label
+                              isRequired={true}
+                              label="Reorder Level"
+                              labelForm="Reorder Level"
+                            />
                             <Field
                               name="ReorderLevel"
                               type="number"
-                               className="formInputdefault border-1"
+                              className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="ReorderLevel"
@@ -237,6 +283,10 @@ const AddItems: React.FC<AddComponentProps> = ({
                             />
                           </div>
                         </div>
+                        <DropZoneMultiple
+                          index={1}
+                          onFileSelect={handleFileSelect}
+                        />
                       </>
                     )}
                   </ModalBody>

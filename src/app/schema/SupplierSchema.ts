@@ -12,5 +12,4 @@ export const UserSchema = Yup.object().shape({
 
 export const UnitOfMeasureSchema = Yup.object().shape({
     Name: Yup.string().required('Name is required'),
-    ShortForm: Yup.string().required('ShortForm is required'),
 })

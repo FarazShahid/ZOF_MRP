@@ -14,7 +14,7 @@ interface AddInventoryItemResponse {
   message: string;
 }
 
-interface InventoryItemResponse {
+export interface InventoryItemResponse {
   Id: number;
   Name: string;
   ItemCode: string;
@@ -52,17 +52,25 @@ interface StoreState {
   fetchInventoryItems: () => Promise<void>;
   getInventoryItemById: (id: number) => Promise<void>;
   addInventoryItem: (
-    inventoryItemType: AddInventoryItemOptions,
-    onSuccess: () => void
-  ) => Promise<void>;
+    inventoryItemType: AddInventoryItemOptions
+  ) => Promise<InventoryItemResponse | null>;
   updateInventoryItem: (
     id: number,
-    supplierType: AddInventoryItemOptions,
-    onSuccess: () => void
-  ) => Promise<void>;
+    inventoryItemType: AddInventoryItemOptions
+  ) => Promise<InventoryItemResponse | null>;
+  // updateInventoryItem: (
+  //   id: number,
+  //   supplierType: AddInventoryItemOptions,
+  // ) => Promise<InventoryItemResponse | null>;
   deleteInventoryItem: (id: number, onSuccess: () => void) => Promise<void>;
-  updateStockLevelStatus: (itemCode: string, stockLevel: "low" | "normal" | "high") => void;
-  getStockLevelStatus: () => { itemCode: string; statusLevel: "low" | "normal" | "high" }[];
+  updateStockLevelStatus: (
+    itemCode: string,
+    stockLevel: "low" | "normal" | "high"
+  ) => void;
+  getStockLevelStatus: () => {
+    itemCode: string;
+    statusLevel: "low" | "normal" | "high";
+  }[];
 }
 
 const useInventoryItemsStore = create<StoreState>((set, get) => ({
@@ -109,11 +117,11 @@ const useInventoryItemsStore = create<StoreState>((set, get) => ({
   },
 
   addInventoryItem: async (
-    inventoryItemType: AddInventoryItemOptions,
-    onSuccess?: () => void
-  ) => {
+    inventoryItemType: AddInventoryItemOptions
+  ): Promise<InventoryItemResponse | null> => {
     set({ loading: true, error: null });
     try {
+      debugger
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/inventory-items`,
         {
@@ -122,50 +130,61 @@ const useInventoryItemsStore = create<StoreState>((set, get) => ({
           body: JSON.stringify(inventoryItemType),
         }
       );
+
+      const result: AddInventoryItemResponse = await response.json();
+
       if (!response.ok) {
-        const error = await response.json();
         set({ loading: false, error: null });
-        toast.error(error.message || "Failed to add item");
-      } else {
-        set({ loading: false, error: null });
-        toast.success("Item added successfully");
-        if (onSuccess) onSuccess();
-        await get().fetchInventoryItems();
+        toast.error(result.message || "Failed to add item");
+        return null;
       }
+
+      set({ loading: false, error: null });
+      toast.success("Item added successfully");
+      await get().fetchInventoryItems();
+
+      return result.data;
     } catch (error) {
       set({ error: "Failed to add item", loading: false });
       toast.error("Failed to add item");
+      return null;
     }
   },
 
+
   updateInventoryItem: async (
     id: number,
-    updatedinventoryItem: AddInventoryItemOptions,
-    onSuccess?: () => void
-  ) => {
+    inventoryItemType: AddInventoryItemOptions
+  ): Promise<InventoryItemResponse | null> => {
     set({ loading: true, error: null });
     try {
+      debugger
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/inventory-items/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedinventoryItem),
+          body: JSON.stringify(inventoryItemType),
         }
       );
+
+      const result: AddInventoryItemResponse = await response.json();
+
       if (!response.ok) {
-        const error = await response.json();
         set({ loading: false, error: null });
-        toast.error(error.message || "Failed to update item");
-      } else {
-        set({ loading: false, error: null });
-        toast.success("Item updated successfully");
-        if (onSuccess) onSuccess();
-        await get().fetchInventoryItems();
+        toast.error(result.message || "Failed to updated item");
+        return null;
       }
+
+      set({ loading: false, error: null });
+      toast.success("Item updated uccessfully");
+      await get().fetchInventoryItems();
+
+      return result.data;
     } catch (error) {
       set({ error: "Failed to update item", loading: false });
       toast.error("Failed to update item");
+      return null;
     }
   },
 
@@ -200,7 +219,7 @@ const useInventoryItemsStore = create<StoreState>((set, get) => ({
       },
     }));
   },
-  
+
   getStockLevelStatus: () => {
     const stockStatusMap = get().stockStatusMap;
     return Object.entries(stockStatusMap).map(([itemCode, statusLevel]) => ({
@@ -208,7 +227,6 @@ const useInventoryItemsStore = create<StoreState>((set, get) => ({
       statusLevel,
     }));
   },
-
 }));
 
 export default useInventoryItemsStore;

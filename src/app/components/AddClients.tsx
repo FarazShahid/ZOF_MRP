@@ -34,7 +34,12 @@ const AddClients: React.FC<AddClientComponentProps> = ({
   const InitialValues = {
     Name: isEdit && clientById ? clientById?.Name : "",
     Email: isEdit && clientById ? clientById?.Email : "",
+    POCName: isEdit && clientById ? clientById?.POCName : "",
     Phone: isEdit && clientById ? clientById?.Phone : "",
+    POCEmail: isEdit && clientById ? clientById?.POCEmail : "",
+    Website: isEdit && clientById ? clientById?.Website : "",
+    Linkedin: isEdit && clientById ? clientById?.Linkedin :  "",
+    Instagram: isEdit && clientById ? clientById?.Instagram :  "",
     Country: isEdit && clientById ? clientById?.Country : "",
     State: isEdit && clientById ? clientById?.State : "",
     City: isEdit && clientById ? clientById?.City : "",
@@ -103,7 +108,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Label
                                 label="Business Email"
                                 labelForm="Business Email"
-                                isRequired={true}
+                                isRequired={false}
                               />
                               <Field
                                 type="text"
@@ -119,12 +124,12 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                             </div>
                           </div>
                           <p>POC: (Person Of Contact):</p>
-                          <div className="grid grid-cols-2 gap-3">
+                          <div className="grid grid-cols-3 gap-3">
                             <div className="flex flex-col gap-1 w-full">
                               <Label
                                 label="Name"
                                 labelForm="Name"
-                                isRequired={true}
+                                isRequired={false}
                               />
                               <Field
                                 type="text"
@@ -142,7 +147,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Label
                                 label="Phone Number"
                                 labelForm="Phone Number"
-                                isRequired={true}
+                                isRequired={false}
                               />
                               <Field
                                 type="text"
@@ -160,7 +165,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Label
                                 label="Email"
                                 labelForm="Email"
-                                isRequired={true}
+                                isRequired={false}
                               />
                               <Field
                                 type="text"
@@ -168,14 +173,50 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                                 placeholder="Enter Email"
                                 className="formInputdefault border-1"
                               />
-                              <ErrorMessage
-                                name="POCEmail"
-                                component="div"
-                                className="text-red-400 text-sm"
-                              />
                             </div>
                           </div>
                           <p>Business URLs:</p>
+                          <div className="grid grid-cols-3 gap-3">
+                            <div className="flex flex-col gap-1 w-full">
+                              <Label
+                                label="Web Site"
+                                labelForm="Web Site"
+                                isRequired={false}
+                              />
+                              <Field
+                                type="text"
+                                name="Website"
+                                placeholder="Enter Website"
+                                className="formInputdefault border-1"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1 w-full">
+                              <Label
+                                label="LinkdIn"
+                                labelForm="Linkdin"
+                                isRequired={false}
+                              />
+                              <Field
+                                type="text"
+                                name="Linkedin"
+                                placeholder="Enter Linkedin"
+                                className="formInputdefault border-1"
+                              />
+                            </div>
+                             <div className="flex flex-col gap-1 w-full">
+                              <Label
+                                label="Instagram"
+                                labelForm="Instagram"
+                                isRequired={false}
+                              />
+                              <Field
+                                type="text"
+                                name="Instagram"
+                                placeholder="Enter Instagram"
+                                className="formInputdefault border-1"
+                              />
+                            </div>
+                          </div>
                           {/* <div className="flex flex-col gap-1 w-full">
                             <Label
                               label="Country"

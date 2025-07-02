@@ -10,7 +10,7 @@ export type UploadedFile = {
 type FileUploadState = {
   uploadedFilesByIndex: Record<number, UploadedFile[]>;
   setUploadedFilesByIndex: (index: number, files: UploadedFile[]) => void;
-  removeUploadedFileByIndex: (index: number) => void;
+  removeUploadedFileByIndex: (index: number, fileIndex?: number) => void;
 };
 
 export const useFileUploadStore = create<FileUploadState>((set) => ({
@@ -19,10 +19,15 @@ export const useFileUploadStore = create<FileUploadState>((set) => ({
     set((state) => ({
       uploadedFilesByIndex: { ...state.uploadedFilesByIndex, [index]: files },
     })),
-  removeUploadedFileByIndex: (index) =>
-    set((state) => {
-      const newState = { ...state.uploadedFilesByIndex };
-      delete newState[index];
-      return { uploadedFilesByIndex: newState };
-    }),
+  removeUploadedFileByIndex: (index: number, fileIndex?: number) =>
+  set((state) => {
+    const files = state.uploadedFilesByIndex[index] || [];
+    const updatedFiles = files.filter((_, i) => i !== fileIndex);
+    return {
+      uploadedFilesByIndex: {
+        ...state.uploadedFilesByIndex,
+        [index]: updatedFiles,
+      },
+    };
+  }),
 }));
