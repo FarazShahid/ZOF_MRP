@@ -22,6 +22,7 @@ import AddInventoryTransaction from "./AddInventoryTransaction";
 import TransactionTypeChip from "./TransactionTypeChip";
 import Link from "next/link";
 import AddButton from "../components/common/AddButton";
+import StockDataVisulizer from "../inventoryItems/StockDataVisulizer";
 
 const InventoryTransaction = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -67,7 +68,7 @@ const InventoryTransaction = () => {
       <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">
-            Inventory Transections
+            Inventory Transaction
           </h6>
           <div className="flex items-center gap-2">
             <Tooltip content="Inventory Settings">
@@ -110,9 +111,6 @@ const InventoryTransaction = () => {
             <TableColumn key="Sr" className="text-medium font-bold">
               Sr
             </TableColumn>
-             <TableColumn key="ItemCode" className="text-medium font-bold">
-              Code
-            </TableColumn>
             <TableColumn key="ItemName" className="text-medium font-bold">
               Item Name
             </TableColumn>
@@ -130,6 +128,9 @@ const InventoryTransaction = () => {
               className="text-medium font-bold"
             >
               Transaction Type
+            </TableColumn>
+            <TableColumn key="Stock" className="text-medium font-bold">
+              Stock
             </TableColumn>
             <TableColumn
               key="TransactionDate"
@@ -152,7 +153,13 @@ const InventoryTransaction = () => {
                       index + 1
                     ) : columnKey === "TransactionType" ? (
                       <TransactionTypeChip type={item?.TransactionType} />
-                    ) : columnKey !== "action" ? (
+                    ): columnKey === "Stock" ? (
+                      <StockDataVisulizer
+                        stock={item?.Stock}
+                        reorderLevel={item?.ReorderLevel}
+                        itemCode={item?.ItemCode}
+                      />
+                    )  : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">

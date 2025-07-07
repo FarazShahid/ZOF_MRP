@@ -2,18 +2,12 @@
 
 import { useState, useCallback } from "react";
 import JSZip from "jszip";
+import * as XLSX from "xlsx";
 import { useDropzone } from "react-dropzone";
 import { MdCancel } from "react-icons/md";
 import { FaRegEye } from "react-icons/fa";
 import FilePreviewModal from "../../product/component/FilePreviewModal";
-import { useFileUploadStore } from "@/store/useFileUploadStore";
-
-type UploadedFile = {
-  file: File;
-  type: string;
-  previewUrl?: string;
-  zipContents?: string[];
-};
+import { UploadedFile, useFileUploadStore } from "@/store/useFileUploadStore";
 
 type DropZoneProps = {
   index: number;
@@ -38,6 +32,7 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
         const type = file.type;
         let previewUrl: string | undefined;
         let zipContents: string[] | undefined;
+        let excelPreview: string[][] | undefined;
 
         if (file.name.endsWith(".zip")) {
           try {
@@ -52,12 +47,37 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
           previewUrl = URL.createObjectURL(file);
         }
 
-        const newFile: UploadedFile = { file, type, previewUrl, zipContents };
+        if (
+          file.name.endsWith(".xlsx") ||
+          file.name.endsWith(".xls") ||
+          type ===
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+          type === "application/vnd.ms-excel"
+        ) {
+          try {
+            const data = await file.arrayBuffer();
+            const workbook = XLSX.read(data, { type: "array" });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(sheet, {
+              header: 1,
+            }) as string[][];
+            excelPreview = json.slice(0, 10);
+          } catch (error) {
+            console.error("Error reading Excel file:", error);
+          }
+        }
 
-        // ✅ Append instead of replace
+        const newFile: UploadedFile = {
+          file,
+          type,
+          previewUrl,
+          zipContents,
+          excelPreview,
+        };
+
         setUploadedFilesByIndex(index, [...uploadedFiles, newFile]);
 
-        // 🔄 If needed, notify parent about latest file only
         onFileSelect(file, index);
       }
     },
@@ -73,6 +93,7 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
         [],
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [],
+      "application/vnd.ms-excel": [], // ✅ .xls
       "application/vnd.openxmlformats-officedocument.presentationml.presentation":
         [],
       "application/zip": [],
@@ -140,6 +161,23 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
                     src={f.previewUrl}
                     className="w-full h-40 rounded mb-2"
                   />
+                ) : f.excelPreview ? (
+                  <div className="h-40 overflow-y-auto text-sm bg-gray-100 p-2 rounded">
+                    <p className="font-semibold mb-1">Excel Preview:</p>
+                    <table className="text-xs w-full table-auto border">
+                      <tbody>
+                        {f.excelPreview.map((row, i) => (
+                          <tr key={i}>
+                            {row.map((cell, j) => (
+                              <td key={j} className="border px-1 py-0.5">
+                                {cell}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 ) : f.zipContents ? (
                   <div className="h-40 overflow-y-auto text-sm bg-gray-100 p-2 rounded">
                     <p className="font-semibold mb-1">ZIP contents:</p>

@@ -1,19 +1,12 @@
+import { UploadedFile } from "@/store/useFileUploadStore";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
 import React from "react";
-
-interface UploadedFile {
-    file: File;
-    type: string;
-    previewUrl?: string;
-    zipContents?: string[];
-  }
 
 interface ComponentProps {
   isOpen: boolean;
   closeViewModal: () => void;
   file: UploadedFile | null;
 }
-
 
 const FilePreviewModal: React.FC<ComponentProps> = ({
   isOpen,
@@ -49,6 +42,25 @@ const FilePreviewModal: React.FC<ComponentProps> = ({
                     <li key={i}>{entry}</li>
                   ))}
                 </ul>
+              )}
+              {/* 📊 Excel Preview */}
+              {file?.excelPreview && (
+                <div className="overflow-auto max-h-[60vh]">
+                  <p className="text-sm font-semibold mb-2">Excel Preview:</p>
+                  <table className="w-full table-auto border text-xs">
+                    <tbody>
+                      {file.excelPreview.map((row, i) => (
+                        <tr key={i}>
+                          {row.map((cell, j) => (
+                            <td key={j} className="border px-2 py-1">
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
               {!file?.previewUrl && !file?.zipContents && (
                 <p className="text-gray-500 text-sm">No preview available.</p>

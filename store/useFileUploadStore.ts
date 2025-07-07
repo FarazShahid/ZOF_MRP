@@ -5,6 +5,7 @@ export type UploadedFile = {
   type: string;
   previewUrl?: string;
   zipContents?: string[];
+  excelPreview?: string[][];
 };
 
 type FileUploadState = {

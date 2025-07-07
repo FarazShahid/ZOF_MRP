@@ -67,6 +67,7 @@ const AddItems: React.FC<AddComponentProps> = ({
 
   const InitialValues = {
     Name: isEdit && inventoryItemById ? inventoryItemById.Name : "",
+    CategoryId: isEdit && inventoryItemById ? inventoryItemById.CategoryId : 0,
     SubCategoryId:
       isEdit && inventoryItemById ? inventoryItemById.SubCategoryId : 0,
     UnitOfMeasureId:
@@ -189,7 +190,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                           </div>
                           <div className="flex flex-col gap-1 w-full">
                             <Label
-                              isRequired={true}
+                              isRequired={false}
                               label="Sub Category"
                               labelForm="Sub Category"
                             />
