@@ -2,15 +2,14 @@ import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 
-
-interface GetClientResponseType{
-  data:GetClientsType[];
+interface GetClientResponseType {
+  data: GetClientsType[];
   statusCode: number;
   message: string;
 }
 
-interface ClinetByIdResponse{
-  data:GetClientsType;
+interface ClinetByIdResponse {
+  data: GetClientsType;
   statusCode: number;
   message: string;
 }
@@ -19,7 +18,13 @@ export interface GetClientsType {
   Id: number;
   Name: string;
   Email: string;
+  POCName?: string;
   Phone: string;
+  POCEmail?: string;
+  Website?: string;
+  Linkedin?: string;
+  Instagram?: string;
+
   City: string;
   State: string;
   Country: string;
@@ -28,15 +33,20 @@ export interface GetClientsType {
   CreatedBy: string;
   CreatedOn: string;
 }
-export interface AddClientType{
-    Name: string,
-    Email: string,
-    Phone: string,
-    Country: string,
-    State: string,
-    City: string,
-    CompleteAddress: string,
-    ClientStatusId: string
+export interface AddClientType {
+  Name: string;
+  Email?: string;
+  POCName?: string;
+  Phone?: string;
+  POCEmail?: string;
+  Website?: string;
+  Linkedin?: string;
+  Instagram?: string;
+  Country?: string;
+  State?: string;
+  City?: string;
+  CompleteAddress?: string;
+  ClientStatusId?: string;
 }
 
 interface ClientState {
@@ -48,10 +58,7 @@ interface ClientState {
 
   fetchClients: () => Promise<void>;
   getClientById: (id: number) => Promise<void>;
-  addClient: (
-    client: AddClientType,
-    onSuccess: () => void
-  ) => Promise<void>;
+  addClient: (client: AddClientType, onSuccess: () => void) => Promise<void>;
   updateClient: (
     id: number,
     client: AddClientType,
@@ -92,7 +99,7 @@ const useClientStore = create<ClientState>((set, get) => ({
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/clients/${id}`
       );
-      if(!response.ok){
+      if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
         toast.error("Fail to fetch data");
       }
@@ -114,12 +121,12 @@ const useClientStore = create<ClientState>((set, get) => ({
           body: JSON.stringify(client),
         }
       );
-      if(response.ok){
+      if (response.ok) {
         set({ loading: false, error: null, isResolved: true });
         toast.success("Client added successfully.");
         if (onSuccess) onSuccess();
         await get().fetchClients();
-      }else{
+      } else {
         set({ loading: false, error: null, isResolved: false });
         const error = await response.json();
         toast.error(error.message || "Fail to add client");
@@ -145,12 +152,12 @@ const useClientStore = create<ClientState>((set, get) => ({
           body: JSON.stringify(updatedClient),
         }
       );
-      if(response.ok){
+      if (response.ok) {
         set({ loading: false, error: null, isResolved: true });
         toast.success("Client updated successfully.");
         if (onSuccess) onSuccess();
         await get().fetchClients();
-      }else{
+      } else {
         set({ loading: false, error: null, isResolved: false });
         const error = await response.json();
         toast.error(error.message || "Fail to updated client");
@@ -169,17 +176,16 @@ const useClientStore = create<ClientState>((set, get) => ({
         { method: "DELETE" }
       );
 
-      if (response.ok){
+      if (response.ok) {
         set({ loading: false, error: null, isResolved: true });
-        toast.success("Client deleted successfully.")
+        toast.success("Client deleted successfully.");
         if (onSuccess) onSuccess();
         await get().fetchClients();
-      }else{
+      } else {
         set({ loading: false, error: null, isResolved: false });
         const error = await response.json();
         toast.error(error.message || "Fail to delete client");
       }
-      
     } catch (error) {
       set({ error: "Failed to delete client", loading: false });
       toast.error("Failed to delete client");

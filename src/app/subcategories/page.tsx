@@ -18,6 +18,7 @@ import useInventorySubCategoryStore from "@/store/useInventorySubCategoryStore";
 import AddSubCategory from "./AddSubCategory";
 import DeleteSubCategory from "./DeleteSubCategory";
 import AddButton from "../components/common/AddButton";
+import { formatDate } from "../interfaces";
 
 const Subcategories = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -31,7 +32,7 @@ const Subcategories = () => {
 
   const rowsPerPage = 15;
   const pages = Math.ceil(subCategories?.length / rowsPerPage);
-  
+
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
@@ -100,7 +101,6 @@ const Subcategories = () => {
             <TableColumn key="CategoryName" className="text-medium font-bold">
               Category Name
             </TableColumn>
-           
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>

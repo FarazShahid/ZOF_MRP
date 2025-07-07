@@ -29,3 +29,8 @@ export const PRODUCT_STATUS_ENUM = [
 export function formatDateToReadableDate(dateString: string): string {
   return dayjs(dateString).format("DD MMM YYYY hh:mm A");
 }
+
+export const DOCUMENT_REFERENCE_TYPE = {
+  INVENTORY_ITEMS: "inventory_item",
+  ORDER: 'order'
+}

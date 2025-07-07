@@ -36,7 +36,7 @@ interface StoreState {
   loading: boolean;
   error: string | null;
 
-  fetchSubCategories: () => Promise<void>;
+  fetchSubCategories: (CategoryId?: number) => Promise<void>;
   getSubCategoryById: (id: number) => Promise<void>;
   addSubCategory: (
     subCategoryType: AddSubCategoryOptions,
@@ -56,7 +56,7 @@ const useInventorySubCategoryStore = create<StoreState>((set, get) => ({
   loading: false,
   error: null,
 
-  fetchSubCategories: async () => {
+  fetchSubCategories: async (CategoryId?: number) => {
     set({ loading: true, error: null });
 
     try {
@@ -67,7 +67,11 @@ const useInventorySubCategoryStore = create<StoreState>((set, get) => ({
         set({ loading: false, error: "Error Fetching Data" });
       }
       const data: GetSubCategoryResponse = await response.json();
-      set({ subCategories: data.data, loading: false });
+      const filteredSubCategories = CategoryId
+      ? data.data.filter(subCat => subCat.CategoryId === CategoryId)
+      : data.data;
+
+    set({ subCategories: filteredSubCategories, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
     }

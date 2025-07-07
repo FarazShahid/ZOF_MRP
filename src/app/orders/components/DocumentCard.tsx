@@ -17,19 +17,11 @@ const DocumentCard: React.FC<DocumentCardProp> = ({
 }) => {
   return (
     <div className="rounded-xl border shadow w-full max-w-[200px] pt-3 py-3 px-3">
-      {fileType === "image" ? (
-        <img
-          src={path}
-          alt={fileTitle}
-          className="w-full h-48 object-contain rounded"
-        />
-      ) : (
-        <iframe
+      <iframe
           src={path}
           className="w-full h-48 border rounded"
           title={fileTitle}
         />
-      )}
       <div className="mt-3 dark:border-gray-600 border-gray-200 border-t-2 flex justify-between items-center p-3">
         <div className="flex flex-col text-sm text-gray-400">
           <p className="truncate overflow-hidden whitespace-nowrap max-w-[180px] dark:text-gray-200 text-gray-600">

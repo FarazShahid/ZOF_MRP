@@ -15,6 +15,10 @@ import useInventoryTransection, {
   AddInventoryTransactionType,
   TRANSACTION_TYPES,
 } from "@/store/useInventoryTransection";
+import useClientStore from "@/store/useClientStore";
+import useOrderStore from "@/store/useOrderStore";
+import useSupplierStore from "@/store/useSupplierStore";
+import Label from "../components/common/Label";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -38,6 +42,9 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
   } = useInventoryTransection();
 
   const { fetchInventoryItems, inventoryItems } = useInventoryItemsStore();
+  const { fetchClients, clients } = useClientStore();
+  const { fetchOrders, Orders } = useOrderStore();
+  const { fetchSuppliers, suppliers } = useSupplierStore();
 
   useEffect(() => {
     if (Id && isEdit) {
@@ -47,20 +54,33 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
 
   useEffect(() => {
     fetchInventoryItems();
+    fetchSuppliers();
+    fetchClients();
   }, []);
 
   const InitialValues = {
+    ClientId:
+      isEdit && inventoryTransactionById
+        ? inventoryTransactionById?.ClientId
+        : 0,
+    OrderId:
+      isEdit && inventoryTransactionById
+        ? inventoryTransactionById?.OrderId
+        : 0,
+    SupplierId: isEdit && inventoryTransactionById
+        ? inventoryTransactionById?.SupplierId
+        : 0,
     InventoryItemId:
       isEdit && inventoryTransactionById
-        ? inventoryTransactionById.InventoryItemId
+        ? inventoryTransactionById?.InventoryItemId
         : 0,
     Quantity:
       isEdit && inventoryTransactionById
-        ? Number(inventoryTransactionById.Quantity)
+        ? Number(inventoryTransactionById?.Quantity)
         : 0,
     TransactionType:
       isEdit && inventoryTransactionById
-        ? inventoryTransactionById.TransactionType
+        ? inventoryTransactionById?.TransactionType
         : "",
   };
 
@@ -75,7 +95,7 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} size="lg" onOpenChange={closeAddModal}>
+    <Modal isOpen={isOpen} size="2xl" onOpenChange={closeAddModal}>
       <ModalContent>
         {() => (
           <>
@@ -88,23 +108,78 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
               enableReinitialize
               onSubmit={handleAdd}
             >
-              {({ isSubmitting }) => (
+              {({ isSubmitting, setFieldValue }) => (
                 <Form>
                   <ModalBody>
                     {loading ? (
                       <Spinner />
                     ) : (
                       <>
-                        <div className="grid grid-cols-1 gap-3">
+                        <div className="grid grid-cols-2 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Inventory Item
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={false} label="Client" />
+                            <Field
+                              name="ClientId"
+                              as="select"
+                              className="formInputdefault border-1"
+                              onChange={(
+                                e: React.ChangeEvent<HTMLSelectElement>
+                              ) => {
+                                const value = Number(e.target.value);
+                                setFieldValue("ClientId", value);
+                                fetchOrders(value);
+                              }}
+                            >
+                              <option value={0}>Select client</option>
+                              {clients?.map((client, index) => {
+                                return (
+                                  <option value={client?.Id} key={index}>
+                                    {client?.Name}
+                                  </option>
+                                );
+                              })}
+                            </Field>
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <Label isRequired={false} label="Order" />
+                            <Field
+                              name="OrderId"
+                              as="select"
+                              className="formInputdefault border-1"
+                            >
+                              <option value={0}>Select order</option>
+                              {Orders?.map((Order, index) => {
+                                return (
+                                  <option value={Order?.Id} key={index}>
+                                    {Order?.OrderName}
+                                  </option>
+                                );
+                              })}
+                            </Field>
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <Label isRequired={false} label="Supplier" />
+                            <Field
+                              name="SupplierId"
+                              as="select"
+                              className="formInputdefault border-1"
+                            >
+                              <option value={0}>Select supplier</option>
+                              {suppliers?.map((supplier, index) => {
+                                return (
+                                  <option value={supplier?.Id} key={index}>
+                                    {supplier?.Name}
+                                  </option>
+                                );
+                              })}
+                            </Field>
+                          </div>
+                          <div className="flex flex-col gap-1 w-full">
+                            <Label isRequired={true} label="Inventory Item" />
                             <Field
                               name="InventoryItemId"
                               as="select"
-                               className="formInputdefault border-1"
+                              className="formInputdefault border-1"
                             >
                               <option value={0}>Select inventory item</option>
                               {inventoryItems?.map((inventoryItem, index) => {
@@ -121,15 +196,13 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
                               className="text-red-400 text-sm"
                             />
                           </div>
+
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Quantity
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Quantity" />
                             <Field
                               name="Quantity"
                               type="number"
-                               className="formInputdefault border-1"
+                              className="formInputdefault border-1"
                             />
                             <ErrorMessage
                               name="Quantity"
@@ -138,14 +211,11 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Transaction Type
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Transaction Type" />
                             <Field
                               name="TransactionType"
                               as="select"
-                               className="formInputdefault border-1"
+                              className="formInputdefault border-1"
                             >
                               <option value={0}>Select Transaction Type</option>
                               {TRANSACTION_TYPES?.map((type, index) => {

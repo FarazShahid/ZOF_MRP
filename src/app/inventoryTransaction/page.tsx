@@ -14,16 +14,15 @@ import {
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { IoChevronBackOutline } from "react-icons/io5";
-import { FiPlus, FiSettings } from "react-icons/fi";
+import {  FiSettings } from "react-icons/fi";
 import useInventoryTransection from "@/store/useInventoryTransection";
 import { formatDate } from "../interfaces";
 import DeleteItem from "./DeleteItem";
 import AddInventoryTransaction from "./AddInventoryTransaction";
 import TransactionTypeChip from "./TransactionTypeChip";
-import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
 import Link from "next/link";
 import AddButton from "../components/common/AddButton";
+import StockDataVisulizer from "../inventoryItems/StockDataVisulizer";
 
 const InventoryTransaction = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -69,7 +68,7 @@ const InventoryTransaction = () => {
       <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">
-            Inventory Transections
+            Inventory Transaction
           </h6>
           <div className="flex items-center gap-2">
             <Tooltip content="Inventory Settings">
@@ -115,11 +114,11 @@ const InventoryTransaction = () => {
             <TableColumn key="ItemName" className="text-medium font-bold">
               Item Name
             </TableColumn>
-            <TableColumn key="ItemCode" className="text-medium font-bold">
-              Code
+            <TableColumn key="ClientName" className="text-medium font-bold">
+              Client 
             </TableColumn>
-            <TableColumn key="UnitOfMeasure" className="text-medium font-bold">
-              Unit Of Measure
+            <TableColumn key="OrderName" className="text-medium font-bold">
+              Order Name
             </TableColumn>
             <TableColumn key="Quantity" className="text-medium font-bold">
               Quantity
@@ -129,6 +128,9 @@ const InventoryTransaction = () => {
               className="text-medium font-bold"
             >
               Transaction Type
+            </TableColumn>
+            <TableColumn key="Stock" className="text-medium font-bold">
+              Stock
             </TableColumn>
             <TableColumn
               key="TransactionDate"
@@ -151,7 +153,13 @@ const InventoryTransaction = () => {
                       index + 1
                     ) : columnKey === "TransactionType" ? (
                       <TransactionTypeChip type={item?.TransactionType} />
-                    ) : columnKey !== "action" ? (
+                    ): columnKey === "Stock" ? (
+                      <StockDataVisulizer
+                        stock={item?.Stock}
+                        reorderLevel={item?.ReorderLevel}
+                        itemCode={item?.ItemCode}
+                      />
+                    )  : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">

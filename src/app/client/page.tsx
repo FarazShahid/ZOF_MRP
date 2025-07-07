@@ -147,7 +147,7 @@ const page = () => {
               onClick={() => handleSort("Name")}
             >
               <div className="flex items-center gap-1">
-                Name
+                Business Name
                 {sortColumn === "Name" &&
                   (sortDirection === "asc" ? (
                     <TiArrowSortedUp />
@@ -162,7 +162,7 @@ const page = () => {
               onClick={() => handleSort("Email")}
             >
               <div className="flex items-center gap-1">
-                Email
+                Business Email
                 {sortColumn === "Email" &&
                   (sortDirection === "asc" ? (
                     <TiArrowSortedUp />
@@ -171,13 +171,16 @@ const page = () => {
                   ))}
               </div>
             </TableColumn>
+            <TableColumn key="POCName" className="text-medium font-bold">
+              POC Name
+            </TableColumn>
             <TableColumn
               key="Phone"
               className="text-medium font-bold cursor-pointer"
               onClick={() => handleSort("Phone")}
             >
               <div className="flex items-center gap-1">
-              Phone
+                POC Phone
                 {sortColumn === "Phone" &&
                   (sortDirection === "asc" ? (
                     <TiArrowSortedUp />
@@ -186,20 +189,9 @@ const page = () => {
                   ))}
               </div>
             </TableColumn>
-            <TableColumn key="City" className="text-medium font-bold">
-              City
-            </TableColumn>
-            <TableColumn key="State" className="text-medium font-bold">
-              State
-            </TableColumn>
-            <TableColumn key="Country" className="text-medium font-bold">
-              Country
-            </TableColumn>
-            <TableColumn
-              key="CompleteAddress"
-              className="text-medium font-bold"
-            >
-              Address
+
+            <TableColumn key="POCEmail" className="text-medium font-bold">
+              POC Email
             </TableColumn>
             <TableColumn key="Action" className="text-medium font-bold">
               Action

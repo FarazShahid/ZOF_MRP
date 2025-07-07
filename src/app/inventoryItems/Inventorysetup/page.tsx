@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-
-import Link from "next/link";
-import { IoCaretBackSharp, IoCut } from "react-icons/io5";
+import { IoCut } from "react-icons/io5";
+import { GrTransaction } from "react-icons/gr";
 import { GiClothes, GiRolledCloth, GiSleevelessJacket } from "react-icons/gi";
 import { TbCategory2 } from "react-icons/tb";
 import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
@@ -12,6 +11,7 @@ import InventoryCategories from "../../categories/page";
 import Supplier from "../../supplier/page";
 import UnitofMeasure from "../../unitofmeasure/page";
 import InventoryItemsTable from "../InventoryItemsTable";
+import InventoryTransaction from "../../inventoryTransaction/page";
 
 const ListItems = [
 
@@ -20,6 +20,7 @@ const ListItems = [
   { id: 3, name: "Unit of Measure", icon: <IoCut size={20} /> },
   { id: 4, name: "Supplier", icon: <TbCategory2 size={20} /> },
   { id: 5, name: "Inventory Items", icon: <GiClothes size={20} /> },
+  { id: 6, name: "Inventory Transaction", icon: <GrTransaction size={20} /> },
 ];
 
 const page = () => {
@@ -28,14 +29,6 @@ const page = () => {
   return (
     <AdminDashboardLayout>
       <div className="space-y-6">
-        <div className="flex items-center">
-          <Link
-            href={"/inventoryItems"}
-            className="flex items-center gap-1 dark:text-gray-400 text-gray-800"
-          >
-            <IoCaretBackSharp /> <span>Back to listing</span>
-          </Link>
-        </div>
         <div className="space-x-5 flex h-[calc(100vh-162px)] overflow-y-auto">
           <aside className="w-1/4 p-5  h-full">
             <div className="space-y-3">
@@ -70,6 +63,8 @@ const page = () => {
                   return <Supplier />;
                 case 5:
                   return <InventoryItemsTable />;
+                case 6:
+                  return <InventoryTransaction />;
                 default:
                   return <div>Select an option</div>;
               }

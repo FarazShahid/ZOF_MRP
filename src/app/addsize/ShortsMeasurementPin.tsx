@@ -3,6 +3,7 @@ import React from "react";
 import MeasurementPin from "./MeasurementPin";
 import { AddSizeMeasurementType } from "@/store/useSizeMeasurementsStore";
 import { shortsPinConfigs } from "@/lib/shortsPinConfigs";
+import FrontViewTop from "../../../public/mockUps/TopUnitFront.png"
 
 const ShortsMeasurementPin = ({
   values,
