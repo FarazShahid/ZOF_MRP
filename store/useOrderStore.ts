@@ -20,6 +20,37 @@ export interface ChangeOrderStatusType {
   statusId: number;
 }
 
+export interface OrderItemsByIdResponse {
+  message: string;
+  data: OrderItemsByIdData[];
+  status: number;
+}
+
+export interface OrderItemsByIdData {
+  Id: number;
+  OrderId: number;
+  ProductId: number;
+  ProductName: string;
+  Description: string;
+  OrderItemPriority: number;
+  printingOptions: {
+    PrintingOptionId: number;
+    PrintingOptionName: string;
+    Description: string;
+  }[];
+  colors: {
+    ColorOptionId: number;
+    ColorName: string;
+    HexCode: string;
+    Quantity: number;
+    Priority: number;
+    SizeOptionId: number;
+    SizeOptionName: string;
+    MeasurementId: number;
+    MeasurementName: string;
+  }[];
+}
+
 interface OrderStatusLogsData {
   message: string;
   data: OrderStatusLogsType[];
@@ -35,6 +66,7 @@ export interface OrderStatusLogsType {
 interface StoreState {
   Orders: GetOrdersType[];
   OrderById: GetOrderByIdType;
+  OrderItemById: OrderItemsByIdData[];
   events: Event[];
   statuses: OderStatus[];
   availableColors: { [productId: number]: AvailableColor[] };
@@ -46,6 +78,7 @@ interface StoreState {
   fetchOrders: (clientId?: number) => Promise<void>;
   getOrderEvents: (clientId: number) => Promise<void>;
   getOrderById: (id: number) => Promise<void>;
+  getOrderItemsByOrderId: (id: number) => Promise<void>;
   getOrderStatus: () => Promise<void>;
   getAvailableColorByProductId: (id: number) => Promise<void>;
   getOrderStatusLog: (id: number) => Promise<void>;
@@ -84,6 +117,7 @@ const useOrderStore = create<StoreState>((set, get) => ({
     StatusName: "",
     items: [],
   },
+  OrderItemById:[],
   events: [],
   statuses: [],
   availableColors: {},
@@ -147,6 +181,24 @@ const useOrderStore = create<StoreState>((set, get) => ({
       }
       const data: GetOrderByIdResponse = await response.json();
       set({ OrderById: data.data, loading: false });
+    } catch (error) {
+      set({ error: "Failed to fetch category", loading: false });
+    }
+  },
+
+  getOrderItemsByOrderId: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/items/${id}`
+      );
+      if (!response.ok) {
+        set({ loading: false, error: "Error Fetching Data" });
+        const error = await response.json();
+        toast.error(error.message || "Error fetching data");
+      }
+      const data: OrderItemsByIdResponse = await response.json();
+      set({ OrderItemById: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch category", loading: false });
     }

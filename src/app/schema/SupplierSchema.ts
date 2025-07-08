@@ -13,3 +13,7 @@ export const UserSchema = Yup.object().shape({
 export const UnitOfMeasureSchema = Yup.object().shape({
     Name: Yup.string().required('Name is required'),
 })
+
+export const CarriorSchema = Yup.object().shape({
+    Name: Yup.string().required('Name is required'),
+})

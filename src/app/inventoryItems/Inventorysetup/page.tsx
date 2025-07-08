@@ -24,7 +24,7 @@ const ListItems = [
 ];
 
 const page = () => {
-  const [selectedItem, setSelectedItem] = useState(1);
+  const [selectedItem, setSelectedItem] = useState(5);
 
   return (
     <AdminDashboardLayout>

@@ -13,34 +13,28 @@ import {
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import useInventoryItemsStore from "@/store/useInventoryItemsStore";
-import DeleteInventoryItem from "./DeleteInventoryItem";
-import AddItems from "./AddItems";
-import StockDataVisulizer from "./StockDataVisulizer";
-import { IoEye } from "react-icons/io5";
-import AddButton from "../components/common/AddButton";
-import { formatDate } from "../interfaces";
-import ViewItem from "./ViewItem";
+import AddButton from "../../../components/common/AddButton";
+import useCarriorStore from "@/store/useCarriorStore";
+import CarriorForm from "./CarriorForm";
+import DeleteCarrior from "./DeleteCarrior";
 
-const InventoryItemsTable = () => {
+const CarriorTable = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [isOpenViewModal, setIsOpenViewModal] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const { loading, fetchInventoryItems, inventoryItems } =
-    useInventoryItemsStore();
+  const { fetchCarriors, loading, Carriors } = useCarriorStore();
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(inventoryItems?.length / rowsPerPage);
+  const pages = Math.ceil(Carriors!.length / rowsPerPage);
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return inventoryItems?.slice(start, end);
-  }, [page, inventoryItems]);
+    return Carriors?.slice(start, end);
+  }, [page, Carriors]);
 
   const openAddModal = () => setIsAddModalOpen(true);
   const closeAddModal = () => {
@@ -58,26 +52,16 @@ const InventoryItemsTable = () => {
     setIsAddModalOpen(true);
   };
 
-  const handleViewModal = (Id: number) => {
-    setSelectedItemId(Id);
-    setIsOpenViewModal(true);
-  };
-  const closeViewModal = () => {
-    setIsOpenViewModal(false);
-  };
-
   useEffect(() => {
-    fetchInventoryItems();
+    fetchCarriors();
   }, []);
 
   return (
     <>
       <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">Inventory Items</h6>
-          <div className="flex items-center gap-2">
-            <AddButton title="Add New" onClick={openAddModal} />
-          </div>
+          <h6 className="font-sans text-lg font-semibold">Carrier</h6>
+          <AddButton title="Add New" onClick={openAddModal} />
         </div>
         <Table
           isStriped
@@ -86,7 +70,7 @@ const InventoryItemsTable = () => {
           bottomContent={
             <div className="grid grid-cols-2">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {items?.length || 0}
+                Total: {items.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -108,72 +92,31 @@ const InventoryItemsTable = () => {
             <TableColumn key="Name" className="text-medium font-bold">
               Name
             </TableColumn>
-            <TableColumn
-              key="SubCategoryName"
-              className="text-medium font-bold"
-            >
-              Sub Category
-            </TableColumn>
-            <TableColumn key="SupplierName" className="text-medium font-bold">
-              Supplier
-            </TableColumn>
-            <TableColumn
-              key="UnitOfMeasureName"
-              className="text-medium font-bold"
-            >
-              Unit Of Measure
-            </TableColumn>
-            <TableColumn key="ReorderLevel" className="text-medium font-bold">
-              Reorder Level
-            </TableColumn>
-            <TableColumn key="Stock" className="text-medium font-bold">
-              Stock
-            </TableColumn>
-            <TableColumn key="CreatedOn" className="text-medium font-bold">
-              Created On
-            </TableColumn>
-            <TableColumn key="UpdatedOn" className="text-medium font-bold">
-              Updated On
-            </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">
               Action
             </TableColumn>
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
-            {(items ?? [])?.map((item: any, index: number) => (
-              <TableRow key={index}>
+            {(items ?? []).map((item: any, index: number) => (
+              <TableRow key={item.Id}>
                 {(columnKey) => (
                   <TableCell>
-                    {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
-                      formatDate(item[columnKey])
-                    ) : columnKey === "Sr" ? (
+                    {columnKey === "Sr" ? (
                       index + 1
-                    ) : columnKey === "Stock" ? (
-                      <StockDataVisulizer
-                        stock={item?.Stock}
-                        reorderLevel={item?.ReorderLevel}
-                        itemCode={item?.ItemCode}
-                      />
                     ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => handleViewModal(item?.Id)}
-                        >
-                          <IoEye color="blue" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleOpenEditModal(item?.Id)}
+                          onClick={() => handleOpenEditModal(item.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item?.Id)}
+                          onClick={() => handleOpenDeleteModal(item.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>
@@ -185,33 +128,22 @@ const InventoryItemsTable = () => {
             ))}
           </TableBody>
         </Table>
-      </div>
-      {isAddModalOpen ? (
-        <AddItems
+
+        <CarriorForm
           isOpen={isAddModalOpen}
           closeAddModal={closeAddModal}
           isEdit={isEdit}
           Id={selectedItemId}
         />
-      ) : (
-        <></>
-      )}
 
-      {isOpenViewModal && (
-        <ViewItem
+        <DeleteCarrior
+          isOpen={isOpenDeletModal}
+          onClose={closeDeleteModal}
           Id={selectedItemId}
-          isOpen={isOpenViewModal}
-          closeAddModal={closeViewModal}
         />
-      )}
-
-      <DeleteInventoryItem
-        isOpen={isOpenDeletModal}
-        onClose={closeDeleteModal}
-        Id={selectedItemId}
-      />
+      </div>
     </>
   );
 };
 
-export default InventoryItemsTable;
+export default CarriorTable;
