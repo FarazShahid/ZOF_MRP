@@ -58,7 +58,7 @@ const useCarriorStore = create<StoreState>((set, get) => ({
 
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/inventory-categories`
+        `${process.env.NEXT_PUBLIC_API_URL}/shipment-carrier`
       );
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
@@ -74,7 +74,7 @@ const useCarriorStore = create<StoreState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/inventory-categories/${id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/shipment-carrier/${id}`
       );
       if (!response.ok) {
         const error = await response.json();
@@ -96,7 +96,7 @@ const useCarriorStore = create<StoreState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/inventory-categories`,
+        `${process.env.NEXT_PUBLIC_API_URL}/shipment-carrier`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -127,7 +127,7 @@ const useCarriorStore = create<StoreState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/inventory-categories/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/shipment-carrier/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -154,7 +154,7 @@ const useCarriorStore = create<StoreState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/inventory-categories/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/shipment-carrier/${id}`,
         { method: "DELETE" }
       );
 

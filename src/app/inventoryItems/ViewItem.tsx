@@ -42,7 +42,6 @@ const ViewItem: React.FC<ComponentProps> = ({ isOpen, closeAddModal, Id }) => {
     }
   }, [Id]);
 
-  console.log("documents", documents);
 
   return (
     <Modal isOpen={isOpen} size="2xl" onOpenChange={closeAddModal}>

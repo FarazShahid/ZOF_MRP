@@ -15,6 +15,4 @@ export const InventoryTransactionSchema = Yup.object().shape({
 })
 
 export const ShipmentSchema = Yup.object().shape({
-    OrderItemId: Yup.string().required('Order Item is required'),
-    Quantity: Yup.string().required('Quantity is required'),
 })
