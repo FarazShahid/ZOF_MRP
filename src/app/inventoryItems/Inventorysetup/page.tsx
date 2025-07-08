@@ -31,7 +31,7 @@ const page = () => {
         <div className="space-x-5 flex h-[calc(100vh-162px)] overflow-y-auto">
           <aside className="w-1/4 p-5  h-full">
             <div className="space-y-3">
-              {ListItems.map((item) => {
+              {ListItems.map((item, index) => {
                 return (
                   <div
                     className={`${
@@ -40,7 +40,7 @@ const page = () => {
                         : "dark:bg-[#18181b] bg-gray-300 text-gray-800"
                     } rounded-lg p-2 text-gray-300 flex items-center gap-3 cursor-pointer`}
                     onClick={() => setSelectedItem(item.id)}
-                    key={item.id}
+                    key={index}
                   >
                     {item.icon}
                     <span>{item.name}</span>

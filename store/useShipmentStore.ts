@@ -26,7 +26,6 @@ interface GetAllShipments {
   Status: string;
   ShipmentCarrierId: number;
   ShipmentCarrierName: string;
-  OrderId: number;
   OrderName: string;
   OrderNumber: string;
   CreatedOn: string;
@@ -38,7 +37,7 @@ interface GetAllShipments {
 interface ShipmentResponse {
   Id: number;
   ShipmentCode: string;
-  OrderId: number;
+  OrderNumber: string;
   ShipmentCarrierId: number;
   ShipmentCarrierName: string;
   ShipmentDate: string;
@@ -54,25 +53,13 @@ interface ShipmentResponse {
   };
   Boxes: {
     Id: number;
+    Quantity: number;
     ShipmentId: number;
     Weight: number;
+    OrderItem: string;
+    OrderItemDescription: string;
     BoxNumber: number;
   }[];
-  ShipmentDetails: {
-    Id: number;
-    ShipmentId: number;
-    OrderItemId: number;
-    Quantity: number;
-    Size: string;
-    Description: string;
-    ItemDetails: string;
-    OrderItem: {
-      Id: number;
-      ProductId: number;
-      Description: string;
-    };
-  }[];
-
   CreatedOn: string;
   CreatedBy: string;
   UpdatedOn: string;
@@ -81,7 +68,7 @@ interface ShipmentResponse {
 
 export interface AddShipmentOptions {
   ShipmentCode: string;
-  OrderId: number;
+  OrderNumber: number;
   ShipmentCarrierId: number;
   ShipmentDate: string;
   ShipmentCost: number;
@@ -90,15 +77,12 @@ export interface AddShipmentOptions {
   WeightUnit: string;
   ReceivedTime: string;
   Status: string;
-  ShipmentDetails: {
-    OrderItemId: number;
-    Quantity: number;
-    Size: number;
-    ItemDetails: string;
-  }[];
   boxes: {
     BoxNumber: number;
     Weight: number;
+    Quantity: number;
+    OrderItem: string;
+    OrderItemDescription: string;
   }[];
 }
 

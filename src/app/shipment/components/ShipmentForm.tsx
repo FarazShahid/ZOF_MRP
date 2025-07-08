@@ -21,8 +21,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
   const router = useRouter();
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
 
-  const { fetchOrders, getOrderItemsByOrderId, Orders, OrderItemById } =
-    useOrderStore();
+
   const { fetchCarriors, Carriors } = useCarriorStore();
   const { uploadDocument } = useDocumentCenterStore();
   const { addShipment, updateShipment, getShipmentById, ShipmentById } =
@@ -32,7 +31,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
     if (shipmentId && ShipmentById) {
       return {
         ShipmentCode: ShipmentById.ShipmentCode || "",
-        OrderId: ShipmentById.OrderId || "",
+        OrderNumber: ShipmentById.OrderNumber || "",
         ShipmentCarrierId: ShipmentById.ShipmentCarrierId || "",
         ShipmentDate: ShipmentById.ShipmentDate
           ? ShipmentById.ShipmentDate.substring(0, 10)
@@ -45,26 +44,19 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
         NumberOfBoxes: ShipmentById.NumberOfBoxes || 0,
         ShipmentCost: parseFloat(ShipmentById.ShipmentCost) || 0,
         Status: ShipmentById.Status || "",
-        ShipmentDetails: ShipmentById.ShipmentDetails?.map((d) => ({
-          OrderItemId: d.OrderItemId,
-          Quantity: d.Quantity,
-          Size: d.Size,
-          ItemDetails: d.ItemDetails || "",
-        })) || [
-          {
-            OrderItemId: "",
-            Quantity: 0,
-            Size: "",
-            ItemDetails: "",
-          },
-        ],
         boxes: ShipmentById.Boxes?.map((b) => ({
           BoxNumber: b.BoxNumber,
+          Quantity: b.Quantity,
           Weight: b.Weight,
+          OrderItem: b.OrderItem,
+          OrderItemDescription: b.OrderItemDescription,
         })) || [
           {
             BoxNumber: 0,
+            Quantity: 0,
             Weight: 0,
+            OrderItem: "",
+            OrderItemDescription: "",
           },
         ],
       };
@@ -73,7 +65,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
     // Default new shipment
     return {
       ShipmentCode: "",
-      OrderId: "",
+      OrderNumber: "",
       ShipmentCarrierId: "",
       ShipmentDate: "",
       ReceivedTime: "",
@@ -82,14 +74,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
       NumberOfBoxes: 0,
       ShipmentCost: 0,
       Status: "",
-      ShipmentDetails: [
-        {
-          OrderItemId: "",
-          Quantity: 0,
-          Size: "",
-          ItemDetails: "",
-        },
-      ],
       boxes: [
         {
           BoxNumber: 0,
@@ -140,7 +124,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
   };
 
   useEffect(() => {
-    fetchOrders();
     fetchCarriors();
   }, []);
 
@@ -179,30 +162,11 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
               <div className="grid grid-cols-1 gap-2">
                 <div className="grid grid-cols-3 gap-2">
                   <div className="flex flex-col gap-1">
-                    <Label isRequired={true} label="Order" />
+                    <Label isRequired={false} label="Order Number" />
                     <Field
-                      as="select"
-                      name="OrderId"
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                        const value = Number(e.target.value);
-                        setFieldValue("OrderId", value);
-                        getOrderItemsByOrderId(value);
-                      }}
+                      type="text"
+                      name="OrderNumber"
                       className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
-                    >
-                      <option value={""}>Select an order</option>
-                      {Orders?.map((Order, index) => {
-                        return (
-                          <option value={Order?.Id} key={index}>
-                            {Order.OrderName}
-                          </option>
-                        );
-                      })}
-                    </Field>
-                    <ErrorMessage
-                      name="OrderId"
-                      component="div"
-                      className="text-red-500 text-sm"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
@@ -348,105 +312,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                   </div>
                 </div>
 
-                {/* ----- Shipment Detail ----- */}
-
-                <FieldArray name="ShipmentDetails">
-                  {({ push, remove, form }) => (
-                    <>
-                      {form.values.ShipmentDetails.map(
-                        (_: any, index: number) => (
-                          <div key={index} className="flex flex-col gap-2">
-                            <div className="grid grid-cols-3 gap-2">
-                              <div className="flex flex-col gap-1">
-                                <Label isRequired={true} label="Order Item" />
-                                <Field
-                                  as="select"
-                                  name={`ShipmentDetails[${index}].OrderItemId`}
-                                  className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
-                                >
-                                  <option value="">Select an Order Item</option>
-                                  {OrderItemById?.map((item, i) => (
-                                    <option key={i} value={item?.Id}>
-                                      {item?.ProductName} _ {item?.Description}
-                                    </option>
-                                  ))}
-                                </Field>
-                                <ErrorMessage
-                                  name={`ShipmentDetails[${index}].OrderItemId`}
-                                  component="div"
-                                  className="text-red-500 text-sm"
-                                />
-                              </div>
-                              <div className="flex flex-col gap-1">
-                                <Label isRequired={true} label="Quantity" />
-                                <Field
-                                  type="number"
-                                  name={`ShipmentDetails[${index}].Quantity`}
-                                  className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
-                                />
-                                <ErrorMessage
-                                  name={`ShipmentDetails[${index}].Quantity`}
-                                  component="div"
-                                  className="text-red-500 text-sm"
-                                />
-                              </div>
-                              <div className="flex flex-col gap-1">
-                                <Label isRequired={true} label="Size" />
-                                <Field
-                                  type="text"
-                                  name={`ShipmentDetails[${index}].Size`}
-                                  className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
-                                />
-                                <ErrorMessage
-                                  name={`ShipmentDetails[${index}].Size`}
-                                  component="div"
-                                  className="text-red-500 text-sm"
-                                />
-                              </div>
-                            </div>
-                            <Field
-                              type="text"
-                              name={`ShipmentDetails[${index}].ItemDetails`}
-                              placeholder="Enter Item Details"
-                              className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
-                            />
-                            <ErrorMessage
-                              name={`ShipmentDetails[${index}].ItemDetails`}
-                              component="div"
-                              className="text-red-500 text-sm"
-                            />
-                            <div className="flex justify-end gap-3">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  push({
-                                    OrderItemId: "",
-                                    Quantity: 0,
-                                    Size: "",
-                                    ItemDetails: "",
-                                  })
-                                }
-                                className="text-green-500"
-                              >
-                                <FaCirclePlus />
-                              </button>
-                              {index > 0 && (
-                                <button
-                                  type="button"
-                                  onClick={() => remove(index)}
-                                  className="text-red-500"
-                                >
-                                  <MdDelete />
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </>
-                  )}
-                </FieldArray>
-
                 {/* ------ boxes Info ------ */}
 
                 <FieldArray name="boxes">
@@ -468,6 +333,19 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                             />
                           </div>
                           <div className="flex flex-col gap-1">
+                            <Label isRequired={true} label="Quantity" />
+                            <Field
+                              type="number"
+                              name={`boxes[${index}].Quantity`}
+                              className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                            />
+                            <ErrorMessage
+                              name={`boxes[${index}].Quantity`}
+                              component="div"
+                              className="text-red-500 text-sm"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1">
                             <Label isRequired={true} label="Weight" />
                             <Field
                               type="number"
@@ -476,6 +354,32 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                             />
                             <ErrorMessage
                               name={`boxes[${index}].Weight`}
+                              component="div"
+                              className="text-red-500 text-sm"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <Label isRequired={true} label="Order Item" />
+                            <Field
+                              type="text"
+                              name={`boxes[${index}].OrderItem`}
+                              className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                            />
+                            <ErrorMessage
+                              name={`boxes[${index}].OrderItem`}
+                              component="div"
+                              className="text-red-500 text-sm"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <Label isRequired={false} label="Description" />
+                            <Field
+                              type="text"
+                              name={`boxes[${index}].OrderItemDescription`}
+                              className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                            />
+                            <ErrorMessage
+                              name={`boxes[${index}].OrderItemDescription`}
                               component="div"
                               className="text-red-500 text-sm"
                             />
@@ -520,7 +424,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                   spinner={isSubmitting}
                   disabled={isSubmitting}
                 >
-                  Add
+                 {shipmentId ? "Edit" :"Add"}
                 </Button>
               </div>
             </Form>

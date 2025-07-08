@@ -10,17 +10,14 @@ import {
   TableCell,
   Pagination,
   getKeyValue,
-  Tooltip,
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import {  FiSettings } from "react-icons/fi";
 import useInventoryTransection from "@/store/useInventoryTransection";
 import { formatDate } from "../interfaces";
 import DeleteItem from "./DeleteItem";
 import AddInventoryTransaction from "./AddInventoryTransaction";
 import TransactionTypeChip from "./TransactionTypeChip";
-import Link from "next/link";
 import AddButton from "../components/common/AddButton";
 import StockDataVisulizer from "../inventoryItems/StockDataVisulizer";
 

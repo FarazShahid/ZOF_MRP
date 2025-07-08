@@ -104,8 +104,8 @@ const ShipmentTable = () => {
             <TableColumn key="ShipmentCode" className="text-medium font-bold">
               Shipment Code
             </TableColumn>
-            <TableColumn key="OrderName" className="text-medium font-bold">
-              Order Name
+            <TableColumn key="OrderNumber" className="text-medium font-bold">
+              Order No.
             </TableColumn>
             <TableColumn
               key="ShipmentCarrierName"

@@ -122,13 +122,13 @@ const ViewShipmentDetails: React.FC<DeleteModalProps> = ({
                             <span className="text-xs text-gray-700">
                               Order Item
                             </span>
-                            <span>{box.Weight}</span>
+                            <span>{box.OrderItem}</span>
                           </div>
                           <div className="flex flex-col ">
                             <span className="text-xs text-gray-700">
                               Quantity
                             </span>
-                            <span>{box.Weight}</span>
+                            <span>{box.Quantity}</span>
                           </div>
                         </div>
                       );

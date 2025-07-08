@@ -140,7 +140,7 @@ const CutomNavBar = () => {
                 className={`flex items-center gap-2 px-2 py-1 cursor-pointer rounded-full text-sm font-bold transition-all duration-150 ${
                   isActive
                     ? "selectedNavItem !text-white"
-                    : "dark:text-white text-black hover:bg-gray-300 dark:hover:bg-gray-700"
+                    : "dark:text-white text-black "
                 }`}
               >
                 {item.icon}
