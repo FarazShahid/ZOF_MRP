@@ -129,6 +129,9 @@ const InventoryItemsTable = () => {
             <TableColumn key="Stock" className="text-medium font-bold">
               Stock
             </TableColumn>
+            <TableColumn key="StockLevel" className="text-medium font-bold">
+              Stock Lavel
+            </TableColumn>
             <TableColumn key="CreatedOn" className="text-medium font-bold">
               Created On
             </TableColumn>
@@ -148,7 +151,7 @@ const InventoryItemsTable = () => {
                       formatDate(item[columnKey])
                     ) : columnKey === "Sr" ? (
                       index + 1
-                    ) : columnKey === "Stock" ? (
+                    ) : columnKey === "StockLevel" ? (
                       <StockDataVisulizer
                         stock={item?.Stock}
                         reorderLevel={item?.ReorderLevel}

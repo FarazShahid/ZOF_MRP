@@ -18,6 +18,7 @@ interface SuppliersResponse {
   Id: number;
   Name: string;
   Phone: string;
+  Email: string;
   Country: string;
   State: string;
   City: string;

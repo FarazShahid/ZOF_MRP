@@ -31,7 +31,7 @@ const InventoryTransaction = () => {
   const { loading, fetchInventoryTransactions, inventoryTransactions } =
     useInventoryTransection();
 
-  const rowsPerPage = 15;
+  const rowsPerPage = 10;
   const pages = Math.ceil(inventoryTransactions?.length / rowsPerPage);
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -119,7 +119,7 @@ const InventoryTransaction = () => {
               Transaction Type
             </TableColumn>
             <TableColumn key="Stock" className="text-medium font-bold">
-              Stock
+            Available Stock
             </TableColumn>
             <TableColumn
               key="TransactionDate"
@@ -127,9 +127,9 @@ const InventoryTransaction = () => {
             >
               Transaction Date
             </TableColumn>
-            <TableColumn key="action" className="text-medium font-bold">
+            {/* <TableColumn key="action" className="text-medium font-bold">
               Action
-            </TableColumn>
+            </TableColumn> */}
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
             {(items ?? [])?.map((item: any, index: number) => (
@@ -142,17 +142,11 @@ const InventoryTransaction = () => {
                       index + 1
                     ) : columnKey === "TransactionType" ? (
                       <TransactionTypeChip type={item?.TransactionType} />
-                    ): columnKey === "Stock" ? (
-                      <StockDataVisulizer
-                        stock={item?.Stock}
-                        reorderLevel={item?.ReorderLevel}
-                        itemCode={item?.ItemCode}
-                      />
-                    )  : columnKey !== "action" ? (
+                    ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
-                        <button
+                        {/* <button
                           type="button"
                           onClick={() => handleOpenEditModal(item?.Id)}
                         >
@@ -164,7 +158,7 @@ const InventoryTransaction = () => {
                           onClick={() => handleOpenDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
-                        </button>
+                        </button> */}
                       </div>
                     )}
                   </TableCell>

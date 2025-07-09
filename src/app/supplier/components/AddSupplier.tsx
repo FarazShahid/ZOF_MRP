@@ -11,6 +11,7 @@ import {
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import { SupplierSchema } from "../../schema/SupplierSchema";
 import useSupplierStore, { AddSupplierOptions } from "@/store/useSupplierStore";
+import Label from "../../components/common/Label";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -43,6 +44,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
     Name: isEdit && supplierById ? supplierById.Name : "",
     Phone: isEdit && supplierById ? supplierById?.Phone : "",
     Country: isEdit && supplierById ? supplierById?.Country : "",
+    Email: isEdit && supplierById ? supplierById?.Email : "",
     State: isEdit && supplierById ? supplierById?.State : "",
     City: isEdit && supplierById ? supplierById?.City : "",
     CompleteAddress:
@@ -82,10 +84,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                       <>
                         <div className="grid grid-cols-2 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Name
-                              <span className="text-red-500 text-sm">*</span>
-                            </label>
+                            <Label isRequired={true} label="Name" />
                             <Field
                               name="Name"
                               type="text"
@@ -99,70 +98,63 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Phone
-                            </label>
+                            <Label isRequired={false} label="Phone" />
                             <Field
                               name="Phone"
                               type="text"
                               placeholder="Enter Phone No."
-                            className="formInputdefault border-1"
+                              className="formInputdefault border-1"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Email
-                            </label>
+                            <Label isRequired={true} label="Email" />
                             <Field
                               name="Email"
                               type="text"
                               placeholder="Enter Email"
                               className="formInputdefault border-1"
                             />
+                            <ErrorMessage
+                              name="Email"
+                              component="div"
+                              className="text-red-400 text-sm"
+                            />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Country
-                            </label>
+                            <Label isRequired={false} label="Country" />
                             <Field
                               name="Country"
                               type="text"
                               placeholder="Enter Country"
-                               className="formInputdefault border-1"
+                              className="formInputdefault border-1"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              State
-                            </label>
+                            <Label isRequired={false} label="State" />
                             <Field
                               name="State"
                               type="text"
                               placeholder="Enter State"
-                           className="formInputdefault border-1"
+                              className="formInputdefault border-1"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              City
-                            </label>
+                            <Label isRequired={false} label="City" />
                             <Field
                               name="City"
                               type="text"
                               placeholder="Enter City"
-                               className="formInputdefault border-1"
+                              className="formInputdefault border-1"
                             />
                           </div>
                         </div>
                         <div className="flex flex-col gap-1 w-full">
-                          <label className="text-sm text-gray-600 font-sans">
-                            Address
-                          </label>
+                          <Label isRequired={false} label="Address" />
                           <Field
                             name="CompleteAddress"
                             as="textarea"
                             placeholder="Enter Address"
-                             className="formInputdefault border-1"
+                            className="formInputdefault border-1"
                           />
                         </div>
                       </>

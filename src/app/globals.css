@@ -1209,7 +1209,10 @@ span.flatpickr-weekday,
   background: #ff800030;
   color: #ff8000;
 }
+.highStock{
+  background: #c6f0df;
 
+}
 .OrderStatusTimeLineWrapper {
   height: calc(50vh - 100px);
   overflow-y: auto;
