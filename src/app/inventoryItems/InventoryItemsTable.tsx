@@ -10,7 +10,6 @@ import {
   TableCell,
   Pagination,
   getKeyValue,
-  Tooltip,
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -18,9 +17,7 @@ import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 import DeleteInventoryItem from "./DeleteInventoryItem";
 import AddItems from "./AddItems";
 import StockDataVisulizer from "./StockDataVisulizer";
-import { FiPlus, FiSettings } from "react-icons/fi";
 import { IoEye } from "react-icons/io5";
-import Link from "next/link";
 import AddButton from "../components/common/AddButton";
 import { formatDate } from "../interfaces";
 import ViewItem from "./ViewItem";
@@ -132,6 +129,9 @@ const InventoryItemsTable = () => {
             <TableColumn key="Stock" className="text-medium font-bold">
               Stock
             </TableColumn>
+            <TableColumn key="StockLevel" className="text-medium font-bold">
+              Stock Lavel
+            </TableColumn>
             <TableColumn key="CreatedOn" className="text-medium font-bold">
               Created On
             </TableColumn>
@@ -151,7 +151,7 @@ const InventoryItemsTable = () => {
                       formatDate(item[columnKey])
                     ) : columnKey === "Sr" ? (
                       index + 1
-                    ) : columnKey === "Stock" ? (
+                    ) : columnKey === "StockLevel" ? (
                       <StockDataVisulizer
                         stock={item?.Stock}
                         reorderLevel={item?.ReorderLevel}

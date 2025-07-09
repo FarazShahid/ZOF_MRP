@@ -14,12 +14,11 @@ import InventoryItemsTable from "../InventoryItemsTable";
 import InventoryTransaction from "../../inventoryTransaction/page";
 
 const ListItems = [
-
-  { id: 1, name: "Inventory Category", icon: <GiSleevelessJacket size={20} /> },
-  { id: 2, name: "Inventory Sub Category", icon: <GiRolledCloth size={20} /> },
-  { id: 3, name: "Unit of Measure", icon: <IoCut size={20} /> },
-  { id: 4, name: "Supplier", icon: <TbCategory2 size={20} /> },
-  { id: 5, name: "Inventory Items", icon: <GiClothes size={20} /> },
+  { id: 1, name: "Inventory Items", icon: <GiClothes size={20} /> },
+  { id: 2, name: "Inventory Category", icon: <GiSleevelessJacket size={20} /> },
+  { id: 3, name: "Inventory Sub Category", icon: <GiRolledCloth size={20} /> },
+  { id: 4, name: "Unit of Measure", icon: <IoCut size={20} /> },
+  { id: 5, name: "Supplier", icon: <TbCategory2 size={20} /> },
   { id: 6, name: "Inventory Transaction", icon: <GrTransaction size={20} /> },
 ];
 
@@ -32,7 +31,7 @@ const page = () => {
         <div className="space-x-5 flex h-[calc(100vh-162px)] overflow-y-auto">
           <aside className="w-1/4 p-5  h-full">
             <div className="space-y-3">
-              {ListItems.map((item) => {
+              {ListItems.map((item, index) => {
                 return (
                   <div
                     className={`${
@@ -41,7 +40,7 @@ const page = () => {
                         : "dark:bg-[#18181b] bg-gray-300 text-gray-800"
                     } rounded-lg p-2 text-gray-300 flex items-center gap-3 cursor-pointer`}
                     onClick={() => setSelectedItem(item.id)}
-                    key={item.id}
+                    key={index}
                   >
                     {item.icon}
                     <span>{item.name}</span>
@@ -54,15 +53,15 @@ const page = () => {
             {(() => {
               switch (selectedItem) {
                 case 1:
-                  return <InventoryCategories />;
-                case 2:
-                  return <Subcategories />;
-                case 3:
-                  return <UnitofMeasure />;
-                case 4:
-                  return <Supplier />;
-                case 5:
                   return <InventoryItemsTable />;
+                case 2:
+                  return <InventoryCategories />;
+                case 3:
+                  return <Subcategories />;
+                case 4:
+                  return <UnitofMeasure />;
+                case 5:
+                  return <Supplier />;
                 case 6:
                   return <InventoryTransaction />;
                 default:

@@ -60,10 +60,6 @@ interface StoreState {
     id: number,
     inventoryItemType: AddInventoryItemOptions
   ) => Promise<InventoryItemResponse | null>;
-  // updateInventoryItem: (
-  //   id: number,
-  //   supplierType: AddInventoryItemOptions,
-  // ) => Promise<InventoryItemResponse | null>;
   deleteInventoryItem: (id: number, onSuccess: () => void) => Promise<void>;
   updateStockLevelStatus: (
     itemCode: string,

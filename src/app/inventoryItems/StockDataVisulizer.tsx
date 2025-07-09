@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo } from "react";
 import useInventoryItemsStore from "@/store/useInventoryItemsStore";
-import { Tooltip } from "@heroui/react";
 
 interface ChipProps {
   stock: number;
@@ -45,11 +44,11 @@ const StockDataVisulizer: React.FC<ChipProps> = ({
   const tooltipMessage = useMemo(() => {
     switch (stockStatus) {
       case "low":
-        return "❗ Danger: Stock is below reorder level!";
+        return "❗ Low";
       case "normal":
-        return "⚠️ Warning: Stock is at reorder level.";
+        return "⚠️ Normal";
       case "high":
-        return "✅ Stock level is healthy.";
+        return "✅ High";
       default:
         return "";
     }
@@ -65,9 +64,7 @@ const StockDataVisulizer: React.FC<ChipProps> = ({
   }, [currentStatus, itemCode, stockStatus, updateStockLevelStatus]);
 
   return (
-    <Tooltip content={tooltipMessage}>
-      <div className={`${stockClass} stockDataShip cursor-pointer`}>{stock}</div>
-    </Tooltip>
+   <div className={`${stockClass} stockDataShip cursor-pointer`}>{tooltipMessage}</div>
   );
 };
 

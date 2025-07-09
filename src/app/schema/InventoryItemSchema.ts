@@ -13,3 +13,6 @@ export const InventoryTransactionSchema = Yup.object().shape({
     Quantity: Yup.string().required('Quantity is required'),
     TransactionType: Yup.string().required('Transaction Type is required'),
 })
+
+export const ShipmentSchema = Yup.object().shape({
+})

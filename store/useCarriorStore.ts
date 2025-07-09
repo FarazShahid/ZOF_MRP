@@ -2,189 +2,177 @@ import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 
-interface GetSupplierResponse {
-  data: SuppliersResponse[];
+interface GetCarriorResponse {
+  data: CarriorResponse[];
   statusCode: number;
   message: string;
 }
 
-interface AddSupplierResponse {
-  data: SuppliersResponse;
+interface AddCarriorResponse {
+  data: CarriorResponse;
   statusCode: number;
   message: string;
 }
 
-interface SuppliersResponse {
+interface CarriorResponse {
   Id: number;
   Name: string;
-  Phone: string;
-  Email: string;
-  Country: string;
-  State: string;
-  City: string;
-  CompleteAddress: string;
   CreatedOn: string;
   CreatedBy: string;
   UpdatedOn: string;
   UpdatedBy: string;
 }
 
-export interface AddSupplierOptions {
-    Name: string;
-    Email?: string;
-    Phone?: string;
-    Country?: string;
-    State?: string;
-    City?: string;
-    CompleteAddress?: string;
+export interface AddCarriorOptions {
+  Name: string;
 }
 
 interface StoreState {
-  suppliers: SuppliersResponse[];
-  supplierById: SuppliersResponse | null;
+  Carriors: CarriorResponse[];
+  CarriorsById: CarriorResponse | null;
   loading: boolean;
   error: string | null;
 
-  fetchSuppliers: () => Promise<void>;
-  getSupplierById: (id: number) => Promise<void>;
-  addSupplier: (
-    supplierType: AddSupplierOptions,
+  fetchCarriors: () => Promise<void>;
+  getCarriorById: (id: number) => Promise<void>;
+  addCarrior: (
+    CarriorType: AddCarriorOptions,
     onSuccess: () => void
   ) => Promise<void>;
-  updateSupplier: (
+  updateCarrior: (
     id: number,
-    supplierType: AddSupplierOptions,
+    CarriorType: AddCarriorOptions,
     onSuccess: () => void
   ) => Promise<void>;
-  deleteSupplier: (id: number, onSuccess: () => void) => Promise<void>;
+  deleteCarrior: (id: number, onSuccess: () => void) => Promise<void>;
 }
 
-const useSupplierStore = create<StoreState>((set, get) => ({
-  suppliers: [],
-  supplierById: null,
+const useCarriorStore = create<StoreState>((set, get) => ({
+  Carriors: [],
+  CarriorsById: null,
   loading: false,
   error: null,
 
-  fetchSuppliers: async () => {
+  fetchCarriors: async () => {
     set({ loading: true, error: null });
 
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/inventory-suppliers`
+        `${process.env.NEXT_PUBLIC_API_URL}/shipment-carrier`
       );
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
       }
-      const data: GetSupplierResponse = await response.json();
-      set({ suppliers: data.data, loading: false });
+      const data: GetCarriorResponse = await response.json();
+      set({ Carriors: data.data, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
     }
   },
 
-  getSupplierById: async (id: number) => {
+  getCarriorById: async (id: number) => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/inventory-suppliers/${id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/shipment-carrier/${id}`
       );
       if (!response.ok) {
         const error = await response.json();
         set({ loading: false, error: null });
         toast.error(error.message || "Failed to fetch data");
       }
-      const data: AddSupplierResponse = await response.json();
-      set({ supplierById: data.data, loading: false });
+      const data: AddCarriorResponse = await response.json();
+      set({ CarriorsById: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch data", loading: false });
       toast.error("Failed to fetch data");
     }
   },
 
-  addSupplier: async (
-    supplierType: AddSupplierOptions,
+  addCarrior: async (
+    CarriorType: AddCarriorOptions,
     onSuccess?: () => void
   ) => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/inventory-suppliers`,
+        `${process.env.NEXT_PUBLIC_API_URL}/shipment-carrier`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(supplierType),
+          body: JSON.stringify(CarriorType),
         }
       );
       if (!response.ok) {
         const error = await response.json();
         set({ loading: false, error: null });
-        toast.error(error.message || "Failed to add supplier");
+        toast.error(error.message || "Failed to add Carrior");
       } else {
         set({ loading: false, error: null });
-        toast.success("Supplier added successfully");
+        toast.success("Carrior added successfully");
         if (onSuccess) onSuccess();
-        await get().fetchSuppliers();
+        await get().fetchCarriors();
       }
     } catch (error) {
-      set({ error: "Failed to add supplier", loading: false });
-      toast.error("Failed to add supplier");
+      set({ error: "Failed to add category", loading: false });
+      toast.error("Failed to add category");
     }
   },
 
-  updateSupplier: async (
+  updateCarrior: async (
     id: number,
-    updatedSupplier: AddSupplierOptions,
+    CarriorType: AddCarriorOptions,
     onSuccess?: () => void
   ) => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/inventory-suppliers/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/shipment-carrier/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedSupplier),
+          body: JSON.stringify(CarriorType),
         }
       );
       if (!response.ok) {
         const error = await response.json();
         set({ loading: false, error: null });
-        toast.error(error.message || "Failed to update supplier");
+        toast.error(error.message || "Failed to update Carrior");
       } else {
         set({ loading: false, error: null });
-        toast.success("Supplier updated successfully");
+        toast.success("Carrior updated successfully");
         if (onSuccess) onSuccess();
-        await get().fetchSuppliers();
+        await get().fetchCarriors();
       }
     } catch (error) {
-      set({ error: "Failed to update supplier", loading: false });
-      toast.error("Failed to update supplier");
+      set({ error: "Failed to update Carrior", loading: false });
+      toast.error("Failed to update Carrior");
     }
   },
 
-  deleteSupplier: async (id: number, onSuccess?: () => void) => {
+  deleteCarrior: async (id: number, onSuccess?: () => void) => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/inventory-suppliers/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/shipment-carrier/${id}`,
         { method: "DELETE" }
       );
 
       if (!response.ok) {
         const error = await response.json();
         set({ loading: false, error: null });
-        toast.error(error.message || "Failed to delete supplier");
+        toast.error(error.message || "Failed to delete Carrior");
       } else {
         set({ loading: false, error: null });
-        toast.success("Supplier deleted successfully");
+        toast.success("Category deleted successfully");
         if (onSuccess) onSuccess();
-        await get().fetchSuppliers();
+        await get().fetchCarriors();
       }
     } catch (error) {
-      set({ error: "Failed to delete supplier", loading: false });
-      toast.error("Failed to delete supplier");
+      set({ error: "Failed to delete Carrior", loading: false });
+      toast.error("Failed to delete Carrior");
     }
   },
 }));
 
-export default useSupplierStore;
+export default useCarriorStore;
