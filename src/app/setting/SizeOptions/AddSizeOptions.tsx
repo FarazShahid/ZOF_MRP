@@ -120,7 +120,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                               <option value={""}>Select region</option>
                               {productRegions?.map((region, index)=>{
                                 return(
-                                  <option value={region.Id} key={index}>{region.Name}</option>
+                                  <option value={region?.Id} key={index}>{region?.Name}</option>
                                 )
                               })}
                             </Field>

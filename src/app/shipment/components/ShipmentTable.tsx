@@ -32,7 +32,7 @@ const ShipmentTable = () => {
   const { fetchShipments, loading, Shipments } = useShipmentStore();
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(Shipments!.length / rowsPerPage);
+  const pages = Math.ceil(Shipments?.length / rowsPerPage);
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;

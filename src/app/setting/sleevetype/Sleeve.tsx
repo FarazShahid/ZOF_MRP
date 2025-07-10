@@ -39,7 +39,7 @@ const Sleeve = () => {
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(sleeveTypeData!.length / rowsPerPage);
+  const pages = Math.ceil(sleeveTypeData?.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
@@ -125,7 +125,7 @@ const Sleeve = () => {
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {sleeveTypeData.length || 0}
+                Total: {sleeveTypeData?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -178,14 +178,14 @@ const Sleeve = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => openEditModal(item.id)}
+                          onClick={() => openEditModal(item?.id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.id)}
+                          onClick={() => handleOpenDeleteModal(item?.id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>

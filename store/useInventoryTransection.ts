@@ -4,10 +4,12 @@ import { create } from "zustand";
 
 
 export const TRANSACTION_TYPES = [
-  { label: "IN", value: "IN" },
-  { label: "OUT", value: "OUT" },
-  { label: "Opening Balance", value: "Opening Balance" },
-  { label: "Returned", value: "Disposal" },
+  { label: "IN", value: "IN" }, // + in stock
+  { label: "OUT", value: "OUT" }, // - in stock
+  { label: "Opening Balance", value: "Opening Balance" }, // first ever transction
+   { label: "Return to Stock", value: "Return to Stock" }, // + in stock
+   {label: "Return to Supplier", value: "Return to Supplier"}, // - in stock
+  { label: "Disposal", value: "Disposal" }, // - in stock
 ];
 
 

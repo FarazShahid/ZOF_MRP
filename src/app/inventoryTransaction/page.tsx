@@ -127,9 +127,9 @@ const InventoryTransaction = () => {
             >
               Transaction Date
             </TableColumn>
-            {/* <TableColumn key="action" className="text-medium font-bold">
+            <TableColumn key="action" className="text-medium font-bold">
               Action
-            </TableColumn> */}
+            </TableColumn>
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
             {(items ?? [])?.map((item: any, index: number) => (
@@ -146,7 +146,7 @@ const InventoryTransaction = () => {
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
-                        {/* <button
+                        <button
                           type="button"
                           onClick={() => handleOpenEditModal(item?.Id)}
                         >
@@ -158,7 +158,7 @@ const InventoryTransaction = () => {
                           onClick={() => handleOpenDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
-                        </button> */}
+                        </button>
                       </div>
                     )}
                   </TableCell>

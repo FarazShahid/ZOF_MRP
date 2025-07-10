@@ -33,7 +33,7 @@ const ProductSizeOptions = () => {
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(sizeOptions!.length / rowsPerPage);
+  const pages = Math.ceil(sizeOptions?.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
@@ -77,7 +77,7 @@ const ProductSizeOptions = () => {
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {sizeOptions.length || 0}
+                Total: {sizeOptions?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -121,14 +121,14 @@ const ProductSizeOptions = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => openEditModal(item.Id)}
+                          onClick={() => openEditModal(item?.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.Id)}
+                          onClick={() => handleOpenDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>

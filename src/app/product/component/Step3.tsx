@@ -1,8 +1,9 @@
 import { ErrorMessage, Field } from "formik";
 import Label from "../../components/common/Label";
 import { PRODUCT_STATUS_ENUM } from "@/interface";
+import DropZoneMultiple from "../../components/DropZone/DropZoneMultiple";
 
-export default function Step3({ formik }: any) {
+export default function Step3({ formik, handleFileSelect }: any) {
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
@@ -25,6 +26,10 @@ export default function Step3({ formik }: any) {
           className="text-red-500 text-sm"
         />
       </div>
+       <DropZoneMultiple
+                          index={1}
+                          onFileSelect={handleFileSelect}
+                        />
       <div className="flex flex-col gap-1">
         <Label isRequired={false} label="Description" />
         <Field

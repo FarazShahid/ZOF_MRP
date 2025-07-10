@@ -109,6 +109,12 @@ const InventoryItemsTable = () => {
               Name
             </TableColumn>
             <TableColumn
+              key="CategoryName"
+              className="text-medium font-bold"
+            >
+              Category
+            </TableColumn>
+            <TableColumn
               key="SubCategoryName"
               className="text-medium font-bold"
             >

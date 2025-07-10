@@ -45,7 +45,7 @@ const ProductSizeMeasurements = () => {
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(sizeMeasurement!.length / rowsPerPage);
+  const pages = Math.ceil(sizeMeasurement?.length / rowsPerPage);
 
   const openAddModal = () => {
     router.push("/product/addsizeOptions");
@@ -135,7 +135,7 @@ const ProductSizeMeasurements = () => {
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {sizeMeasurement.length || 0}
+                Total: {sizeMeasurement?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -188,7 +188,7 @@ const ProductSizeMeasurements = () => {
             {(items ?? []).map((item: any, index: number) => (
               <TableRow
                 key={item.Id}
-                onClick={() => openViewModal(item.Id)}
+                onClick={() => openViewModal(item?.Id)}
                 className="cursor-pointer"
               >
                 {(columnKey) => (
@@ -204,14 +204,14 @@ const ProductSizeMeasurements = () => {
                       >
                         <button
                           type="button"
-                          onClick={() => openEditModal(item.Id)}
+                          onClick={() => openEditModal(item?.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.Id)}
+                          onClick={() => handleOpenDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>

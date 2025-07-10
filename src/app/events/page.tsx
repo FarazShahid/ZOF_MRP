@@ -37,7 +37,7 @@ const page = () => {
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(Events!.length / rowsPerPage);
+  const pages = Math.ceil(Events?.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
@@ -120,7 +120,7 @@ const page = () => {
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {Events.length || 0}
+                Total: {Events?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -177,14 +177,14 @@ const page = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => openEditModal(item.Id)}
+                          onClick={() => openEditModal(item?.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.Id)}
+                          onClick={() => handleOpenDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>

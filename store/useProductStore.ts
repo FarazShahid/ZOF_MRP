@@ -31,6 +31,7 @@ export interface Product {
   FabricType: string;
   FabricName: string;
   GSM: number;
+  isArchived: boolean;
   productStatus: string;
   Description: string;
   CreatedBy: string;

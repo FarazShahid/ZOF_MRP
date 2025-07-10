@@ -29,7 +29,7 @@ const UnitofMeasure = () => {
     useUnitOfMeasureStore();
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(unitMeasures!.length / rowsPerPage);
+  const pages = Math.ceil(unitMeasures?.length / rowsPerPage);
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
@@ -73,7 +73,7 @@ const UnitofMeasure = () => {
           bottomContent={
             <div className="grid grid-cols-2">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {items.length || 0}
+                Total: {items?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -118,14 +118,14 @@ const UnitofMeasure = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => handleOpenEditModal(item.Id)}
+                          onClick={() => handleOpenEditModal(item?.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.Id)}
+                          onClick={() => handleOpenDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>

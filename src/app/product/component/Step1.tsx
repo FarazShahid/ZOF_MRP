@@ -6,20 +6,19 @@ import useCategoryStore from "@/store/useCategoryStore";
 import useFabricStore from "@/store/useFabricStore";
 import { Select, SelectItem } from "@heroui/react";
 import useColorOptionsStore from "@/store/useColorOptionsStore";
-import ColorPickerModal from "./ColorPickerModal";
 import Label from "../../components/common/Label";
 import { useColorPickerStore } from "@/store/useColorPickerStore";
+import useClientStore from "@/store/useClientStore";
 
 export default function Step1({ formik }: any) {
-  const [isColorModalOpen, setIsColorModalOpen] = useState(false);
   const [selectedColorOptions, setSelectedColorOptions] = useState<string[]>(
     []
   );
-  
 
   const { fetchCategories, productCategories } = useCategoryStore();
   const { fetchFabricType, fabricTypeData } = useFabricStore();
   const { fetchColorOptions, colorOptions } = useColorOptionsStore();
+  const { fetchClients, clients } = useClientStore();
   const { selectedColors } = useColorPickerStore();
 
   const handleColorOptionChange = (
@@ -55,25 +54,17 @@ export default function Step1({ formik }: any) {
     }
   };
 
-  const handleCloseColorModal = () => {
-    setIsColorModalOpen(false);
-  };
-
-  const handleSaveCustomColors = (colors: { name: string; hex: string }[]) => {
-    setIsColorModalOpen(false);
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       await Promise.all([
         fetchCategories(),
         fetchFabricType(),
         fetchColorOptions(),
+        fetchClients(),
       ]);
     };
     fetchData();
   }, []);
-
 
   return (
     <div className="space-y-6 w-[500px]">
@@ -89,6 +80,23 @@ export default function Step1({ formik }: any) {
           component="div"
           className="text-red-500 text-sm"
         />
+      </div>
+      <div className="flex flex-col gap-1">
+        <Label isRequired={true} label="Client" />
+        <Field
+          as="select"
+          name="clientId"
+          className="rounded-xl dark:text-gray-400 text-gray-800 text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+        >
+          <option value={""}>select a client</option>
+          {clients?.map((client, index) => {
+            return (
+              <option value={client?.Id} key={index}>
+                {client?.Name}
+              </option>
+            );
+          })}
+        </Field>
       </div>
       <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Product Category" />
