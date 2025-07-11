@@ -85,7 +85,7 @@ export default function Step1({ formik }: any) {
         <Label isRequired={true} label="Client" />
         <Field
           as="select"
-          name="clientId"
+          name="ClientId"
           className="rounded-xl dark:text-gray-400 text-gray-800 text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
         >
           <option value={""}>select a client</option>
@@ -97,6 +97,11 @@ export default function Step1({ formik }: any) {
             );
           })}
         </Field>
+        <ErrorMessage
+          name="ClientId"
+          component="div"
+          className="text-red-500 text-sm"
+        />
       </div>
       <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Product Category" />

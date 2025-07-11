@@ -15,6 +15,9 @@ import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
 import useProductStore from "@/store/useProductStore";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@heroui/react";
+import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
+import { useFileUploadStore } from "@/store/useFileUploadStore";
+import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 
 const steps = ["General Information", "Product Details", "Description"];
 
@@ -30,10 +33,14 @@ const ProductForm = ({ productId }: { productId?: string }) => {
 
   const { addProduct, updateProduct, getProductById, productById } =
     useProductStore();
+  const { uploadDocument, loadingDoc } = useDocumentCenterStore();
+  const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
+
   const router = useRouter();
 
   const initialValues = {
     Name: productById?.Name ?? "",
+    ClientId: productById?.ClientId ?? "",
     ProductCategoryId: productById?.ProductCategoryId ?? "",
     FabricTypeId: productById?.FabricTypeId ?? "",
     Description: productById?.Description ?? "",
@@ -44,6 +51,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         ImageId: "1",
       },
     ],
+    printingOptions: productById?.printingOptions ?? [{ PrintingOptionId: 0 }],
     productDetails: productById?.productDetails?.map((detail) => ({
       ProductCutOptionId: detail.ProductCutOptionId,
       SleeveTypeId: detail.SleeveTypeId,
@@ -64,7 +72,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     ],
   };
 
-   const handleFileSelect = (file: File, index: number) => {
+  const handleFileSelect = (file: File, index: number) => {
     setItemFiles((prev) => ({ ...prev, [index]: file }));
   };
 
@@ -75,7 +83,9 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       case 2:
         return <Step2 formik={formikProps} />;
       case 3:
-        return <Step3 formik={formikProps} handleFileSelect={handleFileSelect} />;
+        return (
+          <Step3 formik={formikProps} handleFileSelect={handleFileSelect} />
+        );
       default:
         return null;
     }
@@ -118,6 +128,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
   };
 
   const handleSubmit = async (values: any) => {
+    const files = uploadedFilesByIndex[1] || [];
     const payload = { ...values };
 
     // Check if productColors is still the default value
@@ -134,7 +145,20 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     if (productId) {
       await updateProduct(Number(productId), payload, () => handleBoBack());
     } else {
-      await addProduct(payload, () => handleBoBack());
+      const result = await addProduct(payload);
+      if (result && files.length > 0) {
+        const refernceId = Number(result.data.Id);
+
+        for (const fileObj of files) {
+          await uploadDocument(
+            fileObj.file,
+            DOCUMENT_REFERENCE_TYPE.PRODUCT,
+            refernceId
+          );
+        }
+      }
+      resetAllFiles();
+      handleBoBack();
     }
   };
 

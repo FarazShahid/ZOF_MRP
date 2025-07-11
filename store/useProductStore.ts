@@ -11,14 +11,14 @@ interface GetProductsResponse {
   message: string;
 }
 
-interface GetAvailablSizesResponse{
+interface GetAvailablSizesResponse {
   data: AvailableSizes[];
-   message: string;
+  message: string;
 }
 
 interface AvailableSizes {
-  Id: number,
-  SizeId: number,
+  Id: number;
+  SizeId: number;
   SizeName: string;
 }
 
@@ -45,6 +45,7 @@ interface GetProductByIdResponse {
 
 interface ProductById {
   Id: string;
+  ClientId: number;
   ProductCategoryId: number;
   FabricTypeId: number;
   Name: string;
@@ -53,6 +54,7 @@ interface ProductById {
   CreatedBy: string;
   UpdatedOn: string;
   UpdatedBy: string;
+  printingOptions: [{ PrintingOptionId: number }];
   productColors: [{ Id: number; colorId: number; ImageId: string }];
   productDetails: [
     {
@@ -64,13 +66,12 @@ interface ProductById {
       SleeveTypeId: number;
     }
   ];
-  productSizes: [{ Id: number; sizeId: number}];
+  productSizes: [{ Id: number; sizeId: number }];
 }
 
 interface GetAvailableColorResponse {
   data: ProductAvailableColors[];
 }
-
 
 export interface ProductAvailableColors {
   Id: number;
@@ -101,7 +102,9 @@ interface CategoryState {
   fetchProductAvailableColors: (id: number) => Promise<void>;
   fetchAvailableSizes: (id: number) => Promise<void>;
   getProductById: (id: number) => Promise<void>;
-  addProduct: (productType: AddProduct, onSuccess: () => void) => Promise<void>;
+  addProduct: (
+    productType: AddProduct
+  ) => Promise<GetProductByIdResponse | null>;
   updateProduct: (
     id: number,
     productType: AddProduct,
@@ -116,7 +119,7 @@ const useProductStore = create<CategoryState>((set, get) => ({
   productById: null,
   productColorMap: {},
   productAvailableColors: [],
-  availableSizes:[],
+  availableSizes: [],
   loading: false,
   error: null,
 
@@ -199,8 +202,42 @@ const useProductStore = create<CategoryState>((set, get) => ({
     }
   },
 
-  addProduct: async (productType: AddProduct, onSuccess?: () => void) => {
+  // addProduct: async (productType: AddProduct, onSuccess?: () => void) => {
+  //   set({ loading: true, error: null });
+  //   try {
+  //     const response = await fetchWithAuth(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/products`,
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify(productType),
+  //       }
+  //     );
+
+  //     if (response.ok) {
+  //       set({ loading: false, error: null });
+  //       const data: GetProductByIdResponse = await response.json();
+
+  //       if (onSuccess) onSuccess();
+  //       toast.success("Product added successfully.");
+  //       await get().fetchProducts();
+
+  //     } else {
+  //       set({ loading: false, error: null });
+  //       const error = await response.json();
+  //       toast.error(error.message || "Fail to add product");
+  //     }
+  //   } catch (error) {
+  //     set({ error: "Failed to add product", loading: false });
+  //     toast.error("Fail to add product");
+  //   }
+  // },
+
+  addProduct: async (
+    productType: AddProduct
+  ): Promise<GetProductByIdResponse | null> => {
     set({ loading: true, error: null });
+
     try {
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/products`,
@@ -210,23 +247,25 @@ const useProductStore = create<CategoryState>((set, get) => ({
           body: JSON.stringify(productType),
         }
       );
+      const result: GetProductByIdResponse = await response.json();
 
-      if (response.ok) {
+      if (!response.ok) {
         set({ loading: false, error: null });
-        if (onSuccess) onSuccess();
-        toast.success("Product added successfully.");
-        await get().fetchProducts();
-      } else {
-        set({ loading: false, error: null });
-        const error = await response.json();
-        toast.error(error.message || "Fail to add product");
+        toast.error(result.message || "Failed to add item");
+        return null;
       }
+
+      set({ loading: false, error: null });
+      toast.success("Item added successfully");
+      await get().fetchProducts();
+
+      return result;
     } catch (error) {
-      set({ error: "Failed to add product", loading: false });
-      toast.error("Fail to add product");
+      set({ error: "Failed to add item", loading: false });
+      toast.error("Failed to add item");
+      return null;
     }
   },
-
   updateProduct: async (
     id: number,
     productType: AddProduct,

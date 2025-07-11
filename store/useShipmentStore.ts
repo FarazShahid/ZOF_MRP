@@ -174,18 +174,18 @@ const useShipmentStore = create<StoreState>((set, get) => ({
     
       if (!response.ok) {
         set({ loading: false, error: null });
-        toast.error(result.message || "Failed to add item");
+        toast.error(result.message || "Failed to add Shipment");
         return null;
       }
 
       set({ loading: false, error: null });
-      toast.success("Item added successfully");
+      toast.success("Shipment added successfully");
       await get().fetchShipments();
 
       return result;
     } catch (error) {
-      set({ error: "Failed to add item", loading: false });
-      toast.error("Failed to add item");
+      set({ error: "Failed to add Shipment", loading: false });
+      toast.error("Failed to add Shipment");
       return null;
     }
   },
@@ -209,12 +209,12 @@ const useShipmentStore = create<StoreState>((set, get) => ({
 
       if (!response.ok) {
         set({ loading: false, error: null });
-        toast.error(result.message || "Failed to update item");
+        toast.error(result.message || "Failed to update Shipment");
         return null;
       }
 
       set({ loading: false, error: null });
-      toast.success("Item updated successfully");
+      toast.success("Shipment updated successfully");
       await get().fetchShipments();
 
       return result;

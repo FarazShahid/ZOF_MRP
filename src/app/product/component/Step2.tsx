@@ -39,21 +39,20 @@ export default function Step2({ formik }: any) {
   };
 
   const handlePrintingOptionChange = (keys: Set<React.Key> | "all") => {
-    let printingId: string[] = [];
+    let PrintingOptionId: string[] = [];
 
     if(keys === "all"){
-      printingId = printingOptions.map((po) => String(po.Id));
+      PrintingOptionId = printingOptions.map((po) => String(po.Id));
     }else{
-      printingId = Array.from(keys).map(String);
+      PrintingOptionId = Array.from(keys).map(String);
     }
 
-    setSelectedPrintingIds(printingId);
+    setSelectedPrintingIds(PrintingOptionId);
 
     formik.setFieldValue(
       "printingOptions",
-      printingId.map((id) => ({
-        Id: 0,
-        printingId: Number(id),
+      PrintingOptionId.map((id) => ({
+        PrintingOptionId: Number(id),
       }))
     );
   }
@@ -90,15 +89,21 @@ export default function Step2({ formik }: any) {
             </SelectItem>
           ))}
         </Select>
+        <ErrorMessage
+          name="productSizes"
+          component="div"
+          className="text-red-500 text-sm"
+        />
       </div>
       <div className="flex flex-col gap-1">
-        <Label isRequired={false} label="Printing Option" />
+        <Label isRequired={true} label="Printing Option" />
         <Select
           className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
           name="PrintingOptions"
           placeholder="Select Printing Options"
           variant="bordered"
           selectionMode="multiple"
+          required
           aria-label="Printing Options"
           selectedKeys={new Set(selectedPrintingIds)}
           onSelectionChange={(keys) => handlePrintingOptionChange(keys)}

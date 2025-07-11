@@ -26,10 +26,7 @@ export default function Step3({ formik, handleFileSelect }: any) {
           className="text-red-500 text-sm"
         />
       </div>
-       <DropZoneMultiple
-                          index={1}
-                          onFileSelect={handleFileSelect}
-                        />
+      <DropZoneMultiple index={1} onFileSelect={handleFileSelect} />
       <div className="flex flex-col gap-1">
         <Label isRequired={false} label="Description" />
         <Field

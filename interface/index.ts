@@ -33,7 +33,8 @@ export function formatDateToReadableDate(dateString: string): string {
 export const DOCUMENT_REFERENCE_TYPE = {
   INVENTORY_ITEMS: "inventory_item",
   ORDER: 'order',
-  SHIPMENT: 'shipment'
+  SHIPMENT: 'shipment',
+  PRODUCT: 'product'
 }
 
 export const ShipmentStatus = [
