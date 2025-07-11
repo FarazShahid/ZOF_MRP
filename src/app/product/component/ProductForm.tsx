@@ -26,6 +26,7 @@ const formSteps = [
 
 const ProductForm = ({ productId }: { productId?: string }) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
 
   const { addProduct, updateProduct, getProductById, productById } =
     useProductStore();
@@ -63,6 +64,10 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     ],
   };
 
+   const handleFileSelect = (file: File, index: number) => {
+    setItemFiles((prev) => ({ ...prev, [index]: file }));
+  };
+
   const renderStep = (formikProps: any) => {
     switch (currentStep) {
       case 1:
@@ -70,7 +75,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       case 2:
         return <Step2 formik={formikProps} />;
       case 3:
-        return <Step3 formik={formikProps} />;
+        return <Step3 formik={formikProps} handleFileSelect={handleFileSelect} />;
       default:
         return null;
     }

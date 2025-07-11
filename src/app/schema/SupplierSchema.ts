@@ -19,3 +19,8 @@ export const CarriorSchema = Yup.object().shape({
     Name: Yup.string().required('Name is required'),
     
 })
+
+export const ProductCategorySchema = Yup.object().shape({
+    Name: Yup.string().required('Name is required'),
+    
+})

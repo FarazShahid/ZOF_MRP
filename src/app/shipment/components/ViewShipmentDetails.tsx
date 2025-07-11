@@ -10,11 +10,9 @@ import useShipmentStore from "@/store/useShipmentStore";
 import { useEffect } from "react";
 import { GiCargoShip } from "react-icons/gi";
 import { FaBoxOpen } from "react-icons/fa";
-import { IoDocumentAttach } from "react-icons/io5";
 import { formatDate } from "../../interfaces";
-import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
-import DocumentCard from "../../orders/components/DocumentCard";
+import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 
 interface DeleteModalProps {
   isOpen: boolean;
@@ -28,12 +26,10 @@ const ViewShipmentDetails: React.FC<DeleteModalProps> = ({
   Id,
 }) => {
   const { getShipmentById, ShipmentById, loading } = useShipmentStore();
-  const { fetchDocuments, documents } = useDocumentCenterStore();
 
   useEffect(() => {
     if (Id) {
       getShipmentById(Id);
-      fetchDocuments(DOCUMENT_REFERENCE_TYPE.SHIPMENT, Id);
     }
   }, [Id]);
 
@@ -136,25 +132,10 @@ const ViewShipmentDetails: React.FC<DeleteModalProps> = ({
                   </div>
                 </div>
 
-                <div className="bg-gray-100 rounded-lg p-3">
-                  <h6 className="flex items-center gap-3 text-gray-700">
-                    <IoDocumentAttach size={25} /> Attachments
-                  </h6>
-                  {documents && (
-                    <div className="flex flex-wrap gap-2 mt-5">
-                      {documents?.map((doc, index) => {
-                        return (
-                          <DocumentCard
-                            key={index}
-                            fileTitle={doc.fileName}
-                            fileType={doc.fileType}
-                            path={doc.fileUrl}
-                          />
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
+                <RecentAttachmentsView
+                  referenceId={Id}
+                  referenceType={DOCUMENT_REFERENCE_TYPE.SHIPMENT}
+                />
               </div>
             </ModalBody>
             <ModalFooter>

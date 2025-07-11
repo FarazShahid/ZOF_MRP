@@ -15,4 +15,14 @@ export const InventoryTransactionSchema = Yup.object().shape({
 })
 
 export const ShipmentSchema = Yup.object().shape({
+    ReceivedTime: Yup.string().required('Received Time is required'),
+    ShipmentCode: Yup.string().required('Shipment Code is required'),
+    ShipmentCarrierId: Yup.string().required('Shipment Carrier is required'),
+    ShipmentDate: Yup.string().required('Shipment Date is required'),
+    WeightUnit: Yup.string().required('Weight Unit is required'),
+    TotalWeight: Yup.string().required('Total Weight is required'),
+     NumberOfBoxes: Yup.string().required('Number Of Boxes are required'),
+     ShipmentCost: Yup.string().required('Shipment Cost is required'),
+     Status: Yup.string().required('Status is required'),
+     
 })

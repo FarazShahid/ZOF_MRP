@@ -119,7 +119,7 @@ const useInventoryItemsStore = create<StoreState>((set, get) => ({
   ): Promise<InventoryItemResponse | null> => {
     set({ loading: true, error: null });
     try {
-      debugger
+      
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/inventory-items`,
         {
@@ -156,7 +156,6 @@ const useInventoryItemsStore = create<StoreState>((set, get) => ({
   ): Promise<InventoryItemResponse | null> => {
     set({ loading: true, error: null });
     try {
-      debugger
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/inventory-items/${id}`,
         {

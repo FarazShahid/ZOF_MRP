@@ -32,7 +32,7 @@ const ProductRegionComponent = () => {
   const [sortColumn, setSortColumn] = useState<keyof ProductRegion>("Name");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  const { loading, error, fetchProductRegions, productRegions } =
+  const { loading, fetchProductRegions, productRegions } =
     useProductRegionStore();
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const ProductRegionComponent = () => {
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(productRegions!.length / rowsPerPage);
+  const pages = Math.ceil(productRegions?.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
@@ -124,7 +124,7 @@ const ProductRegionComponent = () => {
           bottomContent={
             <div className="grid grid-cols-2 mt-5">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {productRegions.length || 0}
+                Total: {productRegions?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -175,14 +175,14 @@ const ProductRegionComponent = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => openEditModal(item.Id)}
+                          onClick={() => openEditModal(item?.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.Id)}
+                          onClick={() => handleOpenDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>

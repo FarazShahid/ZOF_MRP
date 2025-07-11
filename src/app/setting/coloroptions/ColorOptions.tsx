@@ -34,7 +34,7 @@ const ColorOptions = () => {
   }, []);
 
   const rowsPerPage = 10;
-  const pages = Math.ceil(colorOptions!.length / rowsPerPage);
+  const pages = Math.ceil(colorOptions?.length / rowsPerPage);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
@@ -83,7 +83,7 @@ const ColorOptions = () => {
         bottomContent={
           <div className="grid grid-cols-2 mt-5">
             <span className="w-[30%] text-small text-gray-500">
-              Total: {colorOptions.length || 0}
+              Total: {colorOptions?.length || 0}
             </span>
             <Pagination
               isCompact
@@ -133,7 +133,7 @@ const ColorOptions = () => {
                       <button
                         type="button"
                         className="hover:text-red-500 cursor-pointer"
-                        onClick={() => handleOpenDeleteModal(item.Id)}
+                        onClick={() => handleOpenDeleteModal(item?.Id)}
                       >
                         <RiDeleteBin6Line color="red" />
                       </button>

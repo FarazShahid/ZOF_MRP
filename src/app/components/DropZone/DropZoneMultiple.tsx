@@ -28,6 +28,8 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
+      const newFiles: UploadedFile[] = [];
+
       for (const file of acceptedFiles) {
         const type = file.type;
         let previewUrl: string | undefined;
@@ -76,10 +78,14 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
           excelPreview,
         };
 
-        setUploadedFilesByIndex(index, [...uploadedFiles, newFile]);
+        newFiles.push(newFile);
 
         onFileSelect(file, index);
       }
+      setUploadedFilesByIndex(index, [
+        ...(uploadedFilesByIndex[index] || []),
+        ...newFiles,
+      ]);
     },
     [index, onFileSelect, setUploadedFilesByIndex, uploadedFiles]
   );
@@ -113,6 +119,8 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
   const handleCloseModal = () => {
     setOpenViewModal(false);
   };
+
+  console.log("uploadedFiles", uploadedFiles);
 
   return (
     <div className="space-y-6 w-full">
@@ -194,9 +202,9 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
                 )}
 
                 <div className="mt-2">
-                  <p className="font-medium truncate">{f.file.name}</p>
+                  <p className="font-medium truncate whitespace-nowrap overflow-hidden">{f.file.name}</p>
                   <div className="flex items-center justify-between">
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 truncate whitespace-nowrap overflow-hidden">
                       {f.type || "Unknown type"}
                     </p>
                     <button

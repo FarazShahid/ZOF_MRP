@@ -7,13 +7,16 @@ import useSleeveType from "@/store/useSleeveType";
 import useCutOptionsStore from "@/store/useCutOptionsStore";
 import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import Label from "../../components/common/Label";
+import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
 
 export default function Step2({ formik }: any) {
   const [selectedSizeIds, setSelectedSizeIds] = useState<string[]>([]);
+  const [selectedPrintingIds, setSelectedPrintingIds] = useState<string[]>([])
 
   const { fetchcutOptions, cutOptions } = useCutOptionsStore();
   const { fetchSleeveType, sleeveTypeData } = useSleeveType();
   const { fetchsizeOptions, sizeOptions } = useSizeOptionsStore();
+  const { fetchprintingOptions, printingOptions } = usePrintingOptionsStore();
 
   const handleSizeChange = (keys: Set<React.Key> | "all") => {
     let sizeIds: string[] = [];
@@ -35,12 +38,33 @@ export default function Step2({ formik }: any) {
     );
   };
 
+  const handlePrintingOptionChange = (keys: Set<React.Key> | "all") => {
+    let printingId: string[] = [];
+
+    if(keys === "all"){
+      printingId = printingOptions.map((po) => String(po.Id));
+    }else{
+      printingId = Array.from(keys).map(String);
+    }
+
+    setSelectedPrintingIds(printingId);
+
+    formik.setFieldValue(
+      "printingOptions",
+      printingId.map((id) => ({
+        Id: 0,
+        printingId: Number(id),
+      }))
+    );
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       await Promise.all([
         fetchcutOptions(),
         fetchSleeveType(),
         fetchsizeOptions(),
+        fetchprintingOptions(),
       ]);
     };
     fetchData();
@@ -67,6 +91,25 @@ export default function Step2({ formik }: any) {
           ))}
         </Select>
       </div>
+      <div className="flex flex-col gap-1">
+        <Label isRequired={false} label="Printing Option" />
+        <Select
+          className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
+          name="PrintingOptions"
+          placeholder="Select Printing Options"
+          variant="bordered"
+          selectionMode="multiple"
+          aria-label="Printing Options"
+          selectedKeys={new Set(selectedPrintingIds)}
+          onSelectionChange={(keys) => handlePrintingOptionChange(keys)}
+        >
+          {printingOptions?.map((printingOption) => (
+            <SelectItem key={printingOption?.Id}>
+              {printingOption?.Type}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
       <FieldArray name="productDetails">
         {({ push, remove, form }) => (
           <>
@@ -83,8 +126,7 @@ export default function Step2({ formik }: any) {
                       <Field
                         as="select"
                         name={`productDetails[${index}].ProductCutOptionId`}
-                         className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
-       
+                        className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                       >
                         <option value={""}>Select an option</option>
                         {cutOptions?.map((cutOption, i) => (
@@ -105,7 +147,6 @@ export default function Step2({ formik }: any) {
                         as="select"
                         name={`productDetails[${index}].SleeveTypeId`}
                         className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
-       
                       >
                         <option value={""}>Select an option</option>
                         {sleeveTypeData?.map((sleeve, index) => (

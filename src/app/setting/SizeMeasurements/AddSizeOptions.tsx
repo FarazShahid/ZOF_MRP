@@ -182,10 +182,10 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                               className="formInputdefault bg-gray-100"
                             >
                               <option value={""}>Select an option</option>
-                              {sizeOptions.map((size) => {
+                              {sizeOptions?.map((size) => {
                                 return (
-                                  <option value={size.Id} key={size.Id}>
-                                    {size.OptionSizeOptions}
+                                  <option value={size?.Id} key={size?.Id}>
+                                    {size?.OptionSizeOptions}
                                   </option>
                                 );
                               })}

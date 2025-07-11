@@ -31,7 +31,7 @@ const Supplier = () => {
   const { loading, fetchSuppliers, suppliers } = useSupplierStore();
 
   const rowsPerPage = 15;
-  const pages = Math.ceil(suppliers!.length / rowsPerPage);
+  const pages = Math.ceil(suppliers?.length / rowsPerPage);
   
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -76,7 +76,7 @@ const Supplier = () => {
           bottomContent={
             <div className="grid grid-cols-2">
               <span className="w-[30%] text-small text-gray-500">
-                Total: {items.length || 0}
+                Total: {items?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -138,14 +138,14 @@ const Supplier = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => handleOpenEditModal(item.Id)}
+                          onClick={() => handleOpenEditModal(item?.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item.Id)}
+                          onClick={() => handleOpenDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>

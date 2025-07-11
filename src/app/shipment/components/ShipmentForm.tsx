@@ -3,10 +3,9 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { Button } from "@heroui/react";
+import { Button, Spinner } from "@heroui/react";
 import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
 import Label from "../../components/common/Label";
-import useOrderStore from "@/store/useOrderStore";
 import { ShipmentSchema } from "../../schema/InventoryItemSchema";
 import useCarriorStore from "@/store/useCarriorStore";
 import { MdDelete } from "react-icons/md";
@@ -16,21 +15,29 @@ import useShipmentStore from "@/store/useShipmentStore";
 import { useRouter } from "next/navigation";
 import DropZoneMultiple from "../../components/DropZone/DropZoneMultiple";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
+import { useFileUploadStore } from "@/store/useFileUploadStore";
+import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 
 const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
   const router = useRouter();
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
 
-
   const { fetchCarriors, Carriors } = useCarriorStore();
-  const { uploadDocument } = useDocumentCenterStore();
-  const { addShipment, updateShipment, getShipmentById, ShipmentById } =
-    useShipmentStore();
+  const { uploadDocument, loadingDoc } = useDocumentCenterStore();
+  const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
+  const {
+    addShipment,
+    updateShipment,
+    getShipmentById,
+    ShipmentById,
+    loading,
+  } = useShipmentStore();
 
   const getInitialValues = () => {
     if (shipmentId && ShipmentById) {
       return {
         ShipmentCode: ShipmentById.ShipmentCode || "",
+        TrackingId: ShipmentById.TrackingId || "",
         OrderNumber: ShipmentById.OrderNumber || "",
         ShipmentCarrierId: ShipmentById.ShipmentCarrierId || "",
         ShipmentDate: ShipmentById.ShipmentDate
@@ -65,6 +72,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
     // Default new shipment
     return {
       ShipmentCode: "",
+      TrackingId: "",
       OrderNumber: "",
       ShipmentCarrierId: "",
       ShipmentDate: "",
@@ -88,34 +96,40 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
   };
 
   const handleAdd = async (values: any) => {
+    const files = uploadedFilesByIndex[1] || [];
+
     if (shipmentId) {
       const updatedItem = await updateShipment(Number(shipmentId), values);
-        if (updatedItem && Object.values(itemFiles).length > 0) {
-        for (const file of Object.values(itemFiles)) {
-          if (file) {
-            await uploadDocument(
-              file,
-              DOCUMENT_REFERENCE_TYPE.SHIPMENT,
-              updatedItem.Id
-            );
-          }
+
+      if (updatedItem && files.length > 0) {
+        const refernceId = updatedItem.data.id;
+
+        for (const fileObj of files) {
+          await uploadDocument(
+            fileObj.file,
+            DOCUMENT_REFERENCE_TYPE.SHIPMENT,
+            refernceId
+          );
         }
       }
+
+      resetAllFiles();
       onClose();
     } else {
       const result = await addShipment(values);
-      if (result) {
-        for (const file of Object.values(itemFiles)) {
-          if (file) {
-            await uploadDocument(
-              file,
-              DOCUMENT_REFERENCE_TYPE.SHIPMENT,
-              result.Id
-            );
-          }
+      if (result && files.length > 0) {
+        const refernceId = result.data.id;
+
+        for (const fileObj of files) {
+          await uploadDocument(
+            fileObj.file,
+            DOCUMENT_REFERENCE_TYPE.SHIPMENT,
+            refernceId
+          );
         }
-        onClose();
       }
+      resetAllFiles();
+      onClose();
     }
   };
 
@@ -157,7 +171,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
           enableReinitialize
           onSubmit={handleAdd}
         >
-          {({ isSubmitting, setFieldValue }) => (
+          {({ isSubmitting }) => (
             <Form>
               <div className="grid grid-cols-1 gap-2">
                 <div className="grid grid-cols-3 gap-2">
@@ -179,6 +193,20 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     />
                     <ErrorMessage
                       name="ShipmentCode"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Label isRequired={true} label="Tracking ID" />
+                    <Field
+                      type="text"
+                      name="TrackingId"
+                      placeholder="Enter Tracking Id"
+                      className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                    />
+                    <ErrorMessage
+                      name="TrackingId"
                       component="div"
                       className="text-red-500 text-sm"
                     />
@@ -220,7 +248,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <Label isRequired={false} label="Received Time" />
+                    <Label isRequired={true} label="Received Time" />
                     <Field
                       type="datetime-local"
                       name="ReceivedTime"
@@ -324,6 +352,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                             <Field
                               type="number"
                               name={`boxes[${index}].BoxNumber`}
+                              required
                               className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                             />
                             <ErrorMessage
@@ -336,6 +365,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                             <Label isRequired={true} label="Quantity" />
                             <Field
                               type="number"
+                              required
                               name={`boxes[${index}].Quantity`}
                               className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                             />
@@ -349,6 +379,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                             <Label isRequired={true} label="Weight" />
                             <Field
                               type="number"
+                              required
                               name={`boxes[${index}].Weight`}
                               className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                             />
@@ -362,6 +393,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                             <Label isRequired={true} label="Order Item" />
                             <Field
                               type="text"
+                              required
                               name={`boxes[${index}].OrderItem`}
                               className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                             />
@@ -409,6 +441,13 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                 </FieldArray>
               </div>
               <DropZoneMultiple index={1} onFileSelect={handleFileSelect} />
+              {shipmentId && (
+                <RecentAttachmentsView
+                  referenceId={Number(shipmentId)}
+                  referenceType={DOCUMENT_REFERENCE_TYPE.SHIPMENT}
+                />
+              )}
+
               <div className="flex items-center justify-end gap-2 mt-5">
                 <Button
                   color="danger"
@@ -418,13 +457,9 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                 >
                   Cancel
                 </Button>
-                <Button
-                  color="primary"
-                  type="submit"
-                  spinner={isSubmitting}
-                  disabled={isSubmitting}
-                >
-                 {shipmentId ? "Edit" :"Add"}
+                <Button color="primary" type="submit" disabled={isSubmitting}>
+                  {loadingDoc || loading ? <Spinner color="white" /> : <></>}
+                  {shipmentId ? "Update" : "Save"}
                 </Button>
               </div>
             </Form>

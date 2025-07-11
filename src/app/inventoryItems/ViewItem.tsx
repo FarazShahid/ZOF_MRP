@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Button,
   Modal,
@@ -8,20 +8,9 @@ import {
   ModalHeader,
   Spinner,
 } from "@heroui/react";
-import { Field, Formik, Form, ErrorMessage } from "formik";
-import useInventoryItemsStore, {
-  AddInventoryItemOptions,
-} from "@/store/useInventoryItemsStore";
-import useInventorySubCategoryStore from "@/store/useInventorySubCategoryStore";
-import useSupplierStore from "@/store/useSupplierStore";
-import useUnitOfMeasureStore from "@/store/useUnitOfMeasureStore";
-import { InventoryItemSchema } from "../schema/InventoryItemSchema";
-import Label from "../components/common/Label";
-import useInventoryCategoryStore from "@/store/useInventoryCategoryStore";
-import DropZoneMultiple from "../components/DropZone/DropZoneMultiple";
-import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
+import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
-import DocumentCard from "../orders/components/DocumentCard";
+import RecentAttachmentsView from "../components/RecentAttachmentsView";
 
 interface ComponentProps {
   isOpen: boolean;
@@ -33,28 +22,26 @@ const ViewItem: React.FC<ComponentProps> = ({ isOpen, closeAddModal, Id }) => {
   const { loading, getInventoryItemById, inventoryItemById } =
     useInventoryItemsStore();
 
-  const { fetchDocuments, documents } = useDocumentCenterStore();
-
   useEffect(() => {
     if (Id) {
       getInventoryItemById(Id);
-      fetchDocuments(DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS, Id);
     }
   }, [Id]);
-
 
   return (
     <Modal isOpen={isOpen} size="2xl" onOpenChange={closeAddModal}>
       <ModalContent>
         {() => (
           <>
-            <ModalHeader className="flex flex-col gap-1">{inventoryItemById?.Name}</ModalHeader>
+            <ModalHeader className="flex flex-col gap-1">
+              {inventoryItemById?.Name}
+            </ModalHeader>
             <ModalBody>
               {loading ? (
                 <Spinner />
               ) : (
-                <>
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="max-h-[calc(100vh-285px)] overflow-x-auto">
+                  <div className="grid grid-cols-2 gap-4 mb-2">
                     <div className="flex items-center gap-10">
                       <div className="">Name:</div>
                       <p>{inventoryItemById?.Name}</p>
@@ -76,22 +63,11 @@ const ViewItem: React.FC<ComponentProps> = ({ isOpen, closeAddModal, Id }) => {
                       <p>{inventoryItemById?.ReorderLevel}</p>
                     </div>
                   </div>
-
-                  {documents && (
-                    <div className="flex flex-wrap gap-2">
-                      {documents?.map((doc, index) => {
-                        return (
-                          <DocumentCard
-                            key={index}
-                            fileTitle={doc.fileName}
-                            fileType={doc.fileType}
-                            path={doc.fileUrl}
-                          />
-                        );
-                      })}
-                    </div>
-                  )}
-                </>
+                  <RecentAttachmentsView
+                    referenceId={Id}
+                    referenceType={DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS}
+                  />
+                </div>
               )}
             </ModalBody>
             <ModalFooter>

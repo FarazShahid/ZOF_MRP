@@ -37,7 +37,7 @@ interface GetByIdResponse {
 
 interface DocumentCenterStore {
   documents: Document[];
-  loading: boolean;
+  loadingDoc: boolean;
   error: string | null;
 
   uploadDocument: (
@@ -55,7 +55,7 @@ interface DocumentCenterStore {
 
 export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
   documents: [],
-  loading: false,
+  loadingDoc: false,
   error: null,
 
   uploadDocument: async (
@@ -65,6 +65,8 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
     tag?: string
   ) => {
     try {
+      
+      set({ loadingDoc: true, error: null });
       const formData = new FormData();
       formData.append("file", file);
 
@@ -86,10 +88,12 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
       const result: UploadResponse = await response.json();
 
       if (!response.ok) {
+        set({ loadingDoc: false, error: null });
         toast.error(result.message || "Upload failed");
         return null;
       }
 
+      set({ loadingDoc: false, error: null });
       toast.success("Document uploaded");
       return result;
     } catch (err) {
@@ -100,7 +104,7 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
   },
 
   fetchDocuments: async (referenceType: string, referenceId: number) => {
-    set({ loading: true, error: null });
+    set({ loadingDoc: true, error: null });
 
     try {
       const response = await fetchWithAuth(
@@ -111,14 +115,14 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
 
       if (!response.ok) {
         toast.error(result.message || "Failed to fetch documents");
-        set({ loading: false, error: result.message || "Failed to fetch documents" });
+        set({ loadingDoc: false, error: result.message || "Failed to fetch documents" });
         return;
       }
 
-      set({ documents: result.data, loading: false });
+      set({ documents: result.data, loadingDoc: false });
     } catch (err) {
       toast.error("Failed to fetch documents");
-      set({ loading: false, error: "Failed to fetch documents" });
+      set({ loadingDoc: false, error: "Failed to fetch documents" });
     }
   },
 }));

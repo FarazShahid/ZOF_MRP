@@ -14,8 +14,10 @@ import AddButton from "../components/common/AddButton";
 import useFabricStore from "@/store/useFabricStore";
 
 const page = () => {
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedFabricType, setSelectedFabricType] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [selectedFabricType, setSelectedFabricType] = useState<string>("All");
+  const [selectedProductType, setSelectedProductType] =
+    useState<boolean>(false);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   const { fetchCategories, productCategories } = useCategoryStore();
@@ -35,6 +37,12 @@ const page = () => {
 
   useEffect(() => {
     let filtered = products;
+
+    if(selectedProductType !== false){
+      filtered = filtered.filter(
+        (product) => product.isArchived === selectedProductType
+      );
+    }
 
     if (selectedCategory !== "All") {
       filtered = filtered.filter(
@@ -85,6 +93,23 @@ const page = () => {
             <span className="dark:text-white text-gray-600 uppercase text-sm flex items-center gap-2">
               <MdOutlineFilterAlt size={19} /> Filters
             </span>
+            <div className="flex flex-col gap-2">
+              <label className="dark:text-white text-gray-600 uppercase text-xs">
+                Product Type
+              </label>
+              <div className="w-[200px]">
+                <select
+                  value={selectedProductType.toString()} // convert boolean to string for select value
+                  onChange={(e) =>
+                    setSelectedProductType(e.target.value === "true")
+                  } // convert string back to boolean
+                  className="dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 rounded-xl w-full text-sm px-1 py-2 outline-none"
+                >
+                  <option value="false">Unarchived</option>
+                  <option value="true">Archived</option>
+                </select>
+              </div>
+            </div>
             <div className="flex flex-col gap-2">
               <label className="dark:text-white text-gray-600 uppercase text-xs">
                 category
