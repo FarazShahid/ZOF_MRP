@@ -72,6 +72,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
     // Default new shipment
     return {
       ShipmentCode: "",
+      TrackingId: "",
       OrderNumber: "",
       ShipmentCarrierId: "",
       ShipmentDate: "",
