@@ -47,6 +47,7 @@ interface GetAllShipments {
 interface ShipmentResponse {
   Id: number;
   ShipmentCode: string;
+  TrackingId: string;
   OrderNumber: string;
   ShipmentCarrierId: number;
   ShipmentCarrierName: string;

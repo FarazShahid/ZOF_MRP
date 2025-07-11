@@ -37,6 +37,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
     if (shipmentId && ShipmentById) {
       return {
         ShipmentCode: ShipmentById.ShipmentCode || "",
+        TrackingId: ShipmentById.TrackingId || "",
         OrderNumber: ShipmentById.OrderNumber || "",
         ShipmentCarrierId: ShipmentById.ShipmentCarrierId || "",
         ShipmentDate: ShipmentById.ShipmentDate
@@ -191,6 +192,20 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     />
                     <ErrorMessage
                       name="ShipmentCode"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Label isRequired={true} label="Tracking ID" />
+                    <Field
+                      type="text"
+                      name="TrackingId"
+                      placeholder="Enter Tracking Id"
+                      className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                    />
+                    <ErrorMessage
+                      name="TrackingId"
                       component="div"
                       className="text-red-500 text-sm"
                     />
