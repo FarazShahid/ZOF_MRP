@@ -121,6 +121,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="gsm"
                               type="number"
+                               min={0}
                               placeholder="Enter GSM"
                               className="formInputdefault bg-gray-100"
                             />

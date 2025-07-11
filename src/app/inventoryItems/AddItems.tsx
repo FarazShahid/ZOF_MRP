@@ -287,6 +287,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                             <Field
                               name="ReorderLevel"
                               type="number"
+                               min={0}
                               className="formInputdefault border-1"
                             />
                             <ErrorMessage

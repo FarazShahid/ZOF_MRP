@@ -202,6 +202,7 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
                             <Field
                               name="Quantity"
                               type="number"
+                              min={0}
                               className="formInputdefault border-1"
                             />
                             <ErrorMessage

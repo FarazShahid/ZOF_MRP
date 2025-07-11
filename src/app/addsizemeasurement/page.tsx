@@ -94,6 +94,7 @@ export default function MeasurementsPage() {
                     </label>
                     <input
                       type="number"
+                       min={0}
                       className="w-full mt-2 border rounded px-2 py-1 text-white z-20"
                       defaultValue={
                         measurements[part.key as keyof MeasurementData] || ""
