@@ -9,7 +9,7 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import { SupplierSchema } from "../schema/SupplierSchema";
+import { ProductCategorySchema, SupplierSchema } from "../schema/SupplierSchema";
 import useInventoryCategoryStore, {
   AddInventoryCategoryOptions,
 } from "@/store/useInventoryCategoryStore";
@@ -64,7 +64,7 @@ const AddCategoires: React.FC<AddComponentProps> = ({
               {!isEdit ? <> Add Category</> : <> Edit Category</>}
             </ModalHeader>
             <Formik
-              validationSchema={SupplierSchema}
+              validationSchema={ProductCategorySchema}
               initialValues={InitialValues}
               enableReinitialize
               onSubmit={handleAdd}
