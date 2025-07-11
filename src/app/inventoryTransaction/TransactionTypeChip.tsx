@@ -24,7 +24,7 @@ const TransactionTypeChip: React.FC<TransactionTypeChipProps> = ({ type }) => {
 
   return (
     <span
-      className="px-3 py-1 rounded-full text-xs font-medium uppercase"
+      className="px-3 py-1 rounded-full text-xs font-medium uppercase truncate overflow-hidden whitespace-nowrap "
       style={{
         border: `1px solid ${color}`,
         color: color,

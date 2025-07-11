@@ -8,6 +8,16 @@ interface GetShipmentResponse {
   message: string;
 }
 
+interface addShipmentSuceessResponse{
+  id: number
+}
+
+interface AddUpdateResponse {
+  data: addShipmentSuceessResponse;
+  message: string;
+  statusCode: number
+}
+
 interface AddShipmentResponse {
   data: ShipmentResponse;
   statusCode: number;
@@ -96,11 +106,11 @@ interface StoreState {
   getShipmentById: (id: number) => Promise<void>;
   addShipment: (
     ShipmentType: AddShipmentOptions
-  ) => Promise<ShipmentResponse | null>;
+  ) => Promise<AddUpdateResponse | null>;
   updateShipment: (
     id: number,
     ShipmentType: AddShipmentOptions
-  ) => Promise<ShipmentResponse | null>;
+  ) => Promise<AddUpdateResponse | null>;
   deleteShipment: (id: number, onSuccess: () => void) => Promise<void>;
 }
 
@@ -148,7 +158,7 @@ const useShipmentStore = create<StoreState>((set, get) => ({
 
   addShipment: async (
     ShipmentType: AddShipmentOptions
-  ): Promise<ShipmentResponse | null> => {
+  ): Promise<AddUpdateResponse | null> => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
@@ -159,9 +169,8 @@ const useShipmentStore = create<StoreState>((set, get) => ({
           body: JSON.stringify(ShipmentType),
         }
       );
-
-      const result: AddShipmentResponse = await response.json();
-
+      const result: AddUpdateResponse = await response.json();
+    
       if (!response.ok) {
         set({ loading: false, error: null });
         toast.error(result.message || "Failed to add item");
@@ -172,7 +181,7 @@ const useShipmentStore = create<StoreState>((set, get) => ({
       toast.success("Item added successfully");
       await get().fetchShipments();
 
-      return result.data;
+      return result;
     } catch (error) {
       set({ error: "Failed to add item", loading: false });
       toast.error("Failed to add item");
@@ -183,7 +192,7 @@ const useShipmentStore = create<StoreState>((set, get) => ({
   updateShipment: async (
     id: number,
     ShipmentType: AddShipmentOptions
-  ): Promise<ShipmentResponse | null> => {
+  ): Promise<AddUpdateResponse | null> => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
@@ -194,8 +203,8 @@ const useShipmentStore = create<StoreState>((set, get) => ({
           body: JSON.stringify(ShipmentType),
         }
       );
-
-      const result: AddShipmentResponse = await response.json();
+      
+      const result: AddUpdateResponse = await response.json();
 
       if (!response.ok) {
         set({ loading: false, error: null });
@@ -207,7 +216,7 @@ const useShipmentStore = create<StoreState>((set, get) => ({
       toast.success("Item updated successfully");
       await get().fetchShipments();
 
-      return result.data;
+      return result;
     } catch (error) {
       set({ error: "Failed to update", loading: false });
       toast.error("Failed to update");

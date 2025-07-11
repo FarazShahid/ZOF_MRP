@@ -30,6 +30,7 @@ const InventoryTransaction = () => {
 
   const { loading, fetchInventoryTransactions, inventoryTransactions } =
     useInventoryTransection();
+    
 
   const rowsPerPage = 10;
   const pages = Math.ceil(inventoryTransactions?.length / rowsPerPage);

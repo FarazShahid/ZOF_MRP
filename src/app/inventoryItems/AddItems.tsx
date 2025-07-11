@@ -21,6 +21,9 @@ import useInventoryCategoryStore from "@/store/useInventoryCategoryStore";
 import DropZoneMultiple from "../components/DropZone/DropZoneMultiple";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
+import DocumentCard from "../orders/components/DocumentCard";
+import { useFileUploadStore } from "@/store/useFileUploadStore";
+import RecentAttachmentsView from "../components/RecentAttachmentsView";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -50,8 +53,8 @@ const AddItems: React.FC<AddComponentProps> = ({
   const { fetchUnitOfMeasures, unitMeasures } = useUnitOfMeasureStore();
   const { fetchInventoryCategories, inventoryCategories } =
     useInventoryCategoryStore();
-  const { uploadDocument } =
-    useDocumentCenterStore();
+  const { uploadDocument, loadingDoc } = useDocumentCenterStore();
+  const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
 
   useEffect(() => {
     if (Id && isEdit) {
@@ -64,6 +67,12 @@ const AddItems: React.FC<AddComponentProps> = ({
     fetchUnitOfMeasures();
     fetchInventoryCategories();
   }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      resetAllFiles();
+    }
+  }, [isOpen]);
 
   const InitialValues = {
     Name: isEdit && inventoryItemById ? inventoryItemById.Name : "",
@@ -79,33 +88,36 @@ const AddItems: React.FC<AddComponentProps> = ({
   };
 
   const handleAdd = async (values: AddInventoryItemOptions) => {
+    const files = uploadedFilesByIndex[1] || [];
+
     if (isEdit) {
       const updatedItem = await updateInventoryItem(Id, values);
-      if (updatedItem && Object.values(itemFiles).length > 0) {
-        for (const file of Object.values(itemFiles)) {
-          if (file) {
-            await uploadDocument(
-              file,
-              DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS,
-              updatedItem.Id
-            );
-          }
+
+      if (updatedItem && files.length > 0) {
+        for (const fileObj of files) {
+          await uploadDocument(
+            fileObj.file,
+            DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS,
+            updatedItem.Id
+          );
         }
       }
+
+      resetAllFiles();
       closeAddModal();
     } else {
       const result = await addInventoryItem(values);
-      if (result) {
-        for (const file of Object.values(itemFiles)) {
-          if (file) {
-            await uploadDocument(
-              file,
-              DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS,
-              result.Id
-            );
-          }
+
+      if (result && files.length > 0) {
+        for (const fileObj of files) {
+          await uploadDocument(
+            fileObj.file,
+            DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS,
+            result.Id
+          );
         }
 
+        resetAllFiles();
         closeAddModal();
       }
     }
@@ -116,7 +128,7 @@ const AddItems: React.FC<AddComponentProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} size="2xl" onOpenChange={closeAddModal}>
+    <Modal isOpen={isOpen} size="3xl" onOpenChange={closeAddModal}>
       <ModalContent>
         {() => (
           <>
@@ -135,7 +147,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                     {loading ? (
                       <Spinner />
                     ) : (
-                      <>
+                      <div className="max-h-[calc(100vh-285px)] overflow-x-auto">
                         <div className="grid grid-cols-2 gap-3">
                           <div className="flex flex-col gap-1 w-full">
                             <Label
@@ -288,7 +300,17 @@ const AddItems: React.FC<AddComponentProps> = ({
                           index={1}
                           onFileSelect={handleFileSelect}
                         />
-                      </>
+                        {Id && isEdit ? (
+                          <RecentAttachmentsView
+                            referenceId={Id}
+                            referenceType={
+                              DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS
+                            }
+                          />
+                        ) : (
+                          <></>
+                        )}
+                      </div>
                     )}
                   </ModalBody>
                   <ModalFooter>
@@ -300,10 +322,15 @@ const AddItems: React.FC<AddComponentProps> = ({
                       Cancel
                     </Button>
                     <Button
-                      isLoading={isSubmitting}
                       color="primary"
                       type="submit"
+                      disabled={isSubmitting}
                     >
+                      {loading || loadingDoc ? (
+                        <Spinner color="white" />
+                      ) : (
+                        <></>
+                      )}
                       {isEdit ? "Update" : "Save"}
                     </Button>
                   </ModalFooter>

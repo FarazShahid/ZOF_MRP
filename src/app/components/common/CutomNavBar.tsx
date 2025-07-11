@@ -156,9 +156,9 @@ const CutomNavBar = () => {
                       <div
                         key={sub.id}
                         onClick={() => handleRoute(sub.route)}
-                        className={`px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                        className={`px-4 py-2 text-sm cursor-pointer ${
                           isSubActive
-                            ? "bg-gray-200 dark:bg-gray-700 font-semibold"
+                            ? "bg-gray-600 dark:text-black text-white font-semibold"
                             : "text-gray-700 dark:text-gray-200"
                         }`}
                       >
