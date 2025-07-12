@@ -12,7 +12,6 @@ import { Field, Formik, Form, ErrorMessage } from "formik";
 import useCategoryStore from "@/store/useCategoryStore";
 import { CatagorySchema } from "../../schema/CatagorySchema";
 import Label from "../../components/common/Label";
-import { MEASUREMENT_UNIT_TYPE } from "@/interface";
 
 interface AddClientComponentProps {
   isOpen: boolean;
@@ -97,6 +96,7 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="type"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Name"
                               className="formInputdefault bg-gray-100"
                             />

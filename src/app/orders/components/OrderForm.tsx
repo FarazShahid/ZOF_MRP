@@ -97,6 +97,9 @@ const OrderForm = () => {
   };
   const handleSubmit = async (values: any) => {
     values.Description = values.ClientId + "order description";
+     if (!values.OrderEventId) {
+    delete values.OrderEventId;
+  }
     const { uploadFile } = useMediaHandlerStore.getState();
 
     const updatedItems = await Promise.all(

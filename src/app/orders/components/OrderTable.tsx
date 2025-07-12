@@ -16,7 +16,7 @@ import Link from "next/link";
 import { FaRegEye } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlus, FiSettings } from "react-icons/fi";
-
+import { TbReorder } from "react-icons/tb";
 import useOrderStore from "@/store/useOrderStore";
 import useClientStore from "@/store/useClientStore";
 import { formatDate } from "../../interfaces";
@@ -24,11 +24,12 @@ import StatusChip from "../../components/StatusChip";
 import DeleteModal from "../../components/DeleteModal";
 import PriorityChip from "./PriorityChip";
 import { useRouter } from "next/navigation";
+import ReorderConfirmation from "./ReorderConfirmation";
 
 const OrderTable = () => {
   const [clientId, setClientId] = useState<number>(0);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState(false);
-  const [isOpenViewModal, setIsOpenViewModal] = useState(false);
+  const [openReorderModal, setOpenReorderModal] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
   const [refreshKey, setRefreshKey] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
@@ -56,14 +57,16 @@ const OrderTable = () => {
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
 
-  const OpenViewModal = (orderId: number) => {
-    router.push(`/orders/vieworder/${orderId}`)
-    // setSelectedOrderId(orderId);
-    // setIsOpenViewModal(true);
+  const handleOpenReorderModal = (orderId: number) => {
+    setSelectedOrderId(orderId);
+    setOpenReorderModal(true);
   };
-  const closeViewModal = () => {
-    setSelectedOrderId(0);
-    setIsOpenViewModal(false);
+  const closeReorderModal = () => {
+    setOpenReorderModal(false);
+  };
+
+  const OpenViewModal = (orderId: number) => {
+    router.push(`/orders/vieworder/${orderId}`);
   };
 
   const refreshData = () => {
@@ -76,7 +79,7 @@ const OrderTable = () => {
     } else {
       fetchOrders();
     }
-  }, [fetchOrders,clientId]);
+  }, [fetchOrders, clientId]);
 
   useEffect(() => {
     fetchClients();
@@ -186,6 +189,12 @@ const OrderTable = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
+                          onClick={() => handleOpenReorderModal(item?.Id)}
+                        >
+                          <TbReorder color="green" size={20} />
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => OpenViewModal(item?.Id)}
                         >
                           <FaRegEye color="blue" />
@@ -206,7 +215,7 @@ const OrderTable = () => {
         </Table>
       </div>
 
-      {isOpenDeletModal ? (
+      {isOpenDeletModal && (
         <DeleteModal
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
@@ -214,8 +223,15 @@ const OrderTable = () => {
           clientId={clientId}
           onDeleteSuccess={refreshData}
         />
-      ) : (
-        <></>
+      )}
+
+      {openReorderModal && (
+        <ReorderConfirmation
+          clientId={clientId}
+          isOpen={openReorderModal}
+          onClose={closeReorderModal}
+          orderId={selectedOrderId}
+        />
       )}
     </div>
   );

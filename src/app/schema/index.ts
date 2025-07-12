@@ -19,7 +19,6 @@ export const ProductValidationSchemas = [
 export const OrderValidationSchemas = [
   Yup.object({
     ClientId: Yup.string().required("Client is required"),
-    OrderEventId: Yup.string().required("Event is required"),
     Deadline: Yup.string().required("Deadline is required"),
   }),
   null,

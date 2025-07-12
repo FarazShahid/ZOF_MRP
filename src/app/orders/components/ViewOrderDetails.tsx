@@ -5,6 +5,7 @@ import { FaUserTie } from "react-icons/fa6";
 import { FaVideo } from "react-icons/fa";
 import { IoReturnDownBack } from "react-icons/io5";
 import { TbStatusChange } from "react-icons/tb";
+import { IoIosPrint } from "react-icons/io";
 import useOrderStore from "@/store/useOrderStore";
 import PriorityChip from "./PriorityChip";
 import OrderDeadline from "./OrderDeadline";
@@ -50,7 +51,6 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const handleCloseStatusModal = () => {
     setRefetchData(!refetchData);
     setOpenUpdateStatusModal(false);
-    
   };
 
   const handleStatusChange = (statusId: number, statusName: string) => {
@@ -83,13 +83,21 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             {OrderById?.OrderNumber}
           </h2>
         </div>
-        <button
-          type="button"
-          onClick={() => setOpenUpdateStatusModal(true)}
-          className="px-3 py-1 flex items-center gap-2 dark:bg-blue-600 bg-blue-800 rounded-lg text-sm text-white"
-        >
-          <TbStatusChange /> Change Status
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="px-3 py-1 flex items-center gap-2 dark:bg-blue-600 bg-blue-800 rounded-lg text-sm text-white"
+          >
+            <IoIosPrint />  Order Print
+          </button>
+          <button
+            type="button"
+            onClick={() => setOpenUpdateStatusModal(true)}
+            className="px-3 py-1 flex items-center gap-2 dark:bg-blue-600 bg-blue-800 rounded-lg text-sm text-white"
+          >
+            <TbStatusChange /> Change Status
+          </button>
+        </div>
       </div>
       <div className="flex gap-4 w-full">
         <div className="w-[75%] flex flex-col gap-5">

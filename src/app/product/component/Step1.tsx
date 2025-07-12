@@ -66,6 +66,13 @@ export default function Step1({ formik }: any) {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const colorIds = formik.values.productColors?.map((c: any) =>
+      String(c.colorId)
+    );
+    setSelectedColorOptions(colorIds || []);
+  }, [formik.values.productColors]);
+
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">

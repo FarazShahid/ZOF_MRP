@@ -21,6 +21,7 @@ import { IoEye } from "react-icons/io5";
 import AddButton from "../components/common/AddButton";
 import { formatDate } from "../interfaces";
 import ViewItem from "./ViewItem";
+import SearchBar from "../components/common/SearchBar";
 
 const InventoryItemsTable = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -76,6 +77,7 @@ const InventoryItemsTable = () => {
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">Inventory Items</h6>
           <div className="flex items-center gap-2">
+           
             <AddButton title="Add New" onClick={openAddModal} />
           </div>
         </div>

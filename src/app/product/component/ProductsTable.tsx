@@ -85,6 +85,13 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
           >
             Product Category
           </TableColumn>
+          <TableColumn
+            key="ClientName"
+            className="text-medium font-bold"
+          >
+            Client Name
+          </TableColumn>
+          
           <TableColumn key="FabricName" className="text-medium font-bold">
             Fabric
           </TableColumn>

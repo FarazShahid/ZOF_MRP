@@ -70,6 +70,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         sizeId: 0,
       },
     ],
+    productStatus: productById?.productStatus ?? "",
   };
 
   const handleFileSelect = (file: File, index: number) => {
@@ -84,7 +85,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         return <Step2 formik={formikProps} />;
       case 3:
         return (
-          <Step3 formik={formikProps} handleFileSelect={handleFileSelect} />
+          <Step3 formik={formikProps} handleFileSelect={handleFileSelect} productId={productId} />
         );
       default:
         return null;
@@ -145,6 +146,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     if (productId) {
       await updateProduct(Number(productId), payload, () => handleBoBack());
     } else {
+      debugger
       const result = await addProduct(payload);
       if (result && files.length > 0) {
         const refernceId = Number(result.data.Id);
@@ -167,6 +169,8 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       getProductById(Number(productId));
     }
   }, [productId]);
+
+  
 
   return (
     <AdminDashboardLayout>

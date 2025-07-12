@@ -93,6 +93,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="type"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Type"
                               className="formInputdefault bg-gray-100"
                             />
@@ -107,6 +108,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="name"
                               type="text"
+                          maxLength={100}
                               placeholder="Enter Name"
                               className="formInputdefault bg-gray-100"
                             />
@@ -121,6 +123,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="gsm"
                               type="number"
+
                                min={0}
                               placeholder="Enter GSM"
                               className="formInputdefault bg-gray-100"

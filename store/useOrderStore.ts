@@ -92,6 +92,7 @@ interface StoreState {
     category: AddOrderType,
     onSuccess: () => void
   ) => Promise<void>;
+  reorderOrder: (orderId: number, clientId: number, onSuccess?: () => void) => Promise<void>;
   deleteOrder: (
     id: number,
     clientId: number,
@@ -345,6 +346,36 @@ const useOrderStore = create<StoreState>((set, get) => ({
       set({ error: "Failed to update order", loading: false });
     }
   },
+
+  reorderOrder: async (orderId: number, clientId: number, onSuccess?: () => void) => {
+  set({ loading: true, error: null });
+
+  try {
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/reorder`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    if (response.ok) {
+      set({ loading: false, error: null });
+      toast.success("Order reordered successfully.");
+      if (onSuccess) onSuccess();
+
+      await get().fetchOrders(clientId);
+    } else {
+      set({ loading: false, error: null });
+      const error = await response.json();
+      toast.error(error.message || "Failed to reorder");
+    }
+  } catch (error) {
+    set({ error: "Failed to reorder", loading: false });
+    toast.error("Failed to reorder");
+  }
+},
+
 
   deleteOrder: async (id: number, clientId: number, onSuccess?: () => void) => {
     set({ loading: true, error: null, isResolved: false });

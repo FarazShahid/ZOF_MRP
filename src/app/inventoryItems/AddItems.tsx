@@ -158,6 +158,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                             <Field
                               name="Name"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Name"
                               className="formInputdefault border-1"
                             />
@@ -185,7 +186,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                                 fetchSubCategories(value);
                               }}
                             >
-                              <option value={0}>Select category</option>
+                              <option value={""}>Select category</option>
                               {inventoryCategories?.map((category, index) => {
                                 return (
                                   <option value={category?.Id} key={index}>
@@ -211,7 +212,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                               as="select"
                               className="formInputdefault border-1"
                             >
-                              <option value={0}>Select sub category</option>
+                              <option value={""}>Select sub category</option>
                               {subCategories?.map((category, index) => {
                                 return (
                                   <option value={category?.Id} key={index}>

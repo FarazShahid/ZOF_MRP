@@ -82,7 +82,7 @@ const OrderItemDetailsFieldArray = ({
             item.orderItemDetails.map((detail: any, detailIndex: number) => (
               <div className="" key={detailIndex}>
                 <div className="grid grid-cols-3 gap-2 mb-2">
-                  <div>
+                  {/* <div>
                     <Label isRequired label="Color Option" />
                     <Field
                       as="select"
@@ -96,7 +96,7 @@ const OrderItemDetailsFieldArray = ({
                         </option>
                       ))}
                     </Field>
-                  </div>
+                  </div> */}
                   <div>
                     <Label isRequired label="Quantity" />
                     <Field
@@ -121,9 +121,7 @@ const OrderItemDetailsFieldArray = ({
                       ))}
                     </Field>
                   </div>
-                </div>
-                <div className="flex items-center gap-5">
-                  <div>
+                   <div>
                     <Label isRequired label="Size Options" />
                     <Field
                       as="select"
@@ -138,6 +136,9 @@ const OrderItemDetailsFieldArray = ({
                       ))}
                     </Field>
                   </div>
+                </div>
+                <div className="flex items-center gap-5">
+                 
                   {/* Hidden MeasurementId */}
                 <Field
                   type="hidden"

@@ -11,7 +11,7 @@ import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
 
 export default function Step2({ formik }: any) {
   const [selectedSizeIds, setSelectedSizeIds] = useState<string[]>([]);
-  const [selectedPrintingIds, setSelectedPrintingIds] = useState<string[]>([])
+  const [selectedPrintingIds, setSelectedPrintingIds] = useState<string[]>([]);
 
   const { fetchcutOptions, cutOptions } = useCutOptionsStore();
   const { fetchSleeveType, sleeveTypeData } = useSleeveType();
@@ -41,9 +41,9 @@ export default function Step2({ formik }: any) {
   const handlePrintingOptionChange = (keys: Set<React.Key> | "all") => {
     let PrintingOptionId: string[] = [];
 
-    if(keys === "all"){
+    if (keys === "all") {
       PrintingOptionId = printingOptions.map((po) => String(po.Id));
-    }else{
+    } else {
       PrintingOptionId = Array.from(keys).map(String);
     }
 
@@ -55,7 +55,7 @@ export default function Step2({ formik }: any) {
         PrintingOptionId: Number(id),
       }))
     );
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,6 +68,18 @@ export default function Step2({ formik }: any) {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const initialSizeIds = formik.values.productSizes?.map((s: any) =>
+      String(s.sizeId)
+    );
+    setSelectedSizeIds(initialSizeIds || []);
+
+    const initialPrintingIds = formik.values.printingOptions?.map((p: any) =>
+      String(p.PrintingOptionId)
+    );
+    setSelectedPrintingIds(initialPrintingIds || []);
+  }, [formik.values.productSizes, formik.values.printingOptions]);
 
   return (
     <div className="space-y-6 w-[500px]">

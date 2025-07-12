@@ -1,9 +1,10 @@
 import { ErrorMessage, Field } from "formik";
 import Label from "../../components/common/Label";
-import { PRODUCT_STATUS_ENUM } from "@/interface";
+import { DOCUMENT_REFERENCE_TYPE, PRODUCT_STATUS_ENUM } from "@/interface";
 import DropZoneMultiple from "../../components/DropZone/DropZoneMultiple";
+import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 
-export default function Step3({ formik, handleFileSelect }: any) {
+export default function Step3({ formik, handleFileSelect, productId }: any) {
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
@@ -27,6 +28,15 @@ export default function Step3({ formik, handleFileSelect }: any) {
         />
       </div>
       <DropZoneMultiple index={1} onFileSelect={handleFileSelect} />
+      {productId && productId > 0 ? (
+        <RecentAttachmentsView
+          referenceId={productId}
+          referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
+        />
+      ) : (
+        <></>
+      )}
+
       <div className="flex flex-col gap-1">
         <Label isRequired={false} label="Description" />
         <Field

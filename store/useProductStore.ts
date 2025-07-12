@@ -25,6 +25,8 @@ interface AvailableSizes {
 export interface Product {
   Id: number;
   Name: string;
+  ClientId: number;
+  ClientName: string;
   ProductCategoryId: number;
   ProductCategoryName: string;
   FabricTypeId: number;
@@ -67,6 +69,7 @@ interface ProductById {
     }
   ];
   productSizes: [{ Id: number; sizeId: number }];
+  productStatus: string;
 }
 
 interface GetAvailableColorResponse {
@@ -100,6 +103,7 @@ interface CategoryState {
 
   fetchProducts: () => Promise<void>;
   fetchProductAvailableColors: (id: number) => Promise<void>;
+  fetchProductAvailablePrinting: (id: number) => Promise<void>;
   fetchAvailableSizes: (id: number) => Promise<void>;
   getProductById: (id: number) => Promise<void>;
   addProduct: (
@@ -143,6 +147,28 @@ const useProductStore = create<CategoryState>((set, get) => ({
   },
 
   fetchProductAvailableColors: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/availablecolors/${id}`
+      );
+      if (!response.ok) {
+        set({ loading: false });
+        const error = await response.json();
+        toast.error(error.message || "Fail to fetch data.");
+        return;
+      }
+      const data: GetAvailableColorResponse = await response.json();
+      set((state) => ({
+        productColorMap: { ...state.productColorMap, [id]: data.data },
+        loading: false,
+      }));
+    } catch (error) {
+      set({ error: "Failed to fetch product colors", loading: false });
+    }
+  },
+
+  fetchProductAvailablePrinting: async (id: number) => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(

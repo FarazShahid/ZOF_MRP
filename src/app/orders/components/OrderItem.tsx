@@ -7,6 +7,8 @@ import SelectField from "./SelectField";
 import PrintingOptionsMultiSelect from "./PrintingOptionsMultiSelect";
 import OrderItemDetailsFieldArray from "./OrderItemDetailsFieldArray";
 import DropZone from "../../components/DropZone/DropZone";
+import RecentAttachmentsView from "../../components/RecentAttachmentsView";
+import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 
 interface OrderItemProps {
   index: number;
@@ -34,12 +36,11 @@ const OrderItem: React.FC<OrderItemProps> = ({
   const currentProductColors = useProductColorsByProductId(item?.ProductId);
   const [productName, setProductName] = useState("");
 
-
-  useEffect(()=>{
-    if(item?.Description){
+  useEffect(() => {
+    if (item?.Description) {
       setProductName(item?.Description);
     }
-  },[])
+  }, []);
 
   return (
     <div className="space-y-3 border-1 dark:border-gray-800 border-gray-400 p-4 rounded relative">
@@ -64,11 +65,6 @@ const OrderItem: React.FC<OrderItemProps> = ({
             setFieldValue={setFieldValue}
           />
           <div className="grid grid-cols-2 gap-2">
-            <SelectField
-              label="Order Item Priority"
-              name={`items[${index}].OrderItemPriority`}
-              options={PRIORITY_ENUM}
-            />
             <PrintingOptionsMultiSelect
               index={index}
               item={item}
@@ -77,6 +73,15 @@ const OrderItem: React.FC<OrderItemProps> = ({
             />
           </div>
           <DropZone index={index} onFileSelect={handleFileSelect} />
+          {selectedProduct ? (
+            <RecentAttachmentsView
+              referenceId={selectedProduct?.Id}
+              referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
+            />
+          ) : (
+            <></>
+          )}
+
           <TextAreaField
             label="Description"
             name={`items[${index}].Description`}
