@@ -17,6 +17,7 @@ interface SizeOptionsIdRepsonse {
 interface SizeOptions {
   Id: number;
   OptionSizeOptions: string;
+  ProductRegionId: string;
   CreatedOn: string;
   CreatedBy: string;
   UpdatedOn: string;

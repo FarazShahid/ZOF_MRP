@@ -2,7 +2,7 @@ import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 
-interface GetPrintingOptionsResponse {
+export interface GetPrintingOptionsResponse {
   data: PrintingOptionType[];
   statusCode: number;
   message: string;

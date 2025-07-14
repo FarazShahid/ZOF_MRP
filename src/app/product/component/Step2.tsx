@@ -11,7 +11,7 @@ import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
 
 export default function Step2({ formik }: any) {
   const [selectedSizeIds, setSelectedSizeIds] = useState<string[]>([]);
-  const [selectedPrintingIds, setSelectedPrintingIds] = useState<string[]>([])
+  const [selectedPrintingIds, setSelectedPrintingIds] = useState<string[]>([]);
 
   const { fetchcutOptions, cutOptions } = useCutOptionsStore();
   const { fetchSleeveType, sleeveTypeData } = useSleeveType();
@@ -39,24 +39,23 @@ export default function Step2({ formik }: any) {
   };
 
   const handlePrintingOptionChange = (keys: Set<React.Key> | "all") => {
-    let printingId: string[] = [];
+    let PrintingOptionId: string[] = [];
 
-    if(keys === "all"){
-      printingId = printingOptions.map((po) => String(po.Id));
-    }else{
-      printingId = Array.from(keys).map(String);
+    if (keys === "all") {
+      PrintingOptionId = printingOptions.map((po) => String(po.Id));
+    } else {
+      PrintingOptionId = Array.from(keys).map(String);
     }
 
-    setSelectedPrintingIds(printingId);
+    setSelectedPrintingIds(PrintingOptionId);
 
     formik.setFieldValue(
       "printingOptions",
-      printingId.map((id) => ({
-        Id: 0,
-        printingId: Number(id),
+      PrintingOptionId.map((id) => ({
+        PrintingOptionId: Number(id),
       }))
     );
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,15 +69,31 @@ export default function Step2({ formik }: any) {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const initialSizeIds = formik.values.productSizes?.map((s: any) =>
+      String(s.sizeId)
+    );
+    setSelectedSizeIds(initialSizeIds || []);
+
+    const initialPrintingIds = formik.values.printingOptions?.map((p: any) =>
+      String(p.PrintingOptionId)
+    );
+    setSelectedPrintingIds(initialPrintingIds || []);
+  }, [formik.values.productSizes, formik.values.printingOptions]);
+
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Size Options" />
         <Select
           className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
+          classNames={{
+            helperWrapper: "!dark:bg-slate-800 !bg-gray-100",
+          }}
           name="SizeOptions"
           placeholder="Select Size Options"
           variant="bordered"
+          isRequired
           selectionMode="multiple"
           aria-label="Size Options"
           selectedKeys={new Set(selectedSizeIds)}
@@ -125,6 +140,7 @@ export default function Step2({ formik }: any) {
                       <Label isRequired={true} label="Cut Options" />
                       <Field
                         as="select"
+                        required
                         name={`productDetails[${index}].ProductCutOptionId`}
                         className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                       >

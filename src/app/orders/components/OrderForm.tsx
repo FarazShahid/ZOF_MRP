@@ -5,6 +5,7 @@ import { Link } from "@heroui/react";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/navigation";
 import { FaRegFileLines } from "react-icons/fa6";
+import { IoDocumentAttach } from "react-icons/io5";
 import { FaRuler } from "react-icons/fa";
 import { IoCaretBackSharp } from "react-icons/io5";
 
@@ -14,11 +15,16 @@ import Step2 from "./Step2";
 import { OrderValidationSchemas } from "../../schema";
 import { getFileTypeCode } from "@/interface/GetFileType";
 import useMediaHandlerStore from "@/store/useMediaHandlerStore";
+import OrderAttachments from "./OrderAttachments";
+import { useFileUploadStore } from "@/store/useFileUploadStore";
+import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
+import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 
 const steps = ["Order Details", "Order Items"];
 const formSteps = [
   { id: 1, name: "Order Details", icon: <FaRegFileLines size={20} /> },
   { id: 2, name: "Order Items", icon: <FaRuler size={20} /> },
+  { id: 3, name: "Order Attachments", icon: <IoDocumentAttach size={20} /> },
 ];
 
 const OrderForm = () => {
@@ -26,6 +32,8 @@ const OrderForm = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const { addOrder } = useOrderStore();
+  const { uploadDocument, loadingDoc } = useDocumentCenterStore();
+  const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
 
   const router = useRouter();
 
@@ -51,6 +59,8 @@ const OrderForm = () => {
             onFileSelect={handleFileSelect}
           />
         );
+      case 3:
+        return <OrderAttachments onFileSelect={handleFileSelect} />;
       default:
         return null;
     }
@@ -96,36 +106,28 @@ const OrderForm = () => {
     router.push("/orders");
   };
   const handleSubmit = async (values: any) => {
+    debugger
     values.Description = values.ClientId + "order description";
-    const { uploadFile } = useMediaHandlerStore.getState();
+    if (!values.OrderEventId) {
+      delete values.OrderEventId;
+    }
+    const files = uploadedFilesByIndex[1] || [];
+    const finalPayload = { ...values };
 
-    const updatedItems = await Promise.all(
-      values.items.map(async (item: any, index: number) => {
-        const file = itemFiles[index];
-        if (file) {
-          const typeId = getFileTypeCode(file.type);
-          const uploaded = await uploadFile(file, typeId);
+    const result = await addOrder(finalPayload);
+    if (result && files.length > 0) {
+      const refernceId = Number(result.data.Id);
 
-          if (!uploaded) return item;
-
-        
-          if (typeId === 1) {
-            return { ...item, ImageId: uploaded.Id };
-          } else if (typeId === 2) {
-            return { ...item, FileId: uploaded.Id };
-          } else if (typeId === 3) {
-            return { ...item, ImageId: uploaded.Id };
-          } else {
-            return item;
-          }
-        }
-        return item;
-      })
-    );
-
-    const finalPayload = { ...values, items: updatedItems };
-    console.log("finalPayload", finalPayload);
-    await addOrder(finalPayload, () => handleBoBack());
+      for (const fileObj of files) {
+        await uploadDocument(
+          fileObj.file,
+          DOCUMENT_REFERENCE_TYPE.ORDER,
+          refernceId
+        );
+      }
+    }
+    resetAllFiles();
+    handleBoBack();
   };
 
   return (
@@ -202,7 +204,7 @@ const OrderForm = () => {
                       </button>
                     )}
 
-                    {currentStep < 2 && (
+                    {currentStep < 3 && (
                       <button
                         type="button"
                         onClick={() =>
@@ -214,7 +216,7 @@ const OrderForm = () => {
                       </button>
                     )}
 
-                    {currentStep === 2 && (
+                    {currentStep === 3 && (
                       <button
                         type="submit"
                         disabled={isSubmitting}

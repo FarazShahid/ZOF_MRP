@@ -2,19 +2,20 @@ import React, { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { IoIosStats } from "react-icons/io";
 import { FaUserTie } from "react-icons/fa6";
-import { FaVideo } from "react-icons/fa";
 import { IoReturnDownBack } from "react-icons/io5";
 import { TbStatusChange } from "react-icons/tb";
+import { IoIosPrint } from "react-icons/io";
 import useOrderStore from "@/store/useOrderStore";
 import PriorityChip from "./PriorityChip";
 import OrderDeadline from "./OrderDeadline";
 import ClientDetails from "./ClientDetails";
 import ColorContainer from "./ColorContainer";
 import OrderStatusTimeline from "./OrderStatusTimeline";
-import { handleView } from "@/interface/GetFileType";
 import { ViewMeasurementChart } from "./ViewMeasurementChart";
-import DocumentCard from "./DocumentCard";
 import OrderStatus from "./OrderStatus";
+import PrintableOrderSheet from "./PrintableOrderSheet";
+import RecentAttachmentsView from "../../components/RecentAttachmentsView";
+import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 
 interface ViewOrderProps {
   orderId: number;
@@ -50,7 +51,6 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const handleCloseStatusModal = () => {
     setRefetchData(!refetchData);
     setOpenUpdateStatusModal(false);
-    
   };
 
   const handleStatusChange = (statusId: number, statusName: string) => {
@@ -60,6 +60,12 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     };
     changeOrderStatus(selectedStatusId, handleCloseStatusModal);
     setLocalStatusName(statusName);
+  };
+
+  const handlePrint = () => {
+    setTimeout(() => {
+      window.print();
+    }, 300); // slight delay to ensure DOM is ready
   };
 
   useEffect(() => {
@@ -83,13 +89,22 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             {OrderById?.OrderNumber}
           </h2>
         </div>
-        <button
-          type="button"
-          onClick={() => setOpenUpdateStatusModal(true)}
-          className="px-3 py-1 flex items-center gap-2 dark:bg-blue-600 bg-blue-800 rounded-lg text-sm text-white"
-        >
-          <TbStatusChange /> Change Status
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="px-3 py-1 flex items-center gap-2 dark:bg-blue-600 bg-blue-800 rounded-lg text-sm text-white"
+          >
+            <IoIosPrint /> Order Print
+          </button>
+          <button
+            type="button"
+            onClick={() => setOpenUpdateStatusModal(true)}
+            className="px-3 py-1 flex items-center gap-2 dark:bg-blue-600 bg-blue-800 rounded-lg text-sm text-white"
+          >
+            <TbStatusChange /> Change Status
+          </button>
+        </div>
       </div>
       <div className="flex gap-4 w-full">
         <div className="w-[75%] flex flex-col gap-5">
@@ -190,42 +205,17 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                     )}
                   </div>
                 </div>
-                <p>Documents:</p>
-                <div className="flex flex-wrap gap-2 items-center">
-                  {orderItem.ImagePath && orderItem.ImagePath ? (
-                    <DocumentCard
-                      fileTitle="Image File"
-                      fileType="image"
-                      path={orderItem.ImagePath}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                  {orderItem.FilePath && orderItem.FilePath ? (
-                    <DocumentCard
-                      fileTitle="Doc File"
-                      fileType="doc"
-                      path={orderItem.FilePath}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                  {orderItem.VideoPath && orderItem.VideoPath ? (
-                    <button
-                      type="button"
-                      onClick={() => handleView(orderItem.VideoPath)}
-                      className="flex gap-2 dark:bg-slate-800 bg-gray-300 p-2 rounded-lg cursor-pointer text-blue-500"
-                    >
-                      <FaVideo />
-                      <span className="text-xs">Video File</span>
-                    </button>
-                  ) : (
-                    <></>
-                  )}
-                </div>
+                <RecentAttachmentsView
+                  referenceId={orderItem.ProductId}
+                  referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
+                />
               </div>
             );
           })}
+          {/* <RecentAttachmentsView
+            referenceId={OrderById.Id}
+            referenceType={DOCUMENT_REFERENCE_TYPE.ORDER}
+          /> */}
         </div>
         <div className="w-[25%] flex flex-col gap-2">
           <div className="p-3 dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 shadow-lg flex flex-col gap-5 dark:text-gray-400 text-gray-800">
@@ -255,6 +245,8 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           }
         />
       )}
+
+      <PrintableOrderSheet order={OrderById} />
     </div>
   );
 };

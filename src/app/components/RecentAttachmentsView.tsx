@@ -8,11 +8,13 @@ import DocumentCard from "../orders/components/DocumentCard";
 interface ComponentProp {
   referenceType: string;
   referenceId: number;
+  isPrintable?: boolean;
 }
 
 const RecentAttachmentsView: React.FC<ComponentProp> = ({
   referenceType,
   referenceId,
+  isPrintable
 }) => {
   const { fetchDocuments, documents } = useDocumentCenterStore();
 
@@ -21,7 +23,7 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
   }, [referenceId]);
 
   return (
-    <div className="bg-gray-100 rounded-lg p-3">
+    <div className="bg-gray-100 rounded-lg p-3" key={referenceId}>
       <h6 className="flex items-center gap-3 text-gray-700">
         <IoDocumentAttach size={25} /> Attachments
       </h6>
@@ -34,6 +36,7 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
                 fileTitle={doc.fileName}
                 fileType={doc.fileType}
                 path={doc.fileUrl}
+                isPrintable={isPrintable}
               />
             );
           })}

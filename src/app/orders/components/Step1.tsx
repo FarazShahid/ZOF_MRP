@@ -16,13 +16,9 @@ const Step1 = ({ formik }: { formik: any }) => {
 
   const selectedClientId = Number(formik.values.ClientId);
 
-  const filteredEvents = [...Events].sort((a, b) => {
-    if (!selectedClientId) return 0;
-    return (
-      (b.ClientId === selectedClientId ? 1 : 0) -
-      (a.ClientId === selectedClientId ? 1 : 0)
-    );
-  });
+  const filteredEvents = selectedClientId
+  ? Events.filter((e) => e.ClientId === selectedClientId)
+  : [];
 
   const fieldStyle =
     "rounded-xl dark:text-gray-400 text-gray-800 text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100";
@@ -49,7 +45,7 @@ const Step1 = ({ formik }: { formik: any }) => {
       </div>
 
       <div className="flex flex-col gap-1">
-        <Label isRequired={true} label="Event" />
+        <Label isRequired={false} label="Event" />
         <Field as="select" name="OrderEventId" className={fieldStyle}>
           <option value="">Select an event</option>
           {filteredEvents?.map((event, index) => (

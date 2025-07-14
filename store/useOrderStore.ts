@@ -26,6 +26,11 @@ export interface OrderItemsByIdResponse {
   status: number;
 }
 
+export interface AddOrderResponse {
+  message: string;
+  data: OrderItemsByIdData
+}
+
 export interface OrderItemsByIdData {
   Id: number;
   OrderId: number;
@@ -86,12 +91,13 @@ interface StoreState {
     orderStatus: ChangeOrderStatusType,
     onSuccess: () => void
   ) => Promise<void>;
-  addOrder: (category: AddOrderType, onSuccess: () => void) => Promise<void>;
+  addOrder: (category: AddOrderType) => Promise<AddOrderResponse | null>;
   updateOrder: (
     id: number,
     category: AddOrderType,
     onSuccess: () => void
   ) => Promise<void>;
+  reorderOrder: (orderId: number, clientId: number, onSuccess?: () => void) => Promise<void>;
   deleteOrder: (
     id: number,
     clientId: number,
@@ -294,8 +300,38 @@ const useOrderStore = create<StoreState>((set, get) => ({
     }
   },
 
-  addOrder: async (orderType: AddOrderType, onSuccess?: () => void) => {
+  // addOrder: async (orderType: AddOrderType): Promise<OrderItemsByIdResponse | null> => {
+  //   set({ loading: true, error: null });
+  //   try {
+  //     const response = await fetchWithAuth(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/orders`,
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify(orderType),
+  //       }
+  //     );
+  //     if (response.ok) {
+  //       set({ loading: false, error: null });
+  //       toast.success("Order added successfully.");
+  //       if (onSuccess) onSuccess();
+  //       await get().fetchOrders(orderType?.ClientId);
+  //     } else {
+  //       set({ loading: false, error: null });
+  //       const error = await response.json();
+  //       toast.error(error.message || "Fail to add Order");
+  //     }
+  //   } catch (error) {
+  //     set({ error: "Fail to add Order", loading: false });
+  //     toast.error("Fail to add Order");
+  //   }
+  // },
+
+addOrder: async (
+    orderType: AddOrderType
+  ): Promise<AddOrderResponse | null> => {
     set({ loading: true, error: null });
+
     try {
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/orders`,
@@ -305,19 +341,23 @@ const useOrderStore = create<StoreState>((set, get) => ({
           body: JSON.stringify(orderType),
         }
       );
-      if (response.ok) {
+      const result: AddOrderResponse = await response.json();
+
+      if (!response.ok) {
         set({ loading: false, error: null });
-        toast.success("Order added successfully.");
-        if (onSuccess) onSuccess();
-        await get().fetchOrders(orderType?.ClientId);
-      } else {
-        set({ loading: false, error: null });
-        const error = await response.json();
-        toast.error(error.message || "Fail to add Order");
+        toast.error(result.message || "Failed to add order");
+        return null;
       }
+
+      set({ loading: false, error: null });
+      toast.success("Order added successfully");
+      await get().fetchOrders();
+
+      return result;
     } catch (error) {
-      set({ error: "Fail to add Order", loading: false });
-      toast.error("Fail to add Order");
+      set({ error: "Failed to add item", loading: false });
+      toast.error("Failed to add item");
+      return null;
     }
   },
 
@@ -345,6 +385,36 @@ const useOrderStore = create<StoreState>((set, get) => ({
       set({ error: "Failed to update order", loading: false });
     }
   },
+
+  reorderOrder: async (orderId: number, clientId: number, onSuccess?: () => void) => {
+  set({ loading: true, error: null });
+
+  try {
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/reorder`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    if (response.ok) {
+      set({ loading: false, error: null });
+      toast.success("Order reordered successfully.");
+      if (onSuccess) onSuccess();
+
+      await get().fetchOrders(clientId);
+    } else {
+      set({ loading: false, error: null });
+      const error = await response.json();
+      toast.error(error.message || "Failed to reorder");
+    }
+  } catch (error) {
+    set({ error: "Failed to reorder", loading: false });
+    toast.error("Failed to reorder");
+  }
+},
+
 
   deleteOrder: async (id: number, clientId: number, onSuccess?: () => void) => {
     set({ loading: true, error: null, isResolved: false });

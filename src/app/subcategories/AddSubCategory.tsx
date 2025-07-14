@@ -113,7 +113,7 @@ const AddSubCategory: React.FC<AddComponentProps> = ({
                               as="select"
                                className="formInputdefault border-1"
                             >
-                              <option value={0}>Select a category</option>
+                              <option value={""}>Select a category</option>
                               {inventoryCategories?.map((category, index) => {
                                 return (
                                   <option value={category?.Id} key={index}>

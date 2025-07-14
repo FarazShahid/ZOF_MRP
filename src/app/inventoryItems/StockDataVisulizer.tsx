@@ -36,7 +36,7 @@ const StockDataVisulizer: React.FC<ChipProps> = ({
     if (stockInt === reorder) {
       return { stockClass: "warningStock", stockStatus: "normal" };
     }
-    return { stockClass: "highStock", stockStatus: "high" };
+    return { stockClass: "highStock dark:text-green-900", stockStatus: "high" };
   }, [stockInt, reorder]);
 
 

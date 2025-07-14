@@ -3,7 +3,6 @@ import { FieldArray } from "formik";
 import { useFormikContext } from "formik";
 import useProductStore from "@/store/useProductStore";
 import SearchableProductSelect from "./SearchableProductSelect";
-import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
 import OrderItem from "./OrderItem";
 
 export interface ProductProp {
@@ -17,20 +16,16 @@ type Step2Props = {
   onFileSelect: (file: File, index: number) => void;
 };
 
-const Step2: React.FC<Step2Props> = ({
-  itemFiles,
-  onFileSelect,
-}) => {
+const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
   const { values, setFieldValue } = useFormikContext<any>();
   const [selectedProduct, setSelectedProduct] = useState<ProductProp>();
 
-  const { fetchProducts, products, fetchProductAvailableColors } =
+  const { fetchProducts, products, fetchProductAvailableColors, fetchProductAvailablePrinting ,availablePrintingOptions } =
     useProductStore();
-  const { fetchprintingOptions, printingOptions } = usePrintingOptionsStore();
+
 
   useEffect(() => {
     fetchProducts();
-    fetchprintingOptions();
   }, []);
 
   useEffect(() => {
@@ -38,9 +33,11 @@ const Step2: React.FC<Step2Props> = ({
       const lastItem = values.items[values.items.length - 1];
       if (lastItem?.ProductId) {
         fetchProductAvailableColors(lastItem.ProductId);
+        fetchProductAvailablePrinting(lastItem.ProductId);
       }
     }
   }, [values.items.length]);
+
 
   const addProduct = (selected: { Id: number; productName: string }) => {
     setSelectedProduct(selected);
@@ -67,7 +64,18 @@ const Step2: React.FC<Step2Props> = ({
   return (
     <div className="space-y-6 w-[700px]">
       <div className="mb-3 flex items-center justify-center">
-        <SearchableProductSelect products={products} onSelect={addProduct} />
+        {values.ClientId ? (
+          <SearchableProductSelect
+            products={products.filter(
+              (p) => p.ClientId === Number(values.ClientId)
+            )}
+            onSelect={addProduct}
+          />
+        ) : (
+          <span className="text-sm text-gray-500">
+            Please select a client first to view products.
+          </span>
+        )}
       </div>
       <FieldArray name="items">
         {(itemsHelpers) => (
@@ -77,10 +85,8 @@ const Step2: React.FC<Step2Props> = ({
                 key={index}
                 item={item}
                 values={values}
-                removeItem={() =>
-                  itemsHelpers.remove(index)
-                }
-                printingOptions={printingOptions}
+                removeItem={() => itemsHelpers.remove(index)}
+                printingOptions={availablePrintingOptions}
                 setFieldValue={setFieldValue}
                 selectedProduct={selectedProduct}
                 index={index}

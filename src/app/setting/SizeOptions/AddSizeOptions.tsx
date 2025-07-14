@@ -54,6 +54,8 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
   const InitialValues = {
     OptionSizeOptions:
       isEdit && sizeOptionsType ? sizeOptionsType.OptionSizeOptions : "",
+      ProductRegionId:
+    isEdit && sizeOptionsType ? sizeOptionsType.ProductRegionId?.toString() : "",
   };
 
   const handleAddSizeOption = async (values: AddSizeOptionsType) => {
@@ -97,6 +99,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="OptionSizeOptions"
                               type="text"
+                               maxLength={100}
                               placeholder="Enter Size Option Name"
                               className="formInputdefault bg-gray-100"
                             />
@@ -125,7 +128,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                               })}
                             </Field>
                             <ErrorMessage
-                              name="OptionSizeOptions"
+                              name="ProductRegionId"
                               component="div"
                               className="text-red-400 text-sm"
                             />
@@ -147,7 +150,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Edit" : "Add"} Size Option
+                      {isEdit ? "Update" : "Save"}
                     </Button>
                   </ModalFooter>
                 </Form>

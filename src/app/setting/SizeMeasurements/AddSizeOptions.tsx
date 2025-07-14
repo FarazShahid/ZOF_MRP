@@ -146,6 +146,7 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="Measurement1"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Name"
                               className="formInputdefault bg-gray-100"
                             />
@@ -172,6 +173,11 @@ const AddSizeOptions: React.FC<AddClientComponentProps> = ({
                                 );
                               })}
                             </Field>
+                            <ErrorMessage
+                              name="ClientId"
+                              component="div"
+                              className="text-red-400 text-sm"
+                            />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
                             <Label isRequired={true} label="Size Option" labelForm="Size Option" />

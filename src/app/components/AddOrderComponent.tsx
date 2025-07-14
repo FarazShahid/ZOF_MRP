@@ -434,6 +434,7 @@ const AddOrderComponent: React.FC<AddOrderComponentProps> = ({
                               <Field
                                 name="OrderPriority"
                                 type="number"
+                                
                                 className="formInputdefault"
                                 min={0}
                               />
