@@ -23,7 +23,7 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
   }, [referenceId]);
 
   return (
-    <div className="bg-gray-100 rounded-lg p-3">
+    <div className="bg-gray-100 rounded-lg p-3" key={referenceId}>
       <h6 className="flex items-center gap-3 text-gray-700">
         <IoDocumentAttach size={25} /> Attachments
       </h6>

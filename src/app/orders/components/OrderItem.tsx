@@ -70,7 +70,7 @@ const OrderItem: React.FC<OrderItemProps> = ({
               setFieldValue={setFieldValue}
             />
           </div>
-          <DropZone index={index} onFileSelect={handleFileSelect} />
+          {/* <DropZone index={index} onFileSelect={handleFileSelect} /> */}
           {selectedProduct ? (
             <RecentAttachmentsView
               referenceId={selectedProduct?.Id}
