@@ -32,7 +32,7 @@ const OrderItemDetailsFieldArray = ({
     if (!item.orderItemDetails || item.orderItemDetails.length === 0) {
       setFieldValue(`items[${index}].orderItemDetails`, [
         {
-          ColorOptionId: "",
+          ColorOptionId: null,
           SizeOption: 0,
           MeasurementId: 0,
           Quantity: 1,
