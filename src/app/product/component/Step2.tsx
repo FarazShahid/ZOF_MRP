@@ -87,9 +87,13 @@ export default function Step2({ formik }: any) {
         <Label isRequired={true} label="Size Options" />
         <Select
           className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
+          classNames={{
+            helperWrapper: "!dark:bg-slate-800 !bg-gray-100",
+          }}
           name="SizeOptions"
           placeholder="Select Size Options"
           variant="bordered"
+          isRequired
           selectionMode="multiple"
           aria-label="Size Options"
           selectedKeys={new Set(selectedSizeIds)}
@@ -101,21 +105,15 @@ export default function Step2({ formik }: any) {
             </SelectItem>
           ))}
         </Select>
-        <ErrorMessage
-          name="productSizes"
-          component="div"
-          className="text-red-500 text-sm"
-        />
       </div>
       <div className="flex flex-col gap-1">
-        <Label isRequired={true} label="Printing Option" />
+        <Label isRequired={false} label="Printing Option" />
         <Select
           className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
           name="PrintingOptions"
           placeholder="Select Printing Options"
           variant="bordered"
           selectionMode="multiple"
-          required
           aria-label="Printing Options"
           selectedKeys={new Set(selectedPrintingIds)}
           onSelectionChange={(keys) => handlePrintingOptionChange(keys)}
@@ -142,6 +140,7 @@ export default function Step2({ formik }: any) {
                       <Label isRequired={true} label="Cut Options" />
                       <Field
                         as="select"
+                        required
                         name={`productDetails[${index}].ProductCutOptionId`}
                         className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                       >

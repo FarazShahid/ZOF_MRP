@@ -5,7 +5,7 @@ import { ErrorMessage, Field } from 'formik';
 const TextAreaField = ({ label, name }: { label: string; name: string }) => (
   
     <div className="flex flex-col gap-1 mb-3">
-    <Label isRequired label={label} />
+    <Label isRequired={false} label={label} />
     <Field
       as="textarea"
       name={name}

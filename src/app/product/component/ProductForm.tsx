@@ -146,7 +146,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     if (productId) {
       await updateProduct(Number(productId), payload, () => handleBoBack());
     } else {
-      debugger
+      
       const result = await addProduct(payload);
       if (result && files.length > 0) {
         const refernceId = Number(result.data.Id);

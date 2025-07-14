@@ -42,7 +42,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
 
   useEffect(() => {
     if (fabricTypeId && isEdit) {
-        getFabricById(fabricTypeId);
+      getFabricById(fabricTypeId);
     }
   }, [fabricTypeId, isEdit]);
 
@@ -68,11 +68,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {!isEdit ? (
-                <> Add Fabric Type</>
-              ) : (
-                <> Edit Fabric Type</>
-              )}
+              {!isEdit ? <> Add Fabric Type</> : <> Edit Fabric Type</>}
             </ModalHeader>
             <Formik
               validationSchema={FabricTypeSchema}
@@ -89,7 +85,11 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                       <>
                         <div className="grid grid-cols-1 gap-3">
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true} label="Type" labelForm="Type" />
+                            <Label
+                              isRequired={true}
+                              label="Type"
+                              labelForm="Type"
+                            />
                             <Field
                               name="type"
                               type="text"
@@ -104,11 +104,15 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true} label="Name" labelForm="Name" />
+                            <Label
+                              isRequired={true}
+                              label="Name"
+                              labelForm="Name"
+                            />
                             <Field
                               name="name"
                               type="text"
-                          maxLength={100}
+                              maxLength={100}
                               placeholder="Enter Name"
                               className="formInputdefault bg-gray-100"
                             />
@@ -119,12 +123,15 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
-                            <Label isRequired={true} label="GSM" labelForm="GSM" />
+                            <Label
+                              isRequired={true}
+                              label="GSM"
+                              labelForm="GSM"
+                            />
                             <Field
                               name="gsm"
                               type="number"
-
-                               min={0}
+                              min={0}
                               placeholder="Enter GSM"
                               className="formInputdefault bg-gray-100"
                             />
@@ -151,7 +158,7 @@ const AddFabricType: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Edit" : "Add"} Fabric Type
+                      {isEdit ? "Update" : "Save"}
                     </Button>
                   </ModalFooter>
                 </Form>

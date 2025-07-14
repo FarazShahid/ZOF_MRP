@@ -57,7 +57,7 @@ const ReorderConfirmation: React.FC<DeleteModalProps> = ({
                 onPress={handleReorder}
                 isLoading={loading}
               >
-                Delete
+                Reorder
               </Button>
             </ModalFooter>
           </>

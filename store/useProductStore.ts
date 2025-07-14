@@ -1,6 +1,7 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
+import { GetPrintingOptionsResponse, PrintingOptionType } from "./usePrintingOptionsStore";
 
 interface ProductColorMap {
   [productId: number]: ProductAvailableColors[];
@@ -74,7 +75,7 @@ interface ProductById {
 
 interface GetAvailableColorResponse {
   data: ProductAvailableColors[];
-}
+} 
 
 export interface ProductAvailableColors {
   Id: number;
@@ -98,6 +99,7 @@ interface CategoryState {
   productColorMap: ProductColorMap;
   productAvailableColors: ProductAvailableColors[];
   availableSizes: AvailableSizes[];
+  availablePrintingOptions: PrintingOptionType[];
   loading: boolean;
   error: string | null;
 
@@ -124,6 +126,7 @@ const useProductStore = create<CategoryState>((set, get) => ({
   productColorMap: {},
   productAvailableColors: [],
   availableSizes: [],
+  availablePrintingOptions:[],
   loading: false,
   error: null,
 
@@ -172,7 +175,7 @@ const useProductStore = create<CategoryState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/availablecolors/${id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/products/available-printing-options/${id}`
       );
       if (!response.ok) {
         set({ loading: false });
@@ -180,11 +183,8 @@ const useProductStore = create<CategoryState>((set, get) => ({
         toast.error(error.message || "Fail to fetch data.");
         return;
       }
-      const data: GetAvailableColorResponse = await response.json();
-      set((state) => ({
-        productColorMap: { ...state.productColorMap, [id]: data.data },
-        loading: false,
-      }));
+      const data: GetPrintingOptionsResponse = await response.json();
+      set({ availablePrintingOptions: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch product colors", loading: false });
     }

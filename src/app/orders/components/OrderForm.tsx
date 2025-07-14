@@ -127,7 +127,7 @@ const OrderForm = () => {
     );
 
     const finalPayload = { ...values, items: updatedItems };
-    console.log("finalPayload", finalPayload);
+    
     await addOrder(finalPayload, () => handleBoBack());
   };
 

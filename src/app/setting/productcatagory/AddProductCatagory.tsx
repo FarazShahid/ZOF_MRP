@@ -161,7 +161,7 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Edit" : "Add"} Catagory
+                      {isEdit ? "Update" : "Save"}
                     </Button>
                   </ModalFooter>
                 </Form>

@@ -2,7 +2,8 @@ import * as Yup from 'yup';
 
 export const SizeMeasurementSchema = Yup.object().shape({
     Measurement1: Yup.string().required('Name is required'),
-    SizeOptionId: Yup.string().required('Field is required'),
+    SizeOptionId: Yup.string().required('Size Option is required'),
+    ClientId: Yup.string().required('Client is required'),
     // FrontLengthHPS: Yup.string().required('Field is required'),
     // BackLengthHPS: Yup.string().required('Field is required'),
     // AcrossShoulders: Yup.string().required('Field is required'),

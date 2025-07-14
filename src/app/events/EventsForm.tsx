@@ -118,9 +118,7 @@ const EventsForm: React.FC<AddClientComponentProps> = ({
                           </div>
 
                           <div className="flex flex-col gap-1 w-full">
-                            <label className="text-sm text-gray-600 font-sans">
-                              Description
-                            </label>
+                            <Label isRequired={false} label="Description" labelForm="Description" />
                             <Field
                               as="textarea"
                               name="Description"
@@ -146,7 +144,7 @@ const EventsForm: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Edit" : "Add"}
+                      {isEdit ? "Update" : "Save"}
                     </Button>
                   </ModalFooter>
                 </Form>

@@ -8,11 +8,13 @@ import DocumentCard from "../orders/components/DocumentCard";
 interface ComponentProp {
   referenceType: string;
   referenceId: number;
+  isPrintable?: boolean;
 }
 
 const RecentAttachmentsView: React.FC<ComponentProp> = ({
   referenceType,
   referenceId,
+  isPrintable
 }) => {
   const { fetchDocuments, documents } = useDocumentCenterStore();
 
@@ -34,6 +36,7 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
                 fileTitle={doc.fileName}
                 fileType={doc.fileType}
                 path={doc.fileUrl}
+                isPrintable={isPrintable}
               />
             );
           })}

@@ -94,6 +94,7 @@ const AddCutOptions: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="OptionProductCutOptions"
                               type="text"
+                               maxLength={100}
                               placeholder="Enter Cut Option Name"
                               className="formInputdefault bg-gray-100"
                             />

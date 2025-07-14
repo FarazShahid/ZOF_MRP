@@ -1218,3 +1218,27 @@ span.flatpickr-weekday,
   overflow-y: auto;
   padding-left: 30px;
 }
+
+
+
+
+/* Print Css */
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  #print-section,
+  #print-section * {
+    visibility: visible !important;
+  }
+
+  #print-section {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: white;
+  }
+}

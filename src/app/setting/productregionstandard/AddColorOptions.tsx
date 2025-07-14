@@ -84,6 +84,7 @@ const AddProductRegion: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="Name"
                               type="text"
+                               maxLength={100}
                               placeholder="Enter Type"
                               className="formInputdefault bg-gray-100"
                             />
@@ -110,7 +111,7 @@ const AddProductRegion: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Edit" : "Add"}
+                      {isEdit ? "Update" : "Save"}
                     </Button>
                   </ModalFooter>
                 </Form>

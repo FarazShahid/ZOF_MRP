@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { PRIORITY_ENUM } from "@/interface/GetFileType";
 import { useProductColorsByProductId } from "@/interface/useHandleProdcutColors";
 import { ProductProp } from "./Step2";
 import TextAreaField from "./TextAreaField";
-import SelectField from "./SelectField";
 import PrintingOptionsMultiSelect from "./PrintingOptionsMultiSelect";
 import OrderItemDetailsFieldArray from "./OrderItemDetailsFieldArray";
 import DropZone from "../../components/DropZone/DropZone";

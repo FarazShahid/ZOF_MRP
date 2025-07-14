@@ -3,7 +3,6 @@ import { FieldArray } from "formik";
 import { useFormikContext } from "formik";
 import useProductStore from "@/store/useProductStore";
 import SearchableProductSelect from "./SearchableProductSelect";
-import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
 import OrderItem from "./OrderItem";
 
 export interface ProductProp {
@@ -21,13 +20,12 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
   const { values, setFieldValue } = useFormikContext<any>();
   const [selectedProduct, setSelectedProduct] = useState<ProductProp>();
 
-  const { fetchProducts, products, fetchProductAvailableColors } =
+  const { fetchProducts, products, fetchProductAvailableColors, fetchProductAvailablePrinting ,availablePrintingOptions } =
     useProductStore();
-  const { fetchprintingOptions, printingOptions } = usePrintingOptionsStore();
+
 
   useEffect(() => {
     fetchProducts();
-    fetchprintingOptions();
   }, []);
 
   useEffect(() => {
@@ -35,9 +33,11 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
       const lastItem = values.items[values.items.length - 1];
       if (lastItem?.ProductId) {
         fetchProductAvailableColors(lastItem.ProductId);
+        fetchProductAvailablePrinting(lastItem.ProductId);
       }
     }
   }, [values.items.length]);
+
 
   const addProduct = (selected: { Id: number; productName: string }) => {
     setSelectedProduct(selected);
@@ -86,7 +86,7 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
                 item={item}
                 values={values}
                 removeItem={() => itemsHelpers.remove(index)}
-                printingOptions={printingOptions}
+                printingOptions={availablePrintingOptions}
                 setFieldValue={setFieldValue}
                 selectedProduct={selectedProduct}
                 index={index}

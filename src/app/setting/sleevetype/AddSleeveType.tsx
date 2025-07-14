@@ -98,6 +98,7 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="sleeveTypeName"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Sleeve Type Name"
                               className="formInputdefault bg-gray-100"
                             />
@@ -118,7 +119,7 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                               as="select"
                               className="formInputdefault bg-gray-100"
                             >
-                              <option value={""}>Select a type</option>
+                              <option value={0}>Select a type</option>
                               {productCategories?.map((category, index) => {
                                 return (
                                   <option value={category.id} key={index}>
@@ -150,7 +151,7 @@ const AddSleeveType: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Edit" : "Add"} Sleeve Type
+                      {isEdit ? "Update" : "Save"} 
                     </Button>
                   </ModalFooter>
                 </Form>

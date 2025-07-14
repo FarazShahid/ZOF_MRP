@@ -3,8 +3,9 @@ import { FaEye } from "react-icons/fa";
 
 interface DocumentCardProp {
   path: string;
-  fileType: string; 
+  fileType: string;
   fileTitle: string;
+  isPrintable?: boolean;
 }
 
 const previewableExtensions = ["pdf", "jpg", "jpeg", "png", "webp", "gif"];
@@ -13,6 +14,7 @@ const DocumentCard: React.FC<DocumentCardProp> = ({
   path,
   fileType,
   fileTitle,
+  isPrintable,
 }) => {
   const extension = fileType?.toLowerCase();
   const isPreviewable = previewableExtensions.includes(extension);
@@ -46,15 +48,17 @@ const DocumentCard: React.FC<DocumentCardProp> = ({
           </p>
         </div>
         <div className="flex items-center gap-1 text-gray-400">
-          <a
-            href={path}
-            target={isPreviewable ? "_blank" : undefined}
-            rel={isPreviewable ? "noopener noreferrer" : undefined}
-            download={!isPreviewable ? fileTitle : undefined}
-            className="text-sm"
-          >
-            <FaEye size={22} />
-          </a>
+          {!isPrintable && (
+            <a
+              href={path}
+              target={isPreviewable ? "_blank" : undefined}
+              rel={isPreviewable ? "noopener noreferrer" : undefined}
+              download={!isPreviewable ? fileTitle : undefined}
+              className="text-sm"
+            >
+              <FaEye size={22} />
+            </a>
+          )}
         </div>
       </div>
     </div>
