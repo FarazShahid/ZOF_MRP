@@ -85,7 +85,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         return <Step2 formik={formikProps} />;
       case 3:
         return (
-          <Step3 formik={formikProps} handleFileSelect={handleFileSelect} productId={productId} />
+          <Step3
+            formik={formikProps}
+            handleFileSelect={handleFileSelect}
+            productId={productId}
+          />
         );
       default:
         return null;
@@ -132,7 +136,22 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     const files = uploadedFilesByIndex[1] || [];
     const payload = { ...values };
 
-    // Check if productColors is still the default value
+    payload.productColors = payload.productColors?.filter(
+      (color: { Id: number; colorId: number; ImageId: string }) =>
+        !(color.Id === 0 && color.colorId === 0 && color.ImageId === "1")
+    );
+
+    payload.productSizes = payload.productSizes?.filter(
+      (size: { sizeId: number }) => size.sizeId !== 0 
+    );
+
+    payload.printingOptions = payload.printingOptions?.filter(
+    (option: { PrintingOptionId: number; }) => option.PrintingOptionId !== 0
+  );
+
+
+
+
     const isDefaultProductColors =
       payload.productColors?.length === 1 &&
       payload.productColors[0].Id === 0 &&
@@ -146,7 +165,6 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     if (productId) {
       await updateProduct(Number(productId), payload, () => handleBoBack());
     } else {
-      
       const result = await addProduct(payload);
       if (result && files.length > 0) {
         const refernceId = Number(result.data.Id);
@@ -169,8 +187,6 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       getProductById(Number(productId));
     }
   }, [productId]);
-
-  
 
   return (
     <AdminDashboardLayout>
