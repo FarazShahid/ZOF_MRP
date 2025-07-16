@@ -16,8 +16,9 @@ import useFabricStore from "@/store/useFabricStore";
 const page = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedFabricType, setSelectedFabricType] = useState<string>("All");
-  const [selectedProductType, setSelectedProductType] =
-    useState<boolean>(false);
+  const [selectedProductType, setSelectedProductType] = useState<
+    boolean | undefined
+  >(false);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   const { fetchCategories, productCategories } = useCategoryStore();
@@ -38,7 +39,8 @@ const page = () => {
   useEffect(() => {
     let filtered = products;
 
-    if(selectedProductType !== false){
+    // Only filter by archive if specific value is set
+    if (selectedProductType !== undefined) {
       filtered = filtered.filter(
         (product) => product.isArchived === selectedProductType
       );
@@ -57,7 +59,15 @@ const page = () => {
     }
 
     setFilteredProducts(filtered);
-  }, [selectedCategory, selectedFabricType, products]);
+  }, [selectedCategory, selectedFabricType, selectedProductType, products]);
+
+  const handleProductArchive = (value: string) => {
+    if (value === "All") {
+      setSelectedProductType(undefined); // Reset to show all
+    } else {
+      setSelectedProductType(value === "true"); // Convert to boolean
+    }
+  };
 
   return (
     <AdminDashboardLayout>
@@ -95,16 +105,19 @@ const page = () => {
             </span>
             <div className="flex flex-col gap-2">
               <label className="dark:text-white text-gray-600 uppercase text-xs">
-                Product Type
+                Archived
               </label>
               <div className="w-[200px]">
                 <select
-                  value={selectedProductType.toString()} // convert boolean to string for select value
-                  onChange={(e) =>
-                    setSelectedProductType(e.target.value === "true")
-                  } // convert string back to boolean
+                  value={
+                    selectedProductType === undefined
+                      ? "All"
+                      : selectedProductType.toString()
+                  }
+                  onChange={(e) => handleProductArchive(e.target.value)} // convert string back to boolean
                   className="dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 rounded-xl w-full text-sm px-1 py-2 outline-none"
                 >
+                  <option value={"All"}>All</option>
                   <option value="false">Unarchived</option>
                   <option value="true">Archived</option>
                 </select>
@@ -157,6 +170,7 @@ const page = () => {
               onClick={() => {
                 setSelectedCategory("All");
                 setSelectedFabricType("All");
+                setSelectedProductType(false);
               }}
               className="flex items-center justify-center gap-3 py-2  text-base text-gray-50 rounded-lg border-gray-600 dark:bg-blue-600 bg-blue-800 text-white"
             >

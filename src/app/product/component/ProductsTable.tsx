@@ -12,14 +12,21 @@ import {
 import { productComponentProp } from "./ProductGrid";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { TbStatusChange } from "react-icons/tb";
 import DeleteProduct from "../../products/DeleteProduct";
 import { useRouter } from "next/navigation";
 import ProductStatusChip from "./ProductStatusChip";
+import ChangeProductStatus from "./ChangeProductStatus";
+import { bool, boolean } from "yup";
 
 const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
-  const [selectedProductId, setSelectedProductId] = useState(0);
+  const [selectedProductId, setSelectedProductId] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
+  const [OpenChangeStatusModal, setOpenChangeStatusModal] =
+    useState<boolean>(false);
+  const [statusModalTitle, setStatusModalTitle] = useState<string>("");
+  const [currentStatus, setCurrentStatus] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -34,7 +41,7 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
   }, [page, products]);
 
   const openEditModal = (productId: number) => {
-    router.push(`product/editproduct/${productId}`)
+    router.push(`product/editproduct/${productId}`);
   };
   const handleOpenDeleteModal = (productId: number) => {
     setSelectedProductId(productId);
@@ -44,6 +51,21 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
   const closeDeleteModal = () => {
     setIsOpenDeleteModal(false);
   };
+
+  const handleChangeStatus = (id: number, status: boolean) => {
+    setSelectedProductId(id);
+    setCurrentStatus(status);
+    if (status) {
+      setStatusModalTitle("Are you sure you want to Unarchive this product?");
+    } else {
+      setStatusModalTitle("Are you sure you want to Archive this product?");
+    }
+    setOpenChangeStatusModal(true);
+  };
+  const closeChangeStatusModal = () => {
+    setOpenChangeStatusModal(false);
+  };
+
   return (
     <>
       <Table
@@ -85,13 +107,10 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
           >
             Product Category
           </TableColumn>
-          <TableColumn
-            key="ClientName"
-            className="text-medium font-bold"
-          >
+          <TableColumn key="ClientName" className="text-medium font-bold">
             Client Name
           </TableColumn>
-          
+
           <TableColumn key="FabricName" className="text-medium font-bold">
             Fabric
           </TableColumn>
@@ -101,8 +120,11 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
           <TableColumn key="GSM" className="text-medium font-bold">
             GSM
           </TableColumn>
-           <TableColumn key="productStatus" className="text-medium font-bold">
+          <TableColumn key="productStatus" className="text-medium font-bold">
             Status
+          </TableColumn>
+          <TableColumn key="isArchived" className="text-medium font-bold">
+            Archived
           </TableColumn>
           <TableColumn key="action" className="text-medium font-bold">
             Action
@@ -115,12 +137,30 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
                 <TableCell>
                   {columnKey === "Sr" ? (
                     index + 1
-                  ):columnKey === "productStatus" ? (
+                  ) : columnKey === "productStatus" ? (
                     <ProductStatusChip status={item?.productStatus} />
+                  ) : columnKey === "isArchived" ? (
+                    <div
+                      className={`border-1 rounded-lg text-center w-fit px-2 ${
+                        item.isArchived
+                          ? " border-red-500 text-red-600"
+                          : "border-green-500 text-green-600"
+                      }`}
+                    >
+                      {item.isArchived ? "Archived" : "Unarchived"}
+                    </div>
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
                     <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleChangeStatus(item?.Id, item?.isArchived)
+                        }
+                      >
+                        <TbStatusChange />
+                      </button>
                       <button
                         type="button"
                         onClick={() => openEditModal(item?.Id)}
@@ -147,6 +187,14 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
         productId={selectedProductId}
+      />
+
+      <ChangeProductStatus
+        isOpen={OpenChangeStatusModal}
+        onClose={closeChangeStatusModal}
+        productId={selectedProductId}
+        title={statusModalTitle}
+        currentStatus={currentStatus}
       />
     </>
   );

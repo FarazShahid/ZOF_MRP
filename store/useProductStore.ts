@@ -116,6 +116,7 @@ interface CategoryState {
     productType: AddProduct,
     onSuccess: () => void
   ) => Promise<void>;
+  changeProductStatus: (id: number, productStatus: boolean, onSuccess: ()=> void) => Promise<void>;
   deleteProduct: (id: number, onSuccess: () => void) => Promise<void>;
 }
 
@@ -228,37 +229,6 @@ const useProductStore = create<CategoryState>((set, get) => ({
     }
   },
 
-  // addProduct: async (productType: AddProduct, onSuccess?: () => void) => {
-  //   set({ loading: true, error: null });
-  //   try {
-  //     const response = await fetchWithAuth(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/products`,
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify(productType),
-  //       }
-  //     );
-
-  //     if (response.ok) {
-  //       set({ loading: false, error: null });
-  //       const data: GetProductByIdResponse = await response.json();
-
-  //       if (onSuccess) onSuccess();
-  //       toast.success("Product added successfully.");
-  //       await get().fetchProducts();
-
-  //     } else {
-  //       set({ loading: false, error: null });
-  //       const error = await response.json();
-  //       toast.error(error.message || "Fail to add product");
-  //     }
-  //   } catch (error) {
-  //     set({ error: "Failed to add product", loading: false });
-  //     toast.error("Fail to add product");
-  //   }
-  // },
-
   addProduct: async (
     productType: AddProduct
   ): Promise<GetProductByIdResponse | null> => {
@@ -320,6 +290,39 @@ const useProductStore = create<CategoryState>((set, get) => ({
     } catch (error) {
       set({ error: "Failed to update product", loading: false });
       toast.error("Fail to updated product");
+    }
+  },
+
+  changeProductStatus: async (
+    id: number,
+    productStatus: boolean,
+    onSuccess?: () => void
+  ) => {
+    debugger
+    set({ loading: true, error: null });
+    try {
+      const payload = {isArchived: productStatus}
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/archive-status/${id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+      if (response.ok) {
+        set({ loading: false, error: null });
+        if (onSuccess) onSuccess();
+        toast.success("Product status updated successfully.");
+        await get().fetchProducts();
+      } else {
+        set({ loading: false, error: null });
+        const error = await response.json();
+        toast.error(error.message || "Fail to updated product status");
+      }
+    } catch (error) {
+      set({ error: "Failed to update product status", loading: false });
+      toast.error("Fail to updated product status");
     }
   },
 
