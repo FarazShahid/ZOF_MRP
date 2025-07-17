@@ -20,9 +20,13 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
   const { values, setFieldValue } = useFormikContext<any>();
   const [selectedProduct, setSelectedProduct] = useState<ProductProp>();
 
-  const { fetchProducts, products, fetchProductAvailableColors, fetchProductAvailablePrinting ,availablePrintingOptions } =
-    useProductStore();
-
+  const {
+    fetchProducts,
+    products,
+    fetchProductAvailableColors,
+    fetchProductAvailablePrinting,
+    availablePrintingOptions,
+  } = useProductStore();
 
   useEffect(() => {
     fetchProducts();
@@ -37,7 +41,6 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
       }
     }
   }, [values.items.length]);
-
 
   const addProduct = (selected: { Id: number; productName: string }) => {
     setSelectedProduct(selected);
@@ -67,7 +70,8 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
         {values.ClientId ? (
           <SearchableProductSelect
             products={products.filter(
-              (p) => p.ClientId === Number(values.ClientId)
+              (p) =>
+                p.ClientId === Number(values.ClientId) && p.isArchived === false
             )}
             onSelect={addProduct}
           />

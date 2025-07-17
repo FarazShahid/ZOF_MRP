@@ -161,7 +161,7 @@ const OrderItemDetailsFieldArray = ({
                       type="button"
                       onClick={() =>
                         detailsHelpers.push({
-                          ColorOptionId: "",
+                          ColorOptionId: null,
                           Quantity: 1,
                           Priority: 0,
                         })

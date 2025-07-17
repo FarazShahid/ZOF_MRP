@@ -42,7 +42,6 @@ const TopUnit = () => {
             <Field
               name={topInput.name}
               type="number"
-               min={0}
               placeholder={`Enter ${topInput.label}`}
               className="formInputdefault border-1"
             />
