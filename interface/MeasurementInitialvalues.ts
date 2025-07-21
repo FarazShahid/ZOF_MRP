@@ -18,12 +18,17 @@ export const defaultMeasurementValues = {
   FrontRise: "",
   BottomHem: "",
   NeckSize: "",
+  Neckwidth: "",
   CollarHeight: "",
   CollarPointHeight: "",
   CollarStandLength: "",
+  ColllarHeightCenterBack: "",
+  CollarOpening: "",
+  ArmHoleStraight: "",
   AcrossShoulders: "",
   BackLengthHPS: "",
   BottomWidth: "",
+  BottomRib: "",
   StandHeightBack: "",
   SideVentFront: "",
   SideVentBack: "",
@@ -35,12 +40,23 @@ export const defaultMeasurementValues = {
   // Bottom unit
   Hip: "",
   Waist: "",
+  WasitStretch: "",
+  WasitRelax: "",
+  Thigh: "",
+  bFrontRise: "",
+  BackRise: "",
+  TotalLength: "",
+  WBHeight: "",
+  bBottomWidth: "",
+  BottomOriginal: "",
+  BottomElastic: "",
+  BottomCuffZipped: "",
+  BottomStraightZipped: "",
   Outseam: "",
   Inseam: "",
-  HemBottom:"",
+  HemBottom: "",
   KneeWidth: "",
   LegOpening: "",
-  bFrontRise: "",
 
   // Logo placement - Top
   t_TopRight: "",
@@ -56,7 +72,6 @@ export const defaultMeasurementValues = {
   b_BottomRight: "",
   b_BottomLeft: "",
 };
-
 
 export enum UnitType {
   None = 0,

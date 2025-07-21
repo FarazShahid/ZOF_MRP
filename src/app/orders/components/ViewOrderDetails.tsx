@@ -157,13 +157,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                       <div className="flex items-center gap-3">
                         <PriorityChip
                           priority={detail?.Priority}
-                          showLabel={true}
-                        />
-
-                        <ColorContainer
-                          key={detail?.ColorOptionId}
-                          ColorOptionName={detail?.ColorOptionName}
-                          HexCode={detail?.HexCode}
+                          showLabel={false}
                         />
                       </div>
                       <div className="flex items-center gap-5 text-sm">
