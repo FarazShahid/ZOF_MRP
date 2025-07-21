@@ -142,15 +142,30 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     );
 
     payload.productSizes = payload.productSizes?.filter(
-      (size: { sizeId: number }) => size.sizeId !== 0 
+      (size: { sizeId: number }) => size.sizeId !== 0
     );
 
     payload.printingOptions = payload.printingOptions?.filter(
-    (option: { PrintingOptionId: number; }) => option.PrintingOptionId !== 0
-  );
+      (option: { PrintingOptionId: number }) => option.PrintingOptionId !== 0
+    );
 
+    payload.productDetails = (payload.productDetails ?? [])
+      .map((pd: any) => {
+        const detail: Partial<{
+          ProductCutOptionId: number;
+          ProductSizeMeasurementId: number;
+          SleeveTypeId: number;
+        }> = {};
 
-
+        if (pd.ProductCutOptionId && pd.ProductCutOptionId !== "")
+          detail.ProductCutOptionId = pd.ProductCutOptionId;
+        if (pd.ProductSizeMeasurementId && pd.ProductSizeMeasurementId !== "")
+          detail.ProductSizeMeasurementId = pd.ProductSizeMeasurementId;
+        if (pd.SleeveTypeId && pd.SleeveTypeId !== "")
+          detail.SleeveTypeId = pd.SleeveTypeId;
+        return detail;
+      })
+      .filter((detail: any) => Object.keys(detail).length > 0);
 
     const isDefaultProductColors =
       payload.productColors?.length === 1 &&

@@ -137,7 +137,7 @@ export default function Step2({ formik }: any) {
                 >
                   <div className="grid grid-cols-2 gap-2">
                     <div className="flex flex-col gap-1">
-                      <Label isRequired={true} label="Cut Options" />
+                      <Label isRequired={false} label="Cut Options" />
                       <Field
                         as="select"
                         required
@@ -158,7 +158,7 @@ export default function Step2({ formik }: any) {
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <Label isRequired={true} label=" Sleeve Type" />
+                      <Label isRequired={false} label=" Sleeve Type" />
                       <Field
                         as="select"
                         name={`productDetails[${index}].SleeveTypeId`}
