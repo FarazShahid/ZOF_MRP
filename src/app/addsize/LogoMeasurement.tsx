@@ -79,7 +79,6 @@ const LogoMeasurement: React.FC<LogoProp> = ({ IsTopUnit, IsBottomUnit }) => {
                 <Field
                   name={unitInput.name}
                   type="number"
-                  min={0}
                   placeholder={`Enter ${unitInput.label}`}
                   className="formInputdefault border-1"
                 />
