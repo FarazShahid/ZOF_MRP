@@ -65,6 +65,8 @@ export const defaultMeasurementValues = {
   t_BottomLeft: "",
   t_Back: "",
   t_Center: "",
+  t_left_sleeve: "",
+  t_right_sleeve: "",
 
   // Logo placement - Bottom
   b_TopRight: "",

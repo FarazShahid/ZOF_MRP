@@ -15,6 +15,8 @@ const LogoMeasurement: React.FC<LogoProp> = ({ IsTopUnit, IsBottomUnit }) => {
     { id: 4, name: "t_BottomLeft", label: "Bottom Left" },
     { id: 5, name: "t_Center", label: "Center" },
     { id: 6, name: "t_Back", label: "Back" },
+    { id: 7, name: "t_left_sleeve", label: "Left Sleeve" },
+    { id: 8, name: "t_right_sleeve", label: "Right Sleeve" },
   ];
 
   const LogInputBottom = [
@@ -77,7 +79,7 @@ const LogoMeasurement: React.FC<LogoProp> = ({ IsTopUnit, IsBottomUnit }) => {
                 <Field
                   name={unitInput.name}
                   type="number"
-                   min={0}
+                  min={0}
                   placeholder={`Enter ${unitInput.label}`}
                   className="formInputdefault border-1"
                 />
