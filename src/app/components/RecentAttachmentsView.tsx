@@ -16,11 +16,15 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
   referenceId,
   isPrintable
 }) => {
-  const { fetchDocuments, documents } = useDocumentCenterStore();
+  const { fetchDocuments, documentsByReferenceId  } = useDocumentCenterStore();
 
   useEffect(() => {
     fetchDocuments(referenceType, referenceId);
-  }, [referenceId]);
+  }, [referenceId, referenceType]);
+
+    const documents = documentsByReferenceId[referenceId] || [];
+
+    console.log("documents", documents);
 
   return (
     <div className="bg-gray-100 rounded-lg p-3" key={referenceId}>

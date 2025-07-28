@@ -106,7 +106,6 @@ const OrderForm = () => {
     router.push("/orders");
   };
   const handleSubmit = async (values: any) => {
-    debugger
     values.Description = values.ClientId + "order description";
     if (!values.OrderEventId) {
       delete values.OrderEventId;

@@ -11,17 +11,20 @@ const OrderItemDetailsFieldArray = ({
   index,
   item,
   values,
+  sizeOptions,
   productAvailableColors,
   setFieldValue,
 }: {
   index: number;
   item: any;
   values: any;
+  sizeOptions: any[];
   productAvailableColors: any[];
+  
   setFieldValue: (field: string, value: any) => void;
 }) => {
 
-  const { fetchAvailableSizes, availableSizes } = useProductStore();
+  const { fetchAvailableSizes } = useProductStore();
   const {
     fetchSizeMeasurementByClientAndSize,
   } = useSizeMeasurementsStore();
@@ -41,13 +44,6 @@ const OrderItemDetailsFieldArray = ({
       ]);
     }
   }, []);
-
-  // Fetch size options when ProductId is available
-  useEffect(() => {
-    if (item?.ProductId && item?.ProductId > 0) {
-      fetchAvailableSizes(item?.ProductId);
-    }
-  }, [item?.ProductId]);
 
  // 🔁 Fetch MeasurementId whenever SizeOption or ClientId changes
   useEffect(() => {
@@ -74,6 +70,7 @@ const OrderItemDetailsFieldArray = ({
     fetchMeasurements();
   }, [item.orderItemDetails, values.ClientId]);
 
+
   return (
     <FieldArray name={`items[${index}].orderItemDetails`}>
       {(detailsHelpers) => (
@@ -82,21 +79,6 @@ const OrderItemDetailsFieldArray = ({
             item.orderItemDetails.map((detail: any, detailIndex: number) => (
               <div className="" key={detailIndex}>
                 <div className="grid grid-cols-3 gap-2 mb-2">
-                  {/* <div>
-                    <Label isRequired label="Color Option" />
-                    <Field
-                      as="select"
-                      name={`items[${index}].orderItemDetails[${detailIndex}].ColorOptionId`}
-                      className="rounded-xl dark:text-gray-400 text-black text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
-                    >
-                      <option value="">Select a color</option>
-                      {productAvailableColors?.map((color, index) => (
-                        <option value={color?.Id} key={index}>
-                          {color?.ColorName}
-                        </option>
-                      ))}
-                    </Field>
-                  </div> */}
                   <div>
                     <Label isRequired label="Quantity" />
                     <Field
@@ -129,7 +111,7 @@ const OrderItemDetailsFieldArray = ({
                       className="rounded-xl dark:text-gray-400 text-black text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
                     >
                       <option value="">Select a size option</option>
-                      {availableSizes?.map((size, index) => (
+                      {sizeOptions?.map((size, index) => (
                         <option value={size?.SizeId} key={index}>
                           {size?.SizeName}
                         </option>

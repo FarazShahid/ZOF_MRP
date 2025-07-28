@@ -14,6 +14,7 @@ interface OrderItemProps {
   values: any;
   selectedProduct: ProductProp | undefined;
   removeItem: () => void;
+  sizeOptions: any[];
   printingOptions: any[];
   setFieldValue: (field: string, value: any) => void;
   handleFileSelect: (file: File, index: number) => void;
@@ -26,6 +27,7 @@ const OrderItem: React.FC<OrderItemProps> = ({
   values,
   selectedProduct,
   removeItem,
+  sizeOptions,
   printingOptions,
   setFieldValue,
   handleFileSelect,
@@ -59,6 +61,7 @@ const OrderItem: React.FC<OrderItemProps> = ({
             index={index}
             item={item}
             values={values}
+            sizeOptions={sizeOptions}
             productAvailableColors={currentProductColors}
             setFieldValue={setFieldValue}
           />
@@ -70,10 +73,10 @@ const OrderItem: React.FC<OrderItemProps> = ({
               setFieldValue={setFieldValue}
             />
           </div>
-          {/* <DropZone index={index} onFileSelect={handleFileSelect} /> */}
+
           {selectedProduct ? (
             <RecentAttachmentsView
-              referenceId={selectedProduct?.Id}
+              referenceId={item.ProductId}
               referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
             />
           ) : (
