@@ -1,7 +1,10 @@
 import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
-import { GetPrintingOptionsResponse, PrintingOptionType } from "./usePrintingOptionsStore";
+import {
+  GetPrintingOptionsResponse,
+  PrintingOptionType,
+} from "./usePrintingOptionsStore";
 
 interface ProductColorMap {
   [productId: number]: ProductAvailableColors[];
@@ -75,7 +78,7 @@ interface ProductById {
 
 interface GetAvailableColorResponse {
   data: ProductAvailableColors[];
-} 
+}
 
 export interface ProductAvailableColors {
   Id: number;
@@ -104,9 +107,13 @@ interface CategoryState {
   error: string | null;
 
   fetchProducts: () => Promise<void>;
-  fetchProductAvailableColors: (id: number) => Promise<void>;
-  fetchProductAvailablePrinting: (id: number) => Promise<void>;
-  fetchAvailableSizes: (id: number) => Promise<void>;
+  fetchProductAvailableColors: (
+    id: number
+  ) => Promise<ProductAvailableColors[] | null>;
+  fetchProductAvailablePrinting: (
+    id: number
+  ) => Promise<PrintingOptionType[] | null>;
+  fetchAvailableSizes: (id: number) => Promise<AvailableSizes[] | null>;
   getProductById: (id: number) => Promise<void>;
   addProduct: (
     productType: AddProduct
@@ -116,7 +123,11 @@ interface CategoryState {
     productType: AddProduct,
     onSuccess: () => void
   ) => Promise<void>;
-  changeProductStatus: (id: number, productStatus: boolean, onSuccess: ()=> void) => Promise<void>;
+  changeProductStatus: (
+    id: number,
+    productStatus: boolean,
+    onSuccess: () => void
+  ) => Promise<void>;
   deleteProduct: (id: number, onSuccess: () => void) => Promise<void>;
 }
 
@@ -127,7 +138,7 @@ const useProductStore = create<CategoryState>((set, get) => ({
   productColorMap: {},
   productAvailableColors: [],
   availableSizes: [],
-  availablePrintingOptions:[],
+  availablePrintingOptions: [],
   loading: false,
   error: null,
 
@@ -150,7 +161,9 @@ const useProductStore = create<CategoryState>((set, get) => ({
     }
   },
 
-  fetchProductAvailableColors: async (id: number) => {
+  fetchProductAvailableColors: async (
+    id: number
+  ): Promise<ProductAvailableColors[] | null> => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
@@ -159,20 +172,28 @@ const useProductStore = create<CategoryState>((set, get) => ({
       if (!response.ok) {
         set({ loading: false });
         const error = await response.json();
-        toast.error(error.message || "Fail to fetch data.");
-        return;
+        toast.error(error.message || "Fail to fetch colors.");
+        return null;
       }
       const data: GetAvailableColorResponse = await response.json();
+
+      // Still update the store map
       set((state) => ({
         productColorMap: { ...state.productColorMap, [id]: data.data },
         loading: false,
       }));
+
+      return data.data;
     } catch (error) {
       set({ error: "Failed to fetch product colors", loading: false });
+      toast.error("Failed to fetch product colors");
+      return null;
     }
   },
 
-  fetchProductAvailablePrinting: async (id: number) => {
+  fetchProductAvailablePrinting: async (
+    id: number
+  ): Promise<PrintingOptionType[] | null> => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
@@ -181,34 +202,74 @@ const useProductStore = create<CategoryState>((set, get) => ({
       if (!response.ok) {
         set({ loading: false });
         const error = await response.json();
-        toast.error(error.message || "Fail to fetch data.");
-        return;
+        toast.error(error.message || "Fail to fetch printing options.");
+        return null;
       }
       const data: GetPrintingOptionsResponse = await response.json();
+
+      // Update global store (optional)
       set({ availablePrintingOptions: data.data, loading: false });
+
+      return data.data;
     } catch (error) {
-      set({ error: "Failed to fetch product colors", loading: false });
+      set({ error: "Failed to fetch printing options", loading: false });
+      toast.error("Failed to fetch printing options");
+      return null;
     }
   },
 
-  fetchAvailableSizes: async (id: number) => {
+  fetchAvailableSizes: async (id: number): Promise<AvailableSizes[] | null> => {
     set({ loading: true, error: null });
+
     try {
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/products/available-sizes/${id}`
       );
+
       if (!response.ok) {
         set({ loading: false });
         const error = await response.json();
-        toast.error(error.message || "Fail to fetch data.");
-        return;
+        toast.error(error.message || "Failed to fetch size options.");
+        return null;
       }
+
       const data: GetAvailablSizesResponse = await response.json();
-      set({ availableSizes: data.data, loading: false });
+
+      // Update per-product sizeOptions map in Zustand
+      set((state) => ({
+        sizeOptions: {
+          ...(state as any).sizeOptions, // Ensure key merging
+          [id]: data.data,
+        },
+        loading: false,
+      }));
+
+      return data.data;
     } catch (error) {
-      set({ error: "Failed to fetch data", loading: false });
+      set({ error: "Failed to fetch size options", loading: false });
+      toast.error("Failed to fetch size options");
+      return null;
     }
   },
+
+  // fetchAvailableSizes: async (id: number) => {
+  //   set({ loading: true, error: null });
+  //   try {
+  //     const response = await fetchWithAuth(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/products/available-sizes/${id}`
+  //     );
+  //     if (!response.ok) {
+  //       set({ loading: false });
+  //       const error = await response.json();
+  //       toast.error(error.message || "Fail to fetch data.");
+  //       return;
+  //     }
+  //     const data: GetAvailablSizesResponse = await response.json();
+  //     set({ availableSizes: data.data, loading: false });
+  //   } catch (error) {
+  //     set({ error: "Failed to fetch data", loading: false });
+  //   }
+  // },
 
   getProductById: async (id: number) => {
     set({ loading: true, error: null });
@@ -298,10 +359,10 @@ const useProductStore = create<CategoryState>((set, get) => ({
     productStatus: boolean,
     onSuccess?: () => void
   ) => {
-    debugger
+    debugger;
     set({ loading: true, error: null });
     try {
-      const payload = {isArchived: productStatus}
+      const payload = { isArchived: productStatus };
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/products/archive-status/${id}`,
         {

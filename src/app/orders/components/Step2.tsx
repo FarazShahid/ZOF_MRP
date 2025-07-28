@@ -19,13 +19,22 @@ type Step2Props = {
 const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
   const { values, setFieldValue } = useFormikContext<any>();
   const [selectedProduct, setSelectedProduct] = useState<ProductProp>();
+  const [productDataMap, setProductDataMap] = useState<
+    Record<
+      number,
+      {
+        printingOptions: any[];
+        sizeOptions: any[];
+      }
+    >
+  >({});
 
   const {
     fetchProducts,
     products,
     fetchProductAvailableColors,
     fetchProductAvailablePrinting,
-    availablePrintingOptions,
+    fetchAvailableSizes,
   } = useProductStore();
 
   useEffect(() => {
@@ -42,13 +51,27 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
     }
   }, [values.items.length]);
 
-  const addProduct = (selected: { Id: number; productName: string }) => {
+  const addProduct = async (selected: { Id: number; productName: string }) => {
     setSelectedProduct(selected);
 
     const exists = values.items.some(
       (item: any) => item.ProductId === selected.Id
     );
     if (exists) return;
+
+    // Fetch size and printing options for the new product
+    const [printingOptions, sizeOptions] = await Promise.all([
+      fetchProductAvailablePrinting(selected.Id),
+      fetchAvailableSizes(selected.Id),
+    ]);
+
+    setProductDataMap((prev) => ({
+      ...prev,
+      [selected.Id]: {
+        printingOptions: printingOptions || [],
+        sizeOptions: sizeOptions || [],
+      },
+    }));
 
     const newItem = {
       ProductId: selected.Id,
@@ -90,7 +113,10 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
                 item={item}
                 values={values}
                 removeItem={() => itemsHelpers.remove(index)}
-                printingOptions={availablePrintingOptions}
+                printingOptions={
+                  productDataMap[item.ProductId]?.printingOptions || []
+                }
+                sizeOptions={productDataMap[item.ProductId]?.sizeOptions || []}
                 setFieldValue={setFieldValue}
                 selectedProduct={selectedProduct}
                 index={index}

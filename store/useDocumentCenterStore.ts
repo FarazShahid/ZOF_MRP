@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
-import { fetchWithAuth } from "@/src/app/services/authservice"; 
+import { fetchWithAuth } from "@/src/app/services/authservice";
 
 interface Document {
   id: number;
@@ -31,12 +31,13 @@ interface UploadResponse {
 }
 
 interface GetByIdResponse {
-    data: Document[],
-    message: string;
+  data: Document[];
+  message: string;
 }
 
 interface DocumentCenterStore {
   documents: Document[];
+  documentsByReferenceId: Record<number, Document[]>; // Isolated per referenceId
   loadingDoc: boolean;
   error: string | null;
 
@@ -47,14 +48,12 @@ interface DocumentCenterStore {
     tag?: string
   ) => Promise<UploadResponse | null>;
 
-  fetchDocuments: (
-    referenceType: string,
-    referenceId: number
-  ) => Promise<void>;
+  fetchDocuments: (referenceType: string, referenceId: number) => Promise<void>;
 }
 
 export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
   documents: [],
+  documentsByReferenceId: {},
   loadingDoc: false,
   error: null,
 
@@ -65,7 +64,6 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
     tag?: string
   ) => {
     try {
-      
       set({ loadingDoc: true, error: null });
       const formData = new FormData();
       formData.append("file", file);
@@ -78,7 +76,9 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
       if (tag) query.append("tag", tag);
 
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/media-handler/upload?${query.toString()}`,
+        `${
+          process.env.NEXT_PUBLIC_API_URL
+        }/media-handler/upload?${query.toString()}`,
         {
           method: "POST",
           body: formData,
@@ -115,11 +115,22 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
 
       if (!response.ok) {
         toast.error(result.message || "Failed to fetch documents");
-        set({ loadingDoc: false, error: result.message || "Failed to fetch documents" });
+        set({
+          loadingDoc: false,
+          error: result.message || "Failed to fetch documents",
+        });
         return;
       }
 
-      set({ documents: result.data, loadingDoc: false });
+      // set({ documents: result.data,  loadingDoc: false });
+      set((state) => ({
+        documents: result.data,
+        documentsByReferenceId: {
+          ...state.documentsByReferenceId,
+          [referenceId]: result.data,
+        },
+        loadingDoc: false,
+      }));
     } catch (err) {
       toast.error("Failed to fetch documents");
       set({ loadingDoc: false, error: "Failed to fetch documents" });
