@@ -282,7 +282,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     <Field
                       type="number"
                       name="TotalWeight"
-                      min={0}
                       className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                     />
                     <ErrorMessage
@@ -296,7 +295,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     <Field
                       type="number"
                       name="NumberOfBoxes"
-                      min={0}
                       className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                     />
                     <ErrorMessage
@@ -310,7 +308,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     <Field
                       type="number"
                       name="ShipmentCost"
-                      min={0}
                       className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                     />
                     <ErrorMessage
@@ -356,7 +353,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                               type="number"
                               name={`boxes[${index}].BoxNumber`}
                               required
-                              min={0}
                               className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                             />
                             <ErrorMessage
@@ -370,7 +366,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                             <Field
                               type="number"
                               required
-                              min={0}
                               name={`boxes[${index}].Quantity`}
                               className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                             />
@@ -385,7 +380,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                             <Field
                               type="number"
                               required
-                              min={0}
                               name={`boxes[${index}].Weight`}
                               className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                             />
