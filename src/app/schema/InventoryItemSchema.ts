@@ -15,7 +15,7 @@ export const InventoryTransactionSchema = Yup.object().shape({
 })
 
 export const ShipmentSchema = Yup.object().shape({
-    ReceivedTime: Yup.string().required('Received Time is required'),
+   // ReceivedTime: Yup.string().required('Received Time is required'),
     ShipmentCode: Yup.string().required('Shipment Code is required'),
     ShipmentCarrierId: Yup.string().required('Shipment Carrier is required'),
     ShipmentDate: Yup.string().required('Shipment Date is required'),

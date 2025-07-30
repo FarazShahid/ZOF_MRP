@@ -96,39 +96,41 @@ const ViewShipmentDetails: React.FC<DeleteModalProps> = ({
                     <h6 className="flex items-center gap-3 text-gray-700">
                       <FaBoxOpen size={25} /> Shippment Items Details
                     </h6>
-                    {ShipmentById?.Boxes.map((box, index) => {
-                      return (
-                        <div
-                          className="grid grid-cols-4 gap-3 mt-5"
-                          key={index}
-                        >
-                          <div className="flex flex-col ">
-                            <span className="text-xs text-gray-700">
-                              Box No.
-                            </span>
-                            <span>{box.BoxNumber}</span>
+                    <div className="overflow-auto h-[calc(100vh - 500px)]">
+                      {ShipmentById?.Boxes.map((box, index) => {
+                        return (
+                          <div
+                            className="grid grid-cols-4 gap-3 mt-5"
+                            key={index}
+                          >
+                            <div className="flex flex-col ">
+                              <span className="text-xs text-gray-700">
+                                Box No.
+                              </span>
+                              <span>{box.BoxNumber}</span>
+                            </div>
+                            <div className="flex flex-col ">
+                              <span className="text-xs text-gray-700">
+                                Weight
+                              </span>
+                              <span>{box.Weight}</span>
+                            </div>
+                            <div className="flex flex-col ">
+                              <span className="text-xs text-gray-700">
+                                Order Item
+                              </span>
+                              <span>{box.OrderItem}</span>
+                            </div>
+                            <div className="flex flex-col ">
+                              <span className="text-xs text-gray-700">
+                                Quantity
+                              </span>
+                              <span>{box.Quantity}</span>
+                            </div>
                           </div>
-                          <div className="flex flex-col ">
-                            <span className="text-xs text-gray-700">
-                              Weight
-                            </span>
-                            <span>{box.Weight}</span>
-                          </div>
-                          <div className="flex flex-col ">
-                            <span className="text-xs text-gray-700">
-                              Order Item
-                            </span>
-                            <span>{box.OrderItem}</span>
-                          </div>
-                          <div className="flex flex-col ">
-                            <span className="text-xs text-gray-700">
-                              Quantity
-                            </span>
-                            <span>{box.Quantity}</span>
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 

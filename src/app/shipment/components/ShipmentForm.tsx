@@ -44,7 +44,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
           ? ShipmentById.ShipmentDate.substring(0, 10)
           : "",
         ReceivedTime: ShipmentById.ReceivedTime
-          ? ShipmentById.ReceivedTime.substring(0, 16)
+          ? ShipmentById?.ReceivedTime.substring(0, 16)
           : "",
         WeightUnit: ShipmentById.WeightUnit || "",
         TotalWeight: ShipmentById.TotalWeight || 0,
@@ -84,7 +84,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
       Status: "",
       boxes: [
         {
-          BoxNumber: 0,
+          BoxNumber: "",
           Weight: 0,
         },
       ],
@@ -163,7 +163,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
           </span>
         </div>
       </div>
-
       <div className="m-10 p-5 bg-white dark:bg-slate-900 rounded">
         <Formik
           validationSchema={ShipmentSchema}
@@ -248,16 +247,11 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <Label isRequired={true} label="Received Time" />
+                    <Label isRequired={false} label="Received Time" />
                     <Field
                       type="datetime-local"
                       name="ReceivedTime"
                       className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
-                    />
-                    <ErrorMessage
-                      name="ReceivedTime"
-                      component="div"
-                      className="text-red-500 text-sm"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
@@ -350,7 +344,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                           <div className="flex flex-col gap-1">
                             <Label isRequired={true} label="Box Number" />
                             <Field
-                              type="number"
+                              type="string"
                               name={`boxes[${index}].BoxNumber`}
                               required
                               className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
