@@ -25,6 +25,7 @@ import DeleteModal from "../../components/DeleteModal";
 import PriorityChip from "./PriorityChip";
 import { useRouter } from "next/navigation";
 import ReorderConfirmation from "./ReorderConfirmation";
+import { GoPencil } from "react-icons/go";
 
 const OrderTable = () => {
   const [clientId, setClientId] = useState<number>(0);
@@ -67,6 +68,10 @@ const OrderTable = () => {
 
   const OpenViewModal = (orderId: number) => {
     router.push(`/orders/vieworder/${orderId}`);
+  };
+
+  const editOrder = (orderId: number) => {
+    router.push(`/orders/editorder/${orderId}`);
   };
 
   const refreshData = () => {
@@ -189,18 +194,28 @@ const OrderTable = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
+                          id="Reorder"
                           onClick={() => handleOpenReorderModal(item?.Id)}
                         >
                           <TbReorder color="green" size={20} />
                         </button>
                         <button
                           type="button"
+                          id="View"
                           onClick={() => OpenViewModal(item?.Id)}
                         >
                           <FaRegEye color="blue" />
                         </button>
                         <button
                           type="button"
+                          id="edit"
+                          onClick={() => editOrder(item?.Id)}
+                        >
+                          <GoPencil color="green" />
+                        </button>
+                        <button
+                          type="button"
+                          id="delete"
                           onClick={() => openDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />

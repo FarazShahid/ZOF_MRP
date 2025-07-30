@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "@heroui/react";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/navigation";
@@ -13,39 +13,78 @@ import useOrderStore from "@/store/useOrderStore";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import { OrderValidationSchemas } from "../../schema";
-import { getFileTypeCode } from "@/interface/GetFileType";
-import useMediaHandlerStore from "@/store/useMediaHandlerStore";
 import OrderAttachments from "./OrderAttachments";
 import { useFileUploadStore } from "@/store/useFileUploadStore";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 
+interface FormValues {
+  ClientId: string;
+  OrderEventId?: string;
+  Description: string;
+  Deadline: string;
+  OrderPriority: string;
+  items: any[];
+}
 const steps = ["Order Details", "Order Items"];
 const formSteps = [
   { id: 1, name: "Order Details", icon: <FaRegFileLines size={20} /> },
   { id: 2, name: "Order Items", icon: <FaRuler size={20} /> },
   { id: 3, name: "Order Attachments", icon: <IoDocumentAttach size={20} /> },
 ];
+const defaultValues: FormValues = {
+  ClientId: "",
+  OrderEventId: "",
+  Description: "",
+  Deadline: "",
+  OrderPriority: "",
+  items: [],
+};
 
-const OrderForm = () => {
+const OrderForm = ({ orderId }: { orderId?: string }) => {
+  
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
-
   const [currentStep, setCurrentStep] = useState(1);
-  const { addOrder } = useOrderStore();
+  const [initialValues, setInitialValues] = useState<FormValues>(defaultValues);
+
+  const { addOrder, getOrderById, updateOrder, OrderById } = useOrderStore();
   const { uploadDocument, loadingDoc } = useDocumentCenterStore();
   const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
 
   const router = useRouter();
 
-  const initialValues = {
-    ClientId: "",
-    OrderEventId: "",
-    Description: "",
-    Deadline: "",
-    OrderPriority: "",
+   // Fetch existing order when editing
+  useEffect(() => {
+    if (orderId) {
+      getOrderById(Number(orderId));
+    }
+  }, [orderId]);
 
-    items: [],
-  };
+
+  // When OrderById updates, map to formik initialValues
+  useEffect(() => {
+    if (orderId && OrderById) {
+      const mapped: FormValues = {
+        ClientId: String(OrderById.ClientId),
+        OrderEventId: OrderById.OrderEventId ? String(OrderById.OrderEventId) : undefined,
+        Description: OrderById.Description,
+        Deadline: OrderById.Deadline.split("T")[0], // YYYY-MM-DD
+        OrderPriority: String(OrderById.OrderPriority),
+        items: OrderById.items.map(item => ({
+          ...item,
+          printingOptions: item.printingOptions.map(po => ({ PrintingOptionId: po.PrintingOptionId })),
+          orderItemDetails: item.orderItemDetails.map(detail => ({
+            ColorOptionId: detail.ColorOptionId,
+            SizeOption: detail.SizeOptionId,
+            MeasurementId: detail.MeasurementId,
+            Quantity: detail.Quantity,
+            Priority: detail.Priority,
+          })),
+        })),
+      };
+      setInitialValues(mapped);
+    }
+  }, [OrderById, orderId]);
 
   const renderStep = (formikProps: any) => {
     switch (currentStep) {
@@ -107,13 +146,16 @@ const OrderForm = () => {
   };
   const handleSubmit = async (values: any) => {
     values.Description = values.ClientId + "order description";
-    if (!values.OrderEventId) {
-      delete values.OrderEventId;
-    }
-    const files = uploadedFilesByIndex[1] || [];
+    if (!values.OrderEventId) delete values.OrderEventId;
+    
     const finalPayload = { ...values };
+    // const result = await addOrder(finalPayload);
+    const result = orderId
+      ? await updateOrder(Number(orderId), finalPayload)
+      : await addOrder(finalPayload);
 
-    const result = await addOrder(finalPayload);
+    // handle attachments
+    const files = uploadedFilesByIndex[1] || [];
     if (result && files.length > 0) {
       const refernceId = Number(result.data.Id);
 

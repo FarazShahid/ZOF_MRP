@@ -37,7 +37,7 @@ export default function Home() {
             <div className="max-w-md w-full space-y-8">
               <div className="text-center">
                 <h2 className="mt-6 text-3xl font-bold text-blue-300">
-                  Welcom Back!
+                  Welcome Back!
                 </h2>
                 <p className="mt-2 text-sm text-gray-500">
                   Please sign in to your account

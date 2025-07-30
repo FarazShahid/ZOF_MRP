@@ -87,6 +87,31 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
     setFieldValue("items", [...values.items, newItem]);
   };
 
+  useEffect(() => {
+    values.items.forEach((item: any, idx: number) => {
+      const pid = item.ProductId;
+      if (pid && !productDataMap[pid]) {
+        Promise.all([
+          fetchProductAvailablePrinting(pid),
+          fetchAvailableSizes(pid),
+        ]).then(([printingOpts, sizeOpts]) => {
+          setProductDataMap((prev) => ({
+            ...prev,
+            [pid]: {
+              printingOptions: printingOpts || [],
+              sizeOptions: sizeOpts || [],
+            },
+          }));
+        });
+      }
+    });
+  }, [
+    values.items,
+    fetchAvailableSizes,
+    fetchProductAvailablePrinting,
+    productDataMap,
+  ]);
+
   return (
     <div className="space-y-6 w-[700px]">
       <div className="mb-3 flex items-center justify-center">
