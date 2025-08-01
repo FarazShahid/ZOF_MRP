@@ -5,6 +5,7 @@ import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 import { GetOrderByIdType } from "../../interfaces/OrderStoreInterface";
 import PrintAbleSizeMeasurementView from "./PrintAbleSizeMeasurementView";
+import PriorityChip from "./PriorityChip";
 
 interface PrintableOrderSheetProps {
   order: GetOrderByIdType;
@@ -34,18 +35,19 @@ const PrintableOrderSheet: React.FC<PrintableOrderSheetProps> = ({ order }) => {
       <hr className="my-4" />
       {order.items?.map((item, index) => (
         <div key={index} className="mb-4">
-          <h2 className="font-semibold text-lg mb-1">
+          <h2 className="font-semibold text-lg mb-1">{item.ProductName}</h2>
+          <h2 className="text-xs mb-1">
             {item.ProductCategoryName} - {item.ProductFabricName} (
             {item.ProductFabricGSM} GSM)
           </h2>
           {item.orderItemDetails?.map((detail, j: number) => (
             <div key={j} className="text-sm pl-4 mb-1">
-              <p>
-                • Color: {detail.ColorOptionName} ({detail.HexCode})
-              </p>
               <p>• Quantity: {detail.Quantity}</p>
               <p>• Size: {detail.SizeOptionName}</p>
-              <p>• Priority: {detail.Priority}</p>
+              <p className="flex items-center gap-3">
+                • Priority:{" "}
+                <PriorityChip priority={detail.Priority} showLabel={false} />
+              </p>
               <p>• Size Chart:</p>
               <PrintAbleSizeMeasurementView
                 MeasurementId={detail.MeasurementId}
@@ -60,7 +62,7 @@ const PrintableOrderSheet: React.FC<PrintableOrderSheetProps> = ({ order }) => {
               .join(", ")}
           </p>
           <RecentAttachmentsView
-          isPrintable={true}
+            isPrintable={true}
             referenceId={item.ProductId}
             referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
           />

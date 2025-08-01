@@ -43,6 +43,10 @@ const PrintAbleSizeMeasurementView = ({
               label="Shoulder Slope"
               sizeValue={sizeMeasurementById?.ShoulderSlope}
             />
+             <PrintSizeValue
+              label="Across Shoulders"
+              sizeValue={sizeMeasurementById?.AcrossShoulders}
+            />
             <PrintSizeValue
               label="Upper Chest"
               sizeValue={sizeMeasurementById?.UpperChest}
@@ -72,6 +76,11 @@ const PrintAbleSizeMeasurementView = ({
               label="Neck Size"
               sizeValue={sizeMeasurementById?.NeckSize}
             />
+
+            {/* <PrintSizeValue
+              label="Neck width"
+              sizeValue={sizeMeasurementById?.Neck}
+            /> */}
             <PrintSizeValue
               label="Collar Height"
               sizeValue={sizeMeasurementById?.CollarHeight}

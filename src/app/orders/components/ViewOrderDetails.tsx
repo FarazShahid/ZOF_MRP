@@ -144,9 +144,14 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                 key={index}
               >
                 <p>
-                  {orderItem?.ProductCategoryName}_
-                  {orderItem?.ProductFabricName}_{orderItem?.ProductFabricGSM}
+                  {
+                    orderItem?.ProductName
+                  }
                 </p>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="font-semibold">Fabric:</span>
+                  <span className="">{orderItem?.ProductFabricName}_{orderItem?.ProductFabricGSM}</span>
+                </div>
 
                 {orderItem?.orderItemDetails?.map((detail, index) => {
                   return (
