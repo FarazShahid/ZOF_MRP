@@ -46,29 +46,29 @@ const OrderItemDetailsFieldArray = ({
   }, []);
 
  // 🔁 Fetch MeasurementId whenever SizeOption or ClientId changes
-  useEffect(() => {
-    const fetchMeasurements = async () => {
+  // useEffect(() => {
+  //   const fetchMeasurements = async () => {
       
-      const clientId = values.ClientId;
-      if (!clientId) return;
+  //     const clientId = values.ClientId;
+  //     if (!clientId) return;
 
-      const promises = item.orderItemDetails?.map(async (detail: any, detailIndex: number) => {
-        if (detail.SizeOption) {
-          const measurement = await fetchSizeMeasurementByClientAndSize(clientId, detail.SizeOption);
-          if (measurement?.Id) {
-            setFieldValue(
-              `items[${index}].orderItemDetails[${detailIndex}].MeasurementId`,
-              measurement.Id
-            );
-          }
-        }
-      });
+  //     const promises = item.orderItemDetails?.map(async (detail: any, detailIndex: number) => {
+  //       if (detail.SizeOption) {
+  //         const measurement = await fetchSizeMeasurementByClientAndSize(clientId, detail.SizeOption);
+  //         if (measurement?.Id) {
+  //           setFieldValue(
+  //             `items[${index}].orderItemDetails[${detailIndex}].MeasurementId`,
+  //             measurement.Id
+  //           );
+  //         }
+  //       }
+  //     });
 
-      await Promise.all(promises);
-    };
+  //     await Promise.all(promises);
+  //   };
 
-    fetchMeasurements();
-  }, [item.orderItemDetails, values.ClientId]);
+  //   fetchMeasurements();
+  // }, [item.orderItemDetails, values.ClientId]);
 
 
   return (
@@ -122,10 +122,10 @@ const OrderItemDetailsFieldArray = ({
                 <div className="flex items-center gap-5">
                  
                   {/* Hidden MeasurementId */}
-                <Field
+                {/* <Field
                   type="hidden"
                   name={`items[${index}].orderItemDetails[${detailIndex}].MeasurementId`}
-                />
+                /> */}
                 </div>
                 <div className="flex items-center justify-end w-full space-x-2">
                   {item.orderItemDetails.length > 1 && (

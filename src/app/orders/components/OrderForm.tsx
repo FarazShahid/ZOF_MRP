@@ -19,6 +19,8 @@ import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 
 interface FormValues {
+  OrderName: string;
+  OrderNumber: string;
   ClientId: string;
   OrderEventId?: string;
   Description: string;
@@ -33,6 +35,8 @@ const formSteps = [
   { id: 3, name: "Order Attachments", icon: <IoDocumentAttach size={20} /> },
 ];
 const defaultValues: FormValues = {
+  OrderName: "",
+  OrderNumber: "",
   ClientId: "",
   OrderEventId: "",
   Description: "",
@@ -65,6 +69,8 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   useEffect(() => {
     if (orderId && OrderById) {
       const mapped: FormValues = {
+        OrderName: OrderById.OrderName,
+        OrderNumber: OrderById.OrderNumber,
         ClientId: String(OrderById.ClientId),
         OrderEventId: OrderById.OrderEventId ? String(OrderById.OrderEventId) : undefined,
         Description: OrderById.Description,

@@ -26,6 +26,24 @@ const Step1 = ({ formik }: { formik: any }) => {
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
+        <Label isRequired={true} label="Order Name" />
+        <Field type="text" name="OrderName" className={fieldStyle} />
+        <ErrorMessage
+          name="OrderName"
+          component="div"
+          className="text-red-500 text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <Label isRequired={true} label="Order Number" />
+        <Field type="text" name="OrderNumber" className={fieldStyle} />
+        <ErrorMessage
+          name="OrderNumber"
+          component="div"
+          className="text-red-500 text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Client" />
         <Field as="select" name="ClientId" className={fieldStyle}>
           <option value={""}>Select a client</option>
