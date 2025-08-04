@@ -43,10 +43,41 @@ const PrintAbleSizeMeasurementView = ({
               label="Shoulder Slope"
               sizeValue={sizeMeasurementById?.ShoulderSlope}
             />
-             <PrintSizeValue
+            <PrintSizeValue
               label="Across Shoulders"
               sizeValue={sizeMeasurementById?.AcrossShoulders}
             />
+            <PrintSizeValue
+              label="Neck Size"
+              sizeValue={sizeMeasurementById?.NeckSize}
+            />
+            <PrintSizeValue
+              label="Neck width"
+              sizeValue={sizeMeasurementById?.Neckwidth}
+            />
+            <PrintSizeValue
+              label="Collar Height"
+              sizeValue={sizeMeasurementById?.CollarHeight}
+            />
+            <PrintSizeValue
+              label="Collar Point Height"
+              sizeValue={sizeMeasurementById?.CollarHeight}
+            />
+            <PrintSizeValue
+              label="Collar Stand Length"
+              sizeValue={sizeMeasurementById?.CollarStandLength}
+            />
+
+            <PrintSizeValue
+              label="Collar Height at Center Back"
+              sizeValue={sizeMeasurementById?.ColllarHeightCenterBack}
+            />
+
+            <PrintSizeValue
+              label="Collar Opening"
+              sizeValue={sizeMeasurementById?.CollarOpening}
+            />
+
             <PrintSizeValue
               label="Upper Chest"
               sizeValue={sizeMeasurementById?.UpperChest}
@@ -64,46 +95,38 @@ const PrintAbleSizeMeasurementView = ({
               sizeValue={sizeMeasurementById?.SleeveOpening}
             />
             <PrintSizeValue
+              label="Arm Hole"
+              sizeValue={sizeMeasurementById?.ArmHole}
+            />
+            <PrintSizeValue
+              label="Arm Hole Straight"
+              sizeValue={sizeMeasurementById?.ArmHoleStraight}
+            />
+            <PrintSizeValue
+              label="Cuff Height"
+              sizeValue={sizeMeasurementById?.CuffHeight}
+            />
+            <PrintSizeValue
               label="Front Length HPS"
               sizeValue={sizeMeasurementById?.FrontLengthHPS}
+            />
+             <PrintSizeValue
+              label="Back Length HPS"
+              sizeValue={sizeMeasurementById?.BackLengthHPS}
             />
             <PrintSizeValue
               label="Front Rise"
               sizeValue={sizeMeasurementById?.FrontRise}
             />
             <PrintSizeValue label="Hem" sizeValue={sizeMeasurementById?.Hem} />
-            <PrintSizeValue
-              label="Neck Size"
-              sizeValue={sizeMeasurementById?.NeckSize}
-            />
-
-            {/* <PrintSizeValue
-              label="Neck width"
-              sizeValue={sizeMeasurementById?.Neck}
-            /> */}
-            <PrintSizeValue
-              label="Collar Height"
-              sizeValue={sizeMeasurementById?.CollarHeight}
-            />
-            <PrintSizeValue
-              label="Collar Point Height"
-              sizeValue={sizeMeasurementById?.CollarHeight}
-            />
-            <PrintSizeValue
-              label="Collar Stand Length"
-              sizeValue={sizeMeasurementById?.CollarStandLength}
-            />
-            <PrintSizeValue
-              label="Across Shoulders"
-              sizeValue={sizeMeasurementById?.AcrossShoulders}
-            />
-            <PrintSizeValue
-              label="Back Length HPS"
-              sizeValue={sizeMeasurementById?.BackLengthHPS}
-            />
+            <PrintSizeValue label="Bottom Hem" sizeValue={sizeMeasurementById?.BottomHem} />    
             <PrintSizeValue
               label="Bottom Width"
               sizeValue={sizeMeasurementById?.BottomWidth}
+            />
+            <PrintSizeValue
+              label="Bottom Rib"
+              sizeValue={sizeMeasurementById?.BottomRib}
             />
             <PrintSizeValue
               label="Stand Height Back"
@@ -120,6 +143,10 @@ const PrintAbleSizeMeasurementView = ({
             <PrintSizeValue
               label="Placket Length"
               sizeValue={sizeMeasurementById?.PlacketLength}
+            />
+             <PrintSizeValue
+              label="Two Button Distance"
+              sizeValue={sizeMeasurementById?.TwoButtonDistance}
             />
             <PrintSizeValue
               label="Placket Width"
@@ -157,6 +184,14 @@ const PrintAbleSizeMeasurementView = ({
               label="Back"
               sizeValue={sizeMeasurementById?.t_Back}
             />
+             <PrintSizeValue
+              label="Left Sleeve"
+              sizeValue={sizeMeasurementById?.t_left_sleeve}
+            />
+            <PrintSizeValue
+              label="Right Sleeve"
+              sizeValue={sizeMeasurementById?.t_right_sleeve}
+            />
           </div>
         </div>
       ) : (
@@ -172,6 +207,54 @@ const PrintAbleSizeMeasurementView = ({
               sizeValue={sizeMeasurementById?.Waist}
             />
             <PrintSizeValue
+              label="Wasit Stretch"
+              sizeValue={sizeMeasurementById?.WasitStretch}
+            />
+            <PrintSizeValue
+              label="Wasit Relax"
+              sizeValue={sizeMeasurementById?.WasitRelax}
+            />
+            <PrintSizeValue
+              label="Thigh"
+              sizeValue={sizeMeasurementById?.Thigh}
+            />
+            <PrintSizeValue
+              label="Knee Width"
+              sizeValue={sizeMeasurementById?.KneeWidth}
+            />
+            <PrintSizeValue
+              label="Back Rise"
+              sizeValue={sizeMeasurementById?.BackRise}
+            />
+            <PrintSizeValue
+              label="Front Rise"
+              sizeValue={sizeMeasurementById?.bFrontRise}
+            />
+            <PrintSizeValue
+              label="Total Length"
+              sizeValue={sizeMeasurementById?.TotalLength}
+            />
+            <PrintSizeValue
+              label="WB-Height"
+              sizeValue={sizeMeasurementById?.WBHeight}
+            />
+            <PrintSizeValue
+              label="Bottom Width"
+              sizeValue={sizeMeasurementById?.bBottomWidth}
+            />
+            <PrintSizeValue
+              label="Hem Bottom"
+              sizeValue={sizeMeasurementById?.HemBottom}
+            />
+            <PrintSizeValue
+              label="Bottom Original"
+              sizeValue={sizeMeasurementById?.BottomOriginal}
+            />
+            <PrintSizeValue
+              label="Bottom Elastic"
+              sizeValue={sizeMeasurementById?.BottomElastic}
+            />
+            <PrintSizeValue
               label="Outseam"
               sizeValue={sizeMeasurementById?.Outseam}
             />
@@ -180,20 +263,16 @@ const PrintAbleSizeMeasurementView = ({
               sizeValue={sizeMeasurementById?.Inseam}
             />
             <PrintSizeValue
-              label="Hem Bottom"
-              sizeValue={sizeMeasurementById?.HemBottom}
-            />
-            <PrintSizeValue
-              label="Knee Width"
-              sizeValue={sizeMeasurementById?.KneeWidth}
-            />
-            <PrintSizeValue
-              label="Front Rise"
-              sizeValue={sizeMeasurementById?.bFrontRise}
-            />
-            <PrintSizeValue
               label="Leg Opening"
               sizeValue={sizeMeasurementById?.LegOpening}
+            />
+            <PrintSizeValue
+              label="Bottom Cuff Zipped"
+              sizeValue={sizeMeasurementById?.BottomCuffZipped}
+            />
+            <PrintSizeValue
+              label="Bottom Straight Zipped"
+              sizeValue={sizeMeasurementById?.BottomStraightZipped}
             />
           </div>
         </div>

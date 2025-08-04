@@ -56,6 +56,13 @@ export interface SizeMeasurements {
   FrontNeckDrop: string;
   ShoulderSeam: string;
   ShoulderSlope: string;
+  NeckSize: string;
+  Neckwidth: string;
+  ColllarHeightCenterBack: string;
+  CollarOpening: string;
+  ArmHoleStraight: string;
+  CuffHeight: string;
+  BottomRib: string;
   UpperChest: string;
   LowerChest: string;
   SleeveLength: string;
@@ -64,7 +71,7 @@ export interface SizeMeasurements {
   FrontRise: string;
   Hem: string;
   BottomHem: string;
-  NeckSize: string;
+ 
   CollarHeight: string;
   CollarPointHeight: string;
   StandHeightBack: string;
@@ -82,12 +89,23 @@ export interface SizeMeasurements {
   // Bottom Unit
   Hip: string;
   Waist: string;
+  WasitStretch: string;
+  WasitRelax: string;
+  Thigh: string;
+  KneeWidth: string;
+  BackRise: string;
+  bFrontRise: string;
+  WBHeight: string;
+  bBottomWidth: string;
+  HemBottom: string;
+  BottomElastic: string;
+  BottomOriginal: string;
+  TotalLength: string;
   Inseam: string;
   Outseam: string;
-  HemBottom: string;
-  KneeWidth: string;
+  BottomCuffZipped: string;
   LegOpening: string;
-  bFrontRise: string;
+  BottomStraightZipped: string;
 
   // Logo Placement for Top Uint
   t_TopRight: string;
@@ -96,6 +114,8 @@ export interface SizeMeasurements {
   t_BottomLeft: string;
   t_Back: string;
   t_Center: string;
+  t_left_sleeve: string;
+  t_right_sleeve: string;
 
   // Logo Placement for Bottom Unit
   b_TopRight: string;
