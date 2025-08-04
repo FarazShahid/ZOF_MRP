@@ -111,7 +111,7 @@ const ShipmentTable = () => {
               key="ShipmentCarrierName"
               className="text-medium font-bold"
             >
-              Curior Name
+              Carrier  Name
             </TableColumn>
             <TableColumn key="ShipmentDate" className="text-medium font-bold">
               Shipment Date
