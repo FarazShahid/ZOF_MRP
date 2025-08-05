@@ -9,29 +9,30 @@ interface ComponentProp {
   referenceType: string;
   referenceId: number;
   isPrintable?: boolean;
+  label?: string;
 }
 
 const RecentAttachmentsView: React.FC<ComponentProp> = ({
   referenceType,
   referenceId,
-  isPrintable
+  isPrintable,
+  label = "Attachments",
 }) => {
-  const { fetchDocuments, documentsByReferenceId  } = useDocumentCenterStore();
+  const { fetchDocuments, documentsByReferenceId } = useDocumentCenterStore();
 
   useEffect(() => {
     fetchDocuments(referenceType, referenceId);
   }, [referenceId, referenceType]);
 
-    const documents = documentsByReferenceId[referenceId] || [];
-
-    console.log("documents", documents);
+  const documents = documentsByReferenceId[referenceId] || [];
 
   return (
-    <div className="bg-gray-100 rounded-lg p-3" key={referenceId}>
-      <h6 className="flex items-center gap-3 text-gray-700">
-        <IoDocumentAttach size={25} /> Attachments
-      </h6>
-      {documents && (
+    documents &&
+    documents.length > 0 && (
+      <div className="bg-gray-100 rounded-lg p-3" key={referenceId}>
+        <h6 className="flex items-center gap-3 text-gray-700">
+          <IoDocumentAttach size={25} /> {label}
+        </h6>
         <div className="flex flex-wrap gap-2 mt-5">
           {documents?.map((doc, index) => {
             return (
@@ -45,8 +46,8 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
             );
           })}
         </div>
-      )}
-    </div>
+      </div>
+    )
   );
 };
 
