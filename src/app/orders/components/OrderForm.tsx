@@ -46,7 +46,6 @@ const defaultValues: FormValues = {
 };
 
 const OrderForm = ({ orderId }: { orderId?: string }) => {
-  
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
   const [currentStep, setCurrentStep] = useState(1);
   const [initialValues, setInitialValues] = useState<FormValues>(defaultValues);
@@ -57,13 +56,12 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
 
   const router = useRouter();
 
-   // Fetch existing order when editing
+  // Fetch existing order when editing
   useEffect(() => {
     if (orderId) {
       getOrderById(Number(orderId));
     }
   }, [orderId]);
-
 
   // When OrderById updates, map to formik initialValues
   useEffect(() => {
@@ -72,14 +70,18 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
         OrderName: OrderById.OrderName,
         OrderNumber: OrderById.OrderNumber,
         ClientId: String(OrderById.ClientId),
-        OrderEventId: OrderById.OrderEventId ? String(OrderById.OrderEventId) : undefined,
+        OrderEventId: OrderById.OrderEventId
+          ? String(OrderById.OrderEventId)
+          : undefined,
         Description: OrderById.Description,
         Deadline: OrderById.Deadline.split("T")[0], // YYYY-MM-DD
         OrderPriority: String(OrderById.OrderPriority),
-        items: OrderById.items.map(item => ({
+        items: OrderById.items.map((item) => ({
           ...item,
-          printingOptions: item.printingOptions.map(po => ({ PrintingOptionId: po.PrintingOptionId })),
-          orderItemDetails: item.orderItemDetails.map(detail => ({
+          printingOptions: item.printingOptions.map((po) => ({
+            PrintingOptionId: po.PrintingOptionId,
+          })),
+          orderItemDetails: item.orderItemDetails.map((detail) => ({
             ColorOptionId: detail.ColorOptionId,
             SizeOption: detail.SizeOptionId,
             MeasurementId: detail.MeasurementId,
@@ -105,7 +107,12 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
           />
         );
       case 3:
-        return <OrderAttachments onFileSelect={handleFileSelect} />;
+        return (
+          <OrderAttachments
+            orderId={orderId || null}
+            onFileSelect={handleFileSelect}
+          />
+        );
       default:
         return null;
     }
@@ -153,7 +160,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   const handleSubmit = async (values: any) => {
     values.Description = values.ClientId + "order description";
     if (!values.OrderEventId) delete values.OrderEventId;
-    
+
     const finalPayload = { ...values };
     // const result = await addOrder(finalPayload);
     const result = orderId

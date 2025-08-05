@@ -32,6 +32,13 @@ const PrintableOrderSheet: React.FC<PrintableOrderSheetProps> = ({ order }) => {
       <p>
         <strong>Deadline:</strong> {formatDate(order.Deadline)}
       </p>
+
+      <RecentAttachmentsView
+        isPrintable={true}
+        referenceId={order.Id}
+        referenceType={DOCUMENT_REFERENCE_TYPE.ORDER}
+        label="Order Attachments"
+      />
       <hr className="my-4" />
       {order.items?.map((item, index) => (
         <div key={index} className="mb-4">

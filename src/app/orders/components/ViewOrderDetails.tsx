@@ -137,20 +137,25 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
               </div>
             </div>
           </div>
+          <div className="dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 flex flex-col gap-3 shadow-lg dark:text-gray-400 text-gray-800">
+            <RecentAttachmentsView
+              label={"Order Attachments"}
+              referenceId={OrderById.Id}
+              referenceType={DOCUMENT_REFERENCE_TYPE.ORDER}
+            />
+          </div>
           {OrderById?.items.map((orderItem, index) => {
             return (
               <div
                 className="dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 flex flex-col gap-3 shadow-lg dark:text-gray-400 text-gray-800"
                 key={index}
               >
-                <p>
-                  {
-                    orderItem?.ProductName
-                  }
-                </p>
+                <p>{orderItem?.ProductName}</p>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="font-semibold">Fabric:</span>
-                  <span className="">{orderItem?.ProductFabricName}_{orderItem?.ProductFabricGSM}</span>
+                  <span className="">
+                    {orderItem?.ProductFabricName}_{orderItem?.ProductFabricGSM}
+                  </span>
                 </div>
 
                 {orderItem?.orderItemDetails?.map((detail, index) => {
@@ -211,10 +216,6 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
               </div>
             );
           })}
-          {/* <RecentAttachmentsView
-            referenceId={OrderById.Id}
-            referenceType={DOCUMENT_REFERENCE_TYPE.ORDER}
-          /> */}
         </div>
         <div className="w-[25%] flex flex-col gap-2">
           <div className="p-3 dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 shadow-lg flex flex-col gap-5 dark:text-gray-400 text-gray-800">
