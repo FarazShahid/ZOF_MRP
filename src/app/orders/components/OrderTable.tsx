@@ -192,34 +192,48 @@ const OrderTable = () => {
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
-                        <button
-                          type="button"
-                          id="Reorder"
-                          onClick={() => handleOpenReorderModal(item?.Id)}
-                        >
-                          <TbReorder color="green" size={20} />
-                        </button>
-                        <button
-                          type="button"
-                          id="View"
-                          onClick={() => OpenViewModal(item?.Id)}
-                        >
-                          <FaRegEye color="blue" />
-                        </button>
-                        <button
-                          type="button"
-                          id="edit"
-                          onClick={() => editOrder(item?.Id)}
-                        >
-                          <GoPencil color="green" />
-                        </button>
-                        <button
-                          type="button"
-                          id="delete"
-                          onClick={() => openDeleteModal(item?.Id)}
-                        >
-                          <RiDeleteBin6Line color="red" />
-                        </button>
+                        <Tooltip content="Re-Order">
+                          <button
+                            type="button"
+                            id="Reorder"
+                              className="dark:text-green-400 text-green-800"
+                            onClick={() => handleOpenReorderModal(item?.Id)}
+                          >
+                            <TbReorder size={20} />
+                          </button>
+                        </Tooltip>
+                        <Tooltip content="View Order">
+                          <button
+                            type="button"
+                            id="View"
+                            title="View Order"
+                            className="dark:text-blue-300 text-blue-500"
+                            onClick={() => OpenViewModal(item?.Id)}
+                          >
+                            <FaRegEye />
+                          </button>
+                        </Tooltip>
+                        <Tooltip content="Edit Order">
+                          <button
+                            type="button"
+                            id="edit"
+                            title="Edit Order"
+                            className="dark:text-green-300 text-green-500"
+                            onClick={() => editOrder(item?.Id)}
+                          >
+                            <GoPencil />
+                          </button>
+                        </Tooltip>
+                        <Tooltip content="Delete Order">
+                          <button
+                            type="button"
+                            id="delete"
+                            title="Delete Order"
+                            onClick={() => openDeleteModal(item?.Id)}
+                          >
+                            <RiDeleteBin6Line color="red" />
+                          </button>
+                        </Tooltip>
                       </div>
                     )}
                   </TableCell>

@@ -22,11 +22,11 @@ const OrderStatusTimeline = ({OrderStatusLogs}:{OrderStatusLogs:OrderStatusLogsT
                   clipRule="evenodd"
                 />
               </svg>
-              <div className="ml-6">
-                <h6 className="font-bold dark:text-gray-400 text-gray-600 text-sm">
+              <div className="ml-6 dark:text-foreground text-gray-700">
+                <h6 className="font-bold text-sm">
                   {log.StatusName}
                 </h6>
-                <span className="mt-1 block text-xs font-semibold text-gray-400">
+                <span className="mt-1 block text-xs font-semibold">
                   {formatDateToReadableDate(log.Timestamp)}
                 </span>
               </div>

@@ -36,14 +36,14 @@ const DocumentCard: React.FC<DocumentCardProp> = ({
           />
         )
       ) : (
-        <div className="w-full h-36 border rounded flex items-center justify-center text-sm text-gray-500">
+        <div className="w-full h-36 border rounded flex items-center justify-center text-sm dark:text-foreground text-gray-700">
           No Preview Available
         </div>
       )}
 
       <div className="mt-3 dark:border-gray-600 border-gray-200 border-t-2 flex justify-between items-center p-3">
         <div className="flex flex-col text-sm text-gray-400">
-          <p className="truncate overflow-hidden whitespace-nowrap max-w-[120px] dark:text-gray-200 text-gray-600">
+          <p className="truncate overflow-hidden whitespace-nowrap max-w-[120px] dark:text-foreground text-gray-700">
             {fileTitle}
           </p>
         </div>
