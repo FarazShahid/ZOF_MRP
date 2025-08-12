@@ -87,6 +87,7 @@ const AddUnitOfMeasure: React.FC<AddComponentProps> = ({
                             <Field
                               name="Name"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Name"
                               className="formInputdefault border-1"
                             />
@@ -103,6 +104,7 @@ const AddUnitOfMeasure: React.FC<AddComponentProps> = ({
                             <Field
                               name="ShortForm"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Short Form"
                               className="formInputdefault border-1"
                             />

@@ -88,6 +88,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                             <Field
                               name="Name"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Name"
                               className="formInputdefault border-1"
                             />
@@ -102,6 +103,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                             <Field
                               name="Phone"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Phone No."
                               className="formInputdefault border-1"
                             />
@@ -111,6 +113,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                             <Field
                               name="Email"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Email"
                               className="formInputdefault border-1"
                             />
@@ -125,6 +128,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                             <Field
                               name="Country"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Country"
                               className="formInputdefault border-1"
                             />
@@ -134,6 +138,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                             <Field
                               name="State"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter State"
                               className="formInputdefault border-1"
                             />
@@ -143,6 +148,7 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                             <Field
                               name="City"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter City"
                               className="formInputdefault border-1"
                             />

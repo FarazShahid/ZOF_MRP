@@ -21,7 +21,6 @@ import { IoEye } from "react-icons/io5";
 import AddButton from "../components/common/AddButton";
 import { formatDate } from "../interfaces";
 import ViewItem from "./ViewItem";
-import SearchBar from "../components/common/SearchBar";
 
 const InventoryItemsTable = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);

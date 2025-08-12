@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -8,12 +8,10 @@ import {
   ModalHeader,
   Spinner,
 } from "@heroui/react";
-import { Field, Formik, Form, ErrorMessage } from "formik";
-import { SupplierSchema, UserSchema } from "../schema/SupplierSchema";
-import useInventoryCategoryStore, {
-  AddInventoryCategoryOptions,
-} from "@/store/useInventoryCategoryStore";
+import { Field, Formik, Form, ErrorMessage, FieldProps } from "formik";
+import { UserSchema } from "../schema/SupplierSchema";
 import useUserStore, { AddUserType } from "@/store/useUserStore";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 interface AddComponentProps {
   isOpen: boolean;
@@ -28,6 +26,7 @@ const AddUser: React.FC<AddComponentProps> = ({
   isEdit,
   Id,
 }) => {
+  const [showPwd, setShowPwd] = useState(false);
   const { loading, getUserById, updateUser, addUser, userById } =
     useUserStore();
 
@@ -59,7 +58,7 @@ const AddUser: React.FC<AddComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {!isEdit ? <> Add Category</> : <> Edit Category</>}
+              {!isEdit ? <> Add</> : <> Edit</>} User
             </ModalHeader>
             <Formik
               validationSchema={UserSchema}
@@ -83,8 +82,8 @@ const AddUser: React.FC<AddComponentProps> = ({
                             <Field
                               name="Email"
                               type="text"
-                              placeholder="Enter Name"
-                              className="formInputdefault"
+                              placeholder="Enter Email"
+                              className="formInputdefault  border-1"
                             />
                             <ErrorMessage
                               name="Email"
@@ -96,12 +95,34 @@ const AddUser: React.FC<AddComponentProps> = ({
                             <label className="text-sm text-gray-600 font-sans">
                               Password
                             </label>
-                            <Field
-                              name="Password"
-                              type="text"
-                              placeholder="Enter Name"
-                              className="formInputdefault"
-                            />
+
+                            <div className="relative formInputdefault border-1">
+                              <Field name="Password">
+                                {({ field }: FieldProps) => (
+                                  <input
+                                    {...field}
+                                    type={showPwd ? "text" : "password"}
+                                    placeholder="Enter Password"
+                                    className="pr-8 w-full h-full outline-none"
+                                    autoComplete="new-password"
+                                  />
+                                )}
+                              </Field>
+
+                              <button
+                                type="button"
+                                onClick={() => setShowPwd((s) => !s)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                aria-label={
+                                  showPwd ? "Hide password" : "Show password"
+                                }
+                                title={
+                                  showPwd ? "Hide password" : "Show password"
+                                }
+                              >
+                                {showPwd ? <FaRegEyeSlash /> : <FaRegEye />}
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </>

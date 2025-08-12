@@ -64,7 +64,7 @@ const EventsForm: React.FC<AddClientComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {!isEdit ? <> Add Event</> : <> Edit Event</>}
+              {!isEdit ? <> Add</> : <> Edit</>} Eveent
             </ModalHeader>
             <Formik
               validationSchema={EventsSchema}
@@ -85,6 +85,7 @@ const EventsForm: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="EventName"
                               type="text"
+                              maxlength="180"
                               placeholder="Enter Type"
                               className="formInputdefault border-1"
                             />
@@ -103,15 +104,15 @@ const EventsForm: React.FC<AddClientComponentProps> = ({
                             >
                               <option value={""}>Select a client</option>
                               {
-                                clients.map((client, index)=>{
+                                clients?.map((client, index)=>{
                                   return(
-                                    <option value={client.Id} key={index}>{client.Name}</option>
+                                    <option value={client?.Id} key={index}>{client?.Name}</option>
                                   )
                                 })
                               }
                             </Field>
                             <ErrorMessage
-                              name="EventName"
+                              name="ClientId"
                               component="div"
                               className="text-red-400 text-sm"
                             />
