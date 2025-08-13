@@ -13,7 +13,6 @@ import {
   getKeyValue,
 } from "@heroui/react";
 import Link from "next/link";
-import { FaRegEye } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlus, FiSettings } from "react-icons/fi";
 import { TbReorder } from "react-icons/tb";
@@ -26,6 +25,8 @@ import PriorityChip from "./PriorityChip";
 import { useRouter } from "next/navigation";
 import ReorderConfirmation from "./ReorderConfirmation";
 import { GoPencil } from "react-icons/go";
+import ActionBtn from "../../components/ui/button/ActionBtn";
+import { FaRegEye } from "react-icons/fa";
 
 const OrderTable = () => {
   const [clientId, setClientId] = useState<number>(0);
@@ -192,48 +193,31 @@ const OrderTable = () => {
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
-                        <Tooltip content="Re-Order">
-                          <button
-                            type="button"
-                            id="Reorder"
-                              className="dark:text-green-400 text-green-800"
-                            onClick={() => handleOpenReorderModal(item?.Id)}
-                          >
-                            <TbReorder size={20} />
-                          </button>
-                        </Tooltip>
-                        <Tooltip content="View Order">
-                          <button
-                            type="button"
-                            id="View"
-                            title="View Order"
-                            className="dark:text-blue-300 text-blue-500"
-                            onClick={() => OpenViewModal(item?.Id)}
-                          >
-                            <FaRegEye />
-                          </button>
-                        </Tooltip>
-                        <Tooltip content="Edit Order">
-                          <button
-                            type="button"
-                            id="edit"
-                            title="Edit Order"
-                            className="dark:text-green-300 text-green-500"
-                            onClick={() => editOrder(item?.Id)}
-                          >
-                            <GoPencil />
-                          </button>
-                        </Tooltip>
-                        <Tooltip content="Delete Order">
-                          <button
-                            type="button"
-                            id="delete"
-                            title="Delete Order"
-                            onClick={() => openDeleteModal(item?.Id)}
-                          >
-                            <RiDeleteBin6Line color="red" />
-                          </button>
-                        </Tooltip>
+                        <ActionBtn
+                          icon={<TbReorder size={20} />}
+                          onClick={() => handleOpenReorderModal(item?.Id)}
+                          title="Reorder"
+                          className="dark:text-green-400 text-green-800"
+                        />
+                        <ActionBtn
+                          icon={<FaRegEye />}
+                          onClick={() => OpenViewModal(item?.Id)}
+                          title="View Order"
+                          className="dark:text-blue-300 text-blue-500"
+                        />
+
+                        <ActionBtn
+                          icon={<GoPencil />}
+                          className="dark:text-green-300 text-green-500"
+                          onClick={() => editOrder(item?.Id)}
+                          title="Edit Order"
+                        />
+                        <ActionBtn
+                          icon={<RiDeleteBin6Line />}
+                          className="dark:text-red-300 text-red-500"
+                          onClick={() => openDeleteModal(item?.Id)}
+                          title="Delete Order"
+                        />
                       </div>
                     )}
                   </TableCell>

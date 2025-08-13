@@ -21,6 +21,8 @@ import { IoEye } from "react-icons/io5";
 import AddButton from "../components/common/AddButton";
 import { formatDate } from "../interfaces";
 import ViewItem from "./ViewItem";
+import ActionBtn from "../components/ui/button/ActionBtn";
+import { FaRegEye } from "react-icons/fa";
 
 const InventoryItemsTable = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -76,7 +78,6 @@ const InventoryItemsTable = () => {
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">Inventory Items</h6>
           <div className="flex items-center gap-2">
-           
             <AddButton title="Add New" onClick={openAddModal} />
           </div>
         </div>
@@ -109,10 +110,7 @@ const InventoryItemsTable = () => {
             <TableColumn key="Name" className="text-medium font-bold">
               Name
             </TableColumn>
-            <TableColumn
-              key="CategoryName"
-              className="text-medium font-bold"
-            >
+            <TableColumn key="CategoryName" className="text-medium font-bold">
               Category
             </TableColumn>
             <TableColumn
@@ -168,7 +166,7 @@ const InventoryItemsTable = () => {
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
-                        <button
+                        {/* <button
                           type="button"
                           onClick={() => handleViewModal(item?.Id)}
                         >
@@ -186,7 +184,26 @@ const InventoryItemsTable = () => {
                           onClick={() => handleOpenDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
-                        </button>
+                        </button> */}
+                        <ActionBtn
+                          title="View"
+                          icon={<FaRegEye size={20} />}
+                          onClick={() => handleViewModal(item?.Id)}
+                          className="dark:text-blue-300 text-blue-500"
+                        />
+
+                        <ActionBtn
+                          title="Edit"
+                          icon={<GoPencil />}
+                          className="dark:text-green-300 text-green-500"
+                          onClick={() => handleOpenEditModal(item?.Id)}
+                        />
+                        <ActionBtn
+                          title="Delete"
+                          icon={<RiDeleteBin6Line />}
+                          className="dark:text-red-300 text-red-500"
+                          onClick={() => handleOpenDeleteModal(item?.Id)}
+                        />
                       </div>
                     )}
                   </TableCell>

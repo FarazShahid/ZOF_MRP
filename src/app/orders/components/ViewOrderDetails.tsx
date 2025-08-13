@@ -1,19 +1,24 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { pdf } from "@react-pdf/renderer";
 import { IoIosStats, IoIosPrint } from "react-icons/io";
 import { FaUserTie } from "react-icons/fa6";
 import { IoReturnDownBack } from "react-icons/io5";
 import { TbStatusChange } from "react-icons/tb";
 
 import useOrderStore from "@/store/useOrderStore";
+import useCategoryStore from "@/store/useCategoryStore";
+import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
+import { PdfVariant } from "@/src/types/OrderPDfType";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
+import MeasurementChartPng from "@/public/MeasurementChart.png";
 
 import OrderStatus from "./OrderStatus";
 import OrderDeadline from "./OrderDeadline";
 import ClientDetails from "./ClientDetails";
 import OrderStatusTimeline from "./OrderStatusTimeline";
-import PrintableOrderSheet from "./PrintableOrderSheet";
 import { ViewMeasurementChart } from "./ViewMeasurementChart";
+import OrderPDF from "../../components/pdf/OrderPDF";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
@@ -28,6 +33,8 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const [sizeOptionName, setSizeOptionName] = useState<string>("");
   const [localStatusName, setLocalStatusName] = useState<string>("");
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [pdfVariant, setPdfVariant] = useState<PdfVariant>("summary");
+  const [downloading, setDownloading] = useState<boolean>(false);
   const [openUpdateStatusModal, setOpenUpdateStatusModal] =
     useState<boolean>(false);
 
@@ -68,6 +75,77 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     }, 300);
   };
 
+  // Helper: fetch all measurement + category bundles needed for the order
+  const buildMeasurementBundles = async (ids: number[]) => {
+    const result: Record<number, { measurement: any; productCategory: any }> =
+      {};
+    const sizeStore = useSizeMeasurementsStore.getState();
+    const catStore = useCategoryStore.getState();
+
+    for (const id of ids) {
+      if (!id) continue;
+      // these actions should be async in your Zustand store
+      await sizeStore.getSizeMeasurementById(id);
+      const m = useSizeMeasurementsStore.getState().sizeMeasurementById;
+
+      console.log("measurement", m);
+
+      let c = undefined;
+      if (m?.ProductCategoryId) {
+        await catStore.getCategoryById(m.ProductCategoryId);
+        c = useCategoryStore.getState().productCategory;
+      }
+      result[id] = { measurement: m, productCategory: c };
+    }
+    return result;
+  };
+
+  const handleDownloadPdf = async (variant: PdfVariant) => {
+    if (!OrderById) return;
+    try {
+      setDownloading(true);
+
+      // Only prefetch measurements for the "spec" PDF
+      let measurementMap: Record<number, any> | undefined = undefined;
+      if (variant === "spec") {
+        const ids = Array.from(
+          new Set(
+            (OrderById.items ?? []).flatMap((it: any) =>
+              (it.orderItemDetails ?? [])
+                .map((d: any) => d?.MeasurementId)
+                .filter(Boolean)
+            )
+          )
+        ) as number[];
+        measurementMap = await buildMeasurementBundles(ids);
+      }
+
+      const instance = pdf(
+        <OrderPDF
+          order={OrderById}
+          variant={variant}
+          measurements={measurementMap}
+          chartSrc={MeasurementChartPng.src}
+        />
+      );
+
+      const blob = await instance.toBlob();
+      const fileName = `${
+        variant === "summary" ? "Order_Summary" : "Order_Specification"
+      }_${OrderById.OrderNumber ?? orderId}.pdf`;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error("PDF generation failed:", e);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   useEffect(() => {
     if (orderId) {
       getOrderById(orderId);
@@ -94,14 +172,27 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           </h2>
         </div>
         <div className="flex items-center gap-2">
+          <select
+            value={pdfVariant}
+            onChange={(e) => setPdfVariant(e.target.value as PdfVariant)}
+            disabled={!OrderById || downloading}
+            className="px-2 py-1 rounded-lg border dark:bg-[#161616] bg-white text-sm"
+            aria-label="PDF type"
+            title="Choose PDF type"
+          >
+            <option value="summary">Order Summary</option>
+            <option value="spec">Order Specification</option>
+          </select>
+
           <button
             type="button"
-            onClick={handlePrint}
-            disabled={!OrderById}
-            aria-disabled={!OrderById}
-            className="px-3 py-1 flex items-center gap-2 dark:bg-blue-600 bg-blue-800 rounded-lg text-sm text-white"
+            onClick={() => handleDownloadPdf(pdfVariant)}
+            disabled={!OrderById || downloading}
+            aria-disabled={!OrderById || downloading}
+            className="px-3 py-1 flex items-center gap-2 dark:bg-blue-600 bg-blue-800 rounded-lg text-sm text-white disabled:opacity-50"
           >
-            <IoIosPrint /> Order Print
+            <IoIosPrint />
+            {downloading ? "Preparing PDF…" : "Download PDF"}
           </button>
           <button
             type="button"
@@ -154,7 +245,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                   </div>
                 </div>
               </div>
-             
+
               {OrderById?.items.map((orderItem, index) => {
                 return (
                   <div
@@ -178,24 +269,26 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                         >
                           <div className="flex items-center gap-5 text-sm">
                             <span>Size: </span>
-                            <span>{detail?.SizeOptionName}</span>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleOpenViewModal(
-                                  detail?.MeasurementId,
-                                  detail?.SizeOptionName
-                                )
-                              }
-                              className=" py-1 px-2 bg-blue-600 rounded text-xs text-white"
-                            >
-                              Size Chart
-                            </button>
+                            <span className="max-w-32 w-full whitespace-nowrap overflow-hidden text-ellipsis">
+                              {detail?.SizeOptionName}
+                            </span>
                           </div>
                           <div className="flex items-center gap-5 text-sm">
                             <span>Quantity:</span>
                             <span>{detail?.Quantity}</span>
                           </div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleOpenViewModal(
+                                detail?.MeasurementId,
+                                detail?.SizeOptionName
+                              )
+                            }
+                            className=" py-1 px-2 bg-blue-600 rounded text-xs text-white w-fit"
+                          >
+                            Size Chart
+                          </button>
                         </div>
                       );
                     })}
@@ -280,7 +373,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
       )}
 
       {/* ----------- Hidden Print Area  ------------ */}
-      <PrintableOrderSheet order={OrderById} />
+      {/* <PrintableOrderSheet order={OrderById} /> */}
     </div>
   );
 };
