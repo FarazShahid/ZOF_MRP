@@ -3,16 +3,6 @@ import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
-// import {
-//   RiDashboard2Line,
-//   FaClipboardList,
-//   IoStorefrontOutline,
-//   FaRegCircleUser,
-//   AiOutlineProduct,
-//   GiCargoShip,
-//   IoCalendarNumber,
-//   FaUserTie,
-// } from "react-icons/all";
 import Logo from "../../../../public/logoDark.png";
 import LogoLight from "../../../../public/logo.png";
 import UserDropdown from "../header/UserDropdown";
