@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import ProductStatusChip from "./ProductStatusChip";
 import ChangeProductStatus from "./ChangeProductStatus";
 import { bool, boolean } from "yup";
+import ActionBtn from "../../components/ui/button/ActionBtn";
 
 const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
@@ -153,27 +154,26 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
                     getKeyValue(item, columnKey)
                   ) : (
                     <div className="flex gap-2">
-                      <button
-                        type="button"
+                      <ActionBtn
+                        icon={<TbStatusChange />}
+                        className="dark:text-green-400 text-green-800"
                         onClick={() =>
                           handleChangeStatus(item?.Id, item?.isArchived)
                         }
-                      >
-                        <TbStatusChange />
-                      </button>
-                      <button
-                        type="button"
+                        title="Change Status"
+                      />
+                      <ActionBtn
+                        icon={<GoPencil />}
+                        className="dark:text-green-300 text-green-500"
                         onClick={() => openEditModal(item?.Id)}
-                      >
-                        <GoPencil color="green" />
-                      </button>
-                      <button
-                        type="button"
-                        className="hover:text-red-500 cursor-pointer"
+                        title="Edit Order"
+                      />
+                      <ActionBtn
+                        icon={<RiDeleteBin6Line />}
+                        className="dark:text-red-300 text-red-500"
                         onClick={() => handleOpenDeleteModal(item?.Id)}
-                      >
-                        <RiDeleteBin6Line color="red" />
-                      </button>
+                        title="Delete Order"
+                      />
                     </div>
                   )}
                 </TableCell>

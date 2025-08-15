@@ -1,5 +1,4 @@
 // components/PrintableOrderSheet.tsx
-import React, { useEffect } from "react";
 import { formatDate } from "../../interfaces";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
@@ -33,13 +32,43 @@ const PrintableOrderSheet: React.FC<PrintableOrderSheetProps> = ({ order }) => {
         <strong>Deadline:</strong> {formatDate(order.Deadline)}
       </p>
 
+      {/* <hr className="my-4" /> */}
+
+      <div className="my-4 p-3">
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-semibold">Product:</span>
+          <span>Trible Chief Track Suit </span>
+        </div>
+        <table className="w-full mt-3">
+          <thead>
+            <tr>
+              <td className="bg-black pl-3 border-1 font-bold">Item</td>
+              <td className="bg-black pl-3 border-1 font-bold">Quantity</td>
+              <td className="bg-black pl-3 border-1 font-bold">Size</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="border-1 pl-3">Trible Chief Track Suit</td>
+              <td className="border-1 pl-3">100</td>
+              <td className="border-1 pl-3">XS-UK</td>
+            </tr>
+            <tr>
+              <td className="border-1 pl-3">Trible Chief Track Suit</td>
+              <td className="border-1 pl-3">100</td>
+              <td className="border-1 pl-3">XS-UK</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <RecentAttachmentsView
         isPrintable={true}
         referenceId={order.Id}
         referenceType={DOCUMENT_REFERENCE_TYPE.ORDER}
         label="Order Attachments"
       />
-      <hr className="my-4" />
+      {/* <hr className="my-4" /> */}
       {order.items?.map((item, index) => (
         <div key={index} className="mb-4">
           <h2 className="font-semibold text-lg mb-1">{item.ProductName}</h2>

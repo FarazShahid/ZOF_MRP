@@ -15,14 +15,14 @@ const ClientDetails: FC<ClientDetailsProp> = ({ clientId }) => {
     }
   }, [clientId]);
   return (
-    <div className="p-3  flex flex-col gap-5 dark:text-gray-400 text-gray-800 dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 shadow-lg">
+    <div className="p-3  flex flex-col gap-5 dark:text-foreground text-gray-700 dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 shadow-lg">
       <p className="text-sm">Client</p>
       {loading ? (
         <Spinner />
       ) : (
         <div className="flex gap-1 flex-col text-xs">
           <span>{clientById?.Name}</span>
-          <span className="text-blue-700">{clientById?.Email}</span>
+          <span className="dark:text-blue-300 text-blue-700">{clientById?.Email}</span>
           <span>{clientById?.Phone}</span>
         </div>
       )}

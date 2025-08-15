@@ -27,7 +27,7 @@ const Step1 = ({ formik }: { formik: any }) => {
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Order Name" />
-        <Field type="text" name="OrderName" className={fieldStyle} />
+        <Field type="text" maxlength="150" name="OrderName" className={fieldStyle} />
         <ErrorMessage
           name="OrderName"
           component="div"
@@ -36,7 +36,7 @@ const Step1 = ({ formik }: { formik: any }) => {
       </div>
       <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Order Number" />
-        <Field type="text" name="OrderNumber" className={fieldStyle} />
+        <Field type="text" name="OrderNumber" maxlength="150" className={fieldStyle} />
         <ErrorMessage
           name="OrderNumber"
           component="div"

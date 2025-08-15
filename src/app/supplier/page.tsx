@@ -13,12 +13,10 @@ import {
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { FiPlus } from "react-icons/fi";
 import useSupplierStore from "@/store/useSupplierStore";
 import { formatDate } from "../interfaces";
 import AddSupplier from "./components/AddSupplier";
 import DeleteSupplier from "./components/DeleteSupplier";
-import AdminLayout from "../adminDashboard/lauout";
 import AddButton from "../components/common/AddButton";
 
 const Supplier = () => {

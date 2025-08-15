@@ -19,7 +19,6 @@ import DeleteItem from "./DeleteItem";
 import AddInventoryTransaction from "./AddInventoryTransaction";
 import TransactionTypeChip from "./TransactionTypeChip";
 import AddButton from "../components/common/AddButton";
-import StockDataVisulizer from "../inventoryItems/StockDataVisulizer";
 
 const InventoryTransaction = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);

@@ -94,6 +94,7 @@ const AddSubCategory: React.FC<AddComponentProps> = ({
                             <Field
                               name="Name"
                               type="text"
+                              maxLength={100}
                               placeholder="Enter Name"
                                className="formInputdefault border-1"
                             />

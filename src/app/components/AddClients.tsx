@@ -95,6 +95,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 name="Name"
                                 type="text"
+                                maxlength="180"
                                 placeholder="Enter Business Name"
                                 className="formInputdefault border-1"
                               />
@@ -113,6 +114,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Email"
+                                maxlength="180"
                                 placeholder="Enter Business Email"
                                 className="formInputdefault border-1"
                               />
@@ -134,6 +136,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="POCName"
+                                maxlength="180"
                                 placeholder="Enter Name"
                                 className="formInputdefault border-1"
                               />
@@ -152,6 +155,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Phone"
+                                maxlength="180"
                                 placeholder="Enter Phone"
                                 className="formInputdefault border-1"
                               />
@@ -170,6 +174,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="POCEmail"
+                                maxlength="180"
                                 placeholder="Enter Email"
                                 className="formInputdefault border-1"
                               />
@@ -186,6 +191,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Website"
+                                maxlength="180"
                                 placeholder="Enter Website"
                                 className="formInputdefault border-1"
                               />
@@ -199,6 +205,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Linkedin"
+                                maxlength="180"
                                 placeholder="Enter Linkedin"
                                 className="formInputdefault border-1"
                               />
@@ -212,85 +219,13 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Instagram"
+                                maxlength="180"
                                 placeholder="Enter Instagram"
                                 className="formInputdefault border-1"
                               />
                             </div>
                           </div>
-                          {/* <div className="flex flex-col gap-1 w-full">
-                            <Label
-                              label="Country"
-                              labelForm="Country"
-                              isRequired={true}
-                            />
-                            <Field
-                              type="text"
-                              name="Country"
-                              placeholder="Enter Country"
-                              className="formInputdefault border-1"
-                            />
-                            <ErrorMessage
-                              name="Country"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 w-full">
-                            <Label
-                              label="State"
-                              labelForm="State"
-                              isRequired={true}
-                            />
-                            <Field
-                              type="text"
-                              name="State"
-                              placeholder="Enter State"
-                              className="formInputdefault border-1"
-                            />
-                            <ErrorMessage
-                              name="State"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 w-full">
-                            <Label
-                              label="City"
-                              labelForm="City"
-                              isRequired={true}
-                            />
-                            <Field
-                              type="text"
-                              name="City"
-                              placeholder="Enter City"
-                              className="formInputdefault border-1"
-                            />
-                            <ErrorMessage
-                              name="City"
-                              component="div"
-                              className="text-red-400 text-sm"
-                            />
-                          </div> */}
                         </div>
-                        {/* <div className="flex flex-col gap-1">
-                          <Label
-                            label="Address"
-                            labelForm="Address"
-                            isRequired={true}
-                          />
-                          <Field
-                            as="textarea"
-                            name="CompleteAddress"
-                            className="formInputdefault !h-auto border-1"
-                            rows={4}
-                            placeholder="Enter Adress"
-                          />
-                          <ErrorMessage
-                            name="CompleteAddress"
-                            component="div"
-                            className="text-red-400 text-sm"
-                          />
-                        </div> */}
                       </>
                     )}
                   </ModalBody>

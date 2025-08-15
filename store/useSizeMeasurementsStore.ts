@@ -71,7 +71,6 @@ export interface SizeMeasurements {
   FrontRise: string;
   Hem: string;
   BottomHem: string;
- 
   CollarHeight: string;
   CollarPointHeight: string;
   StandHeightBack: string;
