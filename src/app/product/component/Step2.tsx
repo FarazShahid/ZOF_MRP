@@ -84,7 +84,7 @@ export default function Step2({ formik }: any) {
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
-        <Label isRequired={true} label="Size Options" />
+        <Label isRequired={false} label="Size Options" />
         <Select
           className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
           classNames={{

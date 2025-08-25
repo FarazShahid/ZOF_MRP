@@ -11,7 +11,7 @@ const AddButton = ({ title, onClick }: AddButtonProps) => {
     <button
       type="button"
       onClick={onClick}
-      className="text-sm rounded-full dark:bg-blue-600 bg-blue-800 text-white font-semibold px-3 py-2 flex items-center gap-2"
+      className="text-sm rounded-full dark:bg-blue-600 bg-blue-800 text-white font-semibold px-3 py-2 flex items-center gap-2 whitespace-nowrap"
     >
       <FiPlus />
       {title}

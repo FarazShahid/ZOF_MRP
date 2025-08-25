@@ -18,7 +18,7 @@ type Props = {
   order: GetOrderByIdType;
   variant: Variant;
   measurements?: MeasurementMap; // { [MeasurementId]: { measurement, productCategory } }
-  chartSrc?: string;             // data URL or absolute URL (recommended)
+  chartSrc?: string; // data URL or absolute URL (recommended)
 };
 
 const COLORS = {
@@ -45,9 +45,19 @@ const styles = StyleSheet.create({
   },
 
   // Header
-  headerRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 14 },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 14,
+  },
   leftHeader: { flexDirection: "row", alignItems: "center" },
-  logoBox: { width: 16, height: 16, borderRadius: 3, backgroundColor: COLORS.brand, marginRight: 6 },
+  logoBox: {
+    width: 16,
+    height: 16,
+    borderRadius: 3,
+    backgroundColor: COLORS.brand,
+    marginRight: 6,
+  },
   companyName: { fontSize: 11, color: COLORS.headerDark, fontWeight: 700 },
   rightHeader: { alignItems: "flex-end" },
   docTitle: { fontSize: 18, color: COLORS.headerDark, fontWeight: 700 },
@@ -55,27 +65,74 @@ const styles = StyleSheet.create({
   pillRow: { marginTop: 6, flexDirection: "row" },
 
   // Info bar
-  infoBar: { marginTop: 8, backgroundColor: "#F3F4F6", borderRadius: 6, padding: 10 },
+  infoBar: {
+    marginTop: 8,
+    backgroundColor: "#F3F4F6",
+    borderRadius: 6,
+    padding: 10,
+  },
   infoGrid: { flexDirection: "row", flexWrap: "wrap" },
   infoCell: { width: "25%", paddingVertical: 6, paddingRight: 8 },
   infoLabel: { color: COLORS.subtext, marginBottom: 2, fontWeight: 700 },
   infoValue: { color: COLORS.text },
 
   // Tables
-  table: { marginTop: 10, borderWidth: 1, borderColor: COLORS.text, borderRadius: 4, overflow: "hidden" },
+  table: {
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: COLORS.text,
+    borderRadius: 4,
+    overflow: "hidden",
+  },
   tableHeaderRow: { flexDirection: "row", backgroundColor: COLORS.headerDark },
-  th: { flex: 1, color: "#fff", paddingVertical: 6, paddingHorizontal: 6, fontWeight: 700, borderRightWidth: 1, borderRightColor: "#fff" },
+  th: {
+    flex: 1,
+    color: "#fff",
+    paddingVertical: 6,
+    paddingHorizontal: 6,
+    fontWeight: 700,
+    borderRightWidth: 1,
+    borderRightColor: "#fff",
+  },
   tdRow: { flexDirection: "row" },
-  td: { flex: 1, paddingVertical: 6, paddingHorizontal: 6, borderRightWidth: 1, borderRightColor: COLORS.text, borderTopWidth: 1, borderTopColor: COLORS.text },
+  td: {
+    flex: 1,
+    paddingVertical: 6,
+    paddingHorizontal: 6,
+    borderRightWidth: 1,
+    borderRightColor: COLORS.text,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.text,
+  },
 
   // Sections
-  sectionTitle: { marginTop: 14, marginBottom: 6, fontSize: 12, fontWeight: 700, color: COLORS.headerDark },
-  productCard: { marginTop: 10, padding: 10, borderRadius: 6, borderWidth: 1, borderColor: COLORS.line },
+  sectionTitle: {
+    marginTop: 14,
+    marginBottom: 6,
+    fontSize: 12,
+    fontWeight: 700,
+    color: COLORS.headerDark,
+  },
+  productCard: {
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: COLORS.line,
+  },
   productName: { fontSize: 12, fontWeight: 700 },
   productMeta: { color: COLORS.subtext, marginTop: 2, marginBottom: 6 },
 
   // Size option header
-  sizeHeader: { marginTop: 8, paddingVertical: 6, paddingHorizontal: 8, backgroundColor: "#F9FAFB", borderRadius: 6, borderWidth: 1, borderColor: COLORS.line },
+  sizeHeader: {
+    marginTop: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    backgroundColor: "#F9FAFB",
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: COLORS.line,
+  },
   sizeHeaderRow: { flexDirection: "row" },
   sizeHeaderCell: { marginRight: 12 },
 
@@ -86,38 +143,98 @@ const styles = StyleSheet.create({
 
   // Measurement tables
   subSectionTitle: {
-    marginTop: 8, marginBottom: 4, fontSize: 11, fontWeight: 700,
-    color: COLORS.headerDark, borderBottomWidth: 1, borderBottomColor: COLORS.line, paddingBottom: 3,
+    marginTop: 8,
+    marginBottom: 4,
+    fontSize: 11,
+    fontWeight: 700,
+    color: COLORS.headerDark,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.line,
+    paddingBottom: 3,
   },
-  smallTable: { borderWidth: 1, borderColor: COLORS.text, borderRadius: 4, overflow: "hidden" },
+  smallTable: {
+    borderWidth: 1,
+    borderColor: COLORS.text,
+    borderRadius: 4,
+    overflow: "hidden",
+  },
   th2Row: { flexDirection: "row", backgroundColor: COLORS.headerDark },
-  th2: { flex: 2, color: "#fff", paddingVertical: 5, paddingHorizontal: 6, fontWeight: 700, borderRightWidth: 1, borderRightColor: "#fff" },
-  th2n: { flex: 1, color: "#fff", paddingVertical: 5, paddingHorizontal: 6, fontWeight: 700 },
+  th2: {
+    flex: 2,
+    color: "#fff",
+    paddingVertical: 5,
+    paddingHorizontal: 6,
+    fontWeight: 700,
+    borderRightWidth: 1,
+    borderRightColor: "#fff",
+  },
+  th2n: {
+    flex: 1,
+    color: "#fff",
+    paddingVertical: 5,
+    paddingHorizontal: 6,
+    fontWeight: 700,
+  },
   td2Row: { flexDirection: "row" },
-  td2: { flex: 2, paddingVertical: 5, paddingHorizontal: 6, borderRightWidth: 1, borderRightColor: COLORS.text, borderTopWidth: 1, borderTopColor: COLORS.text },
-  td2n: { flex: 1, paddingVertical: 5, paddingHorizontal: 6, borderTopWidth: 1, borderTopColor: COLORS.text },
+  td2: {
+    flex: 2,
+    paddingVertical: 5,
+    paddingHorizontal: 6,
+    borderRightWidth: 1,
+    borderRightColor: COLORS.text,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.text,
+  },
+  td2n: {
+    flex: 1,
+    paddingVertical: 5,
+    paddingHorizontal: 6,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.text,
+  },
 
   // Chip
-  chip: { paddingVertical: 3, paddingHorizontal: 8, borderRadius: 999, fontSize: 9, fontWeight: 700 },
+  chip: {
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 999,
+    fontSize: 9,
+    fontWeight: 700,
+  },
 });
 
 function StatusChip({ status }: { status?: string }) {
   const s = (status ?? "").toLowerCase();
-  let bg = COLORS.chipGreenBg, fg = COLORS.chipGreenText;
-  if (s.includes("risk") || s.includes("hold") || s.includes("pending")) { bg = COLORS.chipOrangeBg; fg = COLORS.chipOrangeText; }
-  if (s.includes("delay") || s.includes("late") || s.includes("blocked")) { bg = COLORS.chipRedBg; fg = COLORS.chipRedText; }
-  return <Text style={{ ...styles.chip, backgroundColor: bg, color: fg }}>{status || "—"}</Text>;
+  let bg = COLORS.chipGreenBg,
+    fg = COLORS.chipGreenText;
+  if (s.includes("risk") || s.includes("hold") || s.includes("pending")) {
+    bg = COLORS.chipOrangeBg;
+    fg = COLORS.chipOrangeText;
+  }
+  if (s.includes("delay") || s.includes("late") || s.includes("blocked")) {
+    bg = COLORS.chipRedBg;
+    fg = COLORS.chipRedText;
+  }
+  return (
+    <Text style={{ ...styles.chip, backgroundColor: bg, color: fg }}>
+      {status || "—"}
+    </Text>
+  );
 }
 
 // === Overview (summary) table
-const ItemsOverviewTable: React.FC<{ order: GetOrderByIdType }> = ({ order }) => {
+const ItemsOverviewTable: React.FC<{ order: GetOrderByIdType }> = ({
+  order,
+}) => {
   const rows =
     order?.items?.flatMap((item) =>
       (item?.orderItemDetails ?? []).map((d) => ({
         name: item?.ProductName ?? "-",
         qty: d?.Quantity ?? "-",
         size: d?.SizeOptionName ?? "-",
-        fabric: `${item?.ProductFabricName ?? "-"}, ${item?.ProductFabricGSM ?? "-"} GSM`,
+        fabric: `${item?.ProductFabricName ?? "-"}, ${
+          item?.ProductFabricGSM ?? "-"
+        } GSM`,
       }))
     ) ?? [];
 
@@ -159,54 +276,99 @@ const pickRows = (obj: any, entries: Array<[string, string]>) => {
 };
 
 const TOP_UNIT_FIELDS: Array<[string, string]> = [
-  ["FrontLengthHPS", "Front Length (HPS)"], ["BackLengthHPS", "Back Length (HPS)"], ["AcrossShoulders", "Across Shoulders"],
-  ["ArmHole", "Arm Hole"], ["UpperChest", "Upper Chest"], ["LowerChest", "Lower Chest"], ["Waist", "Waist"],
-  ["BottomWidth", "Bottom Width"], ["SleeveLength", "Sleeve Length"], ["SleeveOpening", "Sleeve Opening"],
-  ["NeckSize", "Neck Size"], ["CollarHeight", "Collar Height"], ["CollarPointHeight", "Collar Point Height"],
-  ["StandHeightBack", "Stand Height Back"], ["CollarStandLength", "Collar Stand Length"],
-  ["SideVentFront", "Side Vent (Front)"], ["SideVentBack", "Side Vent (Back)"],
-  ["PlacketLength", "Placket Length"], ["TwoButtonDistance", "Two Button Distance"], ["PlacketWidth", "Placket Width"],
+  ["FrontLengthHPS", "Front Length (HPS)"],
+  ["BackLengthHPS", "Back Length (HPS)"],
+  ["AcrossShoulders", "Across Shoulders"],
+  ["ArmHole", "Arm Hole"],
+  ["UpperChest", "Upper Chest"],
+  ["LowerChest", "Lower Chest"],
+  ["Waist", "Waist"],
+  ["BottomWidth", "Bottom Width"],
+  ["SleeveLength", "Sleeve Length"],
+  ["SleeveOpening", "Sleeve Opening"],
+  ["NeckSize", "Neck Size"],
+  ["CollarHeight", "Collar Height"],
+  ["CollarPointHeight", "Collar Point Height"],
+  ["StandHeightBack", "Stand Height Back"],
+  ["CollarStandLength", "Collar Stand Length"],
+  ["SideVentFront", "Side Vent (Front)"],
+  ["SideVentBack", "Side Vent (Back)"],
+  ["PlacketLength", "Placket Length"],
+  ["TwoButtonDistance", "Two Button Distance"],
+  ["PlacketWidth", "Placket Width"],
   ["BottomHem", "Bottom Hem"],
 ];
 
 const BOTTOM_UNIT_FIELDS: Array<[string, string]> = [
-  ["Hip", "Hip"], ["WasitRelax", "Waist Relax"], ["WasitStretch", "Waist Stretch"], ["Thigh", "Thigh"], ["KneeWidth", "Knee Width"],
-  ["FrontRise", "Front Rise"], ["bFrontRise", "Front Rise (Btm)"], ["BackRise", "Back Rise"], ["WBHeight", "WB Height"],
-  ["bBottomWidth", "Bottom Width (Btm)"], ["HemBottom", "Hem Bottom"], ["BottomElastic", "Bottom Elastic"], ["BottomOriginal", "Bottom Original"],
-  ["TotalLength", "Total Length"], ["Inseam", "Inseam"], ["Outseam", "Outseam"], ["LegOpening", "Leg Opening"],
-  ["BottomCuffZipped", "Bottom Cuff (Zipped)"], ["BottomStraightZipped", "Bottom Straight (Zipped)"],
+  ["Hip", "Hip"],
+  ["WasitRelax", "Waist Relax"],
+  ["WasitStretch", "Waist Stretch"],
+  ["Thigh", "Thigh"],
+  ["KneeWidth", "Knee Width"],
+  ["FrontRise", "Front Rise"],
+  ["bFrontRise", "Front Rise (Btm)"],
+  ["BackRise", "Back Rise"],
+  ["WBHeight", "WB Height"],
+  ["bBottomWidth", "Bottom Width (Btm)"],
+  ["HemBottom", "Hem Bottom"],
+  ["BottomElastic", "Bottom Elastic"],
+  ["BottomOriginal", "Bottom Original"],
+  ["TotalLength", "Total Length"],
+  ["Inseam", "Inseam"],
+  ["Outseam", "Outseam"],
+  ["LegOpening", "Leg Opening"],
+  ["BottomCuffZipped", "Bottom Cuff (Zipped)"],
+  ["BottomStraightZipped", "Bottom Straight (Zipped)"],
 ];
 
 const LOGO_TOP_FIELDS: Array<[string, string]> = [
-  ["t_TopRight", "Logo Top Right"], ["t_TopLeft", "Logo Top Left"], ["t_BottomRight", "Logo Bottom Right"],
-  ["t_BottomLeft", "Logo Bottom Left"], ["t_Back", "Logo Back"], ["t_Center", "Logo Center"],
-  ["t_left_sleeve", "Logo Left Sleeve"], ["t_right_sleeve", "Logo Right Sleeve"],
+  ["t_TopRight", "Logo Top Right"],
+  ["t_TopLeft", "Logo Top Left"],
+  ["t_BottomRight", "Logo Bottom Right"],
+  ["t_BottomLeft", "Logo Bottom Left"],
+  ["t_Back", "Logo Back"],
+  ["t_Center", "Logo Center"],
+  ["t_left_sleeve", "Logo Left Sleeve"],
+  ["t_right_sleeve", "Logo Right Sleeve"],
 ];
 
 const LOGO_BOTTOM_FIELDS: Array<[string, string]> = [
-  ["b_TopRight", "Logo Top Right"], ["b_TopLeft", "Logo Top Left"],
-  ["b_BottomRight", "Logo Bottom Right"], ["b_BottomLeft", "Logo Bottom Left"],
+  ["b_TopRight", "Logo Top Right"],
+  ["b_TopLeft", "Logo Top Left"],
+  ["b_BottomRight", "Logo Bottom Right"],
+  ["b_BottomLeft", "Logo Bottom Left"],
 ];
 
-const MeasurementTable = ({ rows }: { rows: Array<{ label: string; value: string; unit: string }> }) => (
+const MeasurementTable = ({
+  rows,
+}: {
+  rows: Array<{ label: string; value: string; unit: string }>;
+}) => (
   <View style={styles.smallTable}>
     <View style={styles.th2Row}>
       <Text style={styles.th2}>Point</Text>
       <Text style={styles.th2n}>Value</Text>
       <Text style={styles.th2n}>Unit</Text>
     </View>
-    {(rows.length ? rows : [{ label: "—", value: "—", unit: "" }]).map((r, i) => (
-      <View key={i} style={styles.td2Row}>
-        <Text style={styles.td2}>{r.label}</Text>
-        <Text style={styles.td2n}>{r.value}</Text>
-        <Text style={styles.td2n}>{r.unit}</Text>
-      </View>
-    ))}
+    {(rows.length ? rows : [{ label: "—", value: "—", unit: "" }]).map(
+      (r, i) => (
+        <View key={i} style={styles.td2Row}>
+          <Text style={styles.td2}>{r.label}</Text>
+          <Text style={styles.td2n}>{r.value}</Text>
+          <Text style={styles.td2n}>{r.unit}</Text>
+        </View>
+      )
+    )}
   </View>
 );
 
 // === Main
-const OrderPDF: React.FC<Props> = ({ order, variant, measurements, chartSrc }) => {
+const OrderPDF: React.FC<Props> = ({
+  order,
+  variant,
+  measurements,
+  chartSrc,
+}) => {
   const createdAt = new Date();
 
   return (
@@ -220,21 +382,43 @@ const OrderPDF: React.FC<Props> = ({ order, variant, measurements, chartSrc }) =
           </View>
           <View style={styles.rightHeader}>
             <Text style={styles.docTitle}>
-              {variant === "summary" ? "Order Summary" : "Order Specification Sheet"}
+              {variant === "summary"
+                ? "Order Summary"
+                : "Order Specification Sheet"}
             </Text>
-            <Text style={styles.headerMeta}>Order #: {order?.OrderNumber ?? "—"}</Text>
-            <Text style={styles.headerMeta}>Generated: {createdAt.toDateString()}</Text>
-            <View style={styles.pillRow}><StatusChip status={order?.StatusName} /></View>
+            <Text style={styles.headerMeta}>
+              Order #: {order?.OrderNumber ?? "—"}
+            </Text>
+            <Text style={styles.headerMeta}>
+              Generated: {createdAt.toDateString()}
+            </Text>
+            <View style={styles.pillRow}>
+              <StatusChip status={order?.StatusName} />
+            </View>
           </View>
         </View>
 
         {/* SUMMARY BAR */}
         <View style={styles.infoBar}>
           <View style={styles.infoGrid}>
-            <View style={styles.infoCell}><Text style={styles.infoLabel}>Client Name</Text><Text style={styles.infoValue}>{order?.ClientName ?? "—"}</Text></View>
-            <View style={styles.infoCell}><Text style={styles.infoLabel}>Event Name</Text><Text style={styles.infoValue}>{order?.EventName ?? "—"}</Text></View>
-            <View style={styles.infoCell}><Text style={styles.infoLabel}>Deadline</Text><Text style={styles.infoValue}>{order?.Deadline ? formatDate(order.Deadline) : "—"}</Text></View>
-            <View style={styles.infoCell}><Text style={styles.infoLabel}>Current Status</Text><Text style={styles.infoValue}>{order?.StatusName ?? "—"}</Text></View>
+            <View style={styles.infoCell}>
+              <Text style={styles.infoLabel}>Client Name</Text>
+              <Text style={styles.infoValue}>{order?.ClientName ?? "—"}</Text>
+            </View>
+            <View style={styles.infoCell}>
+              <Text style={styles.infoLabel}>Event Name</Text>
+              <Text style={styles.infoValue}>{order?.EventName ?? "—"}</Text>
+            </View>
+            <View style={styles.infoCell}>
+              <Text style={styles.infoLabel}>Deadline</Text>
+              <Text style={styles.infoValue}>
+                {order?.Deadline ? formatDate(order.Deadline) : "—"}
+              </Text>
+            </View>
+            <View style={styles.infoCell}>
+              <Text style={styles.infoLabel}>Current Status</Text>
+              <Text style={styles.infoValue}>{order?.StatusName ?? "—"}</Text>
+            </View>
           </View>
         </View>
 
@@ -251,7 +435,8 @@ const OrderPDF: React.FC<Props> = ({ order, variant, measurements, chartSrc }) =
               <View key={idx} style={styles.productCard}>
                 <Text style={styles.productName}>{item?.ProductName}</Text>
                 <Text style={styles.productMeta}>
-                  {item?.ProductCategoryName} — {item?.ProductFabricName} ({item?.ProductFabricGSM} GSM)
+                  {item?.ProductCategoryName} — {item?.ProductFabricName} (
+                  {item?.ProductFabricGSM} GSM)
                 </Text>
 
                 {(item?.orderItemDetails ?? []).map((d, j) => {
@@ -267,70 +452,99 @@ const OrderPDF: React.FC<Props> = ({ order, variant, measurements, chartSrc }) =
                       {/* Size option header */}
                       <View style={styles.sizeHeader}>
                         <View style={styles.sizeHeaderRow}>
-                          <Text style={styles.sizeHeaderCell}>Size: {d?.SizeOptionName ?? "—"}</Text>
-                          <Text style={styles.sizeHeaderCell}>Qty: {d?.Quantity ?? "—"}</Text>
+                          <Text style={styles.sizeHeaderCell}>
+                            Size: {d?.SizeOptionName ?? "—"}
+                          </Text>
+                          <Text style={styles.sizeHeaderCell}>
+                            Qty: {d?.Quantity ?? "—"}
+                          </Text>
                           <Text>Priority: {d?.Priority ?? "—"}</Text>
                         </View>
                       </View>
-
                       {/* Two columns: image (left) + table(s) (right) */}
-                      <View style={styles.specRow}>
-                        <View style={styles.specLeft}>
-                          {chartSrc ? (
-                            <PDFImage
-                              src={chartSrc}
-                              style={{ width: "100%", height: 140 }}
-                            />
-                          ) : (
-                            <View style={{ width: "100%", height: 140, borderWidth: 1, borderColor: COLORS.line, justifyContent: "center", alignItems: "center" }}>
-                              <Text style={{ color: COLORS.subtext }}>Measurement chart image</Text>
-                            </View>
-                          )}
+                      {d?.SizeOptionId && (
+                        <View style={styles.specRow}>
+                          <View style={styles.specLeft}>
+                            {chartSrc ? (
+                              <PDFImage
+                                src={chartSrc}
+                                style={{ width: "100%", height: 140 }}
+                              />
+                            ) : (
+                              <View
+                                style={{
+                                  width: "100%",
+                                  height: 140,
+                                  borderWidth: 1,
+                                  borderColor: COLORS.line,
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Text style={{ color: COLORS.subtext }}>
+                                  Measurement chart image
+                                </Text>
+                              </View>
+                            )}
+                          </View>
+
+                          <View style={styles.specRight}>
+                            {/* Top Unit */}
+                            {rowsTop.length > 0 && (
+                              <>
+                                <Text style={styles.subSectionTitle}>
+                                  Top Unit
+                                </Text>
+                                <MeasurementTable rows={rowsTop} />
+                              </>
+                            )}
+
+                            {/* Bottom Unit */}
+                            {rowsBottom.length > 0 && (
+                              <>
+                                <Text style={styles.subSectionTitle}>
+                                  Bottom Unit
+                                </Text>
+                                <MeasurementTable rows={rowsBottom} />
+                              </>
+                            )}
+
+                            {/* Logo placements */}
+                            {rowsLogoTop.length > 0 && (
+                              <>
+                                <Text style={styles.subSectionTitle}>
+                                  Logo Placement — Top
+                                </Text>
+                                <MeasurementTable rows={rowsLogoTop} />
+                              </>
+                            )}
+
+                            {rowsLogoBottom.length > 0 && (
+                              <>
+                                <Text style={styles.subSectionTitle}>
+                                  Logo Placement — Bottom
+                                </Text>
+                                <MeasurementTable rows={rowsLogoBottom} />
+                              </>
+                            )}
+                          </View>
                         </View>
-
-                        <View style={styles.specRight}>
-                          {/* Top Unit */}
-                          {rowsTop.length > 0 && (
-                            <>
-                              <Text style={styles.subSectionTitle}>Top Unit</Text>
-                              <MeasurementTable rows={rowsTop} />
-                            </>
-                          )}
-
-                          {/* Bottom Unit */}
-                          {rowsBottom.length > 0 && (
-                            <>
-                              <Text style={styles.subSectionTitle}>Bottom Unit</Text>
-                              <MeasurementTable rows={rowsBottom} />
-                            </>
-                          )}
-
-                          {/* Logo placements */}
-                          {rowsLogoTop.length > 0 && (
-                            <>
-                              <Text style={styles.subSectionTitle}>Logo Placement — Top</Text>
-                              <MeasurementTable rows={rowsLogoTop} />
-                            </>
-                          )}
-
-                          {rowsLogoBottom.length > 0 && (
-                            <>
-                              <Text style={styles.subSectionTitle}>Logo Placement — Bottom</Text>
-                              <MeasurementTable rows={rowsLogoBottom} />
-                            </>
-                          )}
-                        </View>
-                      </View>
+                      )}
                     </View>
                   );
                 })}
 
                 {/* Printing options per product */}
-                {Array.isArray(item?.printingOptions) && item.printingOptions.length > 0 && (
-                  <Text style={{ marginTop: 8 }}>
-                    Printing: {item.printingOptions.map((p: any) => p?.PrintingOptionName).filter(Boolean).join(", ")}
-                  </Text>
-                )}
+                {Array.isArray(item?.printingOptions) &&
+                  item.printingOptions.length > 0 && (
+                    <Text style={{ marginTop: 8 }}>
+                      Printing:{" "}
+                      {item.printingOptions
+                        .map((p: any) => p?.PrintingOptionName)
+                        .filter(Boolean)
+                        .join(", ")}
+                    </Text>
+                  )}
               </View>
             ))}
           </>

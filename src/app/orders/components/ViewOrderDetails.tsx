@@ -267,28 +267,33 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                           className="grid grid-cols-3 gap-8"
                           key={`${index}_${detail?.ColorOptionId}`}
                         >
-                          <div className="flex items-center gap-5 text-sm">
-                            <span>Size: </span>
-                            <span className="max-w-32 w-full whitespace-nowrap overflow-hidden text-ellipsis">
-                              {detail?.SizeOptionName}
-                            </span>
-                          </div>
+                          {detail?.SizeOptionId && (
+                            <div className="flex items-center gap-5 text-sm">
+                              <span>Size: </span>
+                              <span className="max-w-32 w-full whitespace-nowrap overflow-hidden text-ellipsis">
+                                {detail?.SizeOptionName}
+                              </span>
+                            </div>
+                          )}
+
                           <div className="flex items-center gap-5 text-sm">
                             <span>Quantity:</span>
                             <span>{detail?.Quantity}</span>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleOpenViewModal(
-                                detail?.MeasurementId,
-                                detail?.SizeOptionName
-                              )
-                            }
-                            className=" py-1 px-2 bg-blue-600 rounded text-xs text-white w-fit"
-                          >
-                            Size Chart
-                          </button>
+                          {detail.SizeOptionId && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleOpenViewModal(
+                                  detail?.MeasurementId,
+                                  detail?.SizeOptionName
+                                )
+                              }
+                              className=" py-1 px-2 bg-blue-600 rounded text-xs text-white w-fit"
+                            >
+                              Size Chart
+                            </button>
+                          )}
                         </div>
                       );
                     })}
@@ -371,9 +376,6 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           }
         />
       )}
-
-      {/* ----------- Hidden Print Area  ------------ */}
-      {/* <PrintableOrderSheet order={OrderById} /> */}
     </div>
   );
 };

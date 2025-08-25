@@ -10,6 +10,7 @@ import {
   TableCell,
   Pagination,
   getKeyValue,
+  Input,
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -19,26 +20,39 @@ import DeleteItem from "./DeleteItem";
 import AddInventoryTransaction from "./AddInventoryTransaction";
 import TransactionTypeChip from "./TransactionTypeChip";
 import AddButton from "../components/common/AddButton";
+import { useSearch } from "@/src/hooks/useSearch";
+import { CiSearch } from "react-icons/ci";
 
 const InventoryTransaction = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
+  const [query, setQuery] = useState<string>("");
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const { loading, fetchInventoryTransactions, inventoryTransactions } =
     useInventoryTransection();
-    
+
+  // Search on 4 fields
+  const filtered = useSearch(inventoryTransactions, query, [
+    "ItemName",
+    "ClientName",
+    "OrderName",
+    "TransactionType",
+    "TransactionDate",
+  ]);
 
   const rowsPerPage = 10;
   const pages = Math.ceil(inventoryTransactions?.length / rowsPerPage);
+
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+    return filtered?.slice(start, start + rowsPerPage);
+  }, [filtered, page]);
 
-    return inventoryTransactions?.slice(start, end);
-  }, [page, inventoryTransactions]);
+  // reset page on new search
+  useEffect(() => setPage(1), [query]);
 
   const openAddModal = () => setIsAddModalOpen(true);
   const closeAddModal = () => {
@@ -68,6 +82,21 @@ const InventoryTransaction = () => {
             Inventory Transaction
           </h6>
           <div className="flex items-center justify-end gap-2">
+            <Input
+              placeholder="Search..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              classNames={{
+                base: "max-w-full",
+                mainWrapper: "h-full",
+                input: "text-small",
+                inputWrapper:
+                  "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+              }}
+              size="sm"
+              startContent={<CiSearch />}
+              variant="bordered"
+            />
             <AddButton title="Add New" onClick={openAddModal} />
           </div>
         </div>
@@ -104,7 +133,7 @@ const InventoryTransaction = () => {
               Item Name
             </TableColumn>
             <TableColumn key="ClientName" className="text-medium font-bold">
-              Client 
+              Client
             </TableColumn>
             <TableColumn key="OrderName" className="text-medium font-bold">
               Order Name
@@ -119,7 +148,7 @@ const InventoryTransaction = () => {
               Transaction Type
             </TableColumn>
             <TableColumn key="Stock" className="text-medium font-bold">
-            Available Stock
+              Available Stock
             </TableColumn>
             <TableColumn
               key="TransactionDate"
