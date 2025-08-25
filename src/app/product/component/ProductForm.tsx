@@ -37,41 +37,62 @@ const ProductForm = ({ productId }: { productId?: string }) => {
   const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
 
   const router = useRouter();
+  const isEdit = !!productId;
 
-  const initialValues = {
-    Name: productById?.Name ?? "",
-    ClientId: productById?.ClientId ?? "",
-    ProductCategoryId: productById?.ProductCategoryId ?? "",
-    FabricTypeId: productById?.FabricTypeId ?? "",
-    Description: productById?.Description ?? "",
-    productColors: productById?.productColors ?? [
-      {
-        Id: 0,
-        colorId: 0,
-        ImageId: "1",
-      },
-    ],
-    printingOptions: productById?.printingOptions ?? [{ PrintingOptionId: 0 }],
-    productDetails: productById?.productDetails?.map((detail) => ({
-      ProductCutOptionId: detail.ProductCutOptionId,
-      SleeveTypeId: detail.SleeveTypeId,
-    })) ?? [
-      {
-        ProductCutOptionId: 0,
-        ProductSizeMeasurementId: 0,
-        SleeveTypeId: 1,
-      },
-    ],
-    productSizes: productById?.productSizes?.map((sizes) => ({
-      Id: sizes.Id,
-      sizeId: sizes.sizeId,
-    })) ?? [
-      {
-        sizeId: 0,
-      },
-    ],
-    productStatus: productById?.productStatus ?? "",
+  const defaultDetailsRow = {
+    ProductCutOptionId: "",
+    ProductSizeMeasurementId: "",
+    SleeveTypeId: "",
   };
+
+  const defaultValues = {
+    Name: "",
+    ClientId: "",
+    ProductCategoryId: "",
+    FabricTypeId: "",
+    Description: "",
+    productColors: [{ Id: 0, colorId: 0, ImageId: "1" }],
+    printingOptions: [{ PrintingOptionId: 0 }],
+    productDetails: [defaultDetailsRow],
+    productSizes: [{ sizeId: 0 }],
+    productStatus: "",
+  };
+
+  // Only use productById when editing and it exists
+  const initialValues = React.useMemo(() => {
+    if (isEdit && productById) {
+      const mappedDetails =
+        Array.isArray(productById.productDetails) &&
+        productById.productDetails.length > 0
+          ? productById.productDetails.map((d: any) => ({
+              ProductCutOptionId: d.ProductCutOptionId ?? "",
+              ProductSizeMeasurementId: d.ProductSizeMeasurementId ?? "",
+              SleeveTypeId: d.SleeveTypeId ?? "",
+            }))
+          : [defaultDetailsRow];
+      return {
+        Name: productById.Name ?? "",
+        ClientId: productById.ClientId ?? "",
+        ProductCategoryId: productById.ProductCategoryId ?? "",
+        FabricTypeId: productById.FabricTypeId ?? "",
+        Description: productById.Description ?? "",
+        productColors: productById.productColors ?? [
+          { Id: 0, colorId: 0, ImageId: "1" },
+        ],
+        printingOptions: productById.printingOptions ?? [
+          { PrintingOptionId: 0 },
+        ],
+        productDetails: mappedDetails,
+        productSizes: productById.productSizes?.map((s: any) => ({
+          Id: s.Id,
+          sizeId: s.sizeId,
+        })) ?? [{ sizeId: 0 }],
+        productStatus: productById.productStatus ?? "",
+      };
+    }
+    // Add mode → ignore any stale productById in the store
+    return defaultValues;
+  }, [isEdit, productById]);
 
   const handleFileSelect = (file: File, index: number) => {
     setItemFiles((prev) => ({ ...prev, [index]: file }));
@@ -258,6 +279,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
           </h2>
           <div className="flex flex-col dark:bg-slate-900 bg-gray-300 rounded-xl p-10">
             <Formik
+              key={isEdit ? `edit-${productId}` : "create"}
               validationSchema={ProductValidationSchemas[currentStep - 1]}
               initialValues={initialValues}
               enableReinitialize

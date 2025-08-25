@@ -2,17 +2,11 @@ import { Field, FieldArray } from "formik";
 import React, { useEffect } from "react";
 import { PRIORITY_ENUM } from "@/interface/GetFileType";
 import Label from "../../components/common/Label";
-import useProductStore from "@/store/useProductStore";
-import useSizeMeasurementsStore, { GetSizeOptionsResponse } from "@/store/useSizeMeasurementsStore";
-import { fetchWithAuth } from "../../services/authservice";
-import toast from "react-hot-toast";
 
 const OrderItemDetailsFieldArray = ({
   index,
   item,
-  values,
   sizeOptions,
-  productAvailableColors,
   setFieldValue,
 }: {
   index: number;
@@ -23,11 +17,6 @@ const OrderItemDetailsFieldArray = ({
   
   setFieldValue: (field: string, value: any) => void;
 }) => {
-
-  const { fetchAvailableSizes } = useProductStore();
-  const {
-    fetchSizeMeasurementByClientAndSize,
-  } = useSizeMeasurementsStore();
 
 
  // Initialize default detail if none exists
@@ -44,31 +33,6 @@ const OrderItemDetailsFieldArray = ({
       ]);
     }
   }, []);
-
- // 🔁 Fetch MeasurementId whenever SizeOption or ClientId changes
-  // useEffect(() => {
-  //   const fetchMeasurements = async () => {
-      
-  //     const clientId = values.ClientId;
-  //     if (!clientId) return;
-
-  //     const promises = item.orderItemDetails?.map(async (detail: any, detailIndex: number) => {
-  //       if (detail.SizeOption) {
-  //         const measurement = await fetchSizeMeasurementByClientAndSize(clientId, detail.SizeOption);
-  //         if (measurement?.Id) {
-  //           setFieldValue(
-  //             `items[${index}].orderItemDetails[${detailIndex}].MeasurementId`,
-  //             measurement.Id
-  //           );
-  //         }
-  //       }
-  //     });
-
-  //     await Promise.all(promises);
-  //   };
-
-  //   fetchMeasurements();
-  // }, [item.orderItemDetails, values.ClientId]);
 
 
   return (
@@ -104,7 +68,7 @@ const OrderItemDetailsFieldArray = ({
                     </Field>
                   </div>
                    <div>
-                    <Label isRequired label="Size Options" />
+                    <Label isRequired={false} label="Size Options" />
                     <Field
                       as="select"
                       name={`items[${index}].orderItemDetails[${detailIndex}].SizeOption`}
@@ -118,14 +82,6 @@ const OrderItemDetailsFieldArray = ({
                       ))}
                     </Field>
                   </div>
-                </div>
-                <div className="flex items-center gap-5">
-                 
-                  {/* Hidden MeasurementId */}
-                {/* <Field
-                  type="hidden"
-                  name={`items[${index}].orderItemDetails[${detailIndex}].MeasurementId`}
-                /> */}
                 </div>
                 <div className="flex items-center justify-end w-full space-x-2">
                   {item.orderItemDetails.length > 1 && (
