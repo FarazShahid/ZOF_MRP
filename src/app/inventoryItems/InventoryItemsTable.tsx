@@ -47,15 +47,25 @@ const InventoryItemsTable = () => {
   ]);
 
   // Pagination
-  const rowsPerPage = 15;
-  const pages = Math.ceil(inventoryItems?.length / rowsPerPage);
+  const rowsPerPage = 10;
+  const total = filtered?.length ?? 0;
+  const rawPages = Math.ceil(total / rowsPerPage);
+  const pages = Math.max(1, rawPages);
+
   const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    return filtered?.slice(start, start + rowsPerPage);
-  }, [filtered, page]);
+    const safePage = Math.min(page, pages);
+    const start = (safePage - 1) * rowsPerPage; 
+    return filtered?.slice(start, start + rowsPerPage) ?? [];
+  }, [filtered, page, pages]);
 
   // reset page on new search
   useEffect(() => setPage(1), [query]);
+
+  // also clamp page whenever filtered changes (e.g., after search)
+  useEffect(() => {
+    if (page > pages) setPage(pages);
+    if (page < 1) setPage(1);  
+  }, [pages, page]);
 
   const openAddModal = () => setIsAddModalOpen(true);
   const closeAddModal = () => {
@@ -95,6 +105,7 @@ const InventoryItemsTable = () => {
               placeholder="Search..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onClear={() => setQuery("")}
               classNames={{
                 base: "max-w-full",
                 mainWrapper: "h-full",
