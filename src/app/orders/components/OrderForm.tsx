@@ -162,7 +162,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
     if (!values.OrderEventId) delete values.OrderEventId;
 
     const finalPayload = { ...values };
-    // const result = await addOrder(finalPayload);
+
     const result = orderId
       ? await updateOrder(Number(orderId), finalPayload)
       : await addOrder(finalPayload);
@@ -181,7 +181,9 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
       }
     }
     resetAllFiles();
-    handleBoBack();
+    if (result) {
+      handleBoBack();
+    }
   };
 
   return (
@@ -204,11 +206,10 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
                 className={`flex items-center gap-4 mb-4 w-[230px] dark:bg-slate-900 bg-gray-300 p-2 rounded-lg cursor-pointer`}
               >
                 <div
-                  className={` ${
-                    label.id === currentStep
+                  className={` ${label.id === currentStep
                       ? "dark:text-green-400 text-green-800 font-bold"
                       : "dark:text-gray-400 text-gray-800"
-                  }`}
+                    }`}
                 >
                   {label.icon}
                 </div>
@@ -217,11 +218,10 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
                     STEP {index + 1}
                   </span>
                   <span
-                    className={` ${
-                      label.id === currentStep
+                    className={` ${label.id === currentStep
                         ? "dark:text-green-400 text-green-800 font-bold"
                         : "dark:text-gray-400 text-gray-800"
-                    }`}
+                      }`}
                   >
                     {label.name}
                   </span>
