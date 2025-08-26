@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
+  Input,
   Pagination,
   Table,
   TableBody,
@@ -21,6 +22,8 @@ import { formatDate } from "../../interfaces";
 import DeleteShipment from "./DeleteShipment";
 import { useRouter } from "next/navigation";
 import ViewShipmentDetails from "./ViewShipmentDetails";
+import { useSearch } from "@/src/hooks/useSearch";
+import { CiSearch } from "react-icons/ci";
 
 const ShipmentTable = () => {
   const router = useRouter();
@@ -28,17 +31,39 @@ const ShipmentTable = () => {
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [isOpenViewModal, setIsOpenViewModal] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
+  const [query, setQuery] = useState<string>("");
 
   const { fetchShipments, loading, Shipments } = useShipmentStore();
 
-  const rowsPerPage = 15;
-  const pages = Math.ceil(Shipments?.length / rowsPerPage);
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+  // Search on 4 fields
+  const filtered = useSearch(Shipments, query, [
+    "ShipmentCode",
+    "OrderNumber",
+    "ShipmentCarrierName",
+    "ShipmentDate",
+    "Status",
+  ]);
 
-    return Shipments?.slice(start, end);
-  }, [page, Shipments]);
+  const rowsPerPage = 10;
+  const total = filtered?.length ?? 0;
+  const rawPages = Math.ceil(total / rowsPerPage);
+  const pages = Math.max(1, rawPages);
+
+  const items = useMemo(() => {
+    const safePage = Math.min(page, pages);
+    const start = (safePage - 1) * rowsPerPage;
+
+    return filtered?.slice(start, start + rowsPerPage) ?? [];
+  }, [filtered, page, pages]);
+
+  // reset page on new search
+  useEffect(() => setPage(1), [query]);
+
+  // also clamp page whenever filtered changes (e.g., after search)
+  useEffect(() => {
+    if (page > pages) setPage(pages);
+    if (page < 1) setPage(1);
+  }, [pages, page]);
 
   const handleOpenDeleteModal = (id: number) => {
     setSelectedItemId(id);
@@ -65,7 +90,23 @@ const ShipmentTable = () => {
   return (
     <div>
       <div className="w-full flex flex-col gap-3">
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
+          <Input
+            placeholder="Search..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onClear={() => setQuery("")}
+            classNames={{
+              base: "max-w-xs",
+              mainWrapper: "h-full",
+              input: "text-small",
+              inputWrapper:
+                "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+            }}
+            size="sm"
+            startContent={<CiSearch />}
+            variant="bordered"
+          />
           <Link
             href={"/shipment/addshipment"}
             type="button"
@@ -111,7 +152,7 @@ const ShipmentTable = () => {
               key="ShipmentCarrierName"
               className="text-medium font-bold"
             >
-              Carrier  Name
+              Carrier Name
             </TableColumn>
             <TableColumn key="ShipmentDate" className="text-medium font-bold">
               Shipment Date

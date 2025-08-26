@@ -10,35 +10,50 @@ import {
   TableCell,
   Pagination,
   getKeyValue,
+  Input,
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { FiPlus } from "react-icons/fi";
 import useInventorySubCategoryStore from "@/store/useInventorySubCategoryStore";
 import AddSubCategory from "./AddSubCategory";
 import DeleteSubCategory from "./DeleteSubCategory";
 import AddButton from "../components/common/AddButton";
-import { formatDate } from "../interfaces";
+import { useSearch } from "@/src/hooks/useSearch";
+import { CiSearch } from "react-icons/ci";
 
 const Subcategories = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
+  const [query, setQuery] = useState<string>("");
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const { loading, fetchSubCategories, subCategories } =
     useInventorySubCategoryStore();
 
-  const rowsPerPage = 15;
-  const pages = Math.ceil(subCategories?.length / rowsPerPage);
+  // Search on 2 fields
+  const filtered = useSearch(subCategories, query, ["Name", "CategoryName"]);
+
+  const rowsPerPage = 10;
+  const total = filtered?.length ?? 0;
+  const rawPages = Math.ceil(total / rowsPerPage);
+  const pages = Math.max(1, rawPages);
 
   const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+    const safePage = Math.min(page, pages);
+    const start = (safePage - 1) * rowsPerPage;
+    return filtered?.slice(start, start + rowsPerPage) ?? [];
+  }, [filtered, page, pages]);
 
-    return subCategories?.slice(start, end);
-  }, [page, subCategories]);
+  // reset page on new search
+  useEffect(() => setPage(1), [query]);
+
+  // also clamp page whenever filtered changes (e.g., after search)
+  useEffect(() => {
+    if (page > pages) setPage(pages);
+    if (page < 1) setPage(1);
+  }, [pages, page]);
 
   const openAddModal = () => setIsAddModalOpen(true);
   const closeAddModal = () => {
@@ -67,7 +82,25 @@ const Subcategories = () => {
           <h6 className="font-sans text-lg font-semibold">
             Inventory Sub Category
           </h6>
-          <AddButton title="Add New" onClick={openAddModal} />
+          <div className="flex justify-end gap-3">
+            <Input
+              placeholder="Search..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onClear={() => setQuery("")}
+              classNames={{
+                base: "max-w-full",
+                mainWrapper: "h-full",
+                input: "text-small",
+                inputWrapper:
+                  "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+              }}
+              size="sm"
+              startContent={<CiSearch />}
+              variant="bordered"
+            />
+            <AddButton title="Add New" onClick={openAddModal} />
+          </div>
         </div>
         <Table
           isStriped
