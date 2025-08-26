@@ -14,12 +14,10 @@ const OrderItemDetailsFieldArray = ({
   values: any;
   sizeOptions: any[];
   productAvailableColors: any[];
-  
+
   setFieldValue: (field: string, value: any) => void;
 }) => {
-
-
- // Initialize default detail if none exists
+  // Initialize default detail if none exists
   useEffect(() => {
     if (!item.orderItemDetails || item.orderItemDetails.length === 0) {
       setFieldValue(`items[${index}].orderItemDetails`, [
@@ -33,7 +31,6 @@ const OrderItemDetailsFieldArray = ({
       ]);
     }
   }, []);
-
 
   return (
     <FieldArray name={`items[${index}].orderItemDetails`}>
@@ -50,6 +47,20 @@ const OrderItemDetailsFieldArray = ({
                       name={`items[${index}].orderItemDetails[${detailIndex}].Quantity`}
                       className="rounded-xl dark:text-gray-400 text-black text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
                       min={1}
+                      step="1"
+                      onKeyDown={(e: {
+                        key: string;
+                        preventDefault: () => void;
+                      }) => {
+                        if (
+                          e.key === "." ||
+                          e.key === "e" ||
+                          e.key === "-" ||
+                          e.key === "+"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                     />
                   </div>
                   <div>
@@ -67,7 +78,7 @@ const OrderItemDetailsFieldArray = ({
                       ))}
                     </Field>
                   </div>
-                   <div>
+                  <div>
                     <Label isRequired={false} label="Size Options" />
                     <Field
                       as="select"

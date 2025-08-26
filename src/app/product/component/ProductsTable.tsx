@@ -142,7 +142,7 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
                     <ProductStatusChip status={item?.productStatus} />
                   ) : columnKey === "isArchived" ? (
                     <div
-                      className={`border-1 rounded-lg text-center w-fit px-2 ${
+                      className={`border-1 rounded-md text-center w-fit text-xs px-2 ${
                         item.isArchived
                           ? " border-red-500 text-red-600"
                           : "border-green-500 text-green-600"
@@ -155,7 +155,7 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
                   ) : (
                     <div className="flex gap-2">
                       <ActionBtn
-                        icon={<TbStatusChange />}
+                        icon={<TbStatusChange size={18} />}
                         className="dark:text-green-400 text-green-800"
                         onClick={() =>
                           handleChangeStatus(item?.Id, item?.isArchived)

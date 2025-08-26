@@ -11,7 +11,7 @@ const ProductStatusChip = ({status}:{status: string}) => {
     }
  
     return (
-    <div className={`text-center text-sm border-1 rounded-lg ${cssClass}`}>{status}</div>
+    <div className={`text-center text-xs px-2 w-fit border-1 rounded-md ${cssClass}`}>{status}</div>
   )
 }
 

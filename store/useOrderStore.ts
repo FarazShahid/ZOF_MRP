@@ -374,6 +374,7 @@ const useOrderStore = create<StoreState>((set, get) => ({
     set({ loading: true, error: null });
 
     try {
+      
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/orders/${id}`,
         {

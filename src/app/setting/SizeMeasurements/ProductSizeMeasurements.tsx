@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   getKeyValue,
+  Input,
   Pagination,
   Table,
   TableBody,
@@ -11,11 +12,9 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import useSizeMeasurementsStore, {
   SizeMeasurements,
 } from "@/store/useSizeMeasurementsStore";
-import ViewModal from "./ViewModal";
 import DeleteSizeOptions from "./DeleteSizeOptions";
 import AddSizeOptions from "./AddSizeOptions";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -23,6 +22,8 @@ import { GoPencil } from "react-icons/go";
 import AddButton from "../../components/common/AddButton";
 import { useRouter } from "next/navigation";
 import { ViewMeasurementChart } from "../../orders/components/ViewMeasurementChart";
+import { useSearch } from "@/src/hooks/useSearch";
+import { CiSearch } from "react-icons/ci";
 
 const ProductSizeMeasurements = () => {
   const [page, setPage] = useState<number>(1);
@@ -31,21 +32,43 @@ const ProductSizeMeasurements = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isViewModal, setIsViewModal] = useState<boolean>(false);
-  const [sortColumn, setSortColumn] =
-    useState<keyof SizeMeasurements>("Measurement1");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+   const [query, setQuery] = useState<string>("");
 
   const router = useRouter();
 
   const { fetchSizeMeasurements, sizeMeasurement, loading } =
     useSizeMeasurementsStore();
 
+   // Search on 4 fields
+    const filtered = useSearch(sizeMeasurement, query, [
+      "Measurement1",
+      "ProductCategoryType",
+      "SizeOptionName",
+      "ClientName",
+    ]);
+     const rowsPerPage = 10;
+      const total = filtered?.length ?? 0;
+      const rawPages = Math.ceil(total / rowsPerPage);
+      const pages = Math.max(1, rawPages);
+    
+      const items = useMemo(() => {
+        const safePage = Math.min(page, pages);
+        const start = (safePage - 1) * rowsPerPage;
+        return filtered?.slice(start, start + rowsPerPage) ?? [];
+      }, [filtered, page, pages]);
+    
+      // reset page on new search
+      useEffect(() => setPage(1), [query]);
+    
+      // also clamp page whenever filtered changes (e.g., after search)
+      useEffect(() => {
+        if (page > pages) setPage(pages);
+        if (page < 1) setPage(1);
+      }, [pages, page]);
+
   useEffect(() => {
     fetchSizeMeasurements();
   }, []);
-
-  const rowsPerPage = 10;
-  const pages = Math.ceil(sizeMeasurement?.length / rowsPerPage);
 
   const openAddModal = () => {
     router.push("/product/addsizeOptions");
@@ -71,58 +94,30 @@ const ProductSizeMeasurements = () => {
     setIsViewModal(false);
   };
 
-  const items = useMemo(() => {
-    const sorted = [...(sizeMeasurement || [])].sort((a, b) => {
-      const aValue = a[sortColumn];
-      const bValue = b[sortColumn];
-
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      }
-
-      if (typeof aValue === "number" && typeof bValue === "number") {
-        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
-      }
-
-      if (
-        sortColumn === "CreatedOn" &&
-        typeof aValue === "string" &&
-        typeof bValue === "string"
-      ) {
-        const aDate = new Date(aValue).getTime();
-        const bDate = new Date(bValue).getTime();
-        return sortDirection === "asc" ? aDate - bDate : bDate - aDate;
-      }
-
-      return 0;
-    });
-
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-    return sorted.slice(start, end);
-  }, [page, sizeMeasurement, sortColumn, sortDirection]);
-
-  const handleSort = (column: keyof SizeMeasurements) => {
-    if (column === sortColumn) {
-      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
-    }
-  };
-
-  useEffect(() => {
-    setPage(1);
-  }, [sortColumn, sortDirection]);
-
   return (
     <>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">Size Measurements</h6>
-          <AddButton title="Add New" onClick={openAddModal} />
+          <div className="flex justify-end gap-3">
+            <Input
+              placeholder="Search..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onClear={() => setQuery("")}
+              classNames={{
+                base: "max-w-full",
+                mainWrapper: "h-full",
+                input: "text-small",
+                inputWrapper:
+                  "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+              }}
+              size="sm"
+              startContent={<CiSearch />}
+              variant="bordered"
+            />
+            <AddButton title="Add New" onClick={openAddModal} />
+          </div>
         </div>
         <Table
           isStriped
@@ -156,17 +151,8 @@ const ProductSizeMeasurements = () => {
             <TableColumn
               key="Measurement1"
               className="text-medium font-bold cursor-pointer"
-              onClick={() => handleSort("Measurement1")}
             >
-              <div className="flex items-center gap-1">
                 Name
-                {sortColumn === "Measurement1" &&
-                  (sortDirection === "asc" ? (
-                    <TiArrowSortedUp />
-                  ) : (
-                    <TiArrowSortedDown />
-                  ))}
-              </div>
             </TableColumn>
             <TableColumn
               key="ProductCategoryType"
