@@ -19,7 +19,6 @@ const ActionBtn: React.FC<ActionBtnProps> = ({
       <button
         type="button"
         className={className}
-        title={title}
         onClick={onClick}
       >
         {icon}

@@ -95,14 +95,14 @@ const AddStatus: React.FC<AddClientComponentProps> = ({
                           <div className="flex flex-col gap-1 w-full">
                             <Label
                               isRequired={false}
-                              label="Name"
-                              labelForm="Name"
+                              label="Description"
+                              labelForm="Description"
                             />
                             <Field
                               name="Description"
                               as="textarea"
                               placeholder="Description"
-                              className="formInputdefault bg-gray-100"
+                              className="formInputdefault bg-gray-100 !h-auto"
                             />
                           </div>
                         </div>

@@ -122,6 +122,22 @@ export interface SizeMeasurements {
   b_BottomRight: string;
   b_BottomLeft: string;
 
+  // Hat Unit Measurements
+  H_VisorLength: string;
+  H_VisorWidth: string;
+  H_CrownCircumference: string;
+  H_FrontSeamLength: string;
+  H_BackSeamLength: string;
+  H_RightCenterSeamLength: string;
+  H_LeftCenterSeamLength: string;
+  H_ClosureHeightIncludingStrapWidth: string;
+  H_StrapWidth: string;
+  H_StrapbackLength: string;
+  H_SweatBandWidth: string;
+  H_FusionInside: string;
+  H_PatchSize: string;
+  H_PatchPlacement: string;
+
   CreatedOn: string;
   CreatedBy: string;
   UpdatedOn: string;

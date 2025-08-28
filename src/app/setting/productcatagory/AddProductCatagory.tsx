@@ -47,8 +47,13 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
   const InitialValues = {
     type: isEdit && productCategory ? productCategory.type : "",
     IsTopUnit: isEdit && productCategory ? productCategory.IsTopUnit : false,
-    IsBottomUnit: isEdit && productCategory ? productCategory.IsBottomUnit : false,
-    SupportsLogo: isEdit && productCategory ? productCategory.SupportsLogo : false,
+    IsBottomUnit:
+      isEdit && productCategory ? productCategory.IsBottomUnit : false,
+    SupportsLogo:
+      isEdit && productCategory ? productCategory.SupportsLogo : false,
+    IsHat: isEdit && productCategory ? productCategory.IsHat : false,
+    IsBag: isEdit && productCategory ? productCategory.IsBag : false,
+    IsSocks: isEdit && productCategory ? productCategory.IsSocks : false,
   };
 
   const handleAddCatagory = async (values: AddClientType) => {
@@ -141,6 +146,42 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
                                 isRequired={false}
                                 label="Supports Logo"
                                 labelForm="SupportsLogo"
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Field
+                                name="IsHat"
+                                type="checkbox"
+                                className="w-4 h-4"
+                              />
+                              <Label
+                                isRequired={false}
+                                label="Hat"
+                                labelForm="IsHat"
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Field
+                                name="IsBag"
+                                type="checkbox"
+                                className="w-4 h-4"
+                              />
+                              <Label
+                                isRequired={false}
+                                label="Bag"
+                                labelForm="IsBag"
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Field
+                                name="IsSocks"
+                                type="checkbox"
+                                className="w-4 h-4"
+                              />
+                              <Label
+                                isRequired={false}
+                                label="Socks"
+                                labelForm="IsSocks"
                               />
                             </div>
                           </div>

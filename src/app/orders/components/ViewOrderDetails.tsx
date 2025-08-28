@@ -22,6 +22,8 @@ import OrderPDF from "../../components/pdf/OrderPDF";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
+import { Button, useDisclosure } from "@heroui/react";
+import StatusTimelineDrawer from "./StatusTimelineDrawer";
 
 interface ViewOrderProps {
   orderId: number;
@@ -38,12 +40,13 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const [openUpdateStatusModal, setOpenUpdateStatusModal] =
     useState<boolean>(false);
 
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const {
     changeOrderStatus,
     getOrderById,
     getOrderStatusLog,
     OrderById,
-    OrderStatusLogs,
     loading,
   } = useOrderStore();
 
@@ -245,90 +248,90 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                   </div>
                 </div>
               </div>
-
-              {OrderById?.items.map((orderItem, index) => {
-                return (
-                  <div
-                    className="dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 flex flex-col gap-3 shadow-lg dark:text-foreground text-gray-700"
-                    key={index}
-                  >
-                    <p>{orderItem?.ProductName}</p>
-                    <div className="flex items-center gap-2 text-sm">
-                      <span className="font-semibold">Fabric:</span>
-                      <span className="">
-                        {orderItem?.ProductFabricName}_
-                        {orderItem?.ProductFabricGSM}
-                      </span>
-                    </div>
-
-                    {orderItem?.orderItemDetails?.map((detail, index) => {
-                      return (
-                        <div
-                          className="grid grid-cols-3 gap-8"
-                          key={`${index}_${detail?.ColorOptionId}`}
-                        >
-                          {detail?.SizeOptionId && (
-                            <div className="flex items-center gap-5 text-sm">
-                              <span>Size: </span>
-                              <span className="max-w-32 w-full whitespace-nowrap overflow-hidden text-ellipsis">
-                                {detail?.SizeOptionName}
-                              </span>
-                            </div>
-                          )}
-
-                          <div className="flex items-center gap-5 text-sm">
-                            <span>Quantity:</span>
-                            <span>{detail?.Quantity}</span>
-                          </div>
-                          {detail.SizeOptionId && (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleOpenViewModal(
-                                  detail?.MeasurementId,
-                                  detail?.SizeOptionName
-                                )
-                              }
-                              className=" py-1 px-2 bg-blue-600 rounded text-xs text-white w-fit"
-                            >
-                              Size Chart
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })}
-
-                    {/* -------- Printing Options  ---------- */}
-
-                    {orderItem?.printingOptions?.length > 0 && (
-                      <div className="flex items-center gap-5 text-sm">
-                        <span>Printing:</span>
-                        <div className="flex items-center gap-1">
-                          {orderItem.printingOptions.map(
-                            (printingOption, idx) => (
-                              <span
-                                key={printingOption.PrintingOptionId ?? idx}
-                              >
-                                {printingOption.PrintingOptionName}
-                                {idx < orderItem.printingOptions.length - 1 &&
-                                  ","}
-                              </span>
-                            )
-                          )}
-                        </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                {OrderById?.items.map((orderItem, index) => {
+                  return (
+                    <div
+                      className="dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 flex flex-col gap-3 shadow-lg dark:text-foreground text-gray-700"
+                      key={index}
+                    >
+                      <p className="font-bold">{orderItem?.ProductName}</p>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="font-semibold">Fabric:</span>
+                        <span className="">
+                          {orderItem?.ProductFabricName}_
+                          {orderItem?.ProductFabricGSM}
+                        </span>
                       </div>
-                    )}
 
-                    {/* -----------  Product Attachments  ---------------- */}
+                      {orderItem?.orderItemDetails?.map((detail, index) => {
+                        return (
+                          <div
+                            className="grid grid-cols-3 gap-8"
+                            key={`${index}_${detail?.ColorOptionId}`}
+                          >
+                            {detail?.SizeOptionId && (
+                              <div className="flex items-center gap-5 text-sm">
+                                <span>Size: </span>
+                                <span className="max-w-32 w-full whitespace-nowrap overflow-hidden text-ellipsis">
+                                  {detail?.SizeOptionName}
+                                </span>
+                              </div>
+                            )}
 
-                    <RecentAttachmentsView
-                      referenceId={orderItem.ProductId}
-                      referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
-                    />
-                  </div>
-                );
-              })}
+                            <div className="flex items-center gap-5 text-sm">
+                              <span>Quantity:</span>
+                              <span>{detail?.Quantity}</span>
+                            </div>
+                            {detail.SizeOptionId && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleOpenViewModal(
+                                    detail?.MeasurementId,
+                                    detail?.SizeOptionName
+                                  )
+                                }
+                                className=" py-1 px-2 bg-blue-600 rounded text-xs text-white w-fit"
+                              >
+                                Size Chart
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })}
 
+                      {/* -------- Printing Options  ---------- */}
+
+                      {orderItem?.printingOptions?.length > 0 && (
+                        <div className="flex items-center gap-5 text-sm">
+                          <span>Printing:</span>
+                          <div className="flex items-center gap-1">
+                            {orderItem.printingOptions.map(
+                              (printingOption, idx) => (
+                                <span
+                                  key={printingOption.PrintingOptionId ?? idx}
+                                >
+                                  {printingOption.PrintingOptionName}
+                                  {idx < orderItem.printingOptions.length - 1 &&
+                                    ","}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* -----------  Product Attachments  ---------------- */}
+
+                      <RecentAttachmentsView
+                        referenceId={orderItem.ProductId}
+                        referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
               <RecentAttachmentsView
                 label={"Order Attachments"}
                 referenceId={OrderById.Id}
@@ -347,7 +350,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             <>
               <div className="p-3 dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 shadow-lg flex flex-col gap-5 dark:text-foreground text-gray-700">
                 <p className="text-sm">Status Timeline</p>
-                <OrderStatusTimeline OrderStatusLogs={OrderStatusLogs} />
+                <StatusTimelineDrawer />
               </div>
               <ClientDetails clientId={OrderById?.ClientId} />
             </>

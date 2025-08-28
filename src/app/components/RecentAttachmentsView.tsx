@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { IoDocumentAttach } from "react-icons/io5";
 import DocumentCard from "../orders/components/DocumentCard";
+import AttachmentPreviewModal, { AttachmentItem } from "./AttachmentPreviewModal";
 
 interface ComponentProp {
   referenceType: string;
@@ -18,14 +19,30 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
   isPrintable,
   label = "Attachments",
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
   const { fetchDocuments, documentsByReferenceId } = useDocumentCenterStore();
 
   useEffect(() => {
     fetchDocuments(referenceType, referenceId);
   }, [referenceId, referenceType]);
+    const documents = documentsByReferenceId[referenceId] || [];
 
-  const documents = documentsByReferenceId[referenceId] || [];
+  const items: AttachmentItem[] = useMemo(
+    () =>
+      (documents || []).map((d: any) => ({
+        fileName: d.fileName,
+        fileType: d.fileType,
+        fileUrl: d.fileUrl,
+      })),
+    [documents]
+  );
 
+const openAt = (idx: number) => {
+    setStartIndex(idx);
+    setIsOpen(true);
+  };
+ if (!documents || documents.length === 0) return null;
   return (
     documents &&
     documents.length > 0 && (
@@ -42,10 +59,19 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
                 fileType={doc.fileType}
                 path={doc.fileUrl}
                 isPrintable={isPrintable}
+                onPreview={() => openAt(index)}
               />
             );
           })}
         </div>
+
+          {/* Fullscreen previewer with next/prev/rotate */}
+      <AttachmentPreviewModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        items={items}
+        startIndex={startIndex}
+      />
       </div>
     )
   );

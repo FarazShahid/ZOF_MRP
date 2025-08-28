@@ -199,7 +199,19 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     }
 
     if (productId) {
-      await updateProduct(Number(productId), payload, () => handleBoBack());
+      const result = await updateProduct(Number(productId), payload, () => handleBoBack());
+      if(result && files.length > 0){
+        const refernceId = Number(result.data.Id);
+
+        
+        for (const fileObj of files) {
+          await uploadDocument(
+            fileObj.file,
+            DOCUMENT_REFERENCE_TYPE.PRODUCT,
+            refernceId
+          );
+        }
+      }
     } else {
       const result = await addProduct(payload);
       if (result && files.length > 0) {
@@ -213,9 +225,10 @@ const ProductForm = ({ productId }: { productId?: string }) => {
           );
         }
       }
-      resetAllFiles();
-      handleBoBack();
+     
     }
+     resetAllFiles();
+      handleBoBack();
   };
 
   useEffect(() => {
