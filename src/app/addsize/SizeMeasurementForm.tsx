@@ -28,6 +28,7 @@ import {
 } from "@/interface/MeasurementInitialvalues";
 import RenderPinComponent from "../components/RenderPinComponent";
 import UnitTypeToggle from "./UnitTypeToggle";
+import HatUnit from "./HatUnit";
 
 const SizeMeasurementForm = ({
   isEdit,
@@ -42,10 +43,12 @@ const SizeMeasurementForm = ({
     IsTopUnit: boolean;
     IsBottomUnit: boolean;
     SupportsLogo: boolean;
+    IsHat: boolean;
   }>({
     IsTopUnit: false,
     IsBottomUnit: false,
     SupportsLogo: false,
+    IsHat: false,
   });
 
   const router = useRouter();
@@ -73,7 +76,6 @@ const SizeMeasurementForm = ({
   }, []);
 
   useEffect(() => {
-
     if (isEdit) {
       const matchedCategory = productCategories.find(
         (cat) => cat.id === sizeMeasurementById?.ProductCategoryId
@@ -84,6 +86,7 @@ const SizeMeasurementForm = ({
           IsTopUnit: matchedCategory.IsTopUnit,
           IsBottomUnit: matchedCategory.IsBottomUnit,
           SupportsLogo: matchedCategory.SupportsLogo,
+          IsHat: matchedCategory.IsHat,
         });
 
         setShowMeasurementPin(true);
@@ -94,6 +97,8 @@ const SizeMeasurementForm = ({
           setSelectedUnitType(UnitType.Bottom);
         } else if (matchedCategory.SupportsLogo) {
           setSelectedUnitType(UnitType.Logo);
+        } else if (matchedCategory.IsHat) {
+          setSelectedUnitType(UnitType.Hat);
         }
       }
     }
@@ -192,6 +197,7 @@ const SizeMeasurementForm = ({
                                 IsTopUnit: matchedCategory.IsTopUnit,
                                 IsBottomUnit: matchedCategory.IsBottomUnit,
                                 SupportsLogo: matchedCategory.SupportsLogo,
+                                IsHat: matchedCategory.IsHat,
                               });
 
                               setShowMeasurementPin(true);
@@ -202,6 +208,8 @@ const SizeMeasurementForm = ({
                                 setSelectedUnitType(UnitType.Bottom);
                               } else if (matchedCategory.SupportsLogo) {
                                 setSelectedUnitType(UnitType.Logo);
+                              } else if (matchedCategory.IsHat) {
+                                setSelectedUnitType(UnitType.Hat);
                               }
                             } else {
                               setShowMeasurementPin(false);
@@ -290,6 +298,7 @@ const SizeMeasurementForm = ({
                     IsBottomUnit={measurementManagement.IsBottomUnit}
                   />
                 )}
+                {selectedUnitType === 4 && <HatUnit />}
 
                 {/* Submit Button */}
                 <div className="flex justify-end w-full">

@@ -19,6 +19,9 @@ export interface ProductCategory {
   IsTopUnit: boolean;
   IsBottomUnit: boolean;
   SupportsLogo: boolean;
+  IsHat: boolean;
+  IsBag: boolean;
+  IsSocks: boolean;
   createdOn: string;
   createdBy: string;
   updatedOn: string;

@@ -12,7 +12,6 @@ import {
   TableRow,
 } from "@heroui/react";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
-import { FiPlus } from "react-icons/fi";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import useCategoryStore, { ProductCategory } from "@/store/useCategoryStore";

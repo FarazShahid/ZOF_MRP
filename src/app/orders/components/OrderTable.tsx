@@ -21,7 +21,6 @@ import useClientStore from "@/store/useClientStore";
 import { formatDate } from "../../interfaces";
 import StatusChip from "../../components/StatusChip";
 import DeleteModal from "../../components/DeleteModal";
-import PriorityChip from "./PriorityChip";
 import { useRouter } from "next/navigation";
 import ReorderConfirmation from "./ReorderConfirmation";
 import { GoPencil } from "react-icons/go";
@@ -168,9 +167,6 @@ const OrderTable = () => {
             <TableColumn key="StatusName" className="text-medium font-bold">
               Status
             </TableColumn>
-            <TableColumn key="OrderPriority" className="text-medium font-bold">
-              Priority
-            </TableColumn>
             <TableColumn key="Deadline" className="text-medium font-bold">
               Deadline
             </TableColumn>
@@ -185,8 +181,6 @@ const OrderTable = () => {
                   <TableCell>
                     {columnKey === "Deadline" ? (
                       formatDate(item[columnKey])
-                    ) : columnKey === "OrderPriority" ? (
-                      <PriorityChip priority={item?.OrderPriority} />
                     ) : columnKey === "StatusName" ? (
                       <StatusChip OrderStatus={item?.StatusName} />
                     ) : columnKey !== "Action" ? (

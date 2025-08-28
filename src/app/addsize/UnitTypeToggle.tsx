@@ -7,6 +7,7 @@ interface Props {
     IsTopUnit: boolean;
     IsBottomUnit: boolean;
     SupportsLogo: boolean;
+    IsHat: boolean;
   };
 }
 
@@ -15,8 +16,11 @@ const UnitTypeToggle: React.FC<Props> = ({
   setSelectedUnitType,
   measurementManagement,
 }) => {
+
+
   return (
     <div className="flex items-center gap-2">
+    
       {measurementManagement.IsTopUnit && (
         <button
           type="button"
@@ -45,6 +49,20 @@ const UnitTypeToggle: React.FC<Props> = ({
         </button>
       )}
 
+      {measurementManagement.IsHat && (
+        <button
+          type="button"
+          onClick={() => setSelectedUnitType(4)}
+          className={`${
+            selectedUnitType === 4
+              ? "bg-green-800 text-white"
+              : "bg-gray-300 text-gray-800"
+          } px-2 py-1 rounded`}
+        >
+          Hat
+        </button>
+      )}
+
       {measurementManagement.SupportsLogo && (
         <button
           type="button"
@@ -58,6 +76,7 @@ const UnitTypeToggle: React.FC<Props> = ({
           Logo
         </button>
       )}
+     
     </div>
   );
 };
