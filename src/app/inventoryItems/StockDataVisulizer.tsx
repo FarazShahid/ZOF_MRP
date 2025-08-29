@@ -3,7 +3,6 @@
 import React, { useEffect, useMemo } from "react";
 import { GoDotFill } from "react-icons/go";
 import useInventoryItemsStore from "@/store/useInventoryItemsStore";
-import { Tooltip } from "@heroui/react";
 
 interface ChipProps {
   stock: number;

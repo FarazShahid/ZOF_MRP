@@ -93,7 +93,7 @@ const InventoryCategories = () => {
           }}
         >
           <TableHeader>
-            <TableColumn key="Name" className="text-medium font-bold">
+            <TableColumn key="Name" allowsSorting={true} className="text-medium font-bold">
               Name
             </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">

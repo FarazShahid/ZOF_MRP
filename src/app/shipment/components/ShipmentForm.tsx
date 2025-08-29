@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { Button, Spinner } from "@heroui/react";
+import { Button, Select, SelectItem, Spinner } from "@heroui/react";
 import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
 import Label from "../../components/common/Label";
 import { ShipmentSchema } from "../../schema/InventoryItemSchema";
@@ -17,12 +17,15 @@ import DropZoneMultiple from "../../components/DropZone/DropZoneMultiple";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { useFileUploadStore } from "@/store/useFileUploadStore";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
+import useOrderStore from "@/store/useOrderStore";
 
 const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
   const router = useRouter();
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
+  const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
 
   const { fetchCarriors, Carriors } = useCarriorStore();
+  const { fetchOrders, getOrderById, Orders, OrderById } = useOrderStore();
   const { uploadDocument, loadingDoc } = useDocumentCenterStore();
   const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
   const {
@@ -95,6 +98,28 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
     router.push("/shipment");
   };
 
+  const handleOrderOptionChange = (
+    keys: Set<React.Key> | "all",
+    setFieldValue: (field: string, value: any) => void
+  ) => {
+    let OrderId: string[] = [];
+
+    if (keys === "all") {
+      OrderId = Orders.map((po) => String(po.Id));
+    } else {
+      OrderId = Array.from(keys).map(String);
+    }
+
+    setSelectedOrderIds(OrderId);
+
+    setFieldValue(
+      "orderIds",
+      OrderId.map((id) => ({
+        orderId: Number(id),
+      }))
+    );
+  };
+
   const handleAdd = async (values: any) => {
     const files = uploadedFilesByIndex[1] || [];
 
@@ -139,6 +164,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
 
   useEffect(() => {
     fetchCarriors();
+    fetchOrders();
   }, []);
 
   useEffect(() => {
@@ -170,18 +196,39 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
           enableReinitialize
           onSubmit={handleAdd}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 gap-2">
                 <div className="grid grid-cols-3 gap-2">
                   <div className="flex flex-col gap-1">
+                    <Label isRequired={false} label="Order" />
+                    <Select
+                      className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
+                      name="orderId"
+                      placeholder="Select Order"
+                      variant="bordered"
+                      selectionMode="multiple"
+                      aria-label="Printing Options"
+                      selectedKeys={new Set(selectedOrderIds)}
+                      onSelectionChange={(keys) =>
+                        handleOrderOptionChange(keys, setFieldValue)
+                      }
+                    >
+                      {Orders?.map((Order) => (
+                        <SelectItem key={Order?.Id}>
+                          {Order?.OrderName}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </div>
+                  {/* <div className="flex flex-col gap-1">
                     <Label isRequired={false} label="Order Number" />
                     <Field
                       type="text"
                       name="OrderNumber"
                       className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                     />
-                  </div>
+                  </div> */}
                   <div className="flex flex-col gap-1">
                     <Label isRequired={true} label="Shipment Code" />
                     <Field
@@ -202,7 +249,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                       type="text"
                       name="TrackingId"
                       placeholder="Enter Tracking Id"
-                      className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                      className="defaultInputField"
                     />
                     <ErrorMessage
                       name="TrackingId"
@@ -215,7 +262,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     <Field
                       as="select"
                       name="ShipmentCarrierId"
-                      className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                      className="defaultInputField"
                     >
                       <option value={""}>Select Carrier</option>
                       {Carriors?.map((Carrior, index) => {
@@ -238,7 +285,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                       type="date"
                       name="ShipmentDate"
                       placeholder="Enter shipment code"
-                      className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                      className="defaultInputField"
                     />
                     <ErrorMessage
                       name="ShipmentDate"
@@ -251,7 +298,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     <Field
                       type="datetime-local"
                       name="ReceivedTime"
-                      className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                      className="defaultInputField"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
@@ -259,7 +306,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     <Field
                       as="select"
                       name="WeightUnit"
-                      className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                      className="defaultInputField"
                     >
                       <option value={""}>Select a Weight Unit</option>
                       <option value={"kg"}>KG</option>
@@ -276,7 +323,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     <Field
                       type="number"
                       name="TotalWeight"
-                      className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                      className="defaultInputField"
                     />
                     <ErrorMessage
                       name="TotalWeight"
@@ -289,7 +336,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     <Field
                       type="number"
                       name="NumberOfBoxes"
-                      className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                      className="defaultInputField"
                     />
                     <ErrorMessage
                       name="NumberOfBoxes"
@@ -302,7 +349,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     <Field
                       type="number"
                       name="ShipmentCost"
-                      className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                      className="defaultInputField"
                     />
                     <ErrorMessage
                       name="ShipmentCost"
@@ -315,7 +362,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     <Field
                       as="select"
                       name="Status"
-                      className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                      className="defaultInputField"
                     >
                       <option value={""}>Select a status</option>
                       {ShipmentStatus?.map((status, index) => {
@@ -344,10 +391,11 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                           <div className="flex flex-col gap-1">
                             <Label isRequired={true} label="Box Number" />
                             <Field
-                              type="string"
+                              type="text"
                               name={`boxes[${index}].BoxNumber`}
                               required
-                              className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                              placeholder="Enter Box No."
+                              className="defaultInputField"
                             />
                             <ErrorMessage
                               name={`boxes[${index}].BoxNumber`}
@@ -361,7 +409,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                               type="number"
                               required
                               name={`boxes[${index}].Quantity`}
-                              className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                              className="defaultInputField"
                             />
                             <ErrorMessage
                               name={`boxes[${index}].Quantity`}
@@ -375,7 +423,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                               type="number"
                               required
                               name={`boxes[${index}].Weight`}
-                              className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                              className="defaultInputField"
                             />
                             <ErrorMessage
                               name={`boxes[${index}].Weight`}
@@ -389,7 +437,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                               type="text"
                               required
                               name={`boxes[${index}].OrderItem`}
-                              className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                              className="defaultInputField"
                             />
                             <ErrorMessage
                               name={`boxes[${index}].OrderItem`}
@@ -397,12 +445,13 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                               className="text-red-500 text-sm"
                             />
                           </div>
-                          <div className="flex flex-col gap-1">
+                          <div className="flex flex-col gap-1 col-span-2">
                             <Label isRequired={false} label="Description" />
                             <Field
-                              type="text"
+                              as="textarea"
+                              placeholder="Enter Description"
                               name={`boxes[${index}].OrderItemDescription`}
-                              className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                              className="defaultInputField"
                             />
                             <ErrorMessage
                               name={`boxes[${index}].OrderItemDescription`}
