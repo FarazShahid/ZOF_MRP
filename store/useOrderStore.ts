@@ -22,7 +22,7 @@ export interface ChangeOrderStatusType {
 
 export interface OrderItemsByIdResponse {
   message: string;
-  data: OrderItemsByIdData[];
+  data: OrderItem[];
   status: number;
 }
 
@@ -56,6 +56,11 @@ export interface OrderItemsByIdData {
   }[];
 }
 
+export interface OrderItem{
+  Id: number;
+  Name: string;
+}
+
 interface OrderStatusLogsData {
   message: string;
   data: OrderStatusLogsType[];
@@ -71,7 +76,7 @@ export interface OrderStatusLogsType {
 interface StoreState {
   Orders: GetOrdersType[];
   OrderById: GetOrderByIdType;
-  OrderItemById: OrderItemsByIdData[];
+  OrderItemById: OrderItem[];
   events: Event[];
   statuses: OderStatus[];
   availableColors: { [productId: number]: AvailableColor[] };
@@ -83,7 +88,7 @@ interface StoreState {
   fetchOrders: (clientId?: number) => Promise<void>;
   getOrderEvents: (clientId: number) => Promise<void>;
   getOrderById: (id: number) => Promise<void>;
-  getOrderItemsByOrderId: (id: number) => Promise<void>;
+  getOrderItemsByOrderId: (ids: number[]) => Promise<void>;
   getOrderStatus: () => Promise<void>;
   getAvailableColorByProductId: (id: number) => Promise<void>;
   getOrderStatusLog: (id: number) => Promise<void>;
@@ -92,11 +97,6 @@ interface StoreState {
     onSuccess: () => void
   ) => Promise<void>;
   addOrder: (category: AddOrderType) => Promise<AddOrderResponse | null>;
-  // updateOrder: (
-  //   id: number,
-  //   category: AddOrderType,
-  //   onSuccess: () => void
-  // ) => Promise<void>;
   updateOrder: (
     id: number,
     category: AddOrderType
@@ -200,23 +200,31 @@ const useOrderStore = create<StoreState>((set, get) => ({
     }
   },
 
-  getOrderItemsByOrderId: async (id: number) => {
-    set({ loading: true, error: null });
-    try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/items/${id}`
-      );
-      if (!response.ok) {
-        set({ loading: false, error: "Error Fetching Data" });
-        const error = await response.json();
-        toast.error(error.message || "Error fetching data");
+  getOrderItemsByOrderId: async (ids: number[]) => {
+  set({ loading: true, error: null });
+  try {
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/orders/orders-items`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderIds: ids }),
       }
-      const data: OrderItemsByIdResponse = await response.json();
-      set({ OrderItemById: data.data, loading: false });
-    } catch (error) {
-      set({ error: "Failed to fetch category", loading: false });
+    );
+
+    if (!response.ok) {
+      set({ loading: false, error: "Error Fetching Data" });
+      const error = await response.json();
+      toast.error(error.message || "Error fetching data");
     }
-  },
+
+    const data: OrderItemsByIdResponse = await response.json();
+    set({ OrderItemById: data.data, loading: false });
+  } catch (error) {
+    set({ error: "Failed to fetch order items", loading: false });
+  }
+},
+
 
   getOrderStatus: async () => {
     set({ loading: true, error: null });

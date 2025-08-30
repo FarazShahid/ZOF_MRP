@@ -25,7 +25,8 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
   const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
 
   const { fetchCarriors, Carriors } = useCarriorStore();
-  const { fetchOrders, getOrderById, Orders, OrderById } = useOrderStore();
+  const { fetchOrders, getOrderItemsByOrderId, Orders, OrderItemById } =
+    useOrderStore();
   const { uploadDocument, loadingDoc } = useDocumentCenterStore();
   const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
   const {
@@ -58,7 +59,8 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
           BoxNumber: b.BoxNumber,
           Quantity: b.Quantity,
           Weight: b.Weight,
-          OrderItem: b.OrderItem,
+          OrderItemName: b.OrderItemName,
+          OrderItemId: b.OrderItemId,
           OrderItemDescription: b.OrderItemDescription,
         })) || [
           {
@@ -123,8 +125,47 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
   const handleAdd = async (values: any) => {
     const files = uploadedFilesByIndex[1] || [];
 
+      const payload = {
+    ShipmentCode: values.ShipmentCode,
+    TrackingId: values.TrackingId,
+    OrderNumber: values.OrderNumber,
+    OrderIds: selectedOrderIds,
+    ShipmentCarrierId: values.ShipmentCarrierId,
+    ShipmentDate: values.ShipmentDate,
+    ShipmentCost: Number(values.ShipmentCost) || 0,
+    TotalWeight: Number(values.TotalWeight) || 0,
+    NumberOfBoxes: Number(values.NumberOfBoxes) || 0,
+    WeightUnit: values.WeightUnit,
+    ReceivedTime: values.ReceivedTime,
+    Status: values.Status,
+    boxes: (values.boxes || []).map((b: any) => ({
+      BoxNumber: String(b.BoxNumber ?? ""),
+      Quantity: Number(b.Quantity) || 0,
+      Weight: Number(b.Weight) || 0,
+      OrderItemName: b.OrderItem ?? "",  
+      OrderItemId: b.OrderItemId ? Number(b.OrderItemId) : undefined,
+      OrderItemDescription: b.OrderItemDescription ?? "",
+    })),
+  };
+
+
+
+    // Normalize Box OrderItemId -> number
+    // const normalizedBoxes = (values.boxes || []).map((b: any) => ({
+    //   ...b,
+    //   OrderItemId:
+    //     b?.OrderItemId !== undefined && b?.OrderItemId !== ""
+    //       ? Number(b.OrderItemId)
+    //       : undefined, 
+    // }));
+
+    // const payload = {
+    //   ...values,
+    //   boxes: normalizedBoxes,
+    // };
+
     if (shipmentId) {
-      const updatedItem = await updateShipment(Number(shipmentId), values);
+      const updatedItem = await updateShipment(Number(shipmentId), payload);
 
       if (updatedItem && files.length > 0) {
         const refernceId = updatedItem.data.id;
@@ -139,9 +180,11 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
       }
 
       resetAllFiles();
-      onClose();
+      if (updatedItem) {
+        onClose();
+      }
     } else {
-      const result = await addShipment(values);
+      const result = await addShipment(payload);
       if (result && files.length > 0) {
         const refernceId = result.data.id;
 
@@ -154,7 +197,9 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
         }
       }
       resetAllFiles();
-      onClose();
+      if (result) {
+        onClose();
+      }
     }
   };
 
@@ -172,6 +217,14 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
       getShipmentById(Number(shipmentId));
     }
   }, [shipmentId]);
+
+  useEffect(() => {
+    if (selectedOrderIds.length > 0) {
+      getOrderItemsByOrderId(selectedOrderIds.map(Number));
+    }
+  }, [selectedOrderIds, getOrderItemsByOrderId]);
+
+  console.log("ShipmentById", ShipmentById);
 
   return (
     <div>
@@ -434,17 +487,40 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                           <div className="flex flex-col gap-1">
                             <Label isRequired={true} label="Order Item" />
                             <Field
-                              type="text"
+                              as="select"
                               required
-                              name={`boxes[${index}].OrderItem`}
+                              name={`boxes[${index}].OrderItemId`}
                               className="defaultInputField"
-                            />
+                            >
+                              <option value={""}>Select an order item</option>
+                              {OrderItemById?.map((item, index) => {
+                                return (
+                                  <option value={item.Id} key={index}>
+                                    {item.Name}
+                                  </option>
+                                );
+                              })}
+                            </Field>
                             <ErrorMessage
-                              name={`boxes[${index}].OrderItem`}
+                              name={`boxes[${index}].OrderItemId`}
                               component="div"
                               className="text-red-500 text-sm"
                             />
                           </div>
+                          {/* <div className="flex flex-col gap-1">
+                            <Label isRequired={true} label="Order Item" />
+                            <Field
+                              type="text"
+                              required
+                              name={`boxes[${index}].OrderItemName`}
+                              className="defaultInputField"
+                            />
+                            <ErrorMessage
+                              name={`boxes[${index}].OrderItemName`}
+                              component="div"
+                              className="text-red-500 text-sm"
+                            />
+                          </div> */}
                           <div className="flex flex-col gap-1 col-span-2">
                             <Label isRequired={false} label="Description" />
                             <Field

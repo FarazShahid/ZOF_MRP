@@ -9,12 +9,11 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  Tooltip,
   getKeyValue,
 } from "@heroui/react";
 import Link from "next/link";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { FiPlus, FiSettings } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 import { TbReorder } from "react-icons/tb";
 import useOrderStore from "@/store/useOrderStore";
 import useClientStore from "@/store/useClientStore";
@@ -108,14 +107,14 @@ const OrderTable = () => {
           </select>
 
           <div className="flex items-center gap-2">
-            <Tooltip content="Order Status">
+            {/* <Tooltip content="Order Status">
               <Link
                 href={"/orders/orderstatus"}
                 className="dark:bg-slate-500 bg-slate-300 dark:text-white text-gray-800 rounded-lg p-2"
               >
                 <FiSettings size={20} />
               </Link>
-            </Tooltip>
+            </Tooltip> */}
             <Link
               href={"/orders/addorder"}
               type="button"

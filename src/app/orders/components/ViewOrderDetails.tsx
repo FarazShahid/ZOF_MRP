@@ -5,7 +5,7 @@ import { IoIosStats, IoIosPrint } from "react-icons/io";
 import { FaUserTie } from "react-icons/fa6";
 import { IoReturnDownBack } from "react-icons/io5";
 import { TbStatusChange } from "react-icons/tb";
-
+import { GoDotFill } from "react-icons/go";
 import useOrderStore from "@/store/useOrderStore";
 import useCategoryStore from "@/store/useCategoryStore";
 import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
@@ -14,6 +14,7 @@ import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 import MeasurementChartPng from "@/public/MeasurementChart.png";
 
 import OrderStatus from "./OrderStatus";
+import { FaRegEye } from "react-icons/fa";
 import OrderDeadline from "./OrderDeadline";
 import ClientDetails from "./ClientDetails";
 import OrderStatusTimeline from "./OrderStatusTimeline";
@@ -24,6 +25,7 @@ import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
 import { Button, useDisclosure } from "@heroui/react";
 import StatusTimelineDrawer from "./StatusTimelineDrawer";
+import OrderItemStatusChip from "./OrderItemStatusChip";
 
 interface ViewOrderProps {
   orderId: number;
@@ -72,11 +74,6 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     [changeOrderStatus, handleCloseStatusModal, orderId]
   );
 
-  const handlePrint = () => {
-    setTimeout(() => {
-      window.print();
-    }, 300);
-  };
 
   // Helper: fetch all measurement + category bundles needed for the order
   const buildMeasurementBundles = async (ids: number[]) => {
@@ -248,14 +245,19 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {OrderById?.items.map((orderItem, index) => {
                   return (
                     <div
-                      className="dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 flex flex-col gap-3 shadow-lg dark:text-foreground text-gray-700"
+                      className="dark:bg-[#161616] bg-gray-100 hover:shadow-md transition-all duration-200 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 flex flex-col gap-2 shadow-lg dark:text-foreground text-gray-700"
                       key={index}
                     >
-                      <p className="font-bold">{orderItem?.ProductName}</p>
+                      <div className="flex items-start justify-between">
+                        <span className="text-sm font-mono text-foreground font-bold">
+                          {orderItem.ProductName}
+                        </span>
+                       <OrderItemStatusChip status="pending"  />
+                      </div>
                       <div className="flex items-center gap-2 text-sm">
                         <span className="font-semibold">Fabric:</span>
                         <span className="">
@@ -264,63 +266,74 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                         </span>
                       </div>
 
-                      {orderItem?.orderItemDetails?.map((detail, index) => {
-                        return (
-                          <div
-                            className="grid grid-cols-3 gap-8"
-                            key={`${index}_${detail?.ColorOptionId}`}
-                          >
-                            {detail?.SizeOptionId && (
-                              <div className="flex items-center gap-5 text-sm">
-                                <span>Size: </span>
-                                <span className="max-w-32 w-full whitespace-nowrap overflow-hidden text-ellipsis">
-                                  {detail?.SizeOptionName}
-                                </span>
-                              </div>
-                            )}
-
-                            <div className="flex items-center gap-5 text-sm">
-                              <span>Quantity:</span>
-                              <span>{detail?.Quantity}</span>
-                            </div>
-                            {detail.SizeOptionId && (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleOpenViewModal(
-                                    detail?.MeasurementId,
-                                    detail?.SizeOptionName
-                                  )
-                                }
-                                className=" py-1 px-2 bg-blue-600 rounded text-xs text-white w-fit"
-                              >
-                                Size Chart
-                              </button>
-                            )}
-                          </div>
-                        );
-                      })}
-
                       {/* -------- Printing Options  ---------- */}
 
                       {orderItem?.printingOptions?.length > 0 && (
-                        <div className="flex items-center gap-5 text-sm">
+                        <div className="flex text-sm">
                           <span>Printing:</span>
-                          <div className="flex items-center gap-1">
+                          <div className="flex flex-wrap gap-1 pl-1">
                             {orderItem.printingOptions.map(
                               (printingOption, idx) => (
                                 <span
                                   key={printingOption.PrintingOptionId ?? idx}
+                                  className="rounded-xl px-2 text-xs bg-gray-200 flex items-center justify-center"
                                 >
                                   {printingOption.PrintingOptionName}
-                                  {idx < orderItem.printingOptions.length - 1 &&
-                                    ","}
                                 </span>
                               )
                             )}
+                         
                           </div>
                         </div>
                       )}
+
+                      <table>
+                        <thead>
+                          <tr>
+                            <th className="border-2 text-xs text-center">
+                              Size
+                            </th>
+                            <th className="border-2 text-xs text-center">
+                              Qunatity
+                            </th>
+                            <th className="border-2 text-xs text-center">
+                              Measurement
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {orderItem?.orderItemDetails?.map((detail, index) => {
+                            return (
+                              <tr>
+                                <td className="border-2 text-xs text-center">
+                                  {detail.SizeOptionId && (
+                                    <>{detail?.SizeOptionName}</>
+                                  )}
+                                </td>
+                                <td className="border-2 text-xs text-center">
+                                  {detail?.Quantity}
+                                </td>
+                                <td className="border-2 text-xs text-center">
+                                  {detail.SizeOptionId && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleOpenViewModal(
+                                          detail?.MeasurementId,
+                                          detail?.SizeOptionName
+                                        )
+                                      }
+                                      className="w-fit"
+                                    >
+                                      <FaRegEye />
+                                    </button>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
 
                       {/* -----------  Product Attachments  ---------------- */}
 
@@ -340,6 +353,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             </>
           )}
         </div>
+
         <div className="w-[25%] flex flex-col gap-2">
           {loading && !OrderById ? (
             <>

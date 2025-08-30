@@ -150,7 +150,7 @@ const page = () => {
           </TableBody>
         </Table>
 
-        <AddStatus
+        {/* <AddStatus
           isOpen={isAddModalOpen}
           closeAddModal={closeAddModal}
           isEdit={isEdit}
@@ -161,7 +161,7 @@ const page = () => {
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
           Id={selectedStatusId}
-        />
+        /> */}
       </div>
     </AdminDashboardLayout>
   );

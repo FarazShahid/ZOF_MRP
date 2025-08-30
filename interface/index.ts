@@ -38,7 +38,9 @@ export const DOCUMENT_REFERENCE_TYPE = {
 }
 
 export const ShipmentStatus = [
-  { id: 11, status: "SHIPMENT_TRANSACT", label: "Shipment Transact" },
-  { id: 12, status: "DELIVERED", label: "Delivered" },
-  { id: 14, status: "CANCELLED", label: "Cancelled" },
+  { id: 1, status: "In Transit", label: "In Transit" },
+  { id: 2, status: "Damaged", label: "Damaged" },
+  { id: 3, status: "Delivered", label: "Delivered" },
+    { id: 4, status: "Cancelled", label: "Cancelled" },
+
 ];

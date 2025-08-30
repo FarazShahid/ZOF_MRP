@@ -67,7 +67,8 @@ interface ShipmentResponse {
     Quantity: number;
     ShipmentId: number;
     Weight: number;
-    OrderItem: string;
+    OrderItemId: number;
+    OrderItemName: string;
     OrderItemDescription: string;
     BoxNumber: number;
   }[];
