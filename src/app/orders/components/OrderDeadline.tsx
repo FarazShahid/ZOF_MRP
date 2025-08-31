@@ -1,14 +1,19 @@
 import React from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { OrderItemShipmentEnum } from "@/interface";
 
 dayjs.extend(relativeTime);
 
 interface OrderDeadlineProps {
   deadline: string;
+  OrderShipmentStatus?: string;
 }
 
-const OrderDeadline: React.FC<OrderDeadlineProps> = ({ deadline }) => {
+const OrderDeadline: React.FC<OrderDeadlineProps> = ({
+  deadline,
+  OrderShipmentStatus,
+}) => {
   const date = dayjs(deadline);
   const month = date.format("MMM");
   const day = date.format("D");
@@ -36,13 +41,17 @@ const OrderDeadline: React.FC<OrderDeadlineProps> = ({ deadline }) => {
         <p className="text-medium dark:text-foreground text-gray-800 font-medium">
           {date.format("DD MMM YYYY")}
         </p>
-        <p
-          className={`text-small font-medium ${
-            isPast ? "text-danger" : "dark:text-success text-green-700"
-          }`}
-        >
-          {diffText}
-        </p>
+        {OrderShipmentStatus !== OrderItemShipmentEnum.SHIPPED ? (
+          <p
+            className={`text-small font-medium ${
+              isPast ? "text-danger" : "dark:text-success text-green-700"
+            }`}
+          >
+            {diffText}
+          </p>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

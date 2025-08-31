@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRef } from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { Button, Select, SelectItem, Spinner } from "@heroui/react";
-import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
+import { ErrorMessage, Field, FieldArray, Form, Formik, FormikProps } from "formik";
 import Label from "../../components/common/Label";
 import { ShipmentSchema } from "../../schema/InventoryItemSchema";
 import useCarriorStore from "@/store/useCarriorStore";
@@ -21,6 +22,7 @@ import useOrderStore from "@/store/useOrderStore";
 
 const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
   const router = useRouter();
+  const formikRef = useRef<FormikProps<any>>(null);
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
   const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
 
@@ -55,6 +57,9 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
         NumberOfBoxes: ShipmentById.NumberOfBoxes || 0,
         ShipmentCost: parseFloat(ShipmentById.ShipmentCost) || 0,
         Status: ShipmentById.Status || "",
+        // hydrate Formik's orderIds structure so submit works even before the effect runs
+      orderIds:
+        ShipmentById.OrderIds?.map((id: number) => ({ orderId: id })) || [],
         boxes: ShipmentById.Boxes?.map((b) => ({
           BoxNumber: b.BoxNumber,
           Quantity: b.Quantity,
@@ -138,31 +143,17 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
     WeightUnit: values.WeightUnit,
     ReceivedTime: values.ReceivedTime,
     Status: values.Status,
+    
     boxes: (values.boxes || []).map((b: any) => ({
-      BoxNumber: String(b.BoxNumber ?? ""),
+      BoxNumber: b.BoxNumber,
       Quantity: Number(b.Quantity) || 0,
       Weight: Number(b.Weight) || 0,
       OrderItemName: b.OrderItem ?? "",  
-      OrderItemId: b.OrderItemId ? Number(b.OrderItemId) : undefined,
+       // normalize to string for the <select>
+      OrderItemId: b.OrderItemId != null ? String(b.OrderItemId) : "",
       OrderItemDescription: b.OrderItemDescription ?? "",
     })),
   };
-
-
-
-    // Normalize Box OrderItemId -> number
-    // const normalizedBoxes = (values.boxes || []).map((b: any) => ({
-    //   ...b,
-    //   OrderItemId:
-    //     b?.OrderItemId !== undefined && b?.OrderItemId !== ""
-    //       ? Number(b.OrderItemId)
-    //       : undefined, 
-    // }));
-
-    // const payload = {
-    //   ...values,
-    //   boxes: normalizedBoxes,
-    // };
 
     if (shipmentId) {
       const updatedItem = await updateShipment(Number(shipmentId), payload);
@@ -224,7 +215,19 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
     }
   }, [selectedOrderIds, getOrderItemsByOrderId]);
 
-  console.log("ShipmentById", ShipmentById);
+  useEffect(() => {
+  if (shipmentId && ShipmentById?.OrderIds?.length) {
+    const idsAsStrings = ShipmentById.OrderIds.map((id: number) => String(id));
+    setSelectedOrderIds(idsAsStrings);
+
+    // also hydrate Formik's field used on submit
+    formikRef.current?.setFieldValue(
+      "orderIds",
+      ShipmentById.OrderIds.map((id: number) => ({ orderId: id }))
+    );
+  }
+}, [shipmentId, ShipmentById]);
+
 
   return (
     <div>

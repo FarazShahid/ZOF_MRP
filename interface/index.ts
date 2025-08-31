@@ -44,3 +44,10 @@ export const ShipmentStatus = [
     { id: 4, status: "Cancelled", label: "Cancelled" },
 
 ];
+
+
+export const OrderItemShipmentEnum  ={
+  PENDING: 'Pending',
+  SHIPPED: 'Shipped',
+  PARTIALLY_SHIPPED: 'Partially Shipped',
+}

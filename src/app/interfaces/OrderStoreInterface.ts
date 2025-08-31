@@ -43,6 +43,7 @@ export interface GetOrderByIdType {
   ExternalOrderId: string;
   OrderStatusId: number;
   StatusName: string;
+  OrderShipmentStatus?: string;
   Deadline: string;
   items: {
     Id: number;
@@ -58,6 +59,7 @@ export interface GetOrderByIdType {
     ProductName: string;
     ExternalOrderId: string;
     OrderItemPriority: number;
+    ItemShipmentStatus?: string;
     ImageId: number;
     ImagePath: string;
     FileId: number;

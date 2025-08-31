@@ -5,25 +5,22 @@ import { IoIosStats, IoIosPrint } from "react-icons/io";
 import { FaUserTie } from "react-icons/fa6";
 import { IoReturnDownBack } from "react-icons/io5";
 import { TbStatusChange } from "react-icons/tb";
-import { GoDotFill } from "react-icons/go";
 import useOrderStore from "@/store/useOrderStore";
 import useCategoryStore from "@/store/useCategoryStore";
 import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
 import { PdfVariant } from "@/src/types/OrderPDfType";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 import MeasurementChartPng from "@/public/MeasurementChart.png";
-
+import { GiCargoShip } from "react-icons/gi";
 import OrderStatus from "./OrderStatus";
 import { FaRegEye } from "react-icons/fa";
 import OrderDeadline from "./OrderDeadline";
 import ClientDetails from "./ClientDetails";
-import OrderStatusTimeline from "./OrderStatusTimeline";
 import { ViewMeasurementChart } from "./ViewMeasurementChart";
 import OrderPDF from "../../components/pdf/OrderPDF";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
-import { Button, useDisclosure } from "@heroui/react";
 import StatusTimelineDrawer from "./StatusTimelineDrawer";
 import OrderItemStatusChip from "./OrderItemStatusChip";
 
@@ -41,8 +38,6 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const [downloading, setDownloading] = useState<boolean>(false);
   const [openUpdateStatusModal, setOpenUpdateStatusModal] =
     useState<boolean>(false);
-
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const {
     changeOrderStatus,
@@ -215,7 +210,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           ) : (
             <>
               <div className=" flex items-center gap-10 dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 shadow-lg">
-                <OrderDeadline deadline={OrderById?.Deadline} />
+                <OrderDeadline deadline={OrderById?.Deadline} OrderShipmentStatus={OrderById?.OrderShipmentStatus}  />
                 <div className="flex items-center gap-3 text-gray-400">
                   <div className="flex items-center justify-center border-1 dark:bg-default-100 bg-gray-300 dark:text-default-500 text-gray-600 border-default-200/50 rounded-small w-11 h-11">
                     <IoIosStats size={18} />
@@ -227,7 +222,20 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                         : OrderById?.StatusName}
                     </p>
                     <p className="text-xs dark:text-foreground text-gray-700 font-medium">
-                      Current Status
+                      Order Status
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 text-gray-400">
+                  <div className="flex items-center justify-center border-1 dark:bg-default-100 bg-gray-300 dark:text-default-500 text-gray-600 border-default-200/50 rounded-small w-11 h-11">
+                    <GiCargoShip size={18} />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <p className="text-medium dark:text-foreground text-gray-700 font-medium">
+                      {OrderById.OrderShipmentStatus}
+                    </p>
+                    <p className="text-xs dark:text-foreground text-gray-700 font-medium">
+                      Shipment Status
                     </p>
                   </div>
                 </div>
@@ -256,7 +264,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                         <span className="text-sm font-mono text-foreground font-bold">
                           {orderItem.ProductName}
                         </span>
-                       <OrderItemStatusChip status="pending"  />
+                       <OrderItemStatusChip status={orderItem.ItemShipmentStatus}  />
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <span className="font-semibold">Fabric:</span>

@@ -58,6 +58,7 @@ interface ShipmentResponse {
   WeightUnit: string;
   ReceivedTime: string;
   Status: string;
+  OrderIds: []
   ShipmentCarrier: {
     Id: number;
     Name: string;
