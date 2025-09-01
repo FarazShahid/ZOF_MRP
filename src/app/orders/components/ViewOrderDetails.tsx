@@ -1,23 +1,18 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { pdf } from "@react-pdf/renderer";
 import { IoIosStats, IoIosPrint } from "react-icons/io";
 import { FaUserTie } from "react-icons/fa6";
 import { IoReturnDownBack } from "react-icons/io5";
 import { TbStatusChange } from "react-icons/tb";
 import useOrderStore from "@/store/useOrderStore";
-import useCategoryStore from "@/store/useCategoryStore";
-import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
 import { PdfVariant } from "@/src/types/OrderPDfType";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
-import MeasurementChartPng from "@/public/MeasurementChart.png";
 import { GiCargoShip } from "react-icons/gi";
 import OrderStatus from "./OrderStatus";
 import { FaRegEye } from "react-icons/fa";
 import OrderDeadline from "./OrderDeadline";
 import ClientDetails from "./ClientDetails";
 import { ViewMeasurementChart } from "./ViewMeasurementChart";
-import OrderPDF from "../../components/pdf/OrderPDF";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
@@ -43,6 +38,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     changeOrderStatus,
     getOrderById,
     getOrderStatusLog,
+    generateAndDownloadOrderPdf,
     OrderById,
     loading,
   } = useOrderStore();
@@ -69,76 +65,8 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     [changeOrderStatus, handleCloseStatusModal, orderId]
   );
 
-
-  // Helper: fetch all measurement + category bundles needed for the order
-  const buildMeasurementBundles = async (ids: number[]) => {
-    const result: Record<number, { measurement: any; productCategory: any }> =
-      {};
-    const sizeStore = useSizeMeasurementsStore.getState();
-    const catStore = useCategoryStore.getState();
-
-    for (const id of ids) {
-      if (!id) continue;
-      // these actions should be async in your Zustand store
-      await sizeStore.getSizeMeasurementById(id);
-      const m = useSizeMeasurementsStore.getState().sizeMeasurementById;
-
-      console.log("measurement", m);
-
-      let c = undefined;
-      if (m?.ProductCategoryId) {
-        await catStore.getCategoryById(m.ProductCategoryId);
-        c = useCategoryStore.getState().productCategory;
-      }
-      result[id] = { measurement: m, productCategory: c };
-    }
-    return result;
-  };
-
   const handleDownloadPdf = async (variant: PdfVariant) => {
-    if (!OrderById) return;
-    try {
-      setDownloading(true);
-
-      // Only prefetch measurements for the "spec" PDF
-      let measurementMap: Record<number, any> | undefined = undefined;
-      if (variant === "spec") {
-        const ids = Array.from(
-          new Set(
-            (OrderById.items ?? []).flatMap((it: any) =>
-              (it.orderItemDetails ?? [])
-                .map((d: any) => d?.MeasurementId)
-                .filter(Boolean)
-            )
-          )
-        ) as number[];
-        measurementMap = await buildMeasurementBundles(ids);
-      }
-
-      const instance = pdf(
-        <OrderPDF
-          order={OrderById}
-          variant={variant}
-          measurements={measurementMap}
-          chartSrc={MeasurementChartPng.src}
-        />
-      );
-
-      const blob = await instance.toBlob();
-      const fileName = `${
-        variant === "summary" ? "Order_Summary" : "Order_Specification"
-      }_${OrderById.OrderNumber ?? orderId}.pdf`;
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileName;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      console.error("PDF generation failed:", e);
-    } finally {
-      setDownloading(false);
-    }
+    await generateAndDownloadOrderPdf(orderId, variant);
   };
 
   useEffect(() => {
@@ -176,7 +104,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             title="Choose PDF type"
           >
             <option value="summary">Order Summary</option>
-            <option value="spec">Order Specification</option>
+            <option value="specification">Order Specification</option>
           </select>
 
           <button
