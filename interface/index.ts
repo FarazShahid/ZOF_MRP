@@ -38,20 +38,16 @@ export const DOCUMENT_REFERENCE_TYPE = {
 }
 
 export const ShipmentStatus = [
-  { id: 1, status: "PENDING", label: "Pending" },
-  { id: 2, status: "AWAITING_PICKUP", label: "Awaiting Pickup" },
-  { id: 3, status: "PICKED_UP", label: "Picked Up" },
-  { id: 4, status: "DISPATCHED", label: "Dispatched" },
-  { id: 5, status: "IN_TRANSIT", label: "In Transit" },
-  { id: 6, status: "ARRIVED_AT_HUB", label: "Arrived at Hub" },
-  { id: 7, status: "CUSTOMS_HOLD", label: "Customs Hold" },
-  { id: 8, status: "CUSTOMS_CLEARED", label: "Customs Cleared" },
-  { id: 9, status: "DELAYED", label: "Delayed" },
-  { id: 10, status: "OUT_FOR_DELIVERY", label: "Out for Delivery" },
-  { id: 11, status: "DELIVERY_ATTEMPT_FAILED", label: "Delivery Attempt Failed" },
-  { id: 12, status: "DELIVERED", label: "Delivered" },
-  { id: 13, status: "RETURNED_TO_SENDER", label: "Returned to Sender" },
-  { id: 14, status: "CANCELLED", label: "Cancelled" },
-  { id: 15, status: "LOST", label: "Lost" },
-  { id: 16, status: "DAMAGED", label: "Damaged" },
+  { id: 1, status: "In Transit", label: "In Transit" },
+  { id: 2, status: "Damaged", label: "Damaged" },
+  { id: 3, status: "Delivered", label: "Delivered" },
+    { id: 4, status: "Cancelled", label: "Cancelled" },
+
 ];
+
+
+export const OrderItemShipmentEnum  ={
+  PENDING: 'Pending',
+  SHIPPED: 'Shipped',
+  PARTIALLY_SHIPPED: 'Partially Shipped',
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo } from "react";
+import { GoDotFill } from "react-icons/go";
 import useInventoryItemsStore from "@/store/useInventoryItemsStore";
 
 interface ChipProps {
@@ -39,22 +40,19 @@ const StockDataVisulizer: React.FC<ChipProps> = ({
     return { stockClass: "highStock dark:text-green-900", stockStatus: "high" };
   }, [stockInt, reorder]);
 
-
   // Determine tooltip message
   const tooltipMessage = useMemo(() => {
     switch (stockStatus) {
       case "low":
-        return "❗ Low";
+        return <GoDotFill className="text-red-600" size={30} />;
       case "normal":
-        return "⚠️ Normal";
+        return <GoDotFill className="text-yellow-600" size={30} />;
       case "high":
-        return "✅ High";
+        return <GoDotFill className="text-green-600" size={30} />;
       default:
         return "";
     }
   }, [stockStatus]);
-
-
 
   // Only update Zustand store if the status has changed
   useEffect(() => {
@@ -64,7 +62,9 @@ const StockDataVisulizer: React.FC<ChipProps> = ({
   }, [currentStatus, itemCode, stockStatus, updateStockLevelStatus]);
 
   return (
-   <div className={`${stockClass} stockDataShip cursor-pointer`}>{tooltipMessage}</div>
+    <div className="flex items-center justify-center">
+      {tooltipMessage}
+    </div>
   );
 };
 

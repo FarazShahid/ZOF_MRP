@@ -1,27 +1,23 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { pdf } from "@react-pdf/renderer";
 import { IoIosStats, IoIosPrint } from "react-icons/io";
 import { FaUserTie } from "react-icons/fa6";
 import { IoReturnDownBack } from "react-icons/io5";
 import { TbStatusChange } from "react-icons/tb";
-
 import useOrderStore from "@/store/useOrderStore";
-import useCategoryStore from "@/store/useCategoryStore";
-import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
 import { PdfVariant } from "@/src/types/OrderPDfType";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
-import MeasurementChartPng from "@/public/MeasurementChart.png";
-
+import { GiCargoShip } from "react-icons/gi";
 import OrderStatus from "./OrderStatus";
+import { FaRegEye } from "react-icons/fa";
 import OrderDeadline from "./OrderDeadline";
 import ClientDetails from "./ClientDetails";
-import OrderStatusTimeline from "./OrderStatusTimeline";
 import { ViewMeasurementChart } from "./ViewMeasurementChart";
-import OrderPDF from "../../components/pdf/OrderPDF";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
+import StatusTimelineDrawer from "./StatusTimelineDrawer";
+import OrderItemStatusChip from "./OrderItemStatusChip";
 
 interface ViewOrderProps {
   orderId: number;
@@ -42,8 +38,8 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     changeOrderStatus,
     getOrderById,
     getOrderStatusLog,
+    generateAndDownloadOrderPdf,
     OrderById,
-    OrderStatusLogs,
     loading,
   } = useOrderStore();
 
@@ -69,81 +65,8 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     [changeOrderStatus, handleCloseStatusModal, orderId]
   );
 
-  const handlePrint = () => {
-    setTimeout(() => {
-      window.print();
-    }, 300);
-  };
-
-  // Helper: fetch all measurement + category bundles needed for the order
-  const buildMeasurementBundles = async (ids: number[]) => {
-    const result: Record<number, { measurement: any; productCategory: any }> =
-      {};
-    const sizeStore = useSizeMeasurementsStore.getState();
-    const catStore = useCategoryStore.getState();
-
-    for (const id of ids) {
-      if (!id) continue;
-      // these actions should be async in your Zustand store
-      await sizeStore.getSizeMeasurementById(id);
-      const m = useSizeMeasurementsStore.getState().sizeMeasurementById;
-
-      console.log("measurement", m);
-
-      let c = undefined;
-      if (m?.ProductCategoryId) {
-        await catStore.getCategoryById(m.ProductCategoryId);
-        c = useCategoryStore.getState().productCategory;
-      }
-      result[id] = { measurement: m, productCategory: c };
-    }
-    return result;
-  };
-
   const handleDownloadPdf = async (variant: PdfVariant) => {
-    if (!OrderById) return;
-    try {
-      setDownloading(true);
-
-      // Only prefetch measurements for the "spec" PDF
-      let measurementMap: Record<number, any> | undefined = undefined;
-      if (variant === "spec") {
-        const ids = Array.from(
-          new Set(
-            (OrderById.items ?? []).flatMap((it: any) =>
-              (it.orderItemDetails ?? [])
-                .map((d: any) => d?.MeasurementId)
-                .filter(Boolean)
-            )
-          )
-        ) as number[];
-        measurementMap = await buildMeasurementBundles(ids);
-      }
-
-      const instance = pdf(
-        <OrderPDF
-          order={OrderById}
-          variant={variant}
-          measurements={measurementMap}
-          chartSrc={MeasurementChartPng.src}
-        />
-      );
-
-      const blob = await instance.toBlob();
-      const fileName = `${
-        variant === "summary" ? "Order_Summary" : "Order_Specification"
-      }_${OrderById.OrderNumber ?? orderId}.pdf`;
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileName;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      console.error("PDF generation failed:", e);
-    } finally {
-      setDownloading(false);
-    }
+    await generateAndDownloadOrderPdf(orderId, variant);
   };
 
   useEffect(() => {
@@ -181,7 +104,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             title="Choose PDF type"
           >
             <option value="summary">Order Summary</option>
-            <option value="spec">Order Specification</option>
+            <option value="specification">Order Specification</option>
           </select>
 
           <button
@@ -215,7 +138,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           ) : (
             <>
               <div className=" flex items-center gap-10 dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 shadow-lg">
-                <OrderDeadline deadline={OrderById?.Deadline} />
+                <OrderDeadline deadline={OrderById?.Deadline} OrderShipmentStatus={OrderById?.OrderShipmentStatus}  />
                 <div className="flex items-center gap-3 text-gray-400">
                   <div className="flex items-center justify-center border-1 dark:bg-default-100 bg-gray-300 dark:text-default-500 text-gray-600 border-default-200/50 rounded-small w-11 h-11">
                     <IoIosStats size={18} />
@@ -227,7 +150,20 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                         : OrderById?.StatusName}
                     </p>
                     <p className="text-xs dark:text-foreground text-gray-700 font-medium">
-                      Current Status
+                      Order Status
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 text-gray-400">
+                  <div className="flex items-center justify-center border-1 dark:bg-default-100 bg-gray-300 dark:text-default-500 text-gray-600 border-default-200/50 rounded-small w-11 h-11">
+                    <GiCargoShip size={18} />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <p className="text-medium dark:text-foreground text-gray-700 font-medium">
+                      {OrderById.OrderShipmentStatus}
+                    </p>
+                    <p className="text-xs dark:text-foreground text-gray-700 font-medium">
+                      Shipment Status
                     </p>
                   </div>
                 </div>
@@ -245,90 +181,106 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                   </div>
                 </div>
               </div>
-
-              {OrderById?.items.map((orderItem, index) => {
-                return (
-                  <div
-                    className="dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 flex flex-col gap-3 shadow-lg dark:text-foreground text-gray-700"
-                    key={index}
-                  >
-                    <p>{orderItem?.ProductName}</p>
-                    <div className="flex items-center gap-2 text-sm">
-                      <span className="font-semibold">Fabric:</span>
-                      <span className="">
-                        {orderItem?.ProductFabricName}_
-                        {orderItem?.ProductFabricGSM}
-                      </span>
-                    </div>
-
-                    {orderItem?.orderItemDetails?.map((detail, index) => {
-                      return (
-                        <div
-                          className="grid grid-cols-3 gap-8"
-                          key={`${index}_${detail?.ColorOptionId}`}
-                        >
-                          {detail?.SizeOptionId && (
-                            <div className="flex items-center gap-5 text-sm">
-                              <span>Size: </span>
-                              <span className="max-w-32 w-full whitespace-nowrap overflow-hidden text-ellipsis">
-                                {detail?.SizeOptionName}
-                              </span>
-                            </div>
-                          )}
-
-                          <div className="flex items-center gap-5 text-sm">
-                            <span>Quantity:</span>
-                            <span>{detail?.Quantity}</span>
-                          </div>
-                          {detail.SizeOptionId && (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleOpenViewModal(
-                                  detail?.MeasurementId,
-                                  detail?.SizeOptionName
-                                )
-                              }
-                              className=" py-1 px-2 bg-blue-600 rounded text-xs text-white w-fit"
-                            >
-                              Size Chart
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })}
-
-                    {/* -------- Printing Options  ---------- */}
-
-                    {orderItem?.printingOptions?.length > 0 && (
-                      <div className="flex items-center gap-5 text-sm">
-                        <span>Printing:</span>
-                        <div className="flex items-center gap-1">
-                          {orderItem.printingOptions.map(
-                            (printingOption, idx) => (
-                              <span
-                                key={printingOption.PrintingOptionId ?? idx}
-                              >
-                                {printingOption.PrintingOptionName}
-                                {idx < orderItem.printingOptions.length - 1 &&
-                                  ","}
-                              </span>
-                            )
-                          )}
-                        </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {OrderById?.items.map((orderItem, index) => {
+                  return (
+                    <div
+                      className="dark:bg-[#161616] bg-gray-100 hover:shadow-md transition-all duration-200 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 flex flex-col gap-2 shadow-lg dark:text-foreground text-gray-700"
+                      key={index}
+                    >
+                      <div className="flex items-start justify-between">
+                        <span className="text-sm font-mono text-foreground font-bold">
+                          {orderItem.ProductName}
+                        </span>
+                       <OrderItemStatusChip status={orderItem.ItemShipmentStatus}  />
                       </div>
-                    )}
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="font-semibold">Fabric:</span>
+                        <span className="">
+                          {orderItem?.ProductFabricName}_
+                          {orderItem?.ProductFabricGSM}
+                        </span>
+                      </div>
 
-                    {/* -----------  Product Attachments  ---------------- */}
+                      {/* -------- Printing Options  ---------- */}
 
-                    <RecentAttachmentsView
-                      referenceId={orderItem.ProductId}
-                      referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
-                    />
-                  </div>
-                );
-              })}
+                      {orderItem?.printingOptions?.length > 0 && (
+                        <div className="flex text-sm">
+                          <span>Printing:</span>
+                          <div className="flex flex-wrap gap-1 pl-1">
+                            {orderItem.printingOptions.map(
+                              (printingOption, idx) => (
+                                <span
+                                  key={printingOption.PrintingOptionId ?? idx}
+                                  className="rounded-xl px-2 text-xs bg-gray-200 flex items-center justify-center"
+                                >
+                                  {printingOption.PrintingOptionName}
+                                </span>
+                              )
+                            )}
+                         
+                          </div>
+                        </div>
+                      )}
 
+                      <table>
+                        <thead>
+                          <tr>
+                            <th className="border-2 text-xs text-center">
+                              Size
+                            </th>
+                            <th className="border-2 text-xs text-center">
+                              Qunatity
+                            </th>
+                            <th className="border-2 text-xs text-center">
+                              Measurement
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {orderItem?.orderItemDetails?.map((detail, index) => {
+                            return (
+                              <tr>
+                                <td className="border-2 text-xs text-center">
+                                  {detail.SizeOptionId && (
+                                    <>{detail?.SizeOptionName}</>
+                                  )}
+                                </td>
+                                <td className="border-2 text-xs text-center">
+                                  {detail?.Quantity}
+                                </td>
+                                <td className="border-2 text-xs text-center">
+                                  {detail.SizeOptionId && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleOpenViewModal(
+                                          detail?.MeasurementId,
+                                          detail?.SizeOptionName
+                                        )
+                                      }
+                                      className="w-fit"
+                                    >
+                                      <FaRegEye />
+                                    </button>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+
+                      {/* -----------  Product Attachments  ---------------- */}
+
+                      <RecentAttachmentsView
+                        referenceId={orderItem.ProductId}
+                        referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
               <RecentAttachmentsView
                 label={"Order Attachments"}
                 referenceId={OrderById.Id}
@@ -337,6 +289,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             </>
           )}
         </div>
+
         <div className="w-[25%] flex flex-col gap-2">
           {loading && !OrderById ? (
             <>
@@ -347,7 +300,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             <>
               <div className="p-3 dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 shadow-lg flex flex-col gap-5 dark:text-foreground text-gray-700">
                 <p className="text-sm">Status Timeline</p>
-                <OrderStatusTimeline OrderStatusLogs={OrderStatusLogs} />
+                <StatusTimelineDrawer />
               </div>
               <ClientDetails clientId={OrderById?.ClientId} />
             </>

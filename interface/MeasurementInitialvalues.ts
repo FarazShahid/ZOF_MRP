@@ -80,4 +80,5 @@ export enum UnitType {
   Top = 1,
   Bottom = 2,
   Logo = 3,
+  Hat = 4,
 }

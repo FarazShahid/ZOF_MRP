@@ -22,7 +22,7 @@ export interface ChangeOrderStatusType {
 
 export interface OrderItemsByIdResponse {
   message: string;
-  data: OrderItemsByIdData[];
+  data: OrderItem[];
   status: number;
 }
 
@@ -56,6 +56,11 @@ export interface OrderItemsByIdData {
   }[];
 }
 
+export interface OrderItem {
+  Id: number;
+  Name: string;
+}
+
 interface OrderStatusLogsData {
   message: string;
   data: OrderStatusLogsType[];
@@ -71,7 +76,7 @@ export interface OrderStatusLogsType {
 interface StoreState {
   Orders: GetOrdersType[];
   OrderById: GetOrderByIdType;
-  OrderItemById: OrderItemsByIdData[];
+  OrderItemById: OrderItem[];
   events: Event[];
   statuses: OderStatus[];
   availableColors: { [productId: number]: AvailableColor[] };
@@ -83,7 +88,7 @@ interface StoreState {
   fetchOrders: (clientId?: number) => Promise<void>;
   getOrderEvents: (clientId: number) => Promise<void>;
   getOrderById: (id: number) => Promise<void>;
-  getOrderItemsByOrderId: (id: number) => Promise<void>;
+  getOrderItemsByOrderId: (ids: number[]) => Promise<void>;
   getOrderStatus: () => Promise<void>;
   getAvailableColorByProductId: (id: number) => Promise<void>;
   getOrderStatusLog: (id: number) => Promise<void>;
@@ -92,11 +97,6 @@ interface StoreState {
     onSuccess: () => void
   ) => Promise<void>;
   addOrder: (category: AddOrderType) => Promise<AddOrderResponse | null>;
-  // updateOrder: (
-  //   id: number,
-  //   category: AddOrderType,
-  //   onSuccess: () => void
-  // ) => Promise<void>;
   updateOrder: (
     id: number,
     category: AddOrderType
@@ -110,6 +110,10 @@ interface StoreState {
     id: number,
     clientId: number,
     onSuccess: () => void
+  ) => Promise<void>;
+  generateAndDownloadOrderPdf: (
+    orderId: number,
+    pdfType: string
   ) => Promise<void>;
 }
 
@@ -200,21 +204,28 @@ const useOrderStore = create<StoreState>((set, get) => ({
     }
   },
 
-  getOrderItemsByOrderId: async (id: number) => {
+  getOrderItemsByOrderId: async (ids: number[]) => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/items/${id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/orders-items`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderIds: ids }),
+        }
       );
+
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
         const error = await response.json();
         toast.error(error.message || "Error fetching data");
       }
+
       const data: OrderItemsByIdResponse = await response.json();
       set({ OrderItemById: data.data, loading: false });
     } catch (error) {
-      set({ error: "Failed to fetch category", loading: false });
+      set({ error: "Failed to fetch order items", loading: false });
     }
   },
 
@@ -374,7 +385,6 @@ const useOrderStore = create<StoreState>((set, get) => ({
     set({ loading: true, error: null });
 
     try {
-      
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/orders/${id}`,
         {
@@ -450,6 +460,75 @@ const useOrderStore = create<StoreState>((set, get) => ({
       await get().fetchOrders(clientId);
     } catch (error) {
       set({ error: "Failed to delete order", loading: false });
+    }
+  },
+
+  generateAndDownloadOrderPdf: async (orderId: number, pdfType: string) => {
+    set({ loading: true, error: null });
+
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/generate-download-pdf`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Accept is optional but mirrors your curl
+            Accept: "*/*",
+          },
+          body: JSON.stringify({ orderId, pdfType }),
+        }
+      );
+
+      if (!response.ok) {
+        // Try to parse a JSON error body if present
+        let message = "Failed to generate download";
+        try {
+          const err = await response.json();
+          message = err?.message || message;
+        } catch {
+          // non-JSON error body
+        }
+        set({ loading: false, error: message });
+        toast.error(message);
+        return;
+      }
+
+      // Get filename from Content-Disposition (fallback provided)
+      const cd = response.headers.get("content-disposition") || "";
+      let filename = `order ${pdfType}.zip`;
+      // RFC 5987 and basic filename=
+      const utf8Match = cd.match(/filename\*\s*=\s*UTF-8''([^;]+)/i);
+      const plainMatch = cd.match(/filename\s*=\s*"?([^";]+)"?/i);
+      if (utf8Match && utf8Match[1]) {
+        filename = decodeURIComponent(utf8Match[1]);
+      } else if (plainMatch && plainMatch[1]) {
+        filename = plainMatch[1];
+      }
+
+      const blob = await response.blob();
+
+      // IE/Edge Legacy fallback
+      // @ts-ignore
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        // @ts-ignore
+        window.navigator.msSaveOrOpenBlob(blob, filename);
+      } else {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      }
+
+      set({ loading: false, error: null });
+      toast.success("Download started");
+    } catch (error) {
+      set({ loading: false, error: "Failed to download file" });
+      toast.error("Failed to download file");
     }
   },
 }));

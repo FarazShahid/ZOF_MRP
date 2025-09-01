@@ -1,1 +1,1 @@
-export type PdfVariant = "summary" | "spec";
+export type PdfVariant = "summary" | "specification";

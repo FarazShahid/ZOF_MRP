@@ -122,7 +122,7 @@ interface CategoryState {
     id: number,
     productType: AddProduct,
     onSuccess: () => void
-  ) => Promise<void>;
+  ) => Promise<GetProductByIdResponse | null>;
   changeProductStatus: (
     id: number,
     productStatus: boolean,
@@ -323,12 +323,13 @@ const useProductStore = create<CategoryState>((set, get) => ({
       return null;
     }
   },
+
   updateProduct: async (
     id: number,
-    productType: AddProduct,
-    onSuccess?: () => void
-  ) => {
+    productType: AddProduct
+  ): Promise<GetProductByIdResponse | null> => {
     set({ loading: true, error: null });
+
     try {
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
@@ -338,19 +339,23 @@ const useProductStore = create<CategoryState>((set, get) => ({
           body: JSON.stringify(productType),
         }
       );
-      if (response.ok) {
+      const result: GetProductByIdResponse = await response.json();
+
+      if (!response.ok) {
         set({ loading: false, error: null });
-        if (onSuccess) onSuccess();
-        toast.success("Product updated successfully.");
-        await get().fetchProducts();
-      } else {
-        set({ loading: false, error: null });
-        const error = await response.json();
-        toast.error(error.message || "Fail to updated product");
+        toast.error(result.message || "Failed to update item");
+        return null;
       }
+
+      set({ loading: false, error: null });
+      toast.success("Item update successfully");
+      await get().fetchProducts();
+
+      return result;
     } catch (error) {
-      set({ error: "Failed to update product", loading: false });
-      toast.error("Fail to updated product");
+      set({ error: "Failed to update item", loading: false });
+      toast.error("Failed to update item");
+      return null;
     }
   },
 
