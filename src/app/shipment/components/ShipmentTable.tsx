@@ -24,6 +24,9 @@ import { useRouter } from "next/navigation";
 import ViewShipmentDetails from "./ViewShipmentDetails";
 import { useSearch } from "@/src/hooks/useSearch";
 import { CiSearch } from "react-icons/ci";
+import ShipmentStatusBadge, {
+  ShipmentStatusType,
+} from "../../components/ShipmentStatusBadge";
 
 const ShipmentTable = () => {
   const router = useRouter();
@@ -145,6 +148,9 @@ const ShipmentTable = () => {
             <TableColumn key="ShipmentCode" className="text-medium font-bold">
               Shipment Code
             </TableColumn>
+            <TableColumn key="OrderName" className="text-medium font-bold">
+              Order Nane
+            </TableColumn>
             <TableColumn key="OrderNumber" className="text-medium font-bold">
               Order No.
             </TableColumn>
@@ -182,6 +188,23 @@ const ShipmentTable = () => {
                       formatDate(item[columnKey])
                     ) : columnKey === "UpdatedOn" ? (
                       formatDate(item[columnKey])
+                    ) : columnKey === "Status" ? (
+                      <ShipmentStatusBadge
+                        status={item.Status as ShipmentStatusType}
+                      />
+                    ) : columnKey === "OrderName" ? (
+                      <div className="flex items-center gap-1 flex-wrap">
+                        {item.Orders.map((order) => {
+                          return (
+                            <span
+                              key={order.Id}
+                              className="text-xs px-1 py-1 bg-gray-100 rounded-lg"
+                            >
+                              {order.OrderName}
+                            </span>
+                          );
+                        })}
+                      </div>
                     ) : columnKey !== "Action" ? (
                       getKeyValue(item, columnKey)
                     ) : (
