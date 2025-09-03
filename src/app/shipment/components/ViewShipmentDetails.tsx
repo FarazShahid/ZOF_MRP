@@ -13,6 +13,10 @@ import { FaBoxOpen } from "react-icons/fa";
 import { formatDate } from "../../interfaces";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
+import OrderItemStatusChip from "../../orders/components/OrderItemStatusChip";
+import ShipmentStatusBadge, {
+  ShipmentStatusType,
+} from "../../components/ShipmentStatusBadge";
 
 interface ViewModalProps {
   isOpen: boolean;
@@ -34,10 +38,10 @@ const ViewShipmentDetails: React.FC<ViewModalProps> = ({
   // Normalize shape (your store sets ShipmentById to the .data already)
   const ship = ShipmentById ?? null;
 
-  const carrierName = useMemo(() => {
-    // Prefer nested object if present, else fallback to flat name, else dash
-    return ship?.ShipmentCarrier?.Name ?? ship?.ShipmentCarrierName ?? "-";
-  }, [ship]);
+  // const carrierName = useMemo(() => {
+  //   // Prefer nested object if present, else fallback to flat name, else dash
+  //   return ship?.ShipmentCarrier?.Name ?? ship?.ShipmentCarrierName ?? "-";
+  // }, [ship]);
 
   const boxes = useMemo(() => {
     const raw = (ship as any)?.boxes ?? (ship as any)?.Boxes ?? [];
@@ -58,40 +62,79 @@ const ViewShipmentDetails: React.FC<ViewModalProps> = ({
                 <div className="grid grid-cols-2 gap-5">
                   {/* Shipping Info */}
                   <div className="bg-gray-100 rounded-lg p-3">
-                    <h6 className="flex items-center gap-3 text-gray-700">
-                      <GiCargoShip size={25} /> Shipping Info.
-                    </h6>
+                    <div className="flex items-center justify-between">
+                      <h6 className="flex items-center gap-3 text-gray-700">
+                        <GiCargoShip size={25} /> Shipping Info.
+                      </h6>
+                      {ship?.Status && (
+                        <ShipmentStatusBadge
+                          status={ship.Status as ShipmentStatusType}
+                        />
+                      )}
+                    </div>
+
                     <div className="grid grid-cols-3 gap-3 mt-5">
                       <div className="flex flex-col">
-                        <span className="text-xs text-gray-700">Shipment Code</span>
+                        <span className="text-xs text-gray-700">
+                          Shipment Code
+                        </span>
                         <span>{ship?.ShipmentCode ?? "-"}</span>
                       </div>
 
                       <div className="flex flex-col">
-                        <span className="text-xs text-gray-700">Carrier Name</span>
-                        <span>{carrierName}</span>
+                        <span className="text-xs text-gray-700">
+                          Carrier Name
+                        </span>
+                        <span>{ship?.ShipmentCarrierName}</span>
                       </div>
 
                       <div className="flex flex-col">
-                        <span className="text-xs text-gray-700">Shipment Date</span>
-                        <span>{ship?.ShipmentDate ? formatDate(ship.ShipmentDate) : "-"}</span>
-                      </div>
-
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-700">Total Weight</span>
+                        <span className="text-xs text-gray-700">
+                          Shipment Date
+                        </span>
                         <span>
-                          {(ship?.TotalWeight ?? "-")} {(ship?.WeightUnit ?? "")}
+                          {ship?.ShipmentDate
+                            ? formatDate(ship.ShipmentDate)
+                            : "-"}
                         </span>
                       </div>
 
                       <div className="flex flex-col">
-                        <span className="text-xs text-gray-700">Number Of Boxes</span>
+                        <span className="text-xs text-gray-700">
+                          Total Weight
+                        </span>
+                        <span>
+                          {ship?.TotalWeight ?? "-"} {ship?.WeightUnit ?? ""}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col">
+                        <span className="text-xs text-gray-700">
+                          Number Of Boxes
+                        </span>
                         <span>{ship?.NumberOfBoxes ?? "-"}</span>
                       </div>
 
                       <div className="flex flex-col">
-                        <span className="text-xs text-gray-700">Shipment Cost</span>
+                        <span className="text-xs text-gray-700">
+                          Shipment Cost
+                        </span>
                         <span>{ship?.ShipmentCost ?? "-"}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col mt-3">
+                      <span className="text-lg text-gray-700">Orders</span>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {ship?.Orders?.map((order) => {
+                          return (
+                            <span
+                              key={order.Id}
+                              className="text-xs px-1 py-1 bg-gray-300 rounded-lg"
+                            >
+                              {order.OrderName}
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -109,30 +152,43 @@ const ViewShipmentDetails: React.FC<ViewModalProps> = ({
                         </div>
                       ) : (
                         boxes.map((box: any, index: number) => (
-                          <div className="grid grid-cols-4 gap-3 mt-5" key={index}>
+                          <div
+                            className="grid grid-cols-4 gap-3 mt-5"
+                            key={index}
+                          >
                             <div className="flex flex-col">
-                              <span className="text-xs text-gray-700">Box No.</span>
+                              <span className="text-xs text-gray-700">
+                                Box No.
+                              </span>
                               <span>{box?.BoxNumber ?? "-"}</span>
                             </div>
 
                             <div className="flex flex-col">
-                              <span className="text-xs text-gray-700">Weight</span>
+                              <span className="text-xs text-gray-700">
+                                Weight
+                              </span>
                               <span>{box?.Weight ?? "-"}</span>
                             </div>
 
                             <div className="flex flex-col">
-                              <span className="text-xs text-gray-700">Order Item</span>
-                              <span>{box?.OrderItemName ?? "-"}</span>
+                              <span className="text-xs text-gray-700">
+                                Order Item
+                              </span>
+                              <span>{box?.OrderItem ?? "-"}</span>
                             </div>
 
                             <div className="flex flex-col">
-                              <span className="text-xs text-gray-700">Quantity</span>
+                              <span className="text-xs text-gray-700">
+                                Quantity
+                              </span>
                               <span>{box?.Quantity ?? "-"}</span>
                             </div>
 
                             {box?.OrderItemDescription ? (
                               <div className="flex flex-col col-span-4">
-                                <span className="text-xs text-gray-700">Description</span>
+                                <span className="text-xs text-gray-700">
+                                  Description
+                                </span>
                                 <span>{box.OrderItemDescription}</span>
                               </div>
                             ) : null}
@@ -151,7 +207,12 @@ const ViewShipmentDetails: React.FC<ViewModalProps> = ({
             </ModalBody>
 
             <ModalFooter>
-              <Button color="danger" variant="flat" onPress={onClose} disabled={loading}>
+              <Button
+                color="danger"
+                variant="flat"
+                onPress={onClose}
+                disabled={loading}
+              >
                 Close
               </Button>
             </ModalFooter>

@@ -24,6 +24,12 @@ interface AddShipmentResponse {
   message: string;
 }
 
+interface OrdersInterface{
+Id: number;
+OrderName: string;
+OrderNumber: string;
+}
+
 interface GetAllShipments {
   Id: number;
   ShipmentCode: string;
@@ -32,6 +38,7 @@ interface GetAllShipments {
   WeightUnit: string;
   TotalWeight: number;
   NumberOfBoxes: number;
+  Orders:OrdersInterface[];
   ReceivedTime: string;
   Status: string;
   ShipmentCarrierId: number;
@@ -58,6 +65,7 @@ interface ShipmentResponse {
   WeightUnit: string;
   ReceivedTime: string;
   Status: string;
+  Orders:OrdersInterface[];
   OrderIds: []
   ShipmentCarrier: {
     Id: number;
@@ -69,6 +77,7 @@ interface ShipmentResponse {
     ShipmentId: number;
     Weight: number;
     OrderItemId: number;
+    OrderItem: string;
     OrderItemName: string;
     OrderItemDescription: string;
     BoxNumber: number;
