@@ -525,7 +525,7 @@ const useOrderStore = create<StoreState>((set, get) => ({
       }
 
       set({ loading: false, error: null });
-      toast.success("Download started");
+      // toast.success("Download ");
     } catch (error) {
       set({ loading: false, error: "Failed to download file" });
       toast.error("Failed to download file");

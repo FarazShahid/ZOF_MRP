@@ -18,6 +18,7 @@ import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
 import StatusTimelineDrawer from "./StatusTimelineDrawer";
 import OrderItemStatusChip from "./OrderItemStatusChip";
+import DownloadPdfMenu from "../../components/order/DownloadPdfMenu";
 
 interface ViewOrderProps {
   orderId: number;
@@ -94,7 +95,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             )}
           </h2>
         </div>
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <select
             value={pdfVariant}
             onChange={(e) => setPdfVariant(e.target.value as PdfVariant)}
@@ -125,7 +126,12 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           >
             <TbStatusChange /> Change Status
           </button>
-        </div>
+        </div> */}
+        <DownloadPdfMenu
+          downloading={downloading}
+          OrderById={OrderById.Id}
+          handleDownloadPdf={(v) => handleDownloadPdf(v)}
+        />
       </div>
 
       <div className="flex gap-4 w-full">
@@ -138,7 +144,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           ) : (
             <>
               <div className=" flex items-center gap-10 dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 shadow-lg">
-                <OrderDeadline deadline={OrderById?.Deadline} OrderShipmentStatus={OrderById?.OrderShipmentStatus}  />
+                <OrderDeadline deadline={OrderById?.Deadline} OrderShipmentStatus={OrderById?.OrderShipmentStatus} />
                 <div className="flex items-center gap-3 text-gray-400">
                   <div className="flex items-center justify-center border-1 dark:bg-default-100 bg-gray-300 dark:text-default-500 text-gray-600 border-default-200/50 rounded-small w-11 h-11">
                     <IoIosStats size={18} />
@@ -192,7 +198,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                         <span className="text-sm font-mono text-foreground font-bold">
                           {orderItem.ProductName}
                         </span>
-                       <OrderItemStatusChip status={orderItem.ItemShipmentStatus}  />
+                        <OrderItemStatusChip status={orderItem.ItemShipmentStatus} />
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <span className="font-semibold">Fabric:</span>
@@ -218,7 +224,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                                 </span>
                               )
                             )}
-                         
+
                           </div>
                         </div>
                       )}
