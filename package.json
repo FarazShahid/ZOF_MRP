@@ -20,6 +20,7 @@
       "formik": "^2.4.6",
       "framer-motion": "^11.15.0",
       "jszip": "^3.10.1",
+      "lucide-react": "^0.543.0",
       "next": "15.1.2",
       "react": "^19.0.0",
       "react-apexcharts": "^1.7.0",

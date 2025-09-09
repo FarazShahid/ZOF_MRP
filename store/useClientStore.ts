@@ -24,12 +24,12 @@ export interface GetClientsType {
   Website?: string;
   Linkedin?: string;
   Instagram?: string;
-
   City: string;
   State: string;
   Country: string;
   ClientStatusId: string;
   CompleteAddress: string;
+  status?: string;
   CreatedBy: string;
   CreatedOn: string;
 }

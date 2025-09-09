@@ -110,14 +110,14 @@ const ShipmentTable = () => {
             startContent={<CiSearch />}
             variant="bordered"
           />
-          <Link
+          {/* <Link
             href={"/shipment/addshipment"}
             type="button"
             className="text-sm rounded-full dark:bg-blue-600 bg-blue-800 text-white font-semibold px-3 py-2 flex items-center gap-2"
           >
             <FiPlus />
             Add New
-          </Link>
+          </Link> */}
         </div>
         <Table
           isStriped

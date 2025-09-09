@@ -12,14 +12,12 @@ interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
   clientId: number;
-  onDeleteSuccess: () => void;
 }
 
 const DeleteClient: React.FC<DeleteModalProps> = ({
   isOpen,
   onClose,
   clientId,
-  onDeleteSuccess,
 }) => {
 const {loading, deleteclient} = useClientStore();
     const handleDelete = async () => {

@@ -30,7 +30,7 @@ OrderName: string;
 OrderNumber: string;
 }
 
-interface GetAllShipments {
+export interface GetAllShipments {
   Id: number;
   ShipmentCode: string;
   ShipmentDate: string;
@@ -51,7 +51,7 @@ interface GetAllShipments {
   UpdatedBy: string;
 }
 
-interface ShipmentResponse {
+export interface ShipmentResponse {
   Id: number;
   ShipmentCode: string;
   TrackingId: string;

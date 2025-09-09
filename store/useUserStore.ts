@@ -17,9 +17,14 @@ interface UserByIdResponse{
 
 export interface GetUsersType {
     Id: number;
+    Name?: string;
     Email: string;
     Password: string;
     isActive: boolean;
+    status?: string;
+    role?: string;
+    avatar?: string;
+    lastLogin?: string;
     CreatedOn: string;
     UpdatedOn: string;
 }

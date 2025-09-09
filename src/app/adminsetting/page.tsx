@@ -1,12 +1,11 @@
 import React from 'react'
 import AdminDashboardLayout from '../components/common/AdminDashboardLayout'
-import ShipmentTable from './components/ShipmentTable'
-import ShipmentModule from '../components/shipment/ShipmentModule'
+import { AdminSettings } from '../components/admin/AdminSettings'
 
 const page = () => {
   return (
     <AdminDashboardLayout>
-      <ShipmentModule />
+        <AdminSettings />
     </AdminDashboardLayout>
   )
 }
