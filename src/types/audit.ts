@@ -15,13 +15,10 @@ export interface AuditLog {
   userAgent?: string;
 }
 
-export interface FilterState {
-  dateRange: {
-    start: string;
-    end: string;
-  };
+export type FilterState = {
+  dateRange: { start: string; end: string }; // 'YYYY-MM-DD'
   module: string;
   action: string;
-  user: string;
-  search: string;
-}
+  user: string;   // will match against Email
+  search: string; // global search
+};

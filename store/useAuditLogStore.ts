@@ -1,3 +1,4 @@
+// /store/useAuditLogStore.ts
 import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
 import { create } from "zustand";
@@ -10,23 +11,22 @@ export interface AuditLogEntry {
   log_entityId: number | null;
   log_ip: string;
   log_device: string;
-  log_createdAt: string;
+  log_createdAt: string; // ISO string
   userId: number;
   Email: string;
 }
 
-interface GetAuditLogResponse {
+export interface GetAuditLogResponse {
   data: AuditLogEntry[];
   statusCode: number;
   message: string;
 }
 
-interface StoreState {
+export interface StoreState {
   logs: AuditLogEntry[];
   selectedLog: AuditLogEntry | null;
   loading: boolean;
   error: string | null;
-
   fetchAuditLogs: () => Promise<void>;
 }
 
@@ -55,7 +55,7 @@ const useAuditLogStore = create<StoreState>((set) => ({
       }
 
       const data: GetAuditLogResponse = await response.json();
-      set({ logs: data.data, loading: false });
+      set({ logs: data.data ?? [], loading: false });
     } catch {
       set({ loading: false, error: "Error fetching audit logs" });
       toast.error("Error fetching audit logs");

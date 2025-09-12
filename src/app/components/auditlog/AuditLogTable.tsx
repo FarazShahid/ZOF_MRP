@@ -1,15 +1,16 @@
+// /components/audit/AuditLogTable.tsx
 import React from "react";
 import { ActionBadge } from "./ActionBadge";
 import { ModuleBadge } from "./ModuleBadge";
-import { AuditLog } from "@/src/types/audit";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { AuditLogEntry } from "@/store/useAuditLogStore";
 
 interface AuditLogTableProps {
-  logs: AuditLog[];
+  logs: AuditLogEntry[];
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  onRowClick: (log: AuditLog) => void;
+  onRowClick: (log: AuditLogEntry) => void;
 }
 
 export const AuditLogTable: React.FC<AuditLogTableProps> = ({
@@ -34,6 +35,12 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
     };
   };
 
+  const initialsFromEmail = (email: string) => {
+    if (!email) return "NA";
+    const namePart = email.split("@")[0] || email;
+    return namePart.slice(0, 2).toUpperCase();
+  };
+
   return (
     <div className="">
       {/* Table */}
@@ -51,7 +58,7 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
                 Action
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                User
+                User (Email)
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Details
@@ -60,54 +67,58 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
           </thead>
           <tbody className="divide-y divide-gray-200">
             {logs.map((log) => {
-              const { date, time } = formatDateTime(log.timestamp);
+              const { date, time } = formatDateTime(log.log_createdAt);
               return (
                 <tr
-                  key={log.id}
+                  key={log.log_id}
                   onClick={() => onRowClick(log)}
-                  className="cursor-pointer transition-colors"
+                  className="cursor-pointer transition-colors hover:bg-gray-50"
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="text-gray-900 font-medium">{date}</div>
                     <div className="text-gray-500">{time}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <ModuleBadge module={log.module} />
+                    <ModuleBadge module={log.log_module} />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <ActionBadge action={log.action} />
+                    <ActionBadge action={log.log_action} />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-8 w-8">
                         <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
                           <span className="text-xs font-medium text-gray-700">
-                            {log.user
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
+                            {initialsFromEmail(log.Email)}
                           </span>
                         </div>
                       </div>
                       <div className="ml-3">
                         <div className="text-sm font-medium text-gray-900">
-                          {log.user}
+                          {log.Email}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-900">
-                    <div className="max-w-xs truncate">{log.details}</div>
+                    <div className="max-w-xs truncate">{log.log_details}</div>
                   </td>
                 </tr>
               );
             })}
+            {logs.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                  No results found.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
 
       {/* Pagination */}
-      <div className=" px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+      <div className="px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
         <div className="flex-1 flex justify-between sm:hidden">
           <button
             onClick={() => onPageChange(Math.max(1, currentPage - 1))}
@@ -157,9 +168,7 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
                 );
               })}
               <button
-                onClick={() =>
-                  onPageChange(Math.min(totalPages, currentPage + 1))
-                }
+                onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
                 className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >

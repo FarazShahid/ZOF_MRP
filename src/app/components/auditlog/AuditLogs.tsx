@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { LuShield } from "react-icons/lu";
 import { AuditLogFilters } from "./AuditLogFilters";
 import { AuditLogTable } from "./AuditLogTable";
-import { AuditLogDetailSidebar } from "./AuditLogDetailSidebar";
 import { AuditLog, FilterState } from "@/src/types/audit";
 import { mockAuditLogs } from "@/src/data/mockAuditLogs";
 import AuditLogStats from "./Stats";
+import useAuditLogStore, { AuditLogEntry } from "@/store/useAuditLogStore";
+import { AuditLogDetailSidebar } from "./AuditLogDetailSidebar";
 
 export const AuditLogs: React.FC = () => {
   const [filters, setFilters] = useState<FilterState>({
@@ -19,83 +20,151 @@ export const AuditLogs: React.FC = () => {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
+  const [selectedLog, setSelectedLog] = useState<AuditLogEntry | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const { fetchAuditLogs, logs, loading } = useAuditLogStore();
 
   const itemsPerPage = 10;
 
+  useEffect(() => {
+    fetchAuditLogs();
+  }, [fetchAuditLogs]);
+
+  // Build dynamic select options from live data (unique modules/actions)
+  const moduleOptions = useMemo(
+    () => Array.from(new Set(logs.map((l) => l.log_module))).sort(),
+    [logs]
+  );
+
+  const actionOptions = useMemo(
+    () => Array.from(new Set(logs.map((l) => l.log_action))).sort(),
+    [logs]
+  );
+
+  // Helpful date parser that respects empty inputs
+  const isWithinDate = (iso: string, start: string, end: string) => {
+    if (!start && !end) return true;
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return false;
+
+    if (start) {
+      const s = new Date(start);
+      s.setHours(0, 0, 0, 0);
+      if (d < s) return false;
+    }
+    if (end) {
+      const e = new Date(end);
+      e.setHours(23, 59, 59, 999);
+      if (d > e) return false;
+    }
+    return true;
+  };
+
   // Filter logs based on current filters
   const filteredLogs = useMemo(() => {
-    return mockAuditLogs.filter((log) => {
-      // Date range filter
-      if (
-        filters.dateRange.start &&
-        new Date(log.timestamp) < new Date(filters.dateRange.start)
-      ) {
-        return false;
-      }
-      if (
-        filters.dateRange.end &&
-        new Date(log.timestamp) > new Date(filters.dateRange.end)
-      ) {
-        return false;
-      }
+    const searchTerm = filters.search.trim().toLowerCase();
+    const userTerm = filters.user.trim().toLowerCase();
 
-      // Module filter
-      if (filters.module && log.module !== filters.module) {
-        return false;
-      }
-
-      // Action filter
-      if (filters.action && log.action !== filters.action) {
-        return false;
-      }
-
-      // User filter
+    return logs.filter((log) => {
+      // Date range
       if (
-        filters.user &&
-        !log.user.toLowerCase().includes(filters.user.toLowerCase())
+        !isWithinDate(
+          log.log_createdAt,
+          filters.dateRange.start,
+          filters.dateRange.end
+        )
       ) {
         return false;
       }
 
-      // Search filter
-      if (filters.search) {
-        const searchTerm = filters.search.toLowerCase();
-        return (
-          log.details.toLowerCase().includes(searchTerm) ||
-          log.user.toLowerCase().includes(searchTerm) ||
-          log.module.toLowerCase().includes(searchTerm) ||
-          log.action.toLowerCase().includes(searchTerm) ||
-          log.entityId.toLowerCase().includes(searchTerm)
-        );
+      // Module
+      if (filters.module && log.log_module !== filters.module) return false;
+
+      // Action
+      if (filters.action && log.log_action !== filters.action) return false;
+
+      // User (matches Email)
+      if (userTerm && !log.Email.toLowerCase().includes(userTerm)) return false;
+
+      // Global Search
+      if (searchTerm) {
+        const hay = [
+          log.log_details,
+          log.Email,
+          log.log_module,
+          log.log_action,
+          String(log.log_id),
+          String(log.log_entityId ?? ""),
+          log.log_ip,
+          log.log_device,
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        if (!hay.includes(searchTerm)) return false;
       }
 
       return true;
     });
-  }, [filters]);
+  }, [logs, filters]);
+
+  // Filter logs based on current filters
+  // const filteredLogs = useMemo(() => {
+  //   return logs.filter((log) => {
+
+  //     // Module filter
+  //     if (filters.module && log.log_module !== filters.module) {
+  //       return false;
+  //     }
+
+  //     // Action filter
+  //     if (filters.action && log.log_action !== filters.action) {
+  //       return false;
+  //     }
+
+  //     // User filter
+  //     if (
+  //       filters.user &&
+  //       !log.Email.toLowerCase().includes(filters.user.toLowerCase())
+  //     ) {
+  //       return false;
+  //     }
+
+  //     // Search filter
+  //     if (filters.search) {
+  //       const searchTerm = filters.search.toLowerCase();
+  //       return (
+  //         log?.log_details.toLowerCase().includes(searchTerm) ||
+  //         log?.Email.toLowerCase().includes(searchTerm) ||
+  //         log?.log_module.toLowerCase().includes(searchTerm) ||
+  //         log?.log_action.toLowerCase().includes(searchTerm) ||
+  //         log?.log_id?.toString().toLowerCase().includes(searchTerm)
+  //       );
+  //     }
+
+  //     return true;
+  //   });
+  // }, [filters]);
 
   // Paginate filtered logs
   const paginatedLogs = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredLogs.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredLogs, currentPage, itemsPerPage]);
+  }, [filteredLogs, currentPage]);
 
-  const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(filteredLogs.length / itemsPerPage));
 
-  const handleRowClick = (log: AuditLog) => {
+  const handleRowClick = (log: AuditLogEntry) => {
     setSelectedLog(log);
     setSidebarOpen(true);
-  };
-
-  const handleExport = (format: "csv" | "pdf") => {
-    // In a real application, this would trigger actual export functionality
-    alert(`Exporting audit logs as ${format.toUpperCase()}...`);
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const handleExport = () => {};
 
   const handleFilterChange = (newFilters: FilterState) => {
     setFilters(newFilters);
@@ -121,7 +190,7 @@ export const AuditLogs: React.FC = () => {
 
           {/* Stats */}
           <AuditLogStats
-            mockAuditLogsLength={mockAuditLogs.length}
+            totalLogsLength={logs.length}
             filteredLogsLength={filteredLogs.length}
             currentPage={currentPage}
             totalPages={totalPages}
@@ -133,7 +202,8 @@ export const AuditLogs: React.FC = () => {
       <AuditLogFilters
         filters={filters}
         onFilterChange={handleFilterChange}
-        onExport={handleExport}
+        moduleOptions={moduleOptions}
+        actionOptions={actionOptions}
       />
 
       {/* Table */}
@@ -148,16 +218,6 @@ export const AuditLogs: React.FC = () => {
           />
         </div>
       </div>
-
-      {/* Detail Sidebar */}
-      <AuditLogDetailSidebar
-        log={selectedLog}
-        isOpen={sidebarOpen}
-        onClose={() => {
-          setSidebarOpen(false);
-          setSelectedLog(null);
-        }}
-      />
     </div>
   );
 };

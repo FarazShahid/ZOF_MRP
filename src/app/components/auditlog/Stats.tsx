@@ -2,14 +2,14 @@ import React from "react";
 import { FiFileText } from "react-icons/fi";
 
 interface StatProps {
-  mockAuditLogsLength: number;
+  totalLogsLength: number;
   filteredLogsLength: number;
   currentPage: number;
   totalPages: number;
 }
 
 const AuditLogStats: React.FC<StatProps> = ({
-  mockAuditLogsLength,
+   totalLogsLength,
   filteredLogsLength,
   currentPage,
   totalPages,
@@ -22,7 +22,7 @@ const AuditLogStats: React.FC<StatProps> = ({
           <div>
             <p className="text-sm font-medium text-blue-900">Total Logs</p>
             <p className="text-2xl font-bold text-blue-600">
-              {mockAuditLogsLength}
+              {totalLogsLength}
             </p>
           </div>
         </div>
