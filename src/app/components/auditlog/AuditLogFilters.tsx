@@ -109,7 +109,7 @@ export const AuditLogFilters: React.FC<AuditLogFiltersProps> = ({
         </div>
 
         {/* Export Buttons */}
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <button
             onClick={() => onExport('csv')}
             className="flex items-center gap-2 px-3 py-2 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
@@ -124,7 +124,7 @@ export const AuditLogFilters: React.FC<AuditLogFiltersProps> = ({
             <MdOutlineFileDownload className="w-4 h-4" />
             PDF
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
