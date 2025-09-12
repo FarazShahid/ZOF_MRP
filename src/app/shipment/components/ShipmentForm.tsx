@@ -34,7 +34,8 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
   const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
 
   const { fetchCarriors, Carriors } = useCarriorStore();
-  const { fetchOrders, getOrderItemsByOrderId, Orders, OrderItemById } = useOrderStore();
+  const { fetchOrders, getOrderItemsByOrderId, Orders, OrderItemById } =
+    useOrderStore();
   const { uploadDocument, loadingDoc } = useDocumentCenterStore();
   const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
   const {
@@ -45,50 +46,78 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
     loading,
   } = useShipmentStore();
 
-  // ---- normalize shipment object from store (your store sets ShipmentById = data.data) ----
   const ship = ShipmentById ?? null;
 
-  // safely read boxes from either `boxes` (api) or `Boxes` (type/interface)
   const readBoxes = (src: any) => {
     const raw = src?.boxes ?? src?.Boxes ?? [];
     return Array.isArray(raw) ? raw : [];
   };
 
-  // ---------- initial values (memoized to avoid formik glitches) ----------
+  // helper to normalize both legacy and new box shapes
+  const normalizeBoxes = (src: any) => {
+    const raw = readBoxes(src);
+    return (Array.isArray(raw) ? raw : []).map((b: any) => ({
+      BoxNumber: b?.BoxNumber ?? "",
+      Weight: Number(b?.Weight) || 0,
+      OrderItemName: b?.OrderItemName ?? "",
+      OrderBoxDescription: b?.OrderBoxDescription ?? "",
+
+      // if new shape is present, use it; otherwise adapt legacy fields to a single item row
+      items:
+        Array.isArray(b?.items) && b.items.length
+          ? b.items.map((it: any) => ({
+              OrderItemId:
+                it?.OrderItemId != null ? String(it.OrderItemId) : "",
+              OrderItemDescription: it?.OrderItemDescription ?? "",
+              Quantity: Number(it?.Quantity) || 0,
+            }))
+          : [
+              {
+                OrderItemId:
+                  b?.OrderItemId != null ? String(b.OrderItemId) : "",
+                OrderItemDescription: b?.OrderItemDescription ?? "",
+                Quantity: Number(b?.Quantity) || 0,
+              },
+            ],
+    }));
+  };
+
   const initialValues = useMemo(() => {
     if (shipmentId && ship) {
-      const boxes = readBoxes(ship).map((b: any) => ({
-        // API shows "Test Box-1" => keep string
-        BoxNumber: b?.BoxNumber ?? "",
-        Quantity: b?.Quantity ?? 0,
-        Weight: b?.Weight ?? 0,
-        OrderItemName: b?.OrderItemName ?? "",
-        // keep string for <select> value
-        OrderItemId: b?.OrderItemId != null ? String(b.OrderItemId) : "",
-        OrderItemDescription: b?.OrderItemDescription ?? "",
-      }));
+      const boxes = normalizeBoxes(ship);
 
       return {
         ShipmentCode: ship.ShipmentCode || "",
         TrackingId: ship.TrackingId || "",
         OrderNumber: ship.OrderNumber || "",
         ShipmentCarrierId: ship.ShipmentCarrierId || "",
-        ShipmentDate: ship.ShipmentDate ? ship.ShipmentDate.substring(0, 10) : "",
-        ReceivedTime: ship.ReceivedTime ? ship.ReceivedTime.substring(0, 16) : "",
+        ShipmentDate: ship.ShipmentDate
+          ? ship.ShipmentDate.substring(0, 10)
+          : "",
+        ReceivedTime: ship.ReceivedTime
+          ? ship.ReceivedTime.substring(0, 16)
+          : "",
         WeightUnit: ship.WeightUnit || "",
         TotalWeight: ship.TotalWeight || 0,
         NumberOfBoxes: ship.NumberOfBoxes || 0,
         ShipmentCost: parseFloat(String(ship.ShipmentCost)) || 0,
         Status: ship.Status || "",
-        // for submit consistency
         orderIds: ship.OrderIds?.map((id: number) => ({ orderId: id })) || [],
         boxes: boxes.length
           ? boxes
-          : [{ BoxNumber: "", Quantity: 0, Weight: 0, OrderItemDescription: "", OrderItemId: "" }],
+          : [
+              {
+                BoxNumber: "",
+                Weight: 0,
+                OrderBoxDescription: "",
+                items: [
+                  { OrderItemId: "", OrderItemDescription: "", Quantity: 0 },
+                ],
+              },
+            ],
       };
     }
 
-    // new
     return {
       ShipmentCode: "",
       TrackingId: "",
@@ -102,7 +131,14 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
       ShipmentCost: 0,
       Status: "",
       orderIds: [],
-      boxes: [{ BoxNumber: "", Quantity: 0, Weight: 0, OrderItemDescription: "", OrderItemId: "" }],
+      boxes: [
+        {
+          BoxNumber: "",
+          Weight: 0,
+          OrderBoxDescription: "",
+          items: [{ OrderItemId: "", OrderItemDescription: "", Quantity: 0 }],
+        },
+      ],
     };
   }, [shipmentId, ship]);
 
@@ -137,7 +173,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
       ShipmentCode: values.ShipmentCode,
       TrackingId: values.TrackingId,
       OrderNumber: values.OrderNumber,
-      // API expects number[]; convert from UI strings
       OrderIds: selectedOrderIds.map((x) => Number(x)),
       ShipmentCarrierId: values.ShipmentCarrierId,
       ShipmentDate: values.ShipmentDate,
@@ -148,15 +183,24 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
       ReceivedTime: values.ReceivedTime,
       Status: values.Status,
 
+      // boxes: (values.boxes || []).map((b: any) => ({
+      //   BoxNumber: String(b.BoxNumber ?? ""),
+      //   Quantity: Number(b.Quantity) || 0,
+      //   Weight: Number(b.Weight) || 0,
+      //   OrderItemName: b.OrderItemName ?? "",
+      //   OrderItemId: b.OrderItemId ? Number(b.OrderItemId) : undefined,
+      //   OrderItemDescription: b.OrderItemDescription ?? "",
+      // })),
       boxes: (values.boxes || []).map((b: any) => ({
         BoxNumber: String(b.BoxNumber ?? ""),
-        Quantity: Number(b.Quantity) || 0,
         Weight: Number(b.Weight) || 0,
-        // keep both names—some backends accept either
-        OrderItemName: b.OrderItemName ?? "",
-        // convert back to number for API
-        OrderItemId: b.OrderItemId ? Number(b.OrderItemId) : undefined,
-        OrderItemDescription: b.OrderItemDescription ?? "",
+        OrderItemName: String(b.OrderItemName ?? ""),
+        OrderBoxDescription: b.OrderBoxDescription ?? "",
+        items: (b.items || []).map((it: any) => ({
+          OrderItemId: it.OrderItemId ? Number(it.OrderItemId) : undefined,
+          OrderItemDescription: String(it.OrderItemDescription ?? ""),
+          Quantity: Number(it.Quantity) || 0,
+        })),
       })),
     };
 
@@ -239,7 +283,9 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
             <span className="">Shipment</span>
           </Link>
           <MdKeyboardArrowRight />
-          <span className="">{!shipmentId ? "Add New Shipment" : "Edit Shipment"}</span>
+          <span className="">
+            {!shipmentId ? "Add New Shipment" : "Edit Shipment"}
+          </span>
         </div>
       </div>
 
@@ -270,7 +316,9 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                       }
                     >
                       {Orders?.map((Order) => (
-                        <SelectItem key={Order?.Id}>{Order?.OrderName}</SelectItem>
+                        <SelectItem key={Order?.Id}>
+                          {Order?.OrderName}
+                        </SelectItem>
                       ))}
                     </Select>
                   </div>
@@ -283,7 +331,11 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                       placeholder="Enter shipment code"
                       className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                     />
-                    <ErrorMessage name="ShipmentCode" component="div" className="text-red-500 text-sm" />
+                    <ErrorMessage
+                      name="ShipmentCode"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1">
@@ -294,12 +346,20 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                       placeholder="Enter Tracking Id"
                       className="defaultInputField"
                     />
-                    <ErrorMessage name="TrackingId" component="div" className="text-red-500 text-sm" />
+                    <ErrorMessage
+                      name="TrackingId"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1">
                     <Label isRequired={true} label="Shipment Carrier" />
-                    <Field as="select" name="ShipmentCarrierId" className="defaultInputField">
+                    <Field
+                      as="select"
+                      name="ShipmentCarrierId"
+                      className="defaultInputField"
+                    >
                       <option value={""}>Select Carrier</option>
                       {Carriors?.map((Carrior, index) => (
                         <option value={Carrior?.Id} key={index}>
@@ -307,51 +367,103 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                         </option>
                       ))}
                     </Field>
-                    <ErrorMessage name="ShipmentCarrierId" component="div" className="text-red-500 text-sm" />
+                    <ErrorMessage
+                      name="ShipmentCarrierId"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1">
                     <Label isRequired={true} label="Shipment Date" />
-                    <Field type="date" name="ShipmentDate" className="defaultInputField" />
-                    <ErrorMessage name="ShipmentDate" component="div" className="text-red-500 text-sm" />
+                    <Field
+                      type="date"
+                      name="ShipmentDate"
+                      className="defaultInputField"
+                    />
+                    <ErrorMessage
+                      name="ShipmentDate"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1">
                     <Label isRequired={false} label="Received Time" />
-                    <Field type="datetime-local" name="ReceivedTime" className="defaultInputField" />
+                    <Field
+                      type="datetime-local"
+                      name="ReceivedTime"
+                      className="defaultInputField"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1">
                     <Label isRequired={true} label="Weight Unit" />
-                    <Field as="select" name="WeightUnit" className="defaultInputField">
+                    <Field
+                      as="select"
+                      name="WeightUnit"
+                      className="defaultInputField"
+                    >
                       <option value={""}>Select a Weight Unit</option>
                       <option value={"kg"}>KG</option>
                       <option value={"pound"}>Pound</option>
                     </Field>
-                    <ErrorMessage name="WeightUnit" component="div" className="text-red-500 text-sm" />
+                    <ErrorMessage
+                      name="WeightUnit"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1">
                     <Label isRequired={true} label="Total Weight" />
-                    <Field type="number" name="TotalWeight" className="defaultInputField" />
-                    <ErrorMessage name="TotalWeight" component="div" className="text-red-500 text-sm" />
+                    <Field
+                      type="number"
+                      name="TotalWeight"
+                      className="defaultInputField"
+                    />
+                    <ErrorMessage
+                      name="TotalWeight"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1">
                     <Label isRequired={true} label="Number Of Boxes" />
-                    <Field type="number" name="NumberOfBoxes" className="defaultInputField" />
-                    <ErrorMessage name="NumberOfBoxes" component="div" className="text-red-500 text-sm" />
+                    <Field
+                      type="number"
+                      name="NumberOfBoxes"
+                      className="defaultInputField"
+                    />
+                    <ErrorMessage
+                      name="NumberOfBoxes"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1">
                     <Label isRequired={true} label="Shipment Cost" />
-                    <Field type="number" name="ShipmentCost" className="defaultInputField" />
-                    <ErrorMessage name="ShipmentCost" component="div" className="text-red-500 text-sm" />
+                    <Field
+                      type="number"
+                      name="ShipmentCost"
+                      className="defaultInputField"
+                    />
+                    <ErrorMessage
+                      name="ShipmentCost"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1">
                     <Label isRequired={true} label="Status" />
-                    <Field as="select" name="Status" className="defaultInputField">
+                    <Field
+                      as="select"
+                      name="Status"
+                      className="defaultInputField"
+                    >
                       <option value={""}>Select a status</option>
                       {ShipmentStatus?.map((status, index) => (
                         <option value={status?.label} key={index}>
@@ -359,12 +471,16 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                         </option>
                       ))}
                     </Field>
-                    <ErrorMessage name="Status" component="div" className="text-red-500 text-sm" />
+                    <ErrorMessage
+                      name="Status"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
                 </div>
 
                 {/* ------ boxes Info ------ */}
-                <FieldArray name="boxes">
+                {/* <FieldArray name="boxes">
                   {({ push, remove, form }) => (
                     <>
                       {(form.values.boxes ?? []).map((_: any, index: number) => (
@@ -381,11 +497,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                             <ErrorMessage name={`boxes[${index}].BoxNumber`} component="div" className="text-red-500 text-sm" />
                           </div>
 
-                          <div className="flex flex-col gap-1">
-                            <Label isRequired={true} label="Quantity" />
-                            <Field type="number" required name={`boxes[${index}].Quantity`} className="defaultInputField" />
-                            <ErrorMessage name={`boxes[${index}].Quantity`} component="div" className="text-red-500 text-sm" />
-                          </div>
+                          
 
                           <div className="flex flex-col gap-1">
                             <Label isRequired={true} label="Weight" />
@@ -393,6 +505,12 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                             <ErrorMessage name={`boxes[${index}].Weight`} component="div" className="text-red-500 text-sm" />
                           </div>
 
+
+                          <div className="flex flex-col gap-1">
+                            <Label isRequired={true} label="Quantity" />
+                            <Field type="number" required name={`boxes[${index}].Quantity`} className="defaultInputField" />
+                            <ErrorMessage name={`boxes[${index}].Quantity`} component="div" className="text-red-500 text-sm" />
+                          </div>
                           <div className="flex flex-col gap-1">
                             <Label isRequired={true} label="Order Item" />
                             <Field as="select" required name={`boxes[${index}].OrderItemId`} className="defaultInputField">
@@ -447,6 +565,206 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                       ))}
                     </>
                   )}
+                </FieldArray> */}
+                <FieldArray name="boxes">
+                  {({ push, remove, form }) => (
+                    <>
+                      {(form.values.boxes ?? []).map(
+                        (box: any, index: number) => (
+                          <div
+                            key={index}
+                            className="grid grid-cols-2 gap-2 border border-gray-200 rounded-xl p-3"
+                          >
+                            {/* Box header fields */}
+                            <div className="flex flex-col gap-1">
+                              <Label isRequired={true} label="Box Number" />
+                              <Field
+                                type="text"
+                                name={`boxes[${index}].BoxNumber`}
+                                placeholder="Enter Box No."
+                                className="defaultInputField"
+                              />
+                              <ErrorMessage
+                                name={`boxes[${index}].BoxNumber`}
+                                component="div"
+                                className="text-red-500 text-sm"
+                              />
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                              <Label isRequired={true} label="Weight" />
+                              <Field
+                                type="number"
+                                name={`boxes[${index}].Weight`}
+                                className="defaultInputField"
+                              />
+                              <ErrorMessage
+                                name={`boxes[${index}].Weight`}
+                                component="div"
+                                className="text-red-500 text-sm"
+                              />
+                            </div>
+
+                            {/* <div className="flex flex-col gap-1 col-span-2">
+                              <Label
+                                isRequired={false}
+                                label="Order Item Name (box label)"
+                              />
+                              <Field
+                                type="text"
+                                name={`boxes[${index}].OrderItemName`}
+                                placeholder="e.g., Green Jersey"
+                                className="defaultInputField"
+                              />
+                            </div> */}
+
+                            {/* ------- Items inside this box ------- */}
+                            <div className="col-span-2">
+                              <div className="text-sm font-semibold mb-1">
+                                Items
+                              </div>
+                              <FieldArray name={`boxes[${index}].items`}>
+                                {({ push: pushItem, remove: removeItem }) => (
+                                  <div className="space-y-2">
+                                    {(box.items ?? []).map(
+                                      (_: any, j: number) => (
+                                        <div
+                                          key={j}
+                                          className="grid grid-cols-2 md:grid-cols-4 gap-2 items-start"
+                                        >
+                                          <div className="flex flex-col gap-1">
+                                            <Label
+                                              isRequired={true}
+                                              label="Order Item"
+                                            />
+                                            <Field
+                                              as="select"
+                                              name={`boxes[${index}].items[${j}].OrderItemId`}
+                                              className="defaultInputField"
+                                            >
+                                              <option value={""}>
+                                                Select an order item
+                                              </option>
+                                              {OrderItemById?.map((item, i) => (
+                                                <option
+                                                  value={String(item.Id)}
+                                                  key={i}
+                                                >
+                                                  {item.Name}
+                                                </option>
+                                              ))}
+                                            </Field>
+                                            <ErrorMessage
+                                              name={`boxes[${index}].items[${j}].OrderItemId`}
+                                              component="div"
+                                              className="text-red-500 text-sm"
+                                            />
+                                          </div>
+
+                                          <div className="flex flex-col gap-1">
+                                            <Label
+                                              isRequired={true}
+                                              label="Quantity"
+                                            />
+                                            <Field
+                                              type="number"
+                                              name={`boxes[${index}].items[${j}].Quantity`}
+                                              className="defaultInputField"
+                                            />
+                                            <ErrorMessage
+                                              name={`boxes[${index}].items[${j}].Quantity`}
+                                              component="div"
+                                              className="text-red-500 text-sm"
+                                            />
+                                          </div>
+                                          <div className="flex items-center justify-end md:col-span-4 col-span-2 gap-3">
+                                            <button
+                                              type="button"
+                                              onClick={() =>
+                                                pushItem({
+                                                  OrderItemId: "",
+                                                  OrderItemDescription: "",
+                                                  Quantity: 0,
+                                                })
+                                              }
+                                              className="text-green-500"
+                                              title="Add item row"
+                                            >
+                                              <FaCirclePlus size={20} />
+                                            </button>
+                                            {j > 0 && (
+                                              <button
+                                                type="button"
+                                                onClick={() => removeItem(j)}
+                                                className="text-red-500"
+                                                title="Remove item row"
+                                              >
+                                                <MdDelete size={20} />
+                                              </button>
+                                            )}
+                                          </div>
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                )}
+                              </FieldArray>
+                            </div>
+
+                            <div className="flex flex-col gap-1 col-span-2">
+                              <Label isRequired={false} label="Description" />
+                              <Field
+                                as="textarea"
+                                placeholder="Enter Description"
+                                name={`boxes[${index}].OrderBoxDescription`}
+                                className="defaultInputField"
+                              />
+                              <ErrorMessage
+                                name={`boxes[${index}].OrderBoxDescription`}
+                                component="div"
+                                className="text-red-500 text-sm"
+                              />
+                            </div>
+
+                            {/* Box-level actions */}
+                            <div className="flex justify-end col-span-2 gap-3">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  push({
+                                    BoxNumber: "",
+                                    Weight: 0,
+                                    OrderItemName: "",
+                                    items: [
+                                      {
+                                        OrderItemId: "",
+                                        OrderItemDescription: "",
+                                        Quantity: 0,
+                                      },
+                                    ],
+                                  })
+                                }
+                                className="bg-green-500 px-2 py-1 rounded-lg text-sm text-white"
+                                title="Add box"
+                              >
+                                Add Box
+                              </button>
+                              {index > 0 && (
+                                <button
+                                  type="button"
+                                  onClick={() => remove(index)}
+                                  className="bg-red-500 px-2 py-1 rounded-lg text-sm text-white"
+                                  title="Remove box"
+                                >
+                                  Remove Box
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </>
+                  )}
                 </FieldArray>
               </div>
 
@@ -459,7 +777,12 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
               )}
 
               <div className="flex items-center justify-end gap-2 mt-5">
-                <Button color="danger" type="button" variant="flat" onPress={onClose}>
+                <Button
+                  color="danger"
+                  type="button"
+                  variant="flat"
+                  onPress={onClose}
+                >
                   Cancel
                 </Button>
                 <Button color="primary" type="submit" disabled={isSubmitting}>

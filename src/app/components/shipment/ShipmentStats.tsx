@@ -65,7 +65,7 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments }) => {
         {statCards.map((card) => (
           <div
             key={card.title}
-            className={`${card.textColor} rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-gray-300 text-slate-800 dark:text-slate-300`}
+            className={`${card.textColor} ${card.bgColor} rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow`}
           >
             <div className="flex items-center justify-between">
               <div>

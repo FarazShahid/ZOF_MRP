@@ -18,6 +18,8 @@ import { Spinner } from "@heroui/react";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { useFileUploadStore } from "@/store/useFileUploadStore";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
+import QAChecklistClickUp from "../../components/product/QAChecklistClickUp";
+import { QAItem } from "@/src/types/product";
 
 const steps = ["General Information", "Product Details", "Description"];
 
@@ -25,6 +27,7 @@ const formSteps = [
   { id: 1, name: "General Information", icon: <FaRegFileLines size={20} /> },
   { id: 2, name: "Product Details", icon: <FaRuler size={20} /> },
   { id: 3, name: "Description", icon: <GrDocumentImage size={20} /> },
+  {id: 4, name: "QA Checklist", icon: <GrDocumentImage size={20} /> }
 ];
 
 const ProductForm = ({ productId }: { productId?: string }) => {
@@ -98,6 +101,10 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     setItemFiles((prev) => ({ ...prev, [index]: file }));
   };
 
+  const handleCheckList = (items: QAItem[]) => {
+    console.log(items);
+  }
+
   const renderStep = (formikProps: any) => {
     switch (currentStep) {
       case 1:
@@ -112,6 +119,10 @@ const ProductForm = ({ productId }: { productId?: string }) => {
             productId={productId}
           />
         );
+      case 4: 
+        return (
+          <QAChecklistClickUp heading="QA Checklist" onChange={handleCheckList} />
+        )
       default:
         return null;
     }
@@ -312,7 +323,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
                       </button>
                     )}
 
-                    {currentStep < 3 && (
+                    {currentStep < 4 && (
                       <button
                         type="button"
                         onClick={() =>
@@ -324,7 +335,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
                       </button>
                     )}
 
-                    {currentStep === 3 && (
+                    {currentStep === 4 && (
                       <button
                         type="submit"
                         disabled={isSubmitting}

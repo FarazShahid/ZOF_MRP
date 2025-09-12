@@ -12,10 +12,6 @@ interface DownloadPdfMenuProps {
   handleDownloadPdf: (variant: PdfVariant) => void;
 }
 
-/**
- * Uses HeroUI Dropdown instead of MenuHandler/MenuList.
- * A single button opens a dropdown menu with options (summary / specification).
- */
 export default function DownloadPdfMenu({ downloading, OrderById, handleDownloadPdf }: DownloadPdfMenuProps) {
   const disabled = !OrderById || downloading;
 

@@ -6,8 +6,8 @@ const BottomUnit = () => {
   const BottomUnitInputs = [
     { id: 1, name: "Hip", label: "Hip" },
     { id: 2, name: "Waist", label: "Waist" },
-    { id: 3, name: "WasitStretch", label: "Wasit Stretch" }, // new field
-    { id: 4, name: "WasitRelax", label: "Wasit Relax" }, // new field
+    { id: 3, name: "WasitStretch", label: "Waist Stretch" }, // new field
+    { id: 4, name: "WasitRelax", label: "Waist Relax" }, // new field
     { id: 5, name: "Thigh", label: "Thigh" }, // new field
     { id: 6, name: "KneeWidth", label: "Knee Width" },
     { id: 7, name: "BackRise", label: "Back Rise" }, // new field

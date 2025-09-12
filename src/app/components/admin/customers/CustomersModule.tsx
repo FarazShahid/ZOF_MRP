@@ -86,8 +86,9 @@ export const CustomersModule: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {clients.map((customer) => (
+          {clients?.map((customer) => (
             <CustomerCard
+              key={customer?.Id}
               customer={customer}
               onCustomerClick={(customer) => handleCustomerClick(customer)}
               onEdit={(id) => handleOpenEditModal(id)}
@@ -97,12 +98,14 @@ export const CustomersModule: React.FC = () => {
         </div>
       )}
 
-      <AddClients
-        isOpen={isAddModalOpen}
-        closeAddModal={closeAddModal}
-        isEdit={isEdit}
-        clientId={selectedClientId}
-      />
+      {isAddModalOpen && (
+        <AddClients
+          isOpen={isAddModalOpen}
+          closeAddModal={closeAddModal}
+          isEdit={isEdit}
+          clientId={selectedClientId}
+        />
+      )}
 
       <DeleteClient
         isOpen={isOpenDeletModal}

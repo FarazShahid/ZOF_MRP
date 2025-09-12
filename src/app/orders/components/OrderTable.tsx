@@ -25,6 +25,7 @@ import ReorderConfirmation from "./ReorderConfirmation";
 import { GoPencil } from "react-icons/go";
 import ActionBtn from "../../components/ui/button/ActionBtn";
 import { FaRegEye } from "react-icons/fa";
+import OrderList from "../../components/order/OrderList";
 
 const OrderTable = () => {
   const [clientId, setClientId] = useState<number>(0);
@@ -87,10 +88,11 @@ const OrderTable = () => {
 
   useEffect(() => {
     fetchClients();
+
   }, []);
   return (
     <div>
-      <div className="w-full flex flex-col gap-3">
+      {/* <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <select
             className="p-1 rounded-lg border-1"
@@ -107,14 +109,6 @@ const OrderTable = () => {
           </select>
 
           <div className="flex items-center gap-2">
-            {/* <Tooltip content="Order Status">
-              <Link
-                href={"/orders/orderstatus"}
-                className="dark:bg-slate-500 bg-slate-300 dark:text-white text-gray-800 rounded-lg p-2"
-              >
-                <FiSettings size={20} />
-              </Link>
-            </Tooltip> */}
             <Link
               href={"/orders/addorder"}
               type="button"
@@ -219,7 +213,9 @@ const OrderTable = () => {
             )}
           </TableBody>
         </Table>
-      </div>
+      </div> */}
+
+      <OrderList clients={clients} orders={Orders} />
 
       {isOpenDeletModal && (
         <DeleteModal

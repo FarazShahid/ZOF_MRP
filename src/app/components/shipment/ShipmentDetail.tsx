@@ -14,6 +14,7 @@ import {
 import StatusBadge from "./StatusBadge";
 import { ShipmentStatus } from "@/src/types/admin";
 import useShipmentStore from "@/store/useShipmentStore";
+import { useRouter } from "next/navigation";
 
 interface ShipmentDetailProps {
   shipmentId: number;
@@ -26,6 +27,7 @@ const ShipmentDetail: React.FC<ShipmentDetailProps> = ({
 }) => {
   const { getShipmentById, ShipmentById } = useShipmentStore();
   const [isBoxesSectionOpen, setIsBoxesSectionOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (shipmentId) {
@@ -51,11 +53,8 @@ const ShipmentDetail: React.FC<ShipmentDetailProps> = ({
     });
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
+  const viewOrderDetail = (orderId: number) => {
+    router.push(`/orders/vieworder/${orderId}`);
   };
 
   return (
@@ -181,8 +180,9 @@ const ShipmentDetail: React.FC<ShipmentDetailProps> = ({
                     </p>
                   </div>
                   <button
+                    onClick={() => viewOrderDetail(order.Id)}
                     type="button"
-                    className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    className="text-blue-600 hover:text-blue-700 text-sm font-medium whitespace-nowrap"
                   >
                     View Order
                   </button>
@@ -199,7 +199,7 @@ const ShipmentDetail: React.FC<ShipmentDetailProps> = ({
             className="flex items-center justify-between w-full text-left"
           >
             <h3 className="text-lg font-semibold text-slate-900">
-              Boxes ({ShipmentById?.Boxes?.length || 0})
+              Boxes ({ShipmentById?.boxes?.length || 0})
             </h3>
             {isBoxesSectionOpen ? (
               <ChevronDown className="w-5 h-5 text-slate-400" />
@@ -208,10 +208,10 @@ const ShipmentDetail: React.FC<ShipmentDetailProps> = ({
             )}
           </button>
 
-          {isBoxesSectionOpen && ShipmentById?.Boxes && (
+          {isBoxesSectionOpen && ShipmentById?.boxes && (
             <div className="mt-4 space-y-3">
-              {ShipmentById?.Boxes.map((box) => (
-                <div key={box.Id} className="p-3 bg-slate-50 rounded-lg">
+              {ShipmentById?.boxes.map((box, index) => (
+                <div key={index} className="p-3 bg-slate-50 rounded-lg">
                   <div className="grid grid-cols-1 gap-2 text-sm">
                     <div className="flex justify-between">
                       <span className="font-medium text-slate-900">

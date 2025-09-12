@@ -50,3 +50,14 @@ export type ActiveModule = 'users' | 'customers' | 'events' | 'carriers';
 
 
 export type ShipmentStatus = 'In Transit' | 'Damaged' | 'Delivered' | 'Cancelled';
+
+export type OrderStatus = 'Production' | 'Shipped' | 'Packing' | 'Kept in stock';
+
+
+export const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
