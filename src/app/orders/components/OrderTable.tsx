@@ -92,7 +92,7 @@ const OrderTable = () => {
   }, []);
   return (
     <div>
-      {/* <div className="w-full flex flex-col gap-3">
+      <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <select
             className="p-1 rounded-lg border-1"
@@ -213,9 +213,9 @@ const OrderTable = () => {
             )}
           </TableBody>
         </Table>
-      </div> */}
+      </div>
 
-      <OrderList clients={clients} orders={Orders} />
+      {/* <OrderList clients={clients} orders={Orders} /> */}
 
       {isOpenDeletModal && (
         <DeleteModal
