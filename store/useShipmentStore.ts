@@ -116,14 +116,16 @@ export interface ShipmentByIdResponse{
   };
   boxes: {
     Id: number;
-    Quantity: number;
-    ShipmentId: number;
-    Weight: number;
-    OrderItemId: number;
-    OrderItem: string;
-    OrderItemName: string;
-    OrderBoxDescription: string;
-    BoxNumber: number;
+     BoxNumber: number;
+      OrderBoxDescription: string;
+        OrderItemName: string;
+     Weight: number;
+    items:{
+      Id: number;
+      OrderItemId: number;
+      OrderItemName: string;
+      Quantity: string;
+    }[]
   }[];
   CreatedOn: string;
   CreatedBy: string;

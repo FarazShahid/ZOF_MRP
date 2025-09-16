@@ -42,18 +42,18 @@ const ShipmentGrid: React.FC<ShipmentGridProps> = ({
       {shipments?.map((shipment) => (
         <div
           key={shipment.Id}
-          className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+          className="rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
         >
           {/* Header */}
           <div className="p-4 border-b border-slate-200">
             <div className="flex items-start justify-between">
               <div className="flex items-center space-x-2">
-                <Package className="w-5 h-5 text-slate-400" />
+                <Package className="w-5 h-5 text-gray-600" />
                 <div>
-                  <h3 className="font-semibold text-slate-900">
+                  <h3 className="font-semibold text-gray-900">
                     {shipment?.ShipmentCode}
                   </h3>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-gray-600">
                     {shipment?.ShipmentCarrierName}
                   </p>
                 </div>
@@ -67,26 +67,26 @@ const ShipmentGrid: React.FC<ShipmentGridProps> = ({
             {/* Date, Boxes, Weight, Cost */}
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div className="flex items-center space-x-2">
-                <Calendar className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-600">
+                <Calendar className="w-4 h-4 text-gray-600" />
+                <span className="text-gray-600">
                   {formatDate(shipment.ShipmentDate)}
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <Package className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-600">
+                <Package className="w-4 h-4 text-gray-600" />
+                <span className="text-gray-600">
                   {shipment.NumberOfBoxes} boxes
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <Weight className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-600">
+                <Weight className="w-4 h-4 text-gray-600" />
+                <span className="text-gray-600">
                   {shipment.TotalWeight} {shipment.WeightUnit}
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <DollarSign className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-900 font-medium">
+                <DollarSign className="w-4 h-4 text-gray-600" />
+                <span className="text-gray-900 font-medium">
                   {shipment.ShipmentCost}
                 </span>
               </div>
@@ -94,7 +94,7 @@ const ShipmentGrid: React.FC<ShipmentGridProps> = ({
 
             {/* Orders */}
             <div>
-              <p className="text-xs font-medium text-slate-500 mb-2">
+              <p className="text-xs font-medium text-gray-500 mb-2">
                 ASSOCIATED ORDERS
               </p>
               <div className="flex flex-wrap gap-1">
@@ -116,7 +116,7 @@ const ShipmentGrid: React.FC<ShipmentGridProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="px-4 py-3 bg-slate-50 rounded-b-lg border-t border-slate-200">
+          <div className="px-4 py-3 rounded-b-lg border-t border-slate-200">
             <div className="flex items-center justify-end space-x-2">
               <button
                 type="button"
@@ -124,7 +124,7 @@ const ShipmentGrid: React.FC<ShipmentGridProps> = ({
                   e.stopPropagation();
                   onViewDetails(shipment.Id);
                 }}
-                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-50 rounded-md transition-colors"
               >
                 <Eye className="w-4 h-4" />
                 <span>View</span>
@@ -132,7 +132,7 @@ const ShipmentGrid: React.FC<ShipmentGridProps> = ({
               <button
                 type="button"
                 onClick={() => handleEditShipment(shipment.Id)}
-                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
+                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-gray-600 hover:bg-slate-100 dark:hover:bg-slate-500 rounded-md transition-colors"
               >
                 <Edit className="w-4 h-4" />
                 <span>Edit</span>
@@ -140,7 +140,7 @@ const ShipmentGrid: React.FC<ShipmentGridProps> = ({
               <button
                 type="button"
                 onClick={() => onDelete(shipment.Id)}
-                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-red-600 dark:text-red-100 hover:bg-red-50 dark:hover:bg-red-400 rounded-md transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
                 <span>Delete</span>

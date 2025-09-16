@@ -26,10 +26,10 @@ export const getDeadlineStatus = (deadline: string) => {
     const status = getDeadlineStatus(deadline);
     switch (status) {
       case "overdue":
-        return "text-red-600 bg-red-50 border-red-200";
+        return "text-red-600 border-red-200";
       case "upcoming":
-        return "text-orange-600 bg-orange-50 border-orange-200";
+        return "text-orange-600 border-orange-200";
       default:
-        return "text-slate-600 bg-slate-50 border-slate-200";
+        return "text-slate-600 border-slate-200";
     }
   };

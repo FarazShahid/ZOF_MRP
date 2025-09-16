@@ -13,7 +13,7 @@ interface DeleteModalProps {
   onClose: () => void;
   orderId: number;
   clientId: number | undefined;
-  onDeleteSuccess: () => void;
+  onDeleteSuccess?: () => void;
 }
 
 const DeleteModal: React.FC<DeleteModalProps> = ({

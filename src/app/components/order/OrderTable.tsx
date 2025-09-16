@@ -28,56 +28,51 @@ const OrderTable: React.FC<OrderTableProps> = ({
   onReorderOrder,
 }) => {
   return (
-    <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+    <div className=" rounded-lg border border-slate-200 dark:border-gray-50 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-slate-200">
-          <thead className="bg-slate-50">
+          <thead className="bg-white dark:bg-slate-700">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                 Order Details
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                 Client
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                 Event
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                 Deadline
               </th>
-              {/* <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                Amount
-              </th> */}
-              <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-slate-200">
-            {orders?.map((order, index) => (
+            <tbody className=" divide-y divide-slate-200">
+            {orders?.map((order) => (
               <tr
                 key={order?.Id}
-                className={`hover:bg-slate-50 transition-colors ${
-                  index % 2 === 0 ? "bg-white" : "bg-slate-25"
-                }`}
+                className={"hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"}
               >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div>
-                    <div className="text-sm font-medium text-slate-900">
+                    <div className="text-sm font-medium text-gray-900">
                       {order?.OrderName}
                     </div>
-                    <div className="text-sm text-slate-500">
+                    <div className="text-sm text-gray-500">
                       {order?.OrderNumber}
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {order?.ClientName}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                   {order?.EventName}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -96,9 +91,6 @@ const OrderTable: React.FC<OrderTableProps> = ({
                     )}
                   </div>
                 </td>
-                {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-medium">
-                  {order.totalAmount ? formatCurrency(order.totalAmount) : '-'}
-                </td> */}
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
                     <button

@@ -68,9 +68,9 @@ const ShipmentTable: React.FC<ShipmentTableProps> = ({
             {shipments.map((shipment) => (
               <tr
                 key={shipment.Id}
-                className="transition-colors cursor-pointer"
+                className={"hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"}
               >
-                <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <Package className="w-4 h-4 text-slate-400 mr-2" />
                     <span className="text-sm font-medium text-gray-900">

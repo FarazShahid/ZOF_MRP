@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { LayoutGrid, List, Plus } from "lucide-react";
+import {Plus } from "lucide-react";
 import OrderDashboard from "./OrderDashboard";
 import OrderSearchAndFilters from "./OrderSearchAndFilters";
 import OrderTable from "./OrderTable";
@@ -11,6 +11,9 @@ import { OrderStatus } from "@/src/types/admin";
 import { GetClientsType } from "@/store/useClientStore";
 import Pagination from "../shipment/Pagination";
 import { ViewToggle } from "../admin/common/ViewToggle";
+import { useRouter } from "next/navigation";
+import DeleteModal from "../DeleteModal";
+import ReorderConfirmation from "../../orders/components/ReorderConfirmation";
 
 interface OrderListProps {
   orders: GetOrdersType[];
@@ -18,6 +21,8 @@ interface OrderListProps {
 }
 
 const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
+  const router = useRouter();
+
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
@@ -25,6 +30,16 @@ const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Modal state moved here
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
+  const [openReorderModal, setOpenReorderModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
+
+  const selectedOrder = useMemo(
+    () => orders.find((o) => o.Id === selectedOrderId),
+    [orders, selectedOrderId]
+  );
 
   // Filter orders based on search and filters
   const filteredOrders = useMemo(() => {
@@ -69,25 +84,29 @@ const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
   }, [searchTerm, statusFilter, clientFilter, dateRange]);
 
   const handleViewOrder = (orderId: number) => {
-    console.log("View order:", orderId);
+    router.push(`/orders/vieworder/${orderId}`);
   };
 
   const handleEditOrder = (orderId: number) => {
-    console.log("Edit order:", orderId);
+    router.push(`/orders/editorder/${orderId}`);
   };
 
   const handleDeleteOrder = (orderId: number) => {
-    console.log("Delete order:", orderId);
+    setSelectedOrderId(orderId);
+    setIsOpenDeleteModal(true);
   };
 
   const handleReorderOrder = (orderId: number) => {
-    console.log("Re-order:", orderId);
+    setSelectedOrderId(orderId);
+    setOpenReorderModal(true);
   };
+
+  const closeDeleteModal = () => setIsOpenDeleteModal(false);
+  const closeReorderModal = () => setOpenReorderModal(false);
 
   return (
     <div className="flex flex-col flex-1">
-
- {/* Header */}
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Orders</h2>
@@ -97,68 +116,32 @@ const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
           <button
             type="button"
+            onClick={() => router.push("/orders/addorder")}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-4 h-4" />
-           Add New Order
+            Add New Order
           </button>
         </div>
       </div>
-      
+
       {/* Dashboard Stats */}
       <OrderDashboard orders={orders} />
 
-      {/* Header */}
-      {/* <div className="p-6 bg-white border-b border-slate-200">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center bg-slate-100 rounded-lg p-1">
-              <button
-                onClick={() => setViewMode("table")}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
-                  viewMode === "table"
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                <List className="w-4 h-4" />
-                <span className="text-sm font-medium">Table</span>
-              </button>
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
-                  viewMode === "grid"
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                <LayoutGrid className="w-4 h-4" />
-                <span className="text-sm font-medium">Grid</span>
-              </button>
-            </div>
-          </div>
-
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
-            <Plus className="w-4 h-4" />
-            <span>Add New Order</span>
-          </button>
-        </div>
-
-        <OrderSearchAndFilters
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          statusFilter={statusFilter}
-          onStatusChange={setStatusFilter}
-          clientFilter={clientFilter}
-          onClientChange={setClientFilter}
-          dateRange={dateRange}
-          onDateRangeChange={setDateRange}
-          clients={clients}
-        />
-      </div> */}
+      <OrderSearchAndFilters
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        statusFilter={statusFilter}
+        onStatusChange={setStatusFilter}
+        clientFilter={clientFilter}
+        onClientChange={setClientFilter}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
+        clients={clients}
+      />
 
       {/* Content */}
-      <div className="flex-1 overflow-auto p-6">
+      <div className="flex-1 overflow-auto mt-4 mb-4">
         {viewMode === "table" ? (
           <OrderTable
             orders={paginatedOrders}
@@ -179,7 +162,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
       </div>
 
       {/* Pagination */}
-      <div className="p-6 bg-white border-t border-slate-200">
+      <div className="p-6 border-t border-slate-200">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -189,6 +172,24 @@ const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
           onItemsPerPageChange={setItemsPerPage}
         />
       </div>
+
+      {isOpenDeleteModal && (
+        <DeleteModal
+          isOpen={isOpenDeleteModal}
+          onClose={closeDeleteModal}
+          orderId={selectedOrderId}
+          clientId={selectedOrder?.ClientId ?? 0}
+        />
+      )}
+
+      {openReorderModal && (
+        <ReorderConfirmation
+          isOpen={openReorderModal}
+          onClose={closeReorderModal}
+          orderId={selectedOrderId}
+          clientId={selectedOrder?.ClientId ?? 0}
+        />
+      )}
     </div>
   );
 };

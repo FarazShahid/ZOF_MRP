@@ -34,16 +34,16 @@ const OrderGrid: React.FC<OrderGridProps> = ({
       {orders?.map((order) => (
         <div
           key={order.Id}
-          className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
+          className="rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
         >
           {/* Header */}
           <div className="p-4 border-b border-slate-200">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <h3 className="font-semibold text-slate-900 mb-1">
+                <h3 className="font-semibold text-gray-900 mb-1">
                   {order?.OrderName}
                 </h3>
-                <p className="text-sm text-slate-600">{order?.OrderNumber}</p>
+                <p className="text-sm text-gray-600">{order?.OrderNumber}</p>
               </div>
               <OrderStatusBadge status={order?.StatusName} />
             </div>
@@ -54,14 +54,14 @@ const OrderGrid: React.FC<OrderGridProps> = ({
             {/* Client & Event */}
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
-                <User className="w-4 h-4 text-slate-400" />
-                <span className="text-sm text-slate-900 font-medium">
+                <User className="w-4 h-4 text-gray-500" />
+                <span className="text-sm text-gray-900 font-medium">
                   {order?.ClientName}
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <MapPin className="w-4 h-4 text-slate-400" />
-                <span className="text-sm text-slate-600">
+                <MapPin className="w-4 h-4 text-gray-500" />
+                <span className="text-sm text-gray-600">
                   {order?.EventName}
                 </span>
               </div>
@@ -80,23 +80,16 @@ const OrderGrid: React.FC<OrderGridProps> = ({
               )}
             </div>
 
-            {/* Amount */}
-            {/* {order.totalAmount && (
-              <div className="text-lg font-semibold text-slate-900">
-                {formatCurrency(order.totalAmount)}
-              </div>
-            )} */}
-
             {/* Description */}
             {order.Description && (
-              <p className="text-sm text-slate-600 line-clamp-2">
+              <p className="text-sm text-gray-600 line-clamp-2">
                 {order.Description}
               </p>
             )}
           </div>
 
           {/* Actions */}
-          <div className="px-4 py-3 bg-slate-50 rounded-b-lg border-t border-slate-200">
+          <div className="px-4 py-3 rounded-b-lg border-t border-slate-200">
             <div className="flex items-center justify-end space-x-2">
               <button
                 onClick={() => onReorderOrder(order.Id)}
