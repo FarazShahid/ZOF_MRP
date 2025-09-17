@@ -65,10 +65,7 @@ interface ProductById {
   productDetails: [
     {
       Id: number;
-      // ProductId: number;
       ProductCutOptionId: number;
-      // ProductSizeMeasurementId: number;
-      // ProductRegionId: number;
       SleeveTypeId: number;
     }
   ];

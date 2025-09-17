@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
   Button,
   Modal,
@@ -8,10 +9,11 @@ import {
   Spinner,
 } from "@heroui/react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+
+import useOrderStatusStore from "@/store/useOrderStatusStore";
 import Label from "../../components/common/Label";
 import { ChangeStatusSchema } from "../../schema/CutOptionSchema";
-import useOrderStatusStore from "@/store/useOrderStatusStore";
+
 
 interface ComponentProps {
   isOpen: boolean;

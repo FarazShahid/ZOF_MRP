@@ -1,5 +1,5 @@
 import React from "react";
-import { formatDate, getInitials, getRoleColor } from "./getRoleColor";
+import { getInitials, getRoleColor } from "./getRoleColor";
 import { Edit, MoreVertical, Trash2 } from "lucide-react";
 import { StatusBadge } from "../common/StatusBadge";
 import { GetUsersType } from "@/store/useUserStore";
@@ -43,10 +43,6 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete }) => {
         <p className="text-sm text-gray-600">{user.Email}</p>
         <div className="flex items-center justify-between">
           <StatusBadge status={user.isActive ? "Active" : "Inactive"} />
-
-          <span className="text-xs text-gray-500">
-            Last login: {user.lastLogin ? formatDate(user.lastLogin) : "Never"}
-          </span>
         </div>
       </div>
 

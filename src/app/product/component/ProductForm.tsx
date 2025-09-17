@@ -27,12 +27,13 @@ const formSteps = [
   { id: 1, name: "General Information", icon: <FaRegFileLines size={20} /> },
   { id: 2, name: "Product Details", icon: <FaRuler size={20} /> },
   { id: 3, name: "Description", icon: <GrDocumentImage size={20} /> },
-  {id: 4, name: "QA Checklist", icon: <GrDocumentImage size={20} /> }
+  { id: 4, name: "QA Checklist", icon: <GrDocumentImage size={20} /> },
 ];
 
 const ProductForm = ({ productId }: { productId?: string }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
+  const [qaItems, setQaItems] = useState<QAItem[]>([]);
 
   const { addProduct, updateProduct, getProductById, productById } =
     useProductStore();
@@ -102,8 +103,8 @@ const ProductForm = ({ productId }: { productId?: string }) => {
   };
 
   const handleCheckList = (items: QAItem[]) => {
-    console.log(items);
-  }
+    setQaItems(items);
+  };
 
   const renderStep = (formikProps: any) => {
     switch (currentStep) {
@@ -119,10 +120,13 @@ const ProductForm = ({ productId }: { productId?: string }) => {
             productId={productId}
           />
         );
-      case 4: 
+      case 4:
         return (
-          <QAChecklistClickUp heading="QA Checklist" onChange={handleCheckList} />
-        )
+          <QAChecklistClickUp
+            heading="QA Checklist"
+            onChange={handleCheckList}
+          />
+        );
       default:
         return null;
     }
@@ -168,6 +172,12 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     const files = uploadedFilesByIndex[1] || [];
     const payload = { ...values };
 
+    // + NEW: attach qaChecklist if user added anything
+    const qaChecklist = qaItems.map((i) => ({ name: i.title }));
+    if (qaChecklist.length > 0) {
+      payload.qaChecklist = qaChecklist;
+    }
+
     payload.productColors = payload.productColors?.filter(
       (color: { Id: number; colorId: number; ImageId: string }) =>
         !(color.Id === 0 && color.colorId === 0 && color.ImageId === "1")
@@ -210,11 +220,12 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     }
 
     if (productId) {
-      const result = await updateProduct(Number(productId), payload, () => handleBoBack());
-      if(result && files.length > 0){
+      const result = await updateProduct(Number(productId), payload, () =>
+        handleBoBack()
+      );
+      if (result && files.length > 0) {
         const refernceId = Number(result.data.Id);
 
-        
         for (const fileObj of files) {
           await uploadDocument(
             fileObj.file,
@@ -236,10 +247,10 @@ const ProductForm = ({ productId }: { productId?: string }) => {
           );
         }
       }
-     
     }
-     resetAllFiles();
-      handleBoBack();
+  
+    resetAllFiles();
+    handleBoBack();
   };
 
   useEffect(() => {

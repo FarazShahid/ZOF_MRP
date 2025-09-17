@@ -1,31 +1,32 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { IoIosStats, IoIosPrint } from "react-icons/io";
+import { FaRegEye } from "react-icons/fa";
+import { CheckSquare } from "lucide-react";
+import { IoIosStats } from "react-icons/io";
 import { FaUserTie } from "react-icons/fa6";
+import { GiCargoShip } from "react-icons/gi";
 import { IoReturnDownBack } from "react-icons/io5";
-import { TbStatusChange } from "react-icons/tb";
+
 import useOrderStore from "@/store/useOrderStore";
 import { PdfVariant } from "@/src/types/OrderPDfType";
-import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
-import { GiCargoShip } from "react-icons/gi";
+import { DOCUMENT_REFERENCE_TYPE, OrderItemShipmentEnum } from "@/interface";
+
 import OrderStatus from "./OrderStatus";
-import { FaRegEye } from "react-icons/fa";
 import OrderDeadline from "./OrderDeadline";
 import ClientDetails from "./ClientDetails";
-import { ViewMeasurementChart } from "./ViewMeasurementChart";
-import RecentAttachmentsView from "../../components/RecentAttachmentsView";
-import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
-import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
-import StatusTimelineDrawer from "./StatusTimelineDrawer";
 import OrderItemStatusChip from "./OrderItemStatusChip";
-import DownloadPdfMenu from "../../components/order/DownloadPdfMenu";
-import { CheckSquare } from "lucide-react";
+import StatusTimelineDrawer from "./StatusTimelineDrawer";
+import { ViewMeasurementChart } from "./ViewMeasurementChart";
 import QaSheet from "../../components/order/QaSheet";
+import DownloadPdfMenu from "../../components/order/DownloadPdfMenu";
+import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
+import RecentAttachmentsView from "../../components/RecentAttachmentsView";
+import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
+import { Button, Tab, Tabs } from "@heroui/react";
 
 interface ViewOrderProps {
   orderId: number;
 }
-
 
 const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const [openViewModal, setOpenViewModal] = useState<boolean>(false);
@@ -45,7 +46,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     clientName: "",
     productName: "",
     productId: 0,
-  })
+  });
 
   const {
     changeOrderStatus,
@@ -107,11 +108,22 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             )}
           </h2>
         </div>
-        <DownloadPdfMenu
-          downloading={downloading}
-          OrderById={OrderById.Id}
-          handleDownloadPdf={(v) => handleDownloadPdf(v)}
-        />
+        <div className="flex items-center gap-3">
+          <DownloadPdfMenu
+            downloading={downloading}
+            OrderById={OrderById.Id}
+            handleDownloadPdf={(v) => handleDownloadPdf(v)}
+          />
+          {OrderById.OrderShipmentStatus !== OrderItemShipmentEnum.SHIPPED && (
+            <Button
+              type="button"
+              onPress={() => setOpenUpdateStatusModal(true)}
+              className="px-3 py-1 flex items-center gap-2 bg-blue-800 dark:bg-blue-600 rounded-lg text-sm text-white disabled:opacity-50"
+            >
+              Change Status
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="flex gap-4 w-full">
@@ -170,6 +182,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                   </div>
                 </div>
               </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {OrderById?.items.map((orderItem, index) => {
                   return (
@@ -261,9 +274,13 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                         </tbody>
                       </table>
 
-                       <div className="mt-1 w-full">
-                        <button type="button" onClick={() => setOpenQASheet(true)} className="w-full flex items-center justify-center gap-2 py-1 text-sm bg-gray-300 rounded">
-                         <CheckSquare size={16} /> QA Check List
+                      <div className="mt-1 w-full">
+                        <button
+                          type="button"
+                          onClick={() => setOpenQASheet(true)}
+                          className="w-full flex items-center justify-center gap-2 py-1 text-sm bg-gray-300 rounded"
+                        >
+                          <CheckSquare size={16} /> QA Check List
                         </button>
                       </div>
 
@@ -273,8 +290,6 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                         referenceId={orderItem.ProductId}
                         referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
                       />
-
-                     
                     </div>
                   );
                 })}

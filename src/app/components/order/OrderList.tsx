@@ -23,7 +23,7 @@ interface OrderListProps {
 const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
   const router = useRouter();
 
-  const [viewMode, setViewMode] = useState<"table" | "grid">("table");
+  const [viewMode, setViewMode] = useState<"table" | "grid">("grid");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
   const [clientFilter, setClientFilter] = useState("all");
