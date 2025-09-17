@@ -21,6 +21,7 @@ import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 import QAChecklistClickUp from "../../components/product/QAChecklistClickUp";
 import { QAItem } from "@/src/types/product";
 
+
 const steps = ["General Information", "Product Details", "Description"];
 
 const formSteps = [
@@ -42,6 +43,16 @@ const ProductForm = ({ productId }: { productId?: string }) => {
 
   const router = useRouter();
   const isEdit = !!productId;
+
+    // Build initial QA items from productById.qaChecklist
+  const initialQAItems = React.useMemo<QAItem[]>(() => {
+    const src = productById?.qaChecklist ?? [];
+    return src.map((q: any) => ({
+      id: String(q.id),
+      title: q.name ?? "",
+      done: false, // default (you can change if you later store completion state)
+    }));
+  }, [productById?.qaChecklist]);
 
   const defaultDetailsRow = {
     ProductCutOptionId: "",
@@ -124,6 +135,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         return (
           <QAChecklistClickUp
             heading="QA Checklist"
+            initialItems={initialQAItems}  
             onChange={handleCheckList}
           />
         );

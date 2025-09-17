@@ -20,6 +20,11 @@ const QAChecklistClickUp: React.FC<QAChecklistClickUpProps> = ({
     onChange?.(items);
   }, [items, onChange]);
 
+  // NEW: keep items in sync whenever initialItems prop changes
+  useEffect(() => {
+    setItems(initialItems);
+  }, [initialItems]);
+
   const completed = items.filter((i) => i.done).length;
   const total = items.length;
 

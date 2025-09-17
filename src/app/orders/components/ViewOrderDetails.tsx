@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { Button } from "@heroui/react";
 import { FaRegEye } from "react-icons/fa";
 import { CheckSquare } from "lucide-react";
 import { IoIosStats } from "react-icons/io";
@@ -22,7 +23,7 @@ import DownloadPdfMenu from "../../components/order/DownloadPdfMenu";
 import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
-import { Button, Tab, Tabs } from "@heroui/react";
+import useQAchecklistStore from "@/store/useQAchecklistStore";
 
 interface ViewOrderProps {
   orderId: number;
@@ -38,14 +39,13 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const [downloading, setDownloading] = useState<boolean>(false);
   const [openUpdateStatusModal, setOpenUpdateStatusModal] =
     useState<boolean>(false);
-  const [orderProductInof, setOrderProductInfo] = useState({
-    orderId: 0,
+  const [qaInfo, setQaInfo] = useState({
     orderName: "",
-    orderNumber: "",
-    OrderDeadline: "",
     clientName: "",
+    deadline: "",
     productName: "",
     productId: 0,
+    orderItemId: 0,
   });
 
   const {
@@ -56,6 +56,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     OrderById,
     loading,
   } = useOrderStore();
+  const { getQAChecklist } = useQAchecklistStore();
 
   // Callbacks
   const handleOpenViewModal = useCallback((id: number, sizeName: string) => {
@@ -77,6 +78,26 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
       setLocalStatusName(statusName);
     },
     [changeOrderStatus, handleCloseStatusModal, orderId]
+  );
+
+  const openQASheetForItem = useCallback(
+    (orderItem: any) => {
+      setQaInfo({
+        orderName: OrderById?.OrderName ?? "",
+        clientName: OrderById?.ClientName ?? "",
+        deadline: OrderById?.Deadline ?? "",
+        productName: orderItem?.ProductName ?? "",
+        productId: orderItem?.ProductId ?? 0,
+        orderItemId: orderItem?.Id ?? 0,
+      });
+
+      setOpenQASheet(true);
+
+      if (orderItem?.Id) {
+        getQAChecklist(orderItem.Id, orderItem.ProductId);
+      }
+    },
+    [OrderById, getQAChecklist]
   );
 
   const handleDownloadPdf = async (variant: PdfVariant) => {
@@ -277,7 +298,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                       <div className="mt-1 w-full">
                         <button
                           type="button"
-                          onClick={() => setOpenQASheet(true)}
+                          onClick={() => openQASheetForItem(orderItem)}
                           className="w-full flex items-center justify-center gap-2 py-1 text-sm bg-gray-300 rounded"
                         >
                           <CheckSquare size={16} /> QA Check List
@@ -344,7 +365,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
       )}
 
       {/* -----------  QA CheckList View Modal -------------- */}
-      <QaSheet isOpen={openQASheet} onClose={() => setOpenQASheet(false)} />
+      <QaSheet isOpen={openQASheet} onClose={() => setOpenQASheet(false)}  info={qaInfo} />
     </div>
   );
 };

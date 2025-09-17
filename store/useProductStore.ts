@@ -71,6 +71,11 @@ interface ProductById {
   ];
   productSizes: [{ Id: number; sizeId: number }];
   productStatus: string;
+  qaChecklist: {
+    id: number;
+    name: string;
+    productId: number
+  }[]
 }
 
 interface GetAvailableColorResponse {

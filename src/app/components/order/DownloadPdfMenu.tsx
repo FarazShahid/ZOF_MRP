@@ -1,7 +1,13 @@
 import React from "react";
 import { IoIosPrint } from "react-icons/io";
 import { FaFileAlt, FaListUl } from "react-icons/fa";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "@heroui/react";
 
 // Types
 export type PdfVariant = "summary" | "specification";
@@ -12,7 +18,11 @@ interface DownloadPdfMenuProps {
   handleDownloadPdf: (variant: PdfVariant) => void;
 }
 
-export default function DownloadPdfMenu({ downloading, OrderById, handleDownloadPdf }: DownloadPdfMenuProps) {
+export default function DownloadPdfMenu({
+  downloading,
+  OrderById,
+  handleDownloadPdf,
+}: DownloadPdfMenuProps) {
   const disabled = !OrderById || downloading;
 
   const onAction = (key: React.Key) => {
@@ -22,7 +32,11 @@ export default function DownloadPdfMenu({ downloading, OrderById, handleDownload
 
   return (
     <div className="flex items-center gap-2">
-      <Dropdown>
+      <Dropdown
+        classNames={{
+          trigger: "!important z-4",
+        }}
+      >
         <DropdownTrigger>
           <Button
             isDisabled={disabled}
@@ -34,13 +48,19 @@ export default function DownloadPdfMenu({ downloading, OrderById, handleDownload
           </Button>
         </DropdownTrigger>
 
-        <DropdownMenu aria-label="Choose PDF type" className="w-80" onAction={onAction}>
+        <DropdownMenu
+          aria-label="Choose PDF type"
+          className="w-80"
+          onAction={onAction}
+        >
           <DropdownItem key="summary" textValue="Order Summary">
             <div className="flex items-start gap-3 py-1">
               <FaFileAlt className="mt-0.5" size={16} aria-hidden />
               <div className="flex flex-col">
                 <span className="font-medium leading-5">Order Summary</span>
-                <span className="text-xs text-gray-500 leading-5">A concise overview with order number, customer info.</span>
+                <span className="text-xs text-gray-500 leading-5">
+                  A concise overview with order number, customer info.
+                </span>
               </div>
             </div>
           </DropdownItem>
@@ -49,8 +69,13 @@ export default function DownloadPdfMenu({ downloading, OrderById, handleDownload
             <div className="flex items-start gap-3 py-1">
               <FaListUl className="mt-0.5" size={22} aria-hidden />
               <div className="flex flex-col">
-                <span className="font-medium leading-5">Order Specification</span>
-                <span className="text-xs text-gray-500 leading-5">A detailed document with product specs, variants, measurements, notes, and per-item breakdowns.</span>
+                <span className="font-medium leading-5">
+                  Order Specification
+                </span>
+                <span className="text-xs text-gray-500 leading-5">
+                  A detailed document with product specs, variants,
+                  measurements, notes, and per-item breakdowns.
+                </span>
               </div>
             </div>
           </DropdownItem>
