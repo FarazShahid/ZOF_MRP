@@ -4,6 +4,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { FaUserTie } from "react-icons/fa";
 import AuthContext, { fetchLoginEmail } from "../../services/authservice";
+import Link from "next/link";
+import { AiOutlineAudit } from "react-icons/ai";
+import { CiSettings } from "react-icons/ci";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -72,6 +75,13 @@ export default function UserDropdown() {
             {email}
           </span>
         </div>
+        <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
+          <AiOutlineAudit size={19} /> <Link href={'/auditlog'}>Audit Log</Link>
+        </div>
+        <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
+          <CiSettings size={19} /> <Link href={'/adminsetting'}>Admin Setting</Link>
+        </div>
+         
         <button
           type="button"
           onClick={logout}

@@ -18,13 +18,12 @@ interface AddClientComponentProps {
   isEdit: boolean;
   clientId: number;
   closeAddModal: () => void;
-  onOrderAdded: () => void;
+  // onOrderAdded: () => void;
 }
 
 const AddClients: React.FC<AddClientComponentProps> = ({
   isOpen,
   closeAddModal,
-  onOrderAdded,
   isEdit,
   clientId,
 }) => {
@@ -95,7 +94,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 name="Name"
                                 type="text"
-                                maxlength="180"
+                                maxLength="180"
                                 placeholder="Enter Business Name"
                                 className="formInputdefault border-1"
                               />
@@ -114,7 +113,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Email"
-                                maxlength="180"
+                                maxLength="180"
                                 placeholder="Enter Business Email"
                                 className="formInputdefault border-1"
                               />
@@ -136,7 +135,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="POCName"
-                                maxlength="180"
+                                maxLength="180"
                                 placeholder="Enter Name"
                                 className="formInputdefault border-1"
                               />
@@ -155,7 +154,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Phone"
-                                maxlength="180"
+                                maxLength="180"
                                 placeholder="Enter Phone"
                                 className="formInputdefault border-1"
                               />
@@ -174,7 +173,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="POCEmail"
-                                maxlength="180"
+                                maxLength="180"
                                 placeholder="Enter Email"
                                 className="formInputdefault border-1"
                               />
@@ -191,7 +190,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Website"
-                                maxlength="180"
+                                maxLength="180"
                                 placeholder="Enter Website"
                                 className="formInputdefault border-1"
                               />
@@ -205,7 +204,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Linkedin"
-                                maxlength="180"
+                                maxLength="180"
                                 placeholder="Enter Linkedin"
                                 className="formInputdefault border-1"
                               />
@@ -219,7 +218,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Instagram"
-                                maxlength="180"
+                                maxLength="180"
                                 placeholder="Enter Instagram"
                                 className="formInputdefault border-1"
                               />

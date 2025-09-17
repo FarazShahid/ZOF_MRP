@@ -13,10 +13,10 @@ import {
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import AddButton from "../../../components/common/AddButton";
 import useCarriorStore from "@/store/useCarriorStore";
 import CarriorForm from "./CarriorForm";
 import DeleteCarrior from "./DeleteCarrior";
+import { Plus } from "lucide-react";
 
 const CarriorTable = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -58,90 +58,105 @@ const CarriorTable = () => {
 
   return (
     <>
-      <div className="w-full flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">Carrier</h6>
-          <AddButton title="Add New" onClick={openAddModal} />
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Carriers</h2>
+            <p className="text-gray-600 mt-1">Manage shipping carriers</p>
+          </div>
+          <button
+            type="button"
+            onClick={openAddModal}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add Carrier
+          </button>
         </div>
-        <Table
-          isStriped
-          isHeaderSticky
-          aria-label="Client Table with pagination"
-          bottomContent={
-            <div className="grid grid-cols-2">
-              <span className="w-[30%] text-small text-gray-500">
-                Total: {items?.length || 0}
-              </span>
-              <Pagination
-                isCompact
-                showControls
-                showShadow
-                color="secondary"
-                page={page}
-                total={pages}
-                onChange={(page) => setPage(page)}
-              />
-            </div>
-          }
-          classNames={{
-            wrapper: "min-h-[222px]",
-            th: "tableHeaderWrapper",
-          }}
-        >
-          <TableHeader>
-            <TableColumn key="Name" className="text-medium font-bold">
-              Name
-            </TableColumn>
-            <TableColumn key="action" className="text-medium font-bold">
-              Action
-            </TableColumn>
-          </TableHeader>
-          <TableBody isLoading={loading} items={items}>
-            {(items ?? []).map((item: any, index: number) => (
-              <TableRow key={item.Id}>
-                {(columnKey) => (
-                  <TableCell>
-                    {columnKey === "Sr" ? (
-                      index + 1
-                    ) : columnKey !== "action" ? (
-                      getKeyValue(item, columnKey)
-                    ) : (
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenEditModal(item?.Id)}
-                        >
-                          <GoPencil color="green" />
-                        </button>
-                        <button
-                          type="button"
-                          className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item?.Id)}
-                        >
-                          <RiDeleteBin6Line color="red" />
-                        </button>
-                      </div>
-                    )}
-                  </TableCell>
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
 
-        <CarriorForm
-          isOpen={isAddModalOpen}
-          closeAddModal={closeAddModal}
-          isEdit={isEdit}
-          Id={selectedItemId}
-        />
-
-        <DeleteCarrior
-          isOpen={isOpenDeletModal}
-          onClose={closeDeleteModal}
-          Id={selectedItemId}
-        />
+        {/* Table */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <Table
+            isStriped
+            isHeaderSticky
+            aria-label="Client Table with pagination"
+            bottomContent={
+              <div className="grid grid-cols-2">
+                <span className="w-[30%] text-small text-gray-500">
+                  Total: {items?.length || 0}
+                </span>
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  color="secondary"
+                  page={page}
+                  total={pages}
+                  onChange={(page) => setPage(page)}
+                />
+              </div>
+            }
+            classNames={{
+              wrapper: "min-h-[222px]",
+              th: "tableHeaderWrapper",
+            }}
+          >
+            <TableHeader>
+              <TableColumn key="Name" className="text-medium font-bold">
+                Name
+              </TableColumn>
+              <TableColumn key="action" className="text-medium font-bold">
+                Action
+              </TableColumn>
+            </TableHeader>
+            <TableBody isLoading={loading} items={items}>
+              {(items ?? []).map((item: any, index: number) => (
+                <TableRow key={item.Id}>
+                  {(columnKey) => (
+                    <TableCell>
+                      {columnKey === "Sr" ? (
+                        index + 1
+                      ) : columnKey !== "action" ? (
+                        getKeyValue(item, columnKey)
+                      ) : (
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditModal(item?.Id)}
+                          >
+                            <GoPencil color="green" />
+                          </button>
+                          <button
+                            type="button"
+                            className="hover:text-red-500 cursor-pointer"
+                            onClick={() => handleOpenDeleteModal(item?.Id)}
+                          >
+                            <RiDeleteBin6Line color="red" />
+                          </button>
+                        </div>
+                      )}
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
+
+      <CarriorForm
+        isOpen={isAddModalOpen}
+        closeAddModal={closeAddModal}
+        isEdit={isEdit}
+        Id={selectedItemId}
+      />
+
+      <DeleteCarrior
+        isOpen={isOpenDeletModal}
+        onClose={closeDeleteModal}
+        Id={selectedItemId}
+      />
     </>
   );
 };

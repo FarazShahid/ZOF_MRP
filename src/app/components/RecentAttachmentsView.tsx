@@ -4,7 +4,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { IoDocumentAttach } from "react-icons/io5";
 import DocumentCard from "../orders/components/DocumentCard";
-import AttachmentPreviewModal, { AttachmentItem } from "./AttachmentPreviewModal";
+import AttachmentPreviewModal, {
+  AttachmentItem,
+} from "./AttachmentPreviewModal";
 
 interface ComponentProp {
   referenceType: string;
@@ -26,7 +28,7 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
   useEffect(() => {
     fetchDocuments(referenceType, referenceId);
   }, [referenceId, referenceType]);
-    const documents = documentsByReferenceId[referenceId] || [];
+  const documents = documentsByReferenceId[referenceId] || [];
 
   const items: AttachmentItem[] = useMemo(
     () =>
@@ -38,15 +40,18 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
     [documents]
   );
 
-const openAt = (idx: number) => {
+  const openAt = (idx: number) => {
     setStartIndex(idx);
     setIsOpen(true);
   };
- if (!documents || documents.length === 0) return null;
+  if (!documents || documents.length === 0) return null;
   return (
     documents &&
     documents.length > 0 && (
-      <div className="dark:dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-3" key={referenceId}>
+      <div
+        className="dark:dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-3"
+        key={referenceId}
+      >
         <h6 className="flex items-center gap-3 text-gray-700">
           <IoDocumentAttach size={25} /> {label}
         </h6>
@@ -65,13 +70,13 @@ const openAt = (idx: number) => {
           })}
         </div>
 
-          {/* Fullscreen previewer with next/prev/rotate */}
-      <AttachmentPreviewModal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        items={items}
-        startIndex={startIndex}
-      />
+        {/* Fullscreen previewer with next/prev/rotate */}
+        <AttachmentPreviewModal
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          items={items}
+          startIndex={startIndex}
+        />
       </div>
     )
   );

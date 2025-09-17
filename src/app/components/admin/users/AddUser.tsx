@@ -9,7 +9,7 @@ import {
   Spinner,
 } from "@heroui/react";
 import { Field, Formik, Form, ErrorMessage, FieldProps } from "formik";
-import { UserSchema } from "../schema/SupplierSchema";
+import { UserSchema } from "../../../schema/SupplierSchema";
 import useUserStore, { AddUserType } from "@/store/useUserStore";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 

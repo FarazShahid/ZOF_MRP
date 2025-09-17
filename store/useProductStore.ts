@@ -65,15 +65,17 @@ interface ProductById {
   productDetails: [
     {
       Id: number;
-      // ProductId: number;
       ProductCutOptionId: number;
-      // ProductSizeMeasurementId: number;
-      // ProductRegionId: number;
       SleeveTypeId: number;
     }
   ];
   productSizes: [{ Id: number; sizeId: number }];
   productStatus: string;
+  qaChecklist: {
+    id: number;
+    name: string;
+    productId: number
+  }[]
 }
 
 interface GetAvailableColorResponse {

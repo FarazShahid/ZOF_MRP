@@ -24,13 +24,19 @@ interface AddShipmentResponse {
   message: string;
 }
 
+interface GetShipementByIdResponse{
+  data: ShipmentByIdResponse;
+   statusCode: number;
+  message: string;
+}
+
 interface OrdersInterface{
 Id: number;
 OrderName: string;
 OrderNumber: string;
 }
 
-interface GetAllShipments {
+export interface GetAllShipments {
   Id: number;
   ShipmentCode: string;
   ShipmentDate: string;
@@ -51,7 +57,7 @@ interface GetAllShipments {
   UpdatedBy: string;
 }
 
-interface ShipmentResponse {
+export interface ShipmentResponse {
   Id: number;
   ShipmentCode: string;
   TrackingId: string;
@@ -88,6 +94,45 @@ interface ShipmentResponse {
   UpdatedBy: string;
 }
 
+export interface ShipmentByIdResponse{
+   Id: number;
+  ShipmentCode: string;
+  TrackingId: string;
+  OrderNumber: string;
+  ShipmentCarrierId: number;
+  ShipmentCarrierName: string;
+  ShipmentDate: string;
+  ShipmentCost: string;
+  TotalWeight: number;
+  NumberOfBoxes: number;
+  WeightUnit: string;
+  ReceivedTime: string;
+  Status: string;
+  Orders:OrdersInterface[];
+  OrderIds: []
+  ShipmentCarrier: {
+    Id: number;
+    Name: string;
+  };
+  boxes: {
+    Id: number;
+     BoxNumber: number;
+      OrderBoxDescription: string;
+        OrderItemName: string;
+     Weight: number;
+    items:{
+      Id: number;
+      OrderItemId: number;
+      OrderItemName: string;
+      Quantity: string;
+    }[]
+  }[];
+  CreatedOn: string;
+  CreatedBy: string;
+  UpdatedOn: string;
+  UpdatedBy: string;
+}
+
 export interface AddShipmentOptions {
   ShipmentCode: string;
   OrderNumber: number;
@@ -110,7 +155,7 @@ export interface AddShipmentOptions {
 
 interface StoreState {
   Shipments: GetAllShipments[];
-  ShipmentById: ShipmentResponse | null;
+  ShipmentById: ShipmentByIdResponse | null;
   loading: boolean;
   error: string | null;
 
@@ -160,7 +205,7 @@ const useShipmentStore = create<StoreState>((set, get) => ({
         set({ loading: false, error: null });
         toast.error(error.message || "Failed to fetch data");
       }
-      const data: AddShipmentResponse = await response.json();
+      const data: GetShipementByIdResponse = await response.json();
       set({ ShipmentById: data.data, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch data", loading: false });

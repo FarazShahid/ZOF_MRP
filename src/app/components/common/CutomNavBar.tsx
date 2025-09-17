@@ -51,31 +51,10 @@ const CutomNavBar = () => {
     },
     {
       id: 5,
-      label: "Client",
-      icon: <FaRegCircleUser size={14} />,
-      route: "/client",
-      isNested: false,
-    },
-    {
-      id: 6,
-      label: "Events",
-      icon: <IoCalendarNumber size={14} />,
-      route: "/events",
-      isNested: false,
-    },
-    {
-      id: 7,
-      label: "Users",
-      icon: <FaUserTie size={14} />,
-      route: "/users",
-      isNested: false,
-    },
-    {
-      id: 8,
       label: "Shipment",
       icon: <GiCargoShip size={14} />,
       route: "/shipment",
-      isNested: true,
+      isNested: false,
       subList: [
         { id: 1, label: "Shipment", route: "/shipment" },
         { id: 2, label: "Carrier", route: "/shipment/carrior" },
@@ -85,7 +64,7 @@ const CutomNavBar = () => {
 
   const handleRoute = (path: string) => {
     router.push(path);
-    setActiveMenu(null); 
+    setActiveMenu(null);
   };
 
   const toggleSubMenu = (id: number) => {
@@ -94,10 +73,7 @@ const CutomNavBar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        navRef.current &&
-        !navRef.current.contains(event.target as Node)
-      ) {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setActiveMenu(null);
       }
     };
@@ -125,7 +101,9 @@ const CutomNavBar = () => {
             <div key={item.id} className="relative">
               <div
                 onClick={() =>
-                  item.isNested ? toggleSubMenu(item.id) : handleRoute(item.route)
+                  item.isNested
+                    ? toggleSubMenu(item.id)
+                    : handleRoute(item.route)
                 }
                 className={`flex items-center gap-2 px-2 py-1 cursor-pointer rounded-full text-sm font-bold transition-all duration-150 ${
                   isActive

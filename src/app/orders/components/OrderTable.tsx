@@ -1,96 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import {
-  Pagination,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-  getKeyValue,
-} from "@heroui/react";
-import Link from "next/link";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { FiPlus } from "react-icons/fi";
-import { TbReorder } from "react-icons/tb";
+import { useEffect } from "react";
 import useOrderStore from "@/store/useOrderStore";
 import useClientStore from "@/store/useClientStore";
-import { formatDate } from "../../interfaces";
-import StatusChip from "../../components/StatusChip";
-import DeleteModal from "../../components/DeleteModal";
-import { useRouter } from "next/navigation";
-import ReorderConfirmation from "./ReorderConfirmation";
-import { GoPencil } from "react-icons/go";
-import ActionBtn from "../../components/ui/button/ActionBtn";
-import { FaRegEye } from "react-icons/fa";
+import OrderList from "../../components/order/OrderList";
 
 const OrderTable = () => {
-  const [clientId, setClientId] = useState<number>(0);
-  const [isOpenDeletModal, setIsOpenDeleteModal] = useState(false);
-  const [openReorderModal, setOpenReorderModal] = useState<boolean>(false);
-  const [selectedOrderId, setSelectedOrderId] = useState<number>(0);
-  const [refreshKey, setRefreshKey] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
-  const router = useRouter();
-
-  const { fetchOrders, loading, Orders } = useOrderStore();
+  const { fetchOrders, Orders } = useOrderStore();
   const { fetchClients, clients } = useClientStore();
 
-  const rowsPerPage = 15;
-  const pages = Math.ceil(Orders?.length / rowsPerPage);
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    return Orders?.slice(start, end);
-  }, [page, Orders]);
-
-  const handleClinetFilter = (id: string) => {
-    setClientId(Number(id));
-  };
-
-  const openDeleteModal = (orderId: number) => {
-    setSelectedOrderId(orderId);
-    setIsOpenDeleteModal(true);
-  };
-  const closeDeleteModal = () => setIsOpenDeleteModal(false);
-
-  const handleOpenReorderModal = (orderId: number) => {
-    setSelectedOrderId(orderId);
-    setOpenReorderModal(true);
-  };
-  const closeReorderModal = () => {
-    setOpenReorderModal(false);
-  };
-
-  const OpenViewModal = (orderId: number) => {
-    router.push(`/orders/vieworder/${orderId}`);
-  };
-
-  const editOrder = (orderId: number) => {
-    router.push(`/orders/editorder/${orderId}`);
-  };
-
-  const refreshData = () => {
-    setRefreshKey((prev) => prev + 1);
-  };
 
   useEffect(() => {
-    if (clientId) {
-      fetchOrders(clientId);
-    } else {
+     fetchClients();
       fetchOrders();
-    }
-  }, [fetchOrders, clientId]);
-
-  useEffect(() => {
-    fetchClients();
   }, []);
+
   return (
-    <div>
-      <div className="w-full flex flex-col gap-3">
+    <div className="p-6 bg-white dark:bg-slate-800 rounded">
+      {/* <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <select
             className="p-1 rounded-lg border-1"
@@ -107,14 +34,6 @@ const OrderTable = () => {
           </select>
 
           <div className="flex items-center gap-2">
-            {/* <Tooltip content="Order Status">
-              <Link
-                href={"/orders/orderstatus"}
-                className="dark:bg-slate-500 bg-slate-300 dark:text-white text-gray-800 rounded-lg p-2"
-              >
-                <FiSettings size={20} />
-              </Link>
-            </Tooltip> */}
             <Link
               href={"/orders/addorder"}
               type="button"
@@ -219,26 +138,9 @@ const OrderTable = () => {
             )}
           </TableBody>
         </Table>
-      </div>
+      </div> */}
 
-      {isOpenDeletModal && (
-        <DeleteModal
-          isOpen={isOpenDeletModal}
-          onClose={closeDeleteModal}
-          orderId={selectedOrderId}
-          clientId={clientId}
-          onDeleteSuccess={refreshData}
-        />
-      )}
-
-      {openReorderModal && (
-        <ReorderConfirmation
-          clientId={clientId}
-          isOpen={openReorderModal}
-          onClose={closeReorderModal}
-          orderId={selectedOrderId}
-        />
-      )}
+      <OrderList clients={clients} orders={Orders} />
     </div>
   );
 };
