@@ -2,56 +2,10 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import { fetchWithAuth } from "@/src/app/services/authservice";
 
-export interface QAChecklistItem {
-  orderItemId: number;
-  productId: number | null;
-  measurementId: number | null;
-  parameter: string;
-  expected: string | null;
-  observed: string | null;
-  remarks: string | null;
-  createdBy: string | null;
-  createdOn: string; // ISO date string
-  id: number;
-}
-
-export interface QAChecklistResponse {
-  data: QAChecklistItem[];
-}
-
-export type QAChecklistCreateItem = {
-  productId?: number;        // include ONLY for product rows
-  measurementId?: number;    // include ONLY for measurement rows
-  parameter: string;
-  expected: string | null;
-  observed: string | null;
-  remarks: string | null;
-};
-
 interface QAStoreState {
-  qaChecklist: QAChecklistItem[];
-  productQAChecklist: QAChecklistItem[];
-  measurementQAChecklist: QAChecklistItem[];
   loading: boolean;
   error: string | null;
-
-  getQAChecklist: (
-    orderItemId: number,
-    productId?: number,
-    measurementId?: number
-  ) => Promise<void>;
-
-  executeQAChecklist: (
-    orderItemId: number,
-    productId?: number,
-    measurementId?: number
-  ) => Promise<void>;
-
-   createQAChecklist: (
-    orderItemId: number,
-    items: QAChecklistCreateItem[],
-    opts?: { productId?: number; measurementId?: number }
-  ) => Promise<void>;
+  downloadQAChecklistZip: (orderId: number, itemIds: number[]) => Promise<void>;
 }
 
 const useQAchecklistStore = create<QAStoreState>((set, get) => ({
@@ -61,136 +15,76 @@ const useQAchecklistStore = create<QAStoreState>((set, get) => ({
   loading: false,
   error: null,
 
-  getQAChecklist: async (orderItemId, productId, measurementId) => {
-    set({ loading: true, error: null });
-    try {
-      const base = `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderItemId}/qa-checklist`;
-
-      const res = await fetchWithAuth(base);
-      const result: QAChecklistResponse = await res.json();
-
-      if (!res.ok) {
-        const message = (result as any)?.message || "Failed to fetch QA checklist";
-        set({ loading: false, error: message });
-        toast.error(message);
-        return;
-      }
-
-      if (Array.isArray(result.data) && result.data.length > 0) {
-        const items = result.data;
-        set({
-          qaChecklist: items,
-          productQAChecklist: items.filter((i) => i.productId !== null),
-          measurementQAChecklist: items.filter((i) => i.measurementId !== null && i.expected !== null && i.expected !== "0.00"),
-          loading: false,
-          error: null,
-        });
-      } else {
-        await get().executeQAChecklist(orderItemId, productId, measurementId);
-      }
-    } catch {
-      set({ loading: false, error: "Failed to fetch QA checklist" });
-      toast.error("Failed to fetch QA checklist");
+  downloadQAChecklistZip: async (orderId, itemIds) => {
+    // basic validation
+    if (!orderId || !Number.isFinite(orderId)) {
+      toast.error("Invalid order id.");
+      return;
     }
-  },
-
-  executeQAChecklist: async (orderItemId) => {
-    try {
-      const res = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderItemId}/execute-qa-checklist`,
-      );
-
-      const result: QAChecklistResponse = await res.json();
-
-      if (!res.ok) {
-        const message = (result as any)?.message || "Failed to execute QA checklist";
-        set({ loading: false, error: message });
-        toast.error(message);
-        return;
-      }
-
-      const items = result.data ?? [];
-      set({
-        qaChecklist: items,
-        productQAChecklist: items.filter((i) => i.productId !== null),
-        measurementQAChecklist: items.filter((i) => i.measurementId !== null && i.expected !== null && i.expected !== "0.00"),
-        loading: false,
-        error: null,
-      });
-    } catch {
-      set({ loading: false, error: "Failed to execute QA checklist" });
-      toast.error("Failed to execute QA checklist");
-    }
-  },
-
-   createQAChecklist: async (orderItemId, items, opts) => {
-    // Validate input
-    if (!Array.isArray(items) || items.length === 0) {
-      toast.error("Nothing to save.");
+    if (!Array.isArray(itemIds) || itemIds.length === 0) {
+      toast.error("Select at least one order item.");
       return;
     }
 
-    // Split payload into product vs measurement (restriction: cannot send both in one request)
-    const productItems: QAChecklistCreateItem[] = [];
-    const measurementItems: QAChecklistCreateItem[] = [];
-    const invalidItems: QAChecklistCreateItem[] = [];
+    const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/qa-checklist-zip`;
 
-    for (const it of items) {
-      const hasProduct = typeof it.productId === "number";
-      const hasMeasurement = typeof it.measurementId === "number";
-
-      if (hasProduct && !hasMeasurement) productItems.push(it);
-      else if (!hasProduct && hasMeasurement) measurementItems.push(it);
-      else invalidItems.push(it); // either neither or both -> invalid
-    }
-
-    if (invalidItems.length > 0) {
-      toast.error("Each item must target either a product OR a measurement (not both).");
-      return;
-    }
-
-    set({ loading: true, error: null });
-
-    const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderItemId}/qa-checklist`;
-    const postBatch = async (batch: QAChecklistCreateItem[]) => {
-      const res = await fetchWithAuth(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(batch),
-      });
-      let payload: any = null;
-      try {
-        payload = await res.json();
-      } catch {
-        // ignore non-JSON responses
+    // helper to extract filename from Content-Disposition
+    const getFilenameFromHeader = (cd?: string | null) => {
+      if (!cd) return null;
+      // handles: attachment; filename="some name.zip"
+      const match = /filename\*?=(?:UTF-8'')?"?([^\";]+)"?/i.exec(cd);
+      if (match?.[1]) {
+        try {
+          // decode RFC5987 if present
+          return decodeURIComponent(match[1]);
+        } catch {
+          return match[1];
+        }
       }
-      if (!res.ok) {
-        const message = payload?.message || "Failed to save QA checklist";
-        throw new Error(message);
-      }
+      return null;
     };
 
     try {
-      if (productItems.length > 0) {
-        await postBatch(productItems);
-      }
-      if (measurementItems.length > 0) {
-        await postBatch(measurementItems);
+      set({ loading: true, error: null });
+
+      const res = await fetchWithAuth(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ itemIds }),
+      });
+
+      if (!res.ok) {
+        // try to surface server message if sent as JSON
+        let msg = `Failed to download QA checklist (HTTP ${res.status})`;
+        try {
+          const j = await res.json();
+          if (j?.message) msg = j.message;
+        } catch {}
+        throw new Error(msg);
       }
 
-      // Refetch after save
-      if (productItems.length > 0 && measurementItems.length === 0) {
-        await get().getQAChecklist(orderItemId, opts?.productId, undefined);
-      } else if (measurementItems.length > 0 && productItems.length === 0) {
-        await get().getQAChecklist(orderItemId, undefined, opts?.measurementId);
-      } else {
-        // both kinds saved; fetch all (or you can choose to call twice with filters)
-        await get().getQAChecklist(orderItemId);
+      const blob = await res.blob();
+      if (!blob || blob.size === 0) {
+        throw new Error("Empty file received.");
       }
 
-      toast.success("QA checklist saved.");
+      const cd = res.headers.get("content-disposition");
+      const fallbackName = `order-${orderId}-checklists.zip`;
+      const filename = getFilenameFromHeader(cd) || fallbackName;
+
+      // trigger browser download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+
+      toast.success("QA checklist ZIP downloaded.");
     } catch (err: any) {
-      const message = err?.message || "Failed to save QA checklist";
+      const message = err?.message || "Failed to download QA checklist ZIP.";
       set({ error: message });
       toast.error(message);
     } finally {

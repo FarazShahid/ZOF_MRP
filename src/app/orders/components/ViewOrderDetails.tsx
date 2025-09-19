@@ -1,29 +1,36 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { Button } from "@heroui/react";
-import { FaRegEye } from "react-icons/fa";
-import { CheckSquare } from "lucide-react";
 import { IoIosStats } from "react-icons/io";
 import { FaUserTie } from "react-icons/fa6";
 import { GiCargoShip } from "react-icons/gi";
 import { IoReturnDownBack } from "react-icons/io5";
+import { FiDownload, FiLoader } from "react-icons/fi";
 
 import useOrderStore from "@/store/useOrderStore";
 import { PdfVariant } from "@/src/types/OrderPDfType";
+import useQAchecklistStore from "@/store/useQAchecklistStore";
 import { DOCUMENT_REFERENCE_TYPE, OrderItemShipmentEnum } from "@/interface";
+import { useOrderItemSelectionStore } from "@/store/useOrderItemSelectionStore";
 
 import OrderStatus from "./OrderStatus";
 import OrderDeadline from "./OrderDeadline";
 import ClientDetails from "./ClientDetails";
-import OrderItemStatusChip from "./OrderItemStatusChip";
 import StatusTimelineDrawer from "./StatusTimelineDrawer";
 import { ViewMeasurementChart } from "./ViewMeasurementChart";
-import QaSheet from "../../components/order/QaSheet";
+import { OrderItem } from "../../interfaces/OrderStoreInterface";
 import DownloadPdfMenu from "../../components/order/DownloadPdfMenu";
 import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
-import useQAchecklistStore from "@/store/useQAchecklistStore";
+
+const OrderItemCard = dynamic(
+  () => import("../../components/order/view order/OrderItemCard"),
+  {
+    loading: () => <CardSkeleton />,
+  }
+);
 
 interface ViewOrderProps {
   orderId: number;
@@ -35,18 +42,9 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const [sizeOptionName, setSizeOptionName] = useState<string>("");
   const [localStatusName, setLocalStatusName] = useState<string>("");
   const [refetchData, setRefetchData] = useState<boolean>(false);
-  const [openQASheet, setOpenQASheet] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
   const [openUpdateStatusModal, setOpenUpdateStatusModal] =
     useState<boolean>(false);
-  const [qaInfo, setQaInfo] = useState({
-    orderName: "",
-    clientName: "",
-    deadline: "",
-    productName: "",
-    productId: 0,
-    orderItemId: 0,
-  });
 
   const {
     changeOrderStatus,
@@ -56,7 +54,33 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     OrderById,
     loading,
   } = useOrderStore();
-  const { getQAChecklist } = useQAchecklistStore();
+
+  const {
+    selectionMode,
+    selectedIds,
+    enterSelectionWith,
+    toggleOne,
+    setAll,
+    clear,
+    exit,
+  } = useOrderItemSelectionStore();
+
+  const { downloadQAChecklistZip, loading: qaLoading } = useQAchecklistStore();
+
+  const items: OrderItem[] = useMemo(() => OrderById?.items ?? [], [OrderById]);
+  const allIds = useMemo(() => items.map((i) => i.Id), [items]);
+  const selectedArray = useMemo(() => Array.from(selectedIds), [selectedIds]);
+  const anySelected = selectedArray.length > 0;
+  const allSelected = anySelected && selectedArray.length === allIds.length;
+
+  const handleSelectAllToggle = () => {
+    if (allSelected) clear();
+    else setAll(allIds);
+  };
+
+  const handleDownloadQA = async () => {
+    await downloadQAChecklistZip(orderId, selectedArray);
+  };
 
   // Callbacks
   const handleOpenViewModal = useCallback((id: number, sizeName: string) => {
@@ -78,26 +102,6 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
       setLocalStatusName(statusName);
     },
     [changeOrderStatus, handleCloseStatusModal, orderId]
-  );
-
-  const openQASheetForItem = useCallback(
-    (orderItem: any) => {
-      setQaInfo({
-        orderName: OrderById?.OrderName ?? "",
-        clientName: OrderById?.ClientName ?? "",
-        deadline: OrderById?.Deadline ?? "",
-        productName: orderItem?.ProductName ?? "",
-        productId: orderItem?.ProductId ?? 0,
-        orderItemId: orderItem?.Id ?? 0,
-      });
-
-      setOpenQASheet(true);
-
-      if (orderItem?.Id) {
-        getQAChecklist(orderItem.Id, orderItem.ProductId);
-      }
-    },
-    [OrderById, getQAChecklist]
   );
 
   const handleDownloadPdf = async (variant: PdfVariant) => {
@@ -130,6 +134,30 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           </h2>
         </div>
         <div className="flex items-center gap-3">
+          {selectionMode && anySelected && (
+            <Button
+              type="button"
+              onPress={qaLoading ? undefined : handleDownloadQA}
+              isLoading={qaLoading}
+              isDisabled={qaLoading}
+              spinner={<FiLoader className="animate-spin" />}
+              spinnerPlacement="start"
+              className={[
+                "px-3 py-1 flex items-center gap-2 rounded-lg text-sm text-white",
+                "bg-blue-800 dark:bg-blue-600",
+                qaLoading ? "opacity-60 cursor-not-allowed" : "",
+              ].join(" ")}
+              aria-busy={qaLoading}
+              title={
+                qaLoading
+                  ? "Downloading…"
+                  : "Download QA Sheets ZIP for selected items"
+              }
+            >
+              {!qaLoading && <FiDownload />}
+              {qaLoading ? "Downloading…" : "QA Sheet"}
+            </Button>
+          )}
           <DownloadPdfMenu
             downloading={downloading}
             OrderById={OrderById.Id}
@@ -204,117 +232,61 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
                 </div>
               </div>
 
+              {/* Selection toolbar */}
+              {selectionMode && (
+                <div className="flex items-center justify-between rounded-xl border dark:border-slate-700 border-slate-300 p-2">
+                  <div className="flex items-center gap-3">
+                    <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={allSelected}
+                        onChange={handleSelectAllToggle}
+                        className="h-4 w-4 accent-black"
+                      />
+                      <span className="text-sm">Select all</span>
+                    </label>
+                    {anySelected && (
+                      <span className="text-xs px-2 py-1 rounded-full bg-gray-200 dark:bg-slate-800">
+                        {selectedArray.length} selected
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={clear}
+                      className="text-xs px-2 py-1 rounded-lg border dark:border-slate-700 border-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      type="button"
+                      onClick={exit}
+                      className="text-xs px-2 py-1 rounded-lg bg-gray-900 text-white dark:bg-white dark:text-black hover:opacity-90"
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Cards grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {OrderById?.items.map((orderItem, index) => {
                   return (
-                    <div
-                      className="dark:bg-[#161616] bg-gray-100 hover:shadow-md transition-all duration-200 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-4 flex flex-col gap-2 shadow-lg dark:text-foreground text-gray-700"
+                    <OrderItemCard
                       key={index}
-                    >
-                      <div className="flex items-start justify-between">
-                        <span className="text-sm font-mono text-foreground font-bold">
-                          {orderItem.ProductName}
-                        </span>
-                        <OrderItemStatusChip
-                          status={orderItem.ItemShipmentStatus}
-                        />
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="font-semibold">Fabric:</span>
-                        <span className="">
-                          {orderItem?.ProductFabricName}_
-                          {orderItem?.ProductFabricGSM}
-                        </span>
-                      </div>
-
-                      {/* -------- Printing Options  ---------- */}
-
-                      {orderItem?.printingOptions?.length > 0 && (
-                        <div className="flex text-sm">
-                          <span>Printing:</span>
-                          <div className="flex flex-wrap gap-1 pl-1">
-                            {orderItem.printingOptions.map(
-                              (printingOption, idx) => (
-                                <span
-                                  key={printingOption.PrintingOptionId ?? idx}
-                                  className="rounded-xl px-2 text-xs bg-gray-200 flex items-center justify-center"
-                                >
-                                  {printingOption.PrintingOptionName}
-                                </span>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      <table>
-                        <thead>
-                          <tr>
-                            <th className="border-2 text-xs text-center">
-                              Size
-                            </th>
-                            <th className="border-2 text-xs text-center">
-                              Qunatity
-                            </th>
-                            <th className="border-2 text-xs text-center">
-                              Measurement
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {orderItem?.orderItemDetails?.map((detail, index) => {
-                            return (
-                              <tr key={index}>
-                                <td className="border-2 text-xs text-center">
-                                  {detail.SizeOptionId && (
-                                    <>{detail?.SizeOptionName}</>
-                                  )}
-                                </td>
-                                <td className="border-2 text-xs text-center">
-                                  {detail?.Quantity}
-                                </td>
-                                <td className="border-2 text-xs text-center">
-                                  {detail.SizeOptionId && (
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        handleOpenViewModal(
-                                          detail?.MeasurementId,
-                                          detail?.SizeOptionName
-                                        )
-                                      }
-                                      className="w-fit"
-                                    >
-                                      <FaRegEye />
-                                    </button>
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-
-                      <div className="mt-1 w-full">
-                        <button
-                          type="button"
-                          onClick={() => openQASheetForItem(orderItem)}
-                          className="w-full flex items-center justify-center gap-2 py-1 text-sm bg-gray-300 rounded"
-                        >
-                          <CheckSquare size={16} /> QA Check List
-                        </button>
-                      </div>
-
-                      {/* -----------  Product Attachments  ---------------- */}
-
-                      <RecentAttachmentsView
-                        referenceId={orderItem.ProductId}
-                        referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
-                      />
-                    </div>
+                      item={orderItem}
+                      selectionMode={selectionMode}
+                      selected={selectedIds.has(orderItem.Id)}
+                      onToggle={(id) => toggleOne(id)}
+                      onEnterSelection={(id) => enterSelectionWith(id)}
+                      onOpenViewModal={handleOpenViewModal}
+                    />
                   );
                 })}
               </div>
+
               <RecentAttachmentsView
                 label={"Order Attachments"}
                 referenceId={OrderById.Id}
@@ -363,9 +335,6 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           }
         />
       )}
-
-      {/* -----------  QA CheckList View Modal -------------- */}
-      <QaSheet isOpen={openQASheet} onClose={() => setOpenQASheet(false)}  info={qaInfo} />
     </div>
   );
 };
