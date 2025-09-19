@@ -30,22 +30,7 @@ export interface GetOrderByIdResponse{
   data: GetOrderByIdType;
 }
 
-export interface GetOrderByIdType {
-  Id: number;
-  ClientId: number;
-  ClientName: string;
-  OrderEventId: number;
-  EventName: string;
-  OrderPriority: number;
-  Description: string;
-  OrderNumber: string;
-  OrderName: string;
-  ExternalOrderId: string;
-  OrderStatusId: number;
-  StatusName: string;
-  OrderShipmentStatus?: string;
-  Deadline: string;
-  items: {
+export interface OrderItem {
     Id: number;
     ProductId: number;
     ProductCategoryId: number;
@@ -82,7 +67,24 @@ export interface GetOrderByIdType {
       Quantity: number;
       Priority: number;
     }[];
-  }[];
+  }
+
+export interface GetOrderByIdType {
+  Id: number;
+  ClientId: number;
+  ClientName: string;
+  OrderEventId: number;
+  EventName: string;
+  OrderPriority: number;
+  Description: string;
+  OrderNumber: string;
+  OrderName: string;
+  ExternalOrderId: string;
+  OrderStatusId: number;
+  StatusName: string;
+  OrderShipmentStatus?: string;
+  Deadline: string;
+  items: OrderItem[];
 }
 
 export interface AddOrderType {
