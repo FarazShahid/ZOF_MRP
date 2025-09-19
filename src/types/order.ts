@@ -1,4 +1,3 @@
-import { QAChecklistItem } from "@/store/useQAchecklistStore";
 
 export interface QASheetOrderInfo {
     orderId: number;
@@ -56,40 +55,6 @@ const isNumericString = (v: unknown): boolean => {
   return /^[+-]?\d+(?:\.\d+)?$/.test(s);
 };
 
-export type MeasurementGroup = {
-  measurementId: number;
-  /** First row in the group whose expected is NOT numeric, e.g. "Small", "Large", "Small T-Shirt Mao Mao" */
-  label: string | null;
-  /** Rows to render (excluding the label row if one was used) */
-  items: QAChecklistItem[];
-};
-
-export const groupByMeasurementId = (rows: QAChecklistItem[]): MeasurementGroup[] => {
-  const byId = new Map<number, QAChecklistItem[]>();
-
-  for (const r of rows) {
-    if (r.measurementId == null) continue;
-    if (!byId.has(r.measurementId)) byId.set(r.measurementId, []);
-    byId.get(r.measurementId)!.push(r);
-  }
-
-  const groups: MeasurementGroup[] = [];
-  for (const [measurementId, items] of byId.entries()) {
-    // Find first non-numeric expected text to use as a group label
-    const labelRow = items.find(
-      (x) => x.expected != null && !isNumericString(x.expected)
-    );
-    const label = (labelRow?.expected as string) ?? null;
-
-    // Optionally hide the labelRow from the table body to avoid duplication
-    const body = labelRow ? items.filter((x) => x.id !== labelRow.id) : items;
-
-    groups.push({ measurementId, label, items: body });
-  }
-
-  groups.sort((a, b) => a.measurementId - b.measurementId);
-  return groups;
-};
 
 export type RowEdits = Record<number, { observed: string; remarks: string }>;
 
