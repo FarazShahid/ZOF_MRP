@@ -1,18 +1,18 @@
 "use client";
+
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { RiDashboard2Line } from "react-icons/ri";
+import { FaClipboardList } from "react-icons/fa";
+import { AiOutlineProduct } from "react-icons/ai";
+import { IoStorefrontOutline } from "react-icons/io5";
+import { GiCargoShip } from "react-icons/gi";
 import { IoIosArrowDown } from "react-icons/io";
 import Logo from "../../../../public/logoDark.png";
 import LogoLight from "../../../../public/logo.png";
 import UserDropdown from "../header/UserDropdown";
 import { ThemeToggleButton } from "./ThemeToggleButton";
-import { RiDashboard2Line } from "react-icons/ri";
-import { FaClipboardList, FaUserTie } from "react-icons/fa";
-import { AiOutlineProduct } from "react-icons/ai";
-import { IoCalendarNumber, IoStorefrontOutline } from "react-icons/io5";
-import { FaRegCircleUser } from "react-icons/fa6";
-import { GiCargoShip } from "react-icons/gi";
 
 const CutomNavBar = () => {
   const pathname = usePathname();

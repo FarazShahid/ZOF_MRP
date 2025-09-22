@@ -1,25 +1,43 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
-import { Sidebar } from './Sidebar';
-import { UsersModule } from './users/UsersModule';
-import { CustomersModule } from './customers/CustomersModule';
-import { EventsModule } from './events/EventsModule';
-import { ActiveModule } from '@/src/types/admin';
-import CarriorTable from '../../shipment/carrior/components/CarriorTable';
+import React, { useState } from "react";
+import dynamic from "next/dynamic";
+import { Sidebar } from "./Sidebar";
+import { ActiveModule } from "@/src/types/admin";
+import { TableSkel } from "../ui/Skeleton/TableSkel";
+
+// lazy load
+const UsersModule = dynamic(() => import("./users/UsersModule"), {
+  loading: () => <TableSkel />,
+});
+const CustomersModule = dynamic(() => import("./customers/CustomersModule"), {
+  ssr: false,
+  loading: () => <TableSkel />,
+});
+const EventsModule = dynamic(() => import("./events/EventsModule"), {
+  ssr: false,
+  loading: () => <TableSkel />,
+});
+const CarriorTable = dynamic(
+  () => import("../../shipment/carrior/components/CarriorTable"),
+  {
+    ssr: false,
+    loading: () => <TableSkel />,
+  }
+);
 
 export const AdminSettings: React.FC = () => {
-  const [activeModule, setActiveModule] = useState<ActiveModule>('users');
+  const [activeModule, setActiveModule] = useState<ActiveModule>("users");
 
   const renderActiveModule = () => {
     switch (activeModule) {
-      case 'users':
+      case "users":
         return <UsersModule />;
-      case 'customers':
+      case "customers":
         return <CustomersModule />;
-      case 'events':
+      case "events":
         return <EventsModule />;
-      case 'carriers':
+      case "carriers":
         return <CarriorTable />;
       default:
         return <UsersModule />;
@@ -29,9 +47,7 @@ export const AdminSettings: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar activeModule={activeModule} onModuleChange={setActiveModule} />
-      <div className="flex-1 overflow-auto">
-        {renderActiveModule()}
-      </div>
+      <div className="flex-1 overflow-auto">{renderActiveModule()}</div>
     </div>
   );
 };

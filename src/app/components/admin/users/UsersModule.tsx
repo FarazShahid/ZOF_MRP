@@ -9,7 +9,7 @@ import DeleteUser from "@/src/app/components/admin/users/DeleteUser";
 import useUserStore from "@/store/useUserStore";
 import UserTable from "./UserTable";
 
-export const UsersModule: React.FC = () => {
+const UsersModule: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
@@ -104,3 +104,6 @@ export const UsersModule: React.FC = () => {
     </div>
   );
 };
+
+
+export default UsersModule;

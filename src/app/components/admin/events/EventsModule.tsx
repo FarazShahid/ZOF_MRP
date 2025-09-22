@@ -5,7 +5,7 @@ import useEventsStore from "@/store/useEventsStore";
 import DeleteEvent from "@/src/app/events/DeleteEvent";
 import EventsForm from "@/src/app/events/EventsForm";
 
-export const EventsModule: React.FC = () => {
+const EventsModule: React.FC = () => {
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [selectedEventId, setSelectedEventId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -81,3 +81,5 @@ export const EventsModule: React.FC = () => {
     </div>
   );
 };
+
+export default EventsModule

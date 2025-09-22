@@ -1,19 +1,39 @@
 "use client";
 
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import React, { useState, useMemo } from "react";
-import {Plus } from "lucide-react";
-import OrderDashboard from "./OrderDashboard";
-import OrderSearchAndFilters from "./OrderSearchAndFilters";
-import OrderTable from "./OrderTable";
-import OrderGrid from "./OrderGrid";
-import { GetOrdersType } from "../../interfaces/OrderStoreInterface";
+
+import { Plus } from "lucide-react";
 import { OrderStatus } from "@/src/types/admin";
 import { GetClientsType } from "@/store/useClientStore";
-import Pagination from "../shipment/Pagination";
-import { ViewToggle } from "../admin/common/ViewToggle";
-import { useRouter } from "next/navigation";
+
 import DeleteModal from "../DeleteModal";
+import Pagination from "../shipment/Pagination";
+import { TableSkel } from "../ui/Skeleton/TableSkel";
+import { ViewToggle } from "../admin/common/ViewToggle";
+import SearchSkeleton from "../ui/Skeleton/SearchSkeleton";
+import { GetOrdersType } from "../../interfaces/OrderStoreInterface";
 import ReorderConfirmation from "../../orders/components/ReorderConfirmation";
+
+
+// Lazy load
+const OrderDashboard = dynamic(() => import("./OrderDashboard"), {
+  loading: () => null,
+});
+const OrderSearchAndFilters = dynamic(() => import("./OrderSearchAndFilters"), {
+  ssr: false,
+  loading: () => <SearchSkeleton />,
+});
+const OrderTable = dynamic(() => import("./OrderTable"), {
+  ssr: false,
+  loading: () => <TableSkel />,
+});
+const OrderGrid = dynamic(() => import("./OrderGrid"), {
+  ssr: false,
+  loading: () => <TableSkel />,
+});
 
 interface OrderListProps {
   orders: GetOrdersType[];
@@ -114,14 +134,14 @@ const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
         </div>
         <div className="flex items-center gap-4">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-          <button
-            type="button"
-            onClick={() => router.push("/orders/addorder")}
+
+          <Link
+            href={"/orders/addorder"}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-4 h-4" />
             Add New Order
-          </button>
+          </Link>
         </div>
       </div>
 
