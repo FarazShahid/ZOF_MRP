@@ -10,7 +10,7 @@ import AddClients from "../../AddClients";
 import DeleteClient from "../../DeleteClient";
 import CustomerTable from "./CustomerTable";
 
-export const CustomersModule: React.FC = () => {
+const CustomersModule: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] =
@@ -125,3 +125,5 @@ export const CustomersModule: React.FC = () => {
     </div>
   );
 };
+
+export default CustomersModule;

@@ -60,3 +60,18 @@ export type RowEdits = Record<number, { observed: string; remarks: string }>;
 
 export type RowVals = { observed: string; remarks: string };
 export type RowMap = Record<number, RowVals>;
+
+
+export interface FormValues {
+  OrderName: string;
+  OrderNumber: string;
+  ClientId: string;
+  OrderEventId?: string;
+  Description: string;
+  Deadline: string;
+  OrderPriority: string;
+  items: any[];
+}
+
+// order Steps
+export const steps = ["Order Details", "Order Items"];

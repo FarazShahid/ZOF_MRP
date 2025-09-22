@@ -1,39 +1,34 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { Link } from "@heroui/react";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/navigation";
-import { FaRegFileLines } from "react-icons/fa6";
-import { IoDocumentAttach } from "react-icons/io5";
+import React, { useEffect, useState } from "react";
+
 import { FaRuler } from "react-icons/fa";
-import { IoCaretBackSharp } from "react-icons/io5";
+import { FaRegFileLines } from "react-icons/fa6";
+import { IoDocumentAttach, IoCaretBackSharp } from "react-icons/io5";
 
 import useOrderStore from "@/store/useOrderStore";
-import Step1 from "./Step1";
-import Step2 from "./Step2";
+import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 import { OrderValidationSchemas } from "../../schema";
-import OrderAttachments from "./OrderAttachments";
 import { useFileUploadStore } from "@/store/useFileUploadStore";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
-import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
+import { FormValues, steps } from "@/src/types/order";
 
-interface FormValues {
-  OrderName: string;
-  OrderNumber: string;
-  ClientId: string;
-  OrderEventId?: string;
-  Description: string;
-  Deadline: string;
-  OrderPriority: string;
-  items: any[];
-}
-const steps = ["Order Details", "Order Items"];
+// lazy load
+const Step1 = dynamic(() => import("./Step1"), {loading: () => null});
+const Step2 = dynamic(() => import("./Step2"), {loading: () => null});
+const OrderAttachments = dynamic(() => import("./OrderAttachments"), {loading: () => null});
+
+
 const formSteps = [
   { id: 1, name: "Order Details", icon: <FaRegFileLines size={20} /> },
   { id: 2, name: "Order Items", icon: <FaRuler size={20} /> },
   { id: 3, name: "Order Attachments", icon: <IoDocumentAttach size={20} /> },
 ];
+
 const defaultValues: FormValues = {
   OrderName: "",
   OrderNumber: "",
@@ -51,7 +46,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   const [initialValues, setInitialValues] = useState<FormValues>(defaultValues);
 
   const { addOrder, getOrderById, updateOrder, OrderById } = useOrderStore();
-  const { uploadDocument, loadingDoc } = useDocumentCenterStore();
+  const { uploadDocument } = useDocumentCenterStore();
   const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
 
   const router = useRouter();

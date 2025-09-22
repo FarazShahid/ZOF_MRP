@@ -40,7 +40,9 @@ export default function UserDropdown() {
           <FaUserTie className="w-4 h-4 hover:text-gray-800 text-gray-400" />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm dark:text-gray-400 text-gray-800">Admin</span>
+        <span className="block mr-1 font-medium text-theme-sm dark:text-gray-400 text-gray-800">
+          Admin
+        </span>
 
         <svg
           className={`dark:stroke-gray-400 stroke-gray-800 transition-transform duration-200 ${
@@ -75,13 +77,16 @@ export default function UserDropdown() {
             {email}
           </span>
         </div>
-        <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
-          <AiOutlineAudit size={19} /> <Link href={'/auditlog'}>Audit Log</Link>
-        </div>
-        <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
-          <CiSettings size={19} /> <Link href={'/adminsetting'}>Admin Setting</Link>
-        </div>
-         
+        <Link href={"/auditlog"}>
+          <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
+            <AiOutlineAudit size={19} /> Audit Log
+          </div>
+        </Link>
+        <Link href={"/adminsetting"}>
+          <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
+            <CiSettings size={19} /> Admin Setting
+          </div>
+        </Link>
         <button
           type="button"
           onClick={logout}
