@@ -110,18 +110,34 @@ const OrderGrid: React.FC<OrderGridProps> = ({
               </button>
               <button
                 onClick={() => onEditOrder(order.Id)}
-                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
+                className={`flex items-center space-x-1 px-3 py-1.5 text-sm text-slate-600  rounded-md transition-colors ${
+                  order.StatusName === OrderItemShipmentEnum.SHIPPED
+                    ? "cursor-not-allowed"
+                    : "hover:bg-slate-100"
+                }`}
                 title="Edit"
-                disabled={order.StatusName === OrderItemShipmentEnum.SHIPPED ? true: false}
+                disabled={
+                  order.StatusName === OrderItemShipmentEnum.SHIPPED
+                    ? true
+                    : false
+                }
               >
                 <Edit className="w-4 h-4" />
                 <span>Edit</span>
               </button>
               <button
                 onClick={() => onDeleteOrder(order.Id)}
-                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                className={`flex items-center space-x-1 px-3 py-1.5 text-sm text-red-600  rounded-md transition-colors ${
+                  order.StatusName === OrderItemShipmentEnum.SHIPPED
+                    ? "cursor-not-allowed"
+                    : "hover:bg-red-50"
+                }`}
                 title="Delete"
-                disabled={order.StatusName === OrderItemShipmentEnum.SHIPPED ? true: false}
+                disabled={
+                  order.StatusName === OrderItemShipmentEnum.SHIPPED
+                    ? true
+                    : false
+                }
               >
                 <Trash2 className="w-4 h-4" />
                 <span>Delete</span>

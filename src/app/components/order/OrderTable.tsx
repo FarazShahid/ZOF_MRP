@@ -54,11 +54,13 @@ const OrderTable: React.FC<OrderTableProps> = ({
               </th>
             </tr>
           </thead>
-            <tbody className=" divide-y divide-slate-200">
+          <tbody className=" divide-y divide-slate-200">
             {orders?.map((order) => (
               <tr
                 key={order?.Id}
-                className={"hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"}
+                className={
+                  "hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                }
               >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div>
@@ -110,17 +112,33 @@ const OrderTable: React.FC<OrderTableProps> = ({
                     </button>
                     <button
                       onClick={() => onEditOrder(order.Id)}
-                      className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
+                      className={`p-2 text-slate-400 hover:text-slate-600  rounded-lg transition-colors ${
+                        order.StatusName === OrderItemShipmentEnum.SHIPPED
+                          ? "cursor-not-allowed"
+                          : "hover:bg-slate-50"
+                      }`}
                       title="Edit"
-                      disabled={order.StatusName === OrderItemShipmentEnum.SHIPPED ? true: false}
+                      disabled={
+                        order.StatusName === OrderItemShipmentEnum.SHIPPED
+                          ? true
+                          : false
+                      }
                     >
                       <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => onDeleteOrder(order.Id)}
-                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className={`p-2 text-slate-400 hover:text-red-600  rounded-lg transition-colors ${
+                        order.StatusName === OrderItemShipmentEnum.SHIPPED
+                          ? "cursor-not-allowed"
+                          : "hover:bg-red-50"
+                      }`}
                       title="Delete"
-                      disabled={order.StatusName === OrderItemShipmentEnum.SHIPPED ? true: false}
+                      disabled={
+                        order.StatusName === OrderItemShipmentEnum.SHIPPED
+                          ? true
+                          : false
+                      }
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
