@@ -11,7 +11,7 @@ import OrderStatusBadge from "./OrderStatusBadge";
 import { GetOrdersType } from "../../interfaces/OrderStoreInterface";
 import { formatDate } from "@/src/types/admin";
 import { getDeadlineColor, getDeadlineStatus } from "@/src/types/order";
-import { OrderItemShipmentEnum, ShipmentStatus } from "@/interface";
+import { OrderItemShipmentEnum } from "@/interface";
 
 interface OrderTableProps {
   orders: GetOrdersType[];
