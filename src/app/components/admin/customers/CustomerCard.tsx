@@ -47,12 +47,12 @@ const CustomerCard: React.FC<CardProps> = ({
           <Mail className="w-4 h-4" />
           {customer.Email}
         </div>
-        <div className="flex items-center justify-between pt-2">
+        {/* <div className="flex items-center justify-between pt-2">
           <span className="text-sm font-medium text-gray-900">
             0 Total Orders
           </span>
           <span className="text-xs text-gray-500">0 in progress</span>
-        </div>
+        </div> */}
       </div>
 
       <div className="flex items-center gap-2 pt-4 border-t border-gray-200">

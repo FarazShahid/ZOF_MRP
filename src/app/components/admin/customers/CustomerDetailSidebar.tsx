@@ -83,7 +83,7 @@ export const CustomerDetailSidebar: React.FC<CustomerDetailSidebarProps> = ({
           </div>
 
           {/* Order Statistics */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <h4 className="text-lg font-semibold text-gray-900 mb-4">Order Statistics</h4>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-blue-50 p-4 rounded-lg">
@@ -92,7 +92,7 @@ export const CustomerDetailSidebar: React.FC<CustomerDetailSidebarProps> = ({
                   <span className="text-sm font-medium text-blue-900">Total Orders</span>
                 </div>
                 <p className="text-2xl font-bold text-blue-600">
-                  {/* {customer.totalOrders} */} 0
+                  0
                 </p>
               </div>
               
@@ -102,7 +102,7 @@ export const CustomerDetailSidebar: React.FC<CustomerDetailSidebarProps> = ({
                   <span className="text-sm font-medium text-orange-900">In Progress</span>
                 </div>
                 <p className="text-2xl font-bold text-orange-600">
-                 {/* {customer.ordersInProgress} */} 0
+                  0
                 </p>
               </div>
               
@@ -112,7 +112,7 @@ export const CustomerDetailSidebar: React.FC<CustomerDetailSidebarProps> = ({
                   <span className="text-sm font-medium text-green-900">Completed</span>
                 </div>
                 <p className="text-2xl font-bold text-green-600">
-                  {/* {customer.completedOrders} */} 0
+                   0
                 </p>
               </div>
               
@@ -122,11 +122,11 @@ export const CustomerDetailSidebar: React.FC<CustomerDetailSidebarProps> = ({
                   <span className="text-sm font-medium text-purple-900">Success Rate</span>
                 </div>
                 <p className="text-2xl font-bold text-purple-600">
-                  {/* {Math.round((customer.completedOrders / customer.totalOrders) * 100)}% */}  100%
+                   100%
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Last Order Summary TODO */}
           {/* {customer.lastOrderDate && (
@@ -147,7 +147,7 @@ export const CustomerDetailSidebar: React.FC<CustomerDetailSidebarProps> = ({
             </div>
           )} */}
 
-           <div className="mb-6">
+           {/* <div className="mb-6">
               <h4 className="text-lg font-semibold text-gray-900 mb-4">Last Order Summary</h4>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
@@ -155,7 +155,7 @@ export const CustomerDetailSidebar: React.FC<CustomerDetailSidebarProps> = ({
                   <span className="text-sm text-gray-600">{formatDate(customer.CreatedOn)}</span>
                 </div>
               </div>
-            </div>
+            </div> */}
 
           {/* Actions */}
           {/* <div className="space-y-3">
