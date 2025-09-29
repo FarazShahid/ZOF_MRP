@@ -11,3 +11,5 @@ onCreate?: (items: QAItem[]) => void;
 heading?: string;
 createLabel?: string;
 };
+
+export type ProductStatus = "Approved" | "Rejected" | "Sample";

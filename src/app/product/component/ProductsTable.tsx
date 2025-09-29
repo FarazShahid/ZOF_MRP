@@ -63,6 +63,7 @@ const ProductsTable: React.FC<productComponentProp> = ({ products }) => {
     }
     setOpenChangeStatusModal(true);
   };
+  
   const closeChangeStatusModal = () => {
     setOpenChangeStatusModal(false);
   };
