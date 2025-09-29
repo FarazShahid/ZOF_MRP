@@ -183,15 +183,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
       WeightUnit: values.WeightUnit,
       ReceivedTime: values.ReceivedTime,
       Status: values.Status,
-
-      // boxes: (values.boxes || []).map((b: any) => ({
-      //   BoxNumber: String(b.BoxNumber ?? ""),
-      //   Quantity: Number(b.Quantity) || 0,
-      //   Weight: Number(b.Weight) || 0,
-      //   OrderItemName: b.OrderItemName ?? "",
-      //   OrderItemId: b.OrderItemId ? Number(b.OrderItemId) : undefined,
-      //   OrderItemDescription: b.OrderItemDescription ?? "",
-      // })),
       boxes: (values.boxes || []).map((b: any) => ({
         BoxNumber: String(b.BoxNumber ?? ""),
         Weight: Number(b.Weight) || 0,
@@ -553,9 +544,6 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
 
                               {/* ------- Items inside this box ------- */}
                               <div className="col-span-2">
-                                {/* <div className="text-sm font-semibold mb-1">
-                                  Items
-                                </div> */}
                                 <FieldArray name={`boxes[${index}].items`}>
                                   {({ push: pushItem, remove: removeItem }) => (
                                     <div className="space-y-2 w-full">

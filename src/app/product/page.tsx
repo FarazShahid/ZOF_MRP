@@ -1,77 +1,10 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { Tooltip } from "@heroui/react";
-import { useRouter } from "next/navigation";
-import { FiRefreshCw, FiSettings } from "react-icons/fi";
-import { MdOutlineFilterAlt } from "react-icons/md";
-import useProductStore, { Product } from "@/store/useProductStore";
-import useCategoryStore from "@/store/useCategoryStore";
-import ProductsTable from "./component/ProductsTable";
 import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
-import AddButton from "../components/common/AddButton";
-import useFabricStore from "@/store/useFabricStore";
+import ProductModule from "../components/product/ProductModule";
 
 const page = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [selectedFabricType, setSelectedFabricType] = useState<string>("All");
-  const [selectedProductType, setSelectedProductType] = useState<
-    boolean | undefined
-  >(false);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-
-  const { fetchCategories, productCategories } = useCategoryStore();
-  const { fetchProducts, products } = useProductStore();
-  const { fetchFabricType, fabricTypeData } = useFabricStore();
-  const router = useRouter();
-
-  const handleClick = () => {
-    router.push("/product/productform");
-  };
-
-  useEffect(() => {
-    fetchProducts();
-    fetchCategories();
-    fetchFabricType();
-  }, []);
-
-  useEffect(() => {
-    let filtered = products;
-
-    // Only filter by archive if specific value is set
-    if (selectedProductType !== undefined) {
-      filtered = filtered.filter(
-        (product) => product.isArchived === selectedProductType
-      );
-    }
-
-    if (selectedCategory !== "All") {
-      filtered = filtered.filter(
-        (product) => product.ProductCategoryId === parseInt(selectedCategory)
-      );
-    }
-
-    if (selectedFabricType !== "All") {
-      filtered = filtered.filter(
-        (product) => product.FabricTypeId === parseInt(selectedFabricType)
-      );
-    }
-
-    setFilteredProducts(filtered);
-  }, [selectedCategory, selectedFabricType, selectedProductType, products]);
-
-  const handleProductArchive = (value: string) => {
-    if (value === "All") {
-      setSelectedProductType(undefined); // Reset to show all
-    } else {
-      setSelectedProductType(value === "true"); // Convert to boolean
-    }
-  };
-
   return (
     <AdminDashboardLayout>
-      <div className="space-x-2">
+      {/* <div className="space-x-2">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-5">
             <h6 className="dark:text-white text-gray-900 text-xl font-semibold">
@@ -179,7 +112,8 @@ const page = () => {
           </div>
           <ProductsTable products={filteredProducts} />
         </div>
-      </div>
+      </div> */}
+      <ProductModule />
     </AdminDashboardLayout>
   );
 };

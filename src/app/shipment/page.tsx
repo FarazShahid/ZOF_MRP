@@ -1,14 +1,13 @@
-import React from 'react'
-import AdminDashboardLayout from '../components/common/AdminDashboardLayout'
-import ShipmentTable from './components/ShipmentTable'
-import ShipmentModule from '../components/shipment/ShipmentModule'
+import React from "react";
+import ShipmentModule from "../components/shipment/ShipmentModule";
+import AdminDashboardLayout from "../components/common/AdminDashboardLayout";
 
 const page = () => {
   return (
     <AdminDashboardLayout>
       <ShipmentModule />
     </AdminDashboardLayout>
-  )
-}
+  );
+};
 
-export default page
+export default page;

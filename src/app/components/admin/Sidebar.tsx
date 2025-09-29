@@ -9,7 +9,7 @@ interface SidebarProps {
 
 const menuItems = [
   { id: 'users' as ActiveModule, label: 'Users', icon: Users },
-  { id: 'customers' as ActiveModule, label: 'Customers', icon: UserCheck },
+  { id: 'customers' as ActiveModule, label: 'Clients', icon: UserCheck },
   { id: 'events' as ActiveModule, label: 'Events', icon: Calendar },
   { id: 'carriers' as ActiveModule, label: 'Carriers', icon: Truck }
 ];

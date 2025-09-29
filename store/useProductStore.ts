@@ -41,7 +41,9 @@ export interface Product {
   productStatus: string;
   Description: string;
   CreatedBy: string;
+  CreatedOn: string;
   UpdatedBy: string;
+  UpdatedOn: string;
 }
 interface GetProductByIdResponse {
   data: ProductById;
