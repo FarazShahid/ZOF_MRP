@@ -28,6 +28,7 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
   useEffect(() => {
     fetchDocuments(referenceType, referenceId);
   }, [referenceId, referenceType]);
+  
   const documents = documentsByReferenceId[referenceId] || [];
 
   const items: AttachmentItem[] = useMemo(
