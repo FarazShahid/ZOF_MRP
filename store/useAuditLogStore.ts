@@ -4,14 +4,14 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 
 export interface AuditLogEntry {
-  log_id: number;
-  log_module: string;
-  log_action: string;
-  log_details: string;
-  log_entityId: number | null;
+  id: number;
+  module: string;
+  action: string;
+  details: string;
+  entityId: number | null;
   log_ip: string;
-  log_device: string;
-  log_createdAt: string; // ISO string
+  device: string;
+  createdAt: string; // ISO string
   userId: number;
   Email: string;
 }

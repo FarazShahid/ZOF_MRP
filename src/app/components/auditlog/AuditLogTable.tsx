@@ -67,10 +67,10 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
           </thead>
           <tbody className="divide-y divide-gray-200">
             {logs.map((log) => {
-              const { date, time } = formatDateTime(log.log_createdAt);
+              const { date, time } = formatDateTime(log.createdAt);
               return (
                 <tr
-                  key={log.log_id}
+                  key={log.id}
                   onClick={() => onRowClick(log)}
                   className="cursor-pointer transition-colors hover:bg-gray-50"
                 >
@@ -79,10 +79,10 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
                     <div className="text-gray-500">{time}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <ModuleBadge module={log.log_module} />
+                    <ModuleBadge module={log.module} />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <ActionBadge action={log.log_action} />
+                    <ActionBadge action={log.action} />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -101,7 +101,7 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-900">
-                    <div className="max-w-xs truncate">{log.log_details}</div>
+                    <div className="max-w-xs truncate">{log.details}</div>
                   </td>
                 </tr>
               );
