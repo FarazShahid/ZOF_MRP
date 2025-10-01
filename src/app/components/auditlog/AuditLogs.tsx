@@ -33,12 +33,12 @@ export const AuditLogs: React.FC = () => {
 
   // Build dynamic select options from live data (unique modules/actions)
   const moduleOptions = useMemo(
-    () => Array.from(new Set(logs.map((l) => l.log_module))).sort(),
+    () => Array.from(new Set(logs.map((l) => l.module))).sort(),
     [logs]
   );
 
   const actionOptions = useMemo(
-    () => Array.from(new Set(logs.map((l) => l.log_action))).sort(),
+    () => Array.from(new Set(logs.map((l) => l.action))).sort(),
     [logs]
   );
 
@@ -70,7 +70,7 @@ export const AuditLogs: React.FC = () => {
       // Date range
       if (
         !isWithinDate(
-          log.log_createdAt,
+          log.createdAt,
           filters.dateRange.start,
           filters.dateRange.end
         )
@@ -79,10 +79,10 @@ export const AuditLogs: React.FC = () => {
       }
 
       // Module
-      if (filters.module && log.log_module !== filters.module) return false;
+      if (filters.module && log.module !== filters.module) return false;
 
       // Action
-      if (filters.action && log.log_action !== filters.action) return false;
+      if (filters.action && log.action !== filters.action) return false;
 
       // User (matches Email)
       if (userTerm && !log.Email.toLowerCase().includes(userTerm)) return false;
@@ -90,14 +90,14 @@ export const AuditLogs: React.FC = () => {
       // Global Search
       if (searchTerm) {
         const hay = [
-          log.log_details,
+          log.details,
           log.Email,
-          log.log_module,
-          log.log_action,
-          String(log.log_id),
-          String(log.log_entityId ?? ""),
+          log.module,
+          log.action,
+          String(log.id),
+          String(log.entityId ?? ""),
           log.log_ip,
-          log.log_device,
+          log.device,
         ]
           .join(" ")
           .toLowerCase();
@@ -108,44 +108,6 @@ export const AuditLogs: React.FC = () => {
       return true;
     });
   }, [logs, filters]);
-
-  // Filter logs based on current filters
-  // const filteredLogs = useMemo(() => {
-  //   return logs.filter((log) => {
-
-  //     // Module filter
-  //     if (filters.module && log.log_module !== filters.module) {
-  //       return false;
-  //     }
-
-  //     // Action filter
-  //     if (filters.action && log.log_action !== filters.action) {
-  //       return false;
-  //     }
-
-  //     // User filter
-  //     if (
-  //       filters.user &&
-  //       !log.Email.toLowerCase().includes(filters.user.toLowerCase())
-  //     ) {
-  //       return false;
-  //     }
-
-  //     // Search filter
-  //     if (filters.search) {
-  //       const searchTerm = filters.search.toLowerCase();
-  //       return (
-  //         log?.log_details.toLowerCase().includes(searchTerm) ||
-  //         log?.Email.toLowerCase().includes(searchTerm) ||
-  //         log?.log_module.toLowerCase().includes(searchTerm) ||
-  //         log?.log_action.toLowerCase().includes(searchTerm) ||
-  //         log?.log_id?.toString().toLowerCase().includes(searchTerm)
-  //       );
-  //     }
-
-  //     return true;
-  //   });
-  // }, [filters]);
 
   // Paginate filtered logs
   const paginatedLogs = useMemo(() => {
@@ -163,8 +125,6 @@ export const AuditLogs: React.FC = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
-  const handleExport = () => {};
 
   const handleFilterChange = (newFilters: FilterState) => {
     setFilters(newFilters);

@@ -30,8 +30,8 @@ const IMAGE_EXT = ["jpg", "jpeg", "png", "webp", "gif", "bmp", "svg"];
 const OFFICE_EXT = ["doc", "docx", "xls", "xlsx", "ppt", "pptx"];
 
 function getExt(it: AttachmentItem) {
-  const fromType = (it.fileType || "").toLowerCase();
-  const fromUrl = (it.fileUrl.split(".").pop() || "").toLowerCase();
+  const fromType = (it?.fileType || "").toLowerCase();
+  const fromUrl = (it?.fileUrl.split(".").pop() || "").toLowerCase();
   return fromType || fromUrl;
 }
 
@@ -80,7 +80,7 @@ const AttachmentPreviewModal: React.FC<AttachmentPreviewModalProps> = ({
   const isImage = isImageExt(ext);
   const isPdf = isPdfExt(ext);
   const isOffice = isOfficeExt(ext);
-  const viewerSrc = getViewerSrc(current.fileUrl, ext);
+  const viewerSrc = getViewerSrc(current?.fileUrl, ext);
 
   const next = useCallback(() => {
     setIndex((i) => (i + 1) % total);
@@ -130,7 +130,7 @@ const AttachmentPreviewModal: React.FC<AttachmentPreviewModalProps> = ({
                   {index + 1} / {total}
                 </span>
                 <span className="font-semibold">
-                  {current.fileName || current.fileUrl.split("/").pop()}
+                  {current.fileName || current?.fileUrl.split("/").pop()}
                 </span>
               </div>
               <div className="flex items-center gap-2 pr-5">
@@ -143,8 +143,8 @@ const AttachmentPreviewModal: React.FC<AttachmentPreviewModalProps> = ({
                 <Button
                   size="sm"
                   as="a"
-                  href={current.fileUrl}
-                  download={current.fileName}
+                  href={current?.fileUrl}
+                  download={current?.fileName}
                   target="_blank"
                   rel="noreferrer"
                   title="Download"
@@ -154,7 +154,7 @@ const AttachmentPreviewModal: React.FC<AttachmentPreviewModalProps> = ({
                 <Button
                   size="sm"
                   as="a"
-                  href={current.fileUrl}
+                  href={current?.fileUrl}
                   target="_blank"
                   rel="noreferrer"
                   title="Open in new tab"
@@ -190,8 +190,8 @@ const AttachmentPreviewModal: React.FC<AttachmentPreviewModalProps> = ({
                 {isImage && (
                   // Image can rotate via CSS
                   <img
-                    src={current.fileUrl}
-                    alt={current.fileName}
+                    src={current?.fileUrl}
+                    alt={current?.fileName}
                     className="max-h-full max-w-full object-contain"
                     style={{ transform: `rotate(${rotation}deg)` }}
                   />
@@ -221,14 +221,14 @@ const AttachmentPreviewModal: React.FC<AttachmentPreviewModalProps> = ({
                     <div className="flex items-center justify-center gap-2">
                       <Button
                         as="a"
-                        href={current.fileUrl}
+                        href={current?.fileUrl}
                         download={current.fileName}
                         target="_blank"
                         rel="noreferrer"
                       >
                         <IoMdDownload /> Download
                       </Button>
-                      <Button as="a" href={current.fileUrl} target="_blank" rel="noreferrer" variant="flat">
+                      <Button as="a" href={current?.fileUrl} target="_blank" rel="noreferrer" variant="flat">
                         <IoMdOpen /> Open in new tab
                       </Button>
                     </div>

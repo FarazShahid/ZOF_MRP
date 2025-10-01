@@ -62,7 +62,7 @@ const ProductTable: React.FC<Props> = ({ products, onChangeStatus, onDelete }) =
                     <button
                       onClick={(e) => { e.stopPropagation(); onChangeStatus(p.Id, p.isArchived); }}
                       className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="View Details"
+                      title="Change Status"
                     >
                       <TbStatusChange size={18} />
                     </button>

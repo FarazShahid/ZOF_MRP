@@ -120,8 +120,6 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
     setOpenViewModal(false);
   };
 
-  console.log("uploadedFiles", uploadedFiles);
-
   return (
     <div className="space-y-6 w-full">
       <div className="p-4">

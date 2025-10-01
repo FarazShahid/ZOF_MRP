@@ -91,7 +91,7 @@ const ProductSearchAndFilters: React.FC<Props> = ({
           <select
             value={statusFilter}
             onChange={(e) => onStatusChange(e.target.value as ProductStatus | "all")}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            className="w-full px-3 py-2 border-1 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
           >
             <option value="all">All Status</option>
             <option value="Approved">Approved</option>
