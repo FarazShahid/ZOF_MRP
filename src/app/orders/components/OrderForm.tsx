@@ -38,6 +38,7 @@ const defaultValues: FormValues = {
   Deadline: "",
   OrderPriority: "",
   items: [],
+  typeId: "",
 };
 
 const OrderForm = ({ orderId }: { orderId?: string }) => {
@@ -152,6 +153,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   const handleBoBack = () => {
     router.push("/orders");
   };
+
   const handleSubmit = async (values: any) => {
     values.Description = values.ClientId + "order description";
     if (!values.OrderEventId) delete values.OrderEventId;
@@ -171,7 +173,9 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
         await uploadDocument(
           fileObj.file,
           DOCUMENT_REFERENCE_TYPE.ORDER,
-          refernceId
+          refernceId,
+          undefined,
+          values?.typeId ? Number(values.typeId) : undefined
         );
       }
     }

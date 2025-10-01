@@ -1,6 +1,15 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
+import { FileTypesEnum } from "@/src/types/order"; 
 import { fetchWithAuth } from "@/src/app/services/authservice";
+
+interface TypeCoverage {
+  perTypeCount: Record<number, number>;
+  matchedTypes: number; 
+  totalTypes: number;   
+  percent: number;     
+  totalDocs: number;     
+}
 
 interface Document {
   id: number;
@@ -14,6 +23,7 @@ interface Document {
   uploaded_on: string;
   updated_on: string;
   tag?: string;
+  typeId?: number;
 }
 
 interface UploadResponse {
@@ -37,7 +47,8 @@ interface GetByIdResponse {
 
 interface DocumentCenterStore {
   documents: Document[];
-  documentsByReferenceId: Record<number, Document[]>; // Isolated per referenceId
+  documentsByReferenceId: Record<number, Document[]>; 
+  typeCoverageByReferenceId: Record<number, TypeCoverage>;
   loadingDoc: boolean;
   error: string | null;
 
@@ -45,15 +56,18 @@ interface DocumentCenterStore {
     file: File,
     referenceType: string,
     referenceId: number,
-    tag?: string
+    tag?: string,
+    typeId?: number,
   ) => Promise<UploadResponse | null>;
 
-  fetchDocuments: (referenceType: string, referenceId: number) => Promise<void>;
+  fetchDocuments: (referenceType: string, referenceId: number, typeId?: number) => Promise<void>;
+  //setTypeCoverage: (referenceId: number, coverage: TypeCoverage) => void;
 }
 
 export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
   documents: [],
   documentsByReferenceId: {},
+  typeCoverageByReferenceId: {},
   loadingDoc: false,
   error: null,
 
@@ -61,7 +75,8 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
     file: File,
     referenceType: string,
     referenceId: number,
-    tag?: string
+    tag?: string,
+    typeId?: number
   ) => {
     try {
       set({ loadingDoc: true, error: null });
@@ -74,6 +89,7 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
       });
 
       if (tag) query.append("tag", tag);
+      if (typeof typeId === "number") query.append("typeId", String(typeId));
 
       const response = await fetchWithAuth(
         `${
@@ -103,7 +119,7 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
     }
   },
 
-  fetchDocuments: async (referenceType: string, referenceId: number) => {
+  fetchDocuments: async (referenceType: string, referenceId: number, typeId?: number) => {
     set({ loadingDoc: true, error: null });
 
     try {
@@ -122,18 +138,54 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
         return;
       }
 
-      // set({ documents: result.data,  loadingDoc: false });
+      const docs = result.data ?? [];
+      const perTypeCount: Record<number, number> = {};
+      for (const t of FileTypesEnum) perTypeCount[t.id] = 0;
+
+      for (const d of docs) {
+        if (typeof d?.typeId === "number" && perTypeCount[d.typeId] !== undefined) {
+          perTypeCount[d.typeId] += 1;
+        }
+      }
+
+      const totalTypes = FileTypesEnum.length;
+      const matchedTypes = FileTypesEnum.reduce(
+        (acc, t) => acc + (perTypeCount[t.id] > 0 ? 1 : 0),
+        0
+      );
+      const percent = totalTypes === 0 ? 0 : (matchedTypes / totalTypes) * 100;
+
+
       set((state) => ({
         documents: result.data,
         documentsByReferenceId: {
           ...state.documentsByReferenceId,
           [referenceId]: result.data,
         },
+        typeCoverageByReferenceId: {
+          ...state.typeCoverageByReferenceId,
+          [referenceId]: {
+            perTypeCount,
+            matchedTypes,
+            totalTypes,
+            percent,
+            totalDocs: docs.length,
+          },
+        },
         loadingDoc: false,
       }));
+
+
     } catch (err) {
       toast.error("Failed to fetch documents");
       set({ loadingDoc: false, error: "Failed to fetch documents" });
     }
   },
+  // setTypeCoverage: (referenceId, coverage) =>
+  //   set((state) => ({
+  //     typeCoverageByReferenceId: {
+  //       ...state.typeCoverageByReferenceId,
+  //       [referenceId]: coverage,
+  //     },
+  //   })),
 }));
