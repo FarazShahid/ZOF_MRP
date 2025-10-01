@@ -2,28 +2,19 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Button, Tab, Tabs } from "@heroui/react";
-import { IoIosStats } from "react-icons/io";
-import { FaUserTie } from "react-icons/fa6";
-import { GiCargoShip } from "react-icons/gi";
 import { IoReturnDownBack } from "react-icons/io5";
 import { FiDownload, FiLoader } from "react-icons/fi";
 
 import useOrderStore from "@/store/useOrderStore";
 import { PdfVariant } from "@/src/types/OrderPDfType";
 import useQAchecklistStore from "@/store/useQAchecklistStore";
-import { DOCUMENT_REFERENCE_TYPE, OrderItemShipmentEnum } from "@/interface";
+import {OrderItemShipmentEnum } from "@/interface";
 import { useOrderItemSelectionStore } from "@/store/useOrderItemSelectionStore";
 
 import OrderStatus from "./OrderStatus";
-import OrderDeadline from "./OrderDeadline";
-import ClientDetails from "./ClientDetails";
-import StatusTimelineDrawer from "./StatusTimelineDrawer";
-import { ViewMeasurementChart } from "./ViewMeasurementChart";
 import { OrderItem } from "../../interfaces/OrderStoreInterface";
 import DownloadPdfMenu from "../../components/order/DownloadPdfMenu";
 import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
-import RecentAttachmentsView from "../../components/RecentAttachmentsView";
-import SidebarSkeleton from "../../components/ui/Skeleton/SideBarSkeleton";
 import OrderInfo from "../../components/order/view order/OrderInfo";
 import OrderAttachements from "../../components/order/view order/OrderAttachements";
 import OrderItemsCard from "../../components/order/view order/OrderItemsCard";
@@ -40,9 +31,8 @@ interface ViewOrderProps {
 }
 
 const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
-  const [openViewModal, setOpenViewModal] = useState<boolean>(false);
-  const [measurementId, setMeasurementId] = useState<number>(0);
-  const [sizeOptionName, setSizeOptionName] = useState<string>("");
+ 
+ 
   const [localStatusName, setLocalStatusName] = useState<string>("");
   const [refetchData, setRefetchData] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
@@ -58,42 +48,8 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     loading,
   } = useOrderStore();
 
-  const {
-    selectionMode,
-    selectedIds,
-    enterSelectionWith,
-    toggleOne,
-    setAll,
-    clear,
-    exit,
-  } = useOrderItemSelectionStore();
-
-  const { downloadQAChecklistZip, loading: qaLoading } = useQAchecklistStore();
-
-  const items: OrderItem[] = useMemo(() => OrderById?.items ?? [], [OrderById]);
-  const allIds = useMemo(() => items.map((i) => i.Id), [items]);
-  const selectedArray = useMemo(() => Array.from(selectedIds), [selectedIds]);
-  const anySelected = selectedArray.length > 0;
-  const allSelected = anySelected && selectedArray.length === allIds.length;
-
-  const handleSelectAllToggle = () => {
-    if (allSelected) clear();
-    else setAll(allIds);
-  };
-
-  const handleDownloadQA = async () => {
-    await downloadQAChecklistZip(orderId, selectedArray);
-  };
 
   // Callbacks
-  const handleOpenViewModal = useCallback((id: number, sizeName: string) => {
-    setMeasurementId(id);
-    setSizeOptionName(sizeName);
-    setOpenViewModal(true);
-  }, []);
-
-  const handleCloseViewModal = useCallback(() => setOpenViewModal(false), []);
-
   const handleCloseStatusModal = useCallback(() => {
     setRefetchData((s) => !s);
     setOpenUpdateStatusModal(false);
@@ -137,30 +93,6 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           </h2>
         </div>
         <div className="flex items-center gap-3">
-          {selectionMode && anySelected && (
-            <Button
-              type="button"
-              onPress={qaLoading ? undefined : handleDownloadQA}
-              isLoading={qaLoading}
-              isDisabled={qaLoading}
-              spinner={<FiLoader className="animate-spin" />}
-              spinnerPlacement="start"
-              className={[
-                "px-3 py-1 flex items-center gap-2 rounded-lg text-sm text-white",
-                "bg-blue-800 dark:bg-blue-600",
-                qaLoading ? "opacity-60 cursor-not-allowed" : "",
-              ].join(" ")}
-              aria-busy={qaLoading}
-              title={
-                qaLoading
-                  ? "Downloading…"
-                  : "Download QA Sheets ZIP for selected items"
-              }
-            >
-              {!qaLoading && <FiDownload />}
-              {qaLoading ? "Downloading…" : "QA Sheet"}
-            </Button>
-          )}
           <DownloadPdfMenu
             downloading={downloading}
             OrderById={OrderById.Id}
@@ -331,15 +263,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
         </div>
       </div> */}
 
-      {/* ----------- View Measurement  ------------ */}
-      {openViewModal && (
-        <ViewMeasurementChart
-          isOpen={openViewModal}
-          measurementId={measurementId}
-          sizeOptionName={sizeOptionName}
-          onCloseViewModal={handleCloseViewModal}
-        />
-      )}
+      
 
       {/* ----------- Changes Order Status  ------------ */}
       {openUpdateStatusModal && (

@@ -1,9 +1,7 @@
 import { OrderItem } from "@/src/app/interfaces/OrderStoreInterface";
-import { Badge, Button, Card, Chip } from "@heroui/react";
-import React, { FC, useEffect, useMemo, useState } from "react";
+import { Card, Chip } from "@heroui/react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { FaCheck, FaFileInvoice } from "react-icons/fa6";
-import { LuRuler } from "react-icons/lu";
-import OrderItemAttachments from "./OrderItemAttachments";
 import AttachmentPreviewModal, {
   AttachmentItem,
 } from "../../AttachmentPreviewModal";
@@ -11,6 +9,8 @@ import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoMdDownload } from "react-icons/io";
+import { CgAttachment } from "react-icons/cg";
+import { ViewMeasurementChart } from "@/src/app/orders/components/ViewMeasurementChart";
 
 interface OrderItemCardProps {
   item: OrderItem;
@@ -23,6 +23,9 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
+  const [openViewModal, setOpenViewModal] = useState<boolean>(false);
+  const [measurementId, setMeasurementId] = useState<number>(0);
+  const [sizeOptionName, setSizeOptionName] = useState<string>("");
 
   const { fetchDocuments, documentsByReferenceId } = useDocumentCenterStore();
 
@@ -63,6 +66,14 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
     setIsOpen(true);
   };
 
+  const handleOpenViewModal = useCallback((id: number, sizeName: string) => {
+    setMeasurementId(id);
+    setSizeOptionName(sizeName);
+    setOpenViewModal(true);
+  }, []);
+
+  const handleCloseViewModal = useCallback(() => setOpenViewModal(false), []);
+
   useEffect(() => {
     fetchDocuments(DOCUMENT_REFERENCE_TYPE.PRODUCT, item.ProductId);
   }, [item.ProductId]);
@@ -72,7 +83,7 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
       className={`group overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 ${
         isSelected
           ? "ring-2 ring-blue-500 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 shadow-xl"
-          : "bg-white dark:bg-gray-800 hover:shadow-xl"
+          : "hover:shadow-xl"
       } border-0 shadow-lg`}
     >
       <div className="relative">
@@ -108,16 +119,14 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
                 className="w-4 h-4 text-blue-600 rounded cursor-pointer"
               />
               <div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100">
-                  {item.ProductName}
-                </h3>
+                <h3 className="font-bold text-gray-900">{item.ProductName}</h3>
               </div>
             </div>
           </div>
 
           {/* Product Details */}
           <div className="space-y-3 mb-5">
-            <div className="p-3 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-lg">
+            <div className="p-3 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-500 rounded-lg">
               <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Fabric Type
               </span>
@@ -126,7 +135,7 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
               </p>
             </div>
 
-            <div className="p-3 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-lg">
+            <div className="p-3 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-500 rounded-lg">
               <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 block">
                 Printing Options
               </span>
@@ -143,7 +152,7 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
           {/* Sizes and Quantities */}
           <div className="mb-5">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+              <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Sizes & Quantities
               </span>
             </div>
@@ -153,7 +162,8 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
                 return (
                   <div
                     key={ind}
-                    className="cursor-pointer flex items-center justify-between p-3 bg-gradient-to-r from-white to-gray-50 dark:from-gray-700 dark:to-gray-600 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200"
+                    onClick={() => handleOpenViewModal(sizeItem.MeasurementId, sizeItem.SizeOptionName)}
+                    className="cursor-pointer flex items-center justify-between p-3 bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-600 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
@@ -166,18 +176,12 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
                           {sizeItem.SizeOptionName}
                         </span>
                         <div className="flex items-center justify-between gap-5 w-full">
-                          <div className="flex items-center gap-2 text-xs">
+                          <div className="flex items-center gap-2 text-xs text-gray-900 dark:text-black">
                             Qty:{" "}
                             <Chip radius="full" color="default" size="sm">
                               {sizeItem.Quantity}
                             </Chip>
                           </div>
-                          {/* <button
-                            type="button"
-                            className="flex items-center gap-1 bg-blue-800 text-white rounded-md px-2 "
-                          >
-                            <LuRuler /> chart
-                          </button> */}
                         </div>
                       </div>
                     </div>
@@ -190,7 +194,7 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
           {/* Product Attachments */}
           <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
             <div className="flex items-center gap-2 mb-4">
-              <i className="ri-attachment-line w-4 h-4 flex items-center justify-center text-gray-500"></i>
+              <CgAttachment />
               <span className="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 Product Attachments
               </span>
@@ -236,7 +240,7 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
                   <div className="flex items-center gap-1">
                     <button
                       type="button"
-                      onClick={() => openAt(imageDocs.length + index)} 
+                      onClick={() => openAt(imageDocs.length + index)}
                       className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                       <IoEyeOutline />
@@ -260,6 +264,16 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
           />
         </div>
       </div>
+
+      {/* ----------- View Measurement  ------------ */}
+      {openViewModal && (
+        <ViewMeasurementChart
+          isOpen={openViewModal}
+          measurementId={measurementId}
+          sizeOptionName={sizeOptionName}
+          onCloseViewModal={handleCloseViewModal}
+        />
+      )}
     </Card>
   );
 };
