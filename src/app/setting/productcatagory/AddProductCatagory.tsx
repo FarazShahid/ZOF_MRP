@@ -27,7 +27,7 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
   productIdCatagory,
 }) => {
   interface AddClientType {
-    type: string;
+    Type: string;
   }
 
   const {
@@ -45,7 +45,7 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
   }, [productIdCatagory, isEdit]);
 
   const InitialValues = {
-    type: isEdit && productCategory ? productCategory.type : "",
+    Type: isEdit && productCategory ? productCategory.Type : "",
     IsTopUnit: isEdit && productCategory ? productCategory.IsTopUnit : false,
     IsBottomUnit:
       isEdit && productCategory ? productCategory.IsBottomUnit : false,
@@ -99,14 +99,14 @@ const AddProductCatagory: React.FC<AddClientComponentProps> = ({
                               labelForm="Name"
                             />
                             <Field
-                              name="type"
+                              name="Type"
                               type="text"
                               maxLength={100}
                               placeholder="Enter Name"
                               className="formInputdefault bg-gray-100"
                             />
                             <ErrorMessage
-                              name="type"
+                              name="Type"
                               component="div"
                               className="text-red-400 text-sm"
                             />

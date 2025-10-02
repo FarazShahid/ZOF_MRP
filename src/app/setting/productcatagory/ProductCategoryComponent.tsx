@@ -25,7 +25,7 @@ const ProductCategoryComponent = () => {
   const [selectedProductCatId, setSelectedProductCatId] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [sortColumn, setSortColumn] = useState<keyof ProductCategory>("type");
+  const [sortColumn, setSortColumn] = useState<keyof ProductCategory>("Type");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   const { productCategories, fetchCategories, loading, error } =
@@ -72,7 +72,7 @@ const ProductCategoryComponent = () => {
       }
 
       if (
-        sortColumn === "createdOn" &&
+        sortColumn === "CreatedOn" &&
         typeof aValue === "string" &&
         typeof bValue === "string"
       ) {
@@ -139,13 +139,13 @@ const ProductCategoryComponent = () => {
               Sr
             </TableColumn>
             <TableColumn
-              key="type"
+              key="Type"
               className="text-medium font-bold cursor-pointer"
-              onClick={() => handleSort("type")}
+              onClick={() => handleSort("Type")}
             >
               <div className="flex items-center gap-1">
                 Name
-                {sortColumn === "type" &&
+                {sortColumn === "Type" &&
                   (sortDirection === "asc" ? (
                     <TiArrowSortedUp />
                   ) : (
@@ -158,8 +158,8 @@ const ProductCategoryComponent = () => {
             </TableColumn>
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
-            {(items ?? []).map((item: any, index: number) => (
-              <TableRow key={item.id}>
+            {(items ?? []).map((item: ProductCategory, index: number) => (
+              <TableRow key={item.Id}>
                 {(columnKey) => (
                   <TableCell>
                     {columnKey === "Sr" ? (
@@ -170,14 +170,14 @@ const ProductCategoryComponent = () => {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => openEditModal(item?.id)}
+                          onClick={() => openEditModal(item.Id)}
                         >
                           <GoPencil color="green" />
                         </button>
                         <button
                           type="button"
                           className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item?.id)}
+                          onClick={() => handleOpenDeleteModal(item?.Id)}
                         >
                           <RiDeleteBin6Line color="red" />
                         </button>
