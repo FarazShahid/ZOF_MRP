@@ -123,8 +123,8 @@ export default function Step1({ formik }: any) {
           <option value={""}>Select a type</option>
           {productCategories?.map((category, index) => {
             return (
-              <option value={category?.id} key={index}>
-                {category?.type}
+              <option value={category?.Id} key={index}>
+                {category?.Type}
               </option>
             );
           })}

@@ -14,21 +14,21 @@ interface ProductCategoryIdRepsonse {
 }
 
 export interface ProductCategory {
-  id: number;
-  type: string;
+  Id: number;
+  Type: string;
   IsTopUnit: boolean;
   IsBottomUnit: boolean;
   SupportsLogo: boolean;
   IsHat: boolean;
   IsBag: boolean;
   IsSocks: boolean;
-  createdOn: string;
-  createdBy: string;
-  updatedOn: string;
-  updatedBy: string;
+  CreatedOn: string;
+  CreatedBy: string;
+  UpdatedOn: string;
+  UpdatedBy: string;
 }
 interface AddProductCategory {
-  type: string;
+  Type: string;
 }
 
 interface CategoryState {
