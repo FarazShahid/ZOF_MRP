@@ -18,6 +18,7 @@ import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import OrderInfo from "../../components/order/view order/OrderInfo";
 import OrderAttachements from "../../components/order/view order/OrderAttachements";
 import OrderItemsCard from "../../components/order/view order/OrderItemsCard";
+import { OrderInfoSkeleton } from "../../components/order/view order/OrderInfoSkeleton";
 
 const OrderItemCard = dynamic(
   () => import("../../components/order/view order/OrderItemCard"),
@@ -118,7 +119,11 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
         variant="underlined"
       >
         <Tab key="info" title="Order Info">
-          <OrderInfo OrderById={OrderById} />
+          {
+            loading && !orderId ? (
+              <OrderInfoSkeleton />
+            ):  (<OrderInfo OrderById={OrderById} />)
+          }
         </Tab>
         <Tab key="OrderItems" title="Order Items">
           <OrderItemsCard OrderById={OrderById} />
