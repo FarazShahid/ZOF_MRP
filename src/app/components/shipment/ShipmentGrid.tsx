@@ -12,6 +12,8 @@ import StatusBadge from "./StatusBadge";
 import { GetAllShipments } from "@/store/useShipmentStore";
 import { ShipmentStatus } from "@/src/types/admin";
 import { useRouter } from "next/navigation";
+import PermissionGuard from "../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 interface ShipmentGridProps {
   shipments: GetAllShipments[];
@@ -129,22 +131,28 @@ const ShipmentGrid: React.FC<ShipmentGridProps> = ({
                 <Eye className="w-4 h-4" />
                 <span>View</span>
               </button>
-              <button
-                type="button"
-                onClick={() => handleEditShipment(shipment.Id)}
-                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-gray-600 hover:bg-slate-100 dark:hover:bg-slate-500 rounded-md transition-colors"
-              >
-                <Edit className="w-4 h-4" />
-                <span>Edit</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => onDelete(shipment.Id)}
-                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-red-600 dark:text-red-100 hover:bg-red-50 dark:hover:bg-red-400 rounded-md transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-                <span>Delete</span>
-              </button>
+
+              <PermissionGuard required={PERMISSIONS_ENUM.SHIPMENT.UPDATE}>
+                <button
+                  type="button"
+                  onClick={() => handleEditShipment(shipment.Id)}
+                  className="flex items-center space-x-1 px-3 py-1.5 text-sm text-gray-600 hover:bg-slate-100 dark:hover:bg-slate-500 rounded-md transition-colors"
+                >
+                  <Edit className="w-4 h-4" />
+                  <span>Edit</span>
+                </button>
+              </PermissionGuard>
+
+              <PermissionGuard required={PERMISSIONS_ENUM.SHIPMENT.DELETE}>
+                <button
+                  type="button"
+                  onClick={() => onDelete(shipment.Id)}
+                  className="flex items-center space-x-1 px-3 py-1.5 text-sm text-red-600 dark:text-red-100 hover:bg-red-50 dark:hover:bg-red-400 rounded-md transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete</span>
+                </button>
+              </PermissionGuard>
             </div>
           </div>
         </div>

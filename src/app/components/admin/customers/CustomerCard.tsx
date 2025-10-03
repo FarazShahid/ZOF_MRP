@@ -3,6 +3,8 @@ import { GetClientsType } from "@/store/useClientStore";
 import { getInitials } from "../users/getRoleColor";
 import { StatusBadge } from "../common/StatusBadge";
 import { Edit, Eye, Mail, Phone, Trash2 } from "lucide-react";
+import PermissionGuard from "../../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 interface CardProps {
   customer: GetClientsType;
@@ -63,22 +65,28 @@ const CustomerCard: React.FC<CardProps> = ({
           <Eye className="w-4 h-4" />
           <span>View</span>
         </button>
-        <button
-          type="button"
-          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors"
-          onClick={() => onEdit(customer.Id)}
-        >
-          <Edit className="w-4 h-4" />
-          Edit
-        </button>
-        <button
-          type="button"
-          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm bg-red-50 text-red-700 rounded-md hover:bg-red-100 transition-colors"
-          onClick={() => onDelete(customer.Id)}
-        >
-          <Trash2 className="w-4 h-4" />
-          Delete
-        </button>
+
+        <PermissionGuard required={PERMISSIONS_ENUM.ADMIN_SETTING.UPDATE}>
+          <button
+            type="button"
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors"
+            onClick={() => onEdit(customer.Id)}
+          >
+            <Edit className="w-4 h-4" />
+            Edit
+          </button>
+        </PermissionGuard>
+
+        <PermissionGuard required={PERMISSIONS_ENUM.ADMIN_SETTING.DELETE}>
+          <button
+            type="button"
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm bg-red-50 text-red-700 rounded-md hover:bg-red-100 transition-colors"
+            onClick={() => onDelete(customer.Id)}
+          >
+            <Trash2 className="w-4 h-4" />
+            Delete
+          </button>
+        </PermissionGuard>
       </div>
     </div>
   );

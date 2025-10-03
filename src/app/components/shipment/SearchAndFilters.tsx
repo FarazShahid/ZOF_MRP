@@ -27,7 +27,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   shipments
 }) => {
   // Get unique carriers for filter dropdown
-  const carriers = Array.from(new Set(shipments.map(s => s.ShipmentCarrierName))).sort();
+  const carriers = Array.from(new Set(shipments?.map(s => s?.ShipmentCarrierName))).sort();
 
   return (
     <div className="space-y-4">

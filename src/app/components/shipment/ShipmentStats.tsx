@@ -8,11 +8,11 @@ interface DashboardProps {
 
 const ShipmentStats: React.FC<DashboardProps> = ({ shipments }) => {
   const stats = {
-    total: shipments.length,
-    pending: shipments.filter((s) => s.Status === "Damaged").length,
-    shipped: shipments.filter((s) => s.Status === "In Transit").length,
-    delivered: shipments.filter((s) => s.Status === "Delivered").length,
-    cancelled: shipments.filter((s) => s.Status === "cancelled").length,
+    total: shipments?.length,
+    pending: shipments?.filter((s) => s.Status === "Damaged").length,
+    shipped: shipments?.filter((s) => s.Status === "In Transit").length,
+    delivered: shipments?.filter((s) => s.Status === "Delivered").length,
+    cancelled: shipments?.filter((s) => s.Status === "cancelled").length,
   };
 
   const statCards = [

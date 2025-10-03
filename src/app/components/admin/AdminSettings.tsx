@@ -25,6 +25,10 @@ const CarriorTable = dynamic(
     loading: () => <TableSkel />,
   }
 );
+const RoleModule = dynamic(() => import("./roles/RoleModule"), {
+  ssr: false,
+  loading: () => <TableSkel />,
+});
 
 export const AdminSettings: React.FC = () => {
   const [activeModule, setActiveModule] = useState<ActiveModule>("users");
@@ -39,6 +43,8 @@ export const AdminSettings: React.FC = () => {
         return <EventsModule />;
       case "carriers":
         return <CarriorTable />;
+      case "roles":
+        return <RoleModule />;
       default:
         return <UsersModule />;
     }

@@ -38,6 +38,7 @@ const QAChecklistClickUp: React.FC<QAChecklistClickUpProps> = ({
 
   const removeItem = (id: string) =>
     setItems((prev) => prev.filter((i) => i.id !== id));
+  
   const toggleItem = (id: string) =>
     setItems((prev) =>
       prev.map((i) => (i.id === id ? { ...i, done: !i.done } : i))
@@ -58,7 +59,7 @@ const QAChecklistClickUp: React.FC<QAChecklistClickUpProps> = ({
         {/* Subheader */}
         <div className="flex items-center justify-between px-4 py-2 bg-gray-50 border-b border-gray-200">
           <div className="text-sm font-medium text-gray-800">
-            Checklist <span className="text-gray-500">({total}/1)</span>
+            Checklist
           </div>
         </div>
 
@@ -67,7 +68,7 @@ const QAChecklistClickUp: React.FC<QAChecklistClickUpProps> = ({
           {items.map((item) => (
             <div key={item.id} className="flex items-center gap-3 px-4 py-3">
               {/* checkbox circle */}
-              <button
+              {/* <button
                 type="button"
                 onClick={() => toggleItem(item.id)}
                 className={`shrink-0 size-5 rounded-full border flex items-center justify-center transition ${
@@ -91,7 +92,7 @@ const QAChecklistClickUp: React.FC<QAChecklistClickUpProps> = ({
                     />
                   </svg>
                 )}
-              </button>
+              </button> */}
 
               {/* title */}
               <span

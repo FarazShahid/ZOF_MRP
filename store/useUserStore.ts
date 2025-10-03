@@ -3,35 +3,54 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 
 
-interface GetAllDataResponseType{
-  data:GetUsersType[];
+/** ---------- API Response Types ---------- */
+
+interface GetAllDataResponseType {
+  data: GetUsersType[];
   statusCode: number;
   message: string;
 }
 
-interface UserByIdResponse{
-  data:GetUsersType;
+interface UserByIdResponse {
+  data: GetUsersType;
   statusCode: number;
   message: string;
+}
+
+/** ---------- Domain Types ---------- */
+
+export interface ClientAssignment {
+  clientId: number;
+  name?: string;
 }
 
 export interface GetUsersType {
-    Id: number;
-    Name?: string;
-    Email: string;
-    Password: string;
-    isActive: boolean;
-    status?: string;
-    role?: string;
-    avatar?: string;
-    lastLogin?: string;
-    CreatedOn: string;
-    UpdatedOn: string;
+  Id: number;
+  firstName: string;
+  lastName: string;
+  Email: string;
+  Password: string; // kept as provided in your original type
+  roleId: number;
+  roleName: string;
+  assignedClients: ClientAssignment[]; // API returns objects
+  isActive: boolean;
+
+  status?: string;
+  avatar?: string;
+  lastLogin?: string;
+  CreatedOn: string;
+  UpdatedOn: string;
 }
-export interface AddUserType{
-    Email: string,
-    Password: string,
-    isActive: boolean,
+
+/** Create / Update payload (Password REQUIRED for both) */
+export interface AddUserType {
+  firstName: string;
+  lastName: string;
+  Email: string;
+  Password: string; // required in both add and edit
+  roleId: number;
+  isActive: boolean;
+  assignedClients: ClientAssignment[]; // [{ clientId }]
 }
 
 interface StoreState {

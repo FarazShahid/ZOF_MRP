@@ -25,6 +25,8 @@ import { CiSearch } from "react-icons/ci";
 import ActionBtn from "../components/ui/button/ActionBtn";
 import { FaRegEye } from "react-icons/fa";
 import { useSearch } from "@/src/hooks/useSearch";
+import PermissionGuard from "../components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const InventoryItemsTable = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -54,7 +56,7 @@ const InventoryItemsTable = () => {
 
   const items = useMemo(() => {
     const safePage = Math.min(page, pages);
-    const start = (safePage - 1) * rowsPerPage; 
+    const start = (safePage - 1) * rowsPerPage;
     return filtered?.slice(start, start + rowsPerPage) ?? [];
   }, [filtered, page, pages]);
 
@@ -64,7 +66,7 @@ const InventoryItemsTable = () => {
   // also clamp page whenever filtered changes (e.g., after search)
   useEffect(() => {
     if (page > pages) setPage(pages);
-    if (page < 1) setPage(1);  
+    if (page < 1) setPage(1);
   }, [pages, page]);
 
   const openAddModal = () => setIsAddModalOpen(true);
@@ -117,7 +119,9 @@ const InventoryItemsTable = () => {
               startContent={<CiSearch />}
               variant="bordered"
             />
-            <AddButton title="Add New" onClick={openAddModal} />
+            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.ADD}>
+              <AddButton title="Add New" onClick={openAddModal} />
+            </PermissionGuard>
           </div>
         </div>
         <Table
@@ -211,19 +215,27 @@ const InventoryItemsTable = () => {
                           onClick={() => handleViewModal(item?.Id)}
                           className="dark:text-blue-300 text-blue-500"
                         />
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.INVENTORY.UPDATE}
+                        >
+                          <ActionBtn
+                            title="Edit"
+                            icon={<GoPencil />}
+                            className="dark:text-green-300 text-green-500"
+                            onClick={() => handleOpenEditModal(item?.Id)}
+                          />
+                        </PermissionGuard>
 
-                        <ActionBtn
-                          title="Edit"
-                          icon={<GoPencil />}
-                          className="dark:text-green-300 text-green-500"
-                          onClick={() => handleOpenEditModal(item?.Id)}
-                        />
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.INVENTORY.DELETE}
+                        >
                         <ActionBtn
                           title="Delete"
                           icon={<RiDeleteBin6Line />}
                           className="dark:text-red-300 text-red-500"
                           onClick={() => handleOpenDeleteModal(item?.Id)}
                         />
+                        </PermissionGuard>
                       </div>
                     )}
                   </TableCell>

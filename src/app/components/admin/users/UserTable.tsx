@@ -1,4 +1,3 @@
-import { formatDate } from "@/src/app/interfaces";
 import { GetUsersType } from "@/store/useUserStore";
 import {
   getKeyValue,
@@ -13,6 +12,10 @@ import {
 import React, { useMemo, useState } from "react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { getRoleColor } from "./getRoleColor";
+import { StatusBadge } from "../common/StatusBadge";
+import PermissionGuard from "../../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 interface ComponentProp {
   users: GetUsersType[];
@@ -64,14 +67,20 @@ const UserTable: React.FC<ComponentProp> = ({
       }}
     >
       <TableHeader>
+        <TableColumn key="firstName" className="text-medium font-bold">
+          First Name
+        </TableColumn>
+        <TableColumn key="lastName" className="text-medium font-bold">
+          Last Name
+        </TableColumn>
+        <TableColumn key="roleName" className="text-medium font-bold">
+          Role
+        </TableColumn>
         <TableColumn key="Email" className="text-medium font-bold">
           Email
         </TableColumn>
-        <TableColumn key="CreatedOn" className="text-medium font-bold">
-          Created On
-        </TableColumn>
-        <TableColumn key="UpdatedOn" className="text-medium font-bold">
-          Updated On
+        <TableColumn key="status" className="text-medium font-bold">
+          Status
         </TableColumn>
         <TableColumn key="action" className="text-medium font-bold">
           Action
@@ -82,24 +91,41 @@ const UserTable: React.FC<ComponentProp> = ({
           <TableRow key={item.Id}>
             {(columnKey) => (
               <TableCell>
-                {columnKey === "CreatedOn" || columnKey === "UpdatedOn" ? (
-                  formatDate(item[columnKey])
-                ) : columnKey === "Sr" ? (
+                {columnKey === "Sr" ? (
                   index + 1
+                ) : columnKey === "status" ? (
+                  <StatusBadge status={item.isActive ? "Active" : "Inactive"} />
+                ) : columnKey === "roleName" ? (
+                  <span
+                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getRoleColor(
+                      item.roleName || ""
+                    )}`}
+                  >
+                    {item.roleName}
+                  </span>
                 ) : columnKey !== "action" ? (
                   getKeyValue(item, columnKey)
                 ) : (
                   <div className="flex gap-2">
-                    <button type="button" onClick={() => onEdit(item?.Id)}>
-                      <GoPencil color="green" />
-                    </button>
-                    <button
-                      type="button"
-                      className="hover:text-red-500 cursor-pointer"
-                      onClick={() => onDelete(item?.Id)}
+                    <PermissionGuard
+                      required={PERMISSIONS_ENUM.ADMIN_SETTING.UPDATE}
                     >
-                      <RiDeleteBin6Line color="red" />
-                    </button>
+                      <button type="button" onClick={() => onEdit(item?.Id)}>
+                        <GoPencil color="green" />
+                      </button>
+                    </PermissionGuard>
+                    
+                    <PermissionGuard
+                      required={PERMISSIONS_ENUM.ADMIN_SETTING.DELETE}
+                    >
+                      <button
+                        type="button"
+                        className="hover:text-red-500 cursor-pointer"
+                        onClick={() => onDelete(item?.Id)}
+                      >
+                        <RiDeleteBin6Line color="red" />
+                      </button>
+                    </PermissionGuard>
                   </div>
                 )}
               </TableCell>

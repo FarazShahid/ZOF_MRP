@@ -18,6 +18,8 @@ import useInventoryCategoryStore from "@/store/useInventoryCategoryStore";
 import DeleteCategories from "./DeleteCategories";
 import AddCategoires from "./AddCategoires";
 import AddButton from "../components/common/AddButton";
+import PermissionGuard from "../components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const InventoryCategories = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -65,7 +67,9 @@ const InventoryCategories = () => {
           <h6 className="font-sans text-lg font-semibold">
             Inventory Category
           </h6>
-          <AddButton title="Add New" onClick={openAddModal} />
+          <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.ADD}>
+            <AddButton title="Add New" onClick={openAddModal} />
+          </PermissionGuard>
         </div>
         <Table
           isStriped
@@ -93,7 +97,11 @@ const InventoryCategories = () => {
           }}
         >
           <TableHeader>
-            <TableColumn key="Name" allowsSorting={true} className="text-medium font-bold">
+            <TableColumn
+              key="Name"
+              allowsSorting={true}
+              className="text-medium font-bold"
+            >
               Name
             </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">
@@ -111,19 +119,28 @@ const InventoryCategories = () => {
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenEditModal(item?.Id)}
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.INVENTORY.UPDATE}
                         >
-                          <GoPencil color="green" />
-                        </button>
-                        <button
-                          type="button"
-                          className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item?.Id)}
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditModal(item?.Id)}
+                          >
+                            <GoPencil color="green" />
+                          </button>
+                        </PermissionGuard>
+
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.INVENTORY.DELETE}
                         >
-                          <RiDeleteBin6Line color="red" />
-                        </button>
+                          <button
+                            type="button"
+                            className="hover:text-red-500 cursor-pointer"
+                            onClick={() => handleOpenDeleteModal(item?.Id)}
+                          >
+                            <RiDeleteBin6Line color="red" />
+                          </button>
+                        </PermissionGuard>
                       </div>
                     )}
                   </TableCell>

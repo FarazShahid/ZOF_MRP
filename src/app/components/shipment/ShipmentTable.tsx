@@ -4,6 +4,8 @@ import { GetAllShipments } from "@/store/useShipmentStore";
 import StatusBadge from "./StatusBadge";
 import { ShipmentStatus } from "@/src/types/admin";
 import { useRouter } from "next/navigation";
+import PermissionGuard from "../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 interface ShipmentTableProps {
   shipments: GetAllShipments[];
@@ -65,12 +67,14 @@ const ShipmentTable: React.FC<ShipmentTableProps> = ({
             </tr>
           </thead>
           <tbody className=" divide-y divide-slate-200">
-            {shipments.map((shipment) => (
+            {shipments?.map((shipment) => (
               <tr
                 key={shipment.Id}
-                className={"hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"}
+                className={
+                  "hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                }
               >
-                  <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <Package className="w-4 h-4 text-slate-400 mr-2" />
                     <span className="text-sm font-medium text-gray-900">
@@ -125,22 +129,32 @@ const ShipmentTable: React.FC<ShipmentTableProps> = ({
                     >
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button
-                      onClick={() => handleEditShipment(shipment.Id)}
-                      className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
-                      title="Edit"
-                      type="button"
+
+                    <PermissionGuard
+                      required={PERMISSIONS_ENUM.SHIPMENT.UPDATE}
                     >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => onDelete(shipment.Id)}
-                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete"
-                      type="button"
+                      <button
+                        onClick={() => handleEditShipment(shipment.Id)}
+                        className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
+                        title="Edit"
+                        type="button"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                    </PermissionGuard>
+
+                    <PermissionGuard
+                      required={PERMISSIONS_ENUM.SHIPMENT.DELETE}
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                      <button
+                        onClick={() => onDelete(shipment.Id)}
+                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete"
+                        type="button"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </PermissionGuard>
                   </div>
                 </td>
               </tr>

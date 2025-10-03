@@ -21,6 +21,8 @@ import { GoPencil } from "react-icons/go";
 import DeletePrintingOptions from "./DeletePrintingOptions";
 import AddPrintingOptions from "./AddPrintingOptions";
 import AddButton from "../../components/common/AddButton";
+import PermissionGuard from "../../components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const PrintingOptions = () => {
   const [page, setPage] = useState<number>(1);
@@ -110,7 +112,9 @@ const PrintingOptions = () => {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">Printing Options</h6>
-          <AddButton title="Add New" onClick={openAddModal} />
+          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.ADD}>
+            <AddButton title="Add New" onClick={openAddModal} />
+          </PermissionGuard>
         </div>
         <Table
           isStriped
@@ -172,19 +176,28 @@ const PrintingOptions = () => {
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEditModal(item?.Id)}
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.UPDATE}
                         >
-                          <GoPencil color="green" />
-                        </button>
-                        <button
-                          type="button"
-                          className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item?.Id)}
+                          <button
+                            type="button"
+                            onClick={() => openEditModal(item?.Id)}
+                          >
+                            <GoPencil color="green" />
+                          </button>
+                        </PermissionGuard>
+
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.DELETE}
                         >
-                          <RiDeleteBin6Line color="red" />
-                        </button>
+                          <button
+                            type="button"
+                            className="hover:text-red-500 cursor-pointer"
+                            onClick={() => handleOpenDeleteModal(item?.Id)}
+                          >
+                            <RiDeleteBin6Line color="red" />
+                          </button>
+                        </PermissionGuard>
                       </div>
                     )}
                   </TableCell>
