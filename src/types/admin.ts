@@ -46,7 +46,7 @@ export interface Carrier {
 }
 
 export type ViewMode = 'table' | 'grid';
-export type ActiveModule = 'users' | 'customers' | 'events' | 'carriers';
+export type ActiveModule = 'users' | 'customers' | 'events' | 'carriers' | 'roles';
 
 
 export type ShipmentStatus = 'In Transit' | 'Damaged' | 'Delivered' | 'Cancelled';
@@ -61,3 +61,5 @@ export const formatDate = (date: string) => {
       year: "numeric",
     });
   };
+
+export const MAX_CLIENT_CHIPS = 4;

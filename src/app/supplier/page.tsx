@@ -18,6 +18,8 @@ import { formatDate } from "../interfaces";
 import AddSupplier from "./components/AddSupplier";
 import DeleteSupplier from "./components/DeleteSupplier";
 import AddButton from "../components/common/AddButton";
+import PermissionGuard from "../components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const Supplier = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -30,7 +32,7 @@ const Supplier = () => {
 
   const rowsPerPage = 15;
   const pages = Math.ceil(suppliers?.length / rowsPerPage);
-  
+
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
@@ -61,11 +63,13 @@ const Supplier = () => {
   return (
     <>
       <div className="w-full flex flex-col gap-3">
-       <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">
-            Supplier
-          </h6>
-          <AddButton title="Add New" onClick={openAddModal} />
+        <div className="flex items-center justify-between">
+
+          <h6 className="font-sans text-lg font-semibold">Supplier</h6>
+          <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.ADD}>
+            <AddButton title="Add New" onClick={openAddModal} />
+          </PermissionGuard>
+
         </div>
         <Table
           isStriped
@@ -94,7 +98,7 @@ const Supplier = () => {
         >
           <TableHeader>
             <TableColumn key="Sr" className="text-medium font-bold">
-            Sr
+              Sr
             </TableColumn>
             <TableColumn key="Name" className="text-medium font-bold">
               Name
@@ -106,16 +110,19 @@ const Supplier = () => {
               Email
             </TableColumn>
             <TableColumn key="City" className="text-medium font-bold">
-            City
+              City
             </TableColumn>
             <TableColumn key="State" className="text-medium font-bold">
-            State
+              State
             </TableColumn>
             <TableColumn key="Country" className="text-medium font-bold">
-            Country
+              Country
             </TableColumn>
-            <TableColumn key="CompleteAddress" className="text-medium font-bold">
-           Address
+            <TableColumn
+              key="CompleteAddress"
+              className="text-medium font-bold"
+            >
+              Address
             </TableColumn>
             <TableColumn key="action" className="text-medium font-bold">
               Action
@@ -134,19 +141,28 @@ const Supplier = () => {
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenEditModal(item?.Id)}
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.INVENTORY.UPDATE}
                         >
-                          <GoPencil color="green" />
-                        </button>
-                        <button
-                          type="button"
-                          className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item?.Id)}
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditModal(item?.Id)}
+                          >
+                            <GoPencil color="green" />
+                          </button>
+                        </PermissionGuard>
+
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.INVENTORY.DELETE}
                         >
-                          <RiDeleteBin6Line color="red" />
-                        </button>
+                          <button
+                            type="button"
+                            className="hover:text-red-500 cursor-pointer"
+                            onClick={() => handleOpenDeleteModal(item?.Id)}
+                          >
+                            <RiDeleteBin6Line color="red" />
+                          </button>
+                        </PermissionGuard>
                       </div>
                     )}
                   </TableCell>

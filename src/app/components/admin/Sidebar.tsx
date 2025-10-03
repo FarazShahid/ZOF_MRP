@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, UserCheck, Calendar, Truck } from 'lucide-react';
+import { Users, UserCheck, Calendar, Truck, Shield } from 'lucide-react';
 import { ActiveModule } from '@/src/types/admin';
 
 interface SidebarProps {
@@ -11,7 +11,8 @@ const menuItems = [
   { id: 'users' as ActiveModule, label: 'Users', icon: Users },
   { id: 'customers' as ActiveModule, label: 'Clients', icon: UserCheck },
   { id: 'events' as ActiveModule, label: 'Events', icon: Calendar },
-  { id: 'carriers' as ActiveModule, label: 'Carriers', icon: Truck }
+  { id: 'carriers' as ActiveModule, label: 'Carriers', icon: Truck },
+  { id: 'roles' as ActiveModule, label: 'Role & Permissions', icon: Shield }
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }) => {

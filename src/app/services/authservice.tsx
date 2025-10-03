@@ -3,6 +3,7 @@
 import React, { createContext, ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import usePermissionStore from "@/store/usePermissionStore";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -17,6 +18,7 @@ interface LoginResponseType {
     user: {
       id: number;
       email: string;
+      roleId: number;
     };
   };
   statusCode: number;
@@ -33,6 +35,8 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
   const pathname = usePathname();
   const router = useRouter();
 
+  const { fetchPermissionsByRole } = usePermissionStore();
+
   const login = async (credentials: { email: string; password: string }) => {
     try {
       const response = await fetch(
@@ -48,11 +52,16 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
 
       if (response.ok) {
         const data: LoginResponseType = await response.json();
+
         const token = data.data.access_token;
+
         localStorage.setItem("token", token);
         localStorage.setItem("email", data?.data?.user?.email);
+        localStorage.setItem("roleId", data?.data?.user?.roleId?.toString());
+
         setToken(token);
         setIsAuthenticated(true);
+        await fetchPermissionsByRole();
         router.push("/dashboard");
       } else {
         const error = await response.json();
@@ -68,14 +77,20 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     setToken(undefined);
     setIsAuthenticated(false);
     localStorage.removeItem("token");
+    localStorage.removeItem("roleId");
     router.push("/");
   };
 
   useEffect(() => {
     let storedToken = localStorage.getItem("token");
+    const roleId = localStorage.getItem("roleId");
     if (storedToken) {
       setToken(storedToken);
       setIsAuthenticated(true);
+
+      if (roleId) {
+        fetchPermissionsByRole();
+      }
     } else if (pathname !== "/") {
       router.push("/");
     }

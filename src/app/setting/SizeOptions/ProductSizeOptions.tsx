@@ -20,6 +20,8 @@ import DeleteSizeOptions from "./DeleteSizeOptions";
 import AddButton from "../../components/common/AddButton";
 import { useSearch } from "@/src/hooks/useSearch";
 import { CiSearch } from "react-icons/ci";
+import PermissionGuard from "../../components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const ProductSizeOptions = () => {
   const [page, setPage] = useState<number>(1);
@@ -99,7 +101,9 @@ const ProductSizeOptions = () => {
               startContent={<CiSearch />}
               variant="bordered"
             />
-            <AddButton title="Add New" onClick={openAddModal} />
+            <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.ADD}>
+              <AddButton title="Add New" onClick={openAddModal} />
+            </PermissionGuard>
           </div>
         </div>
         <Table
@@ -158,19 +162,28 @@ const ProductSizeOptions = () => {
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEditModal(item?.Id)}
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.UPDATE}
                         >
-                          <GoPencil color="green" />
-                        </button>
-                        <button
-                          type="button"
-                          className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item?.Id)}
+                          <button
+                            type="button"
+                            onClick={() => openEditModal(item?.Id)}
+                          >
+                            <GoPencil color="green" />
+                          </button>
+                        </PermissionGuard>
+
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.DELETE}
                         >
-                          <RiDeleteBin6Line color="red" />
-                        </button>
+                          <button
+                            type="button"
+                            className="hover:text-red-500 cursor-pointer"
+                            onClick={() => handleOpenDeleteModal(item?.Id)}
+                          >
+                            <RiDeleteBin6Line color="red" />
+                          </button>
+                        </PermissionGuard>
                       </div>
                     )}
                   </TableCell>

@@ -22,6 +22,8 @@ import TransactionTypeChip from "./TransactionTypeChip";
 import AddButton from "../components/common/AddButton";
 import { useSearch } from "@/src/hooks/useSearch";
 import { CiSearch } from "react-icons/ci";
+import PermissionGuard from "../components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const InventoryTransaction = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -49,9 +51,9 @@ const InventoryTransaction = () => {
   const pages = Math.max(1, rawPages);
 
   const items = useMemo(() => {
-    const safePage = Math.min(page, pages); 
+    const safePage = Math.min(page, pages);
     const start = (safePage - 1) * rowsPerPage;
-     return filtered?.slice(start, start + rowsPerPage) ?? [];
+    return filtered?.slice(start, start + rowsPerPage) ?? [];
   }, [filtered, page, pages]);
 
   // reset page on new search
@@ -60,7 +62,7 @@ const InventoryTransaction = () => {
   // also clamp page whenever filtered changes (e.g., after search)
   useEffect(() => {
     if (page > pages) setPage(pages);
-    if (page < 1) setPage(1);  
+    if (page < 1) setPage(1);
   }, [pages, page]);
 
   const openAddModal = () => setIsAddModalOpen(true);
@@ -82,7 +84,6 @@ const InventoryTransaction = () => {
   useEffect(() => {
     fetchInventoryTransactions();
   }, []);
-
 
   return (
     <>
@@ -108,7 +109,9 @@ const InventoryTransaction = () => {
               startContent={<CiSearch />}
               variant="bordered"
             />
-            <AddButton title="Add New" onClick={openAddModal} />
+            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.ADD}>
+              <AddButton title="Add New" onClick={openAddModal} />
+            </PermissionGuard>
           </div>
         </div>
         <Table
@@ -186,19 +189,28 @@ const InventoryTransaction = () => {
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenEditModal(item?.Id)}
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.INVENTORY.UPDATE}
                         >
-                          <GoPencil color="green" />
-                        </button>
-                        <button
-                          type="button"
-                          className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item?.Id)}
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditModal(item?.Id)}
+                          >
+                            <GoPencil color="green" />
+                          </button>
+                        </PermissionGuard>
+
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.INVENTORY.DELETE}
                         >
-                          <RiDeleteBin6Line color="red" />
-                        </button>
+                          <button
+                            type="button"
+                            className="hover:text-red-500 cursor-pointer"
+                            onClick={() => handleOpenDeleteModal(item?.Id)}
+                          >
+                            <RiDeleteBin6Line color="red" />
+                          </button>
+                        </PermissionGuard>
                       </div>
                     )}
                   </TableCell>
