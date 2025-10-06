@@ -72,9 +72,11 @@ const OrderGrid: React.FC<OrderGridProps> = ({
 
             {/* Deadline */}
             <div
-              className={`inline-flex items-center px-3 py-1 rounded-full text-sm border ${getDeadlineColor(
-                order.Deadline
-              )}`}
+              className={`inline-flex items-center px-3 py-1 rounded-full text-sm border ${
+                order.StatusName === OrderItemShipmentEnum.SHIPPED
+                  ? "text-slate-600 border-slate-200"
+                  : getDeadlineColor(order.Deadline)
+              }`}
             >
               <Calendar className="w-4 h-4 mr-2" />
               <span>Due: {formatDate(order.Deadline)}</span>
@@ -115,7 +117,7 @@ const OrderGrid: React.FC<OrderGridProps> = ({
               <PermissionGuard required={PERMISSIONS_ENUM.ORDER.UPDATE}>
                 <button
                   onClick={() => onEditOrder(order.Id)}
-                  className={`flex items-center space-x-1 px-3 py-1.5 text-sm text-slate-600  rounded-md transition-colors ${
+                  className={`flex items-center space-x-1 px-3 py-1.5 text-sm text-slate-600 dark:text-slate-400 rounded-md transition-colors ${
                     order.StatusName === OrderItemShipmentEnum.SHIPPED
                       ? "cursor-not-allowed"
                       : "hover:bg-slate-100"

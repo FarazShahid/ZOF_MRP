@@ -53,17 +53,17 @@ const OrderAttachements: React.FC<OrderAttachementsProp> = ({ orderId }) => {
 
   return (
     <>
-      <Card className="bg-white dark:bg-gray-800 border-0 shadow-xl">
+      <Card className="bg-white dark:bg-slate-700 border-0 shadow-xl">
         <div className="p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-5 rounded-xl flex items-center justify-center">
               <RiAttachment2 />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 Order Attachments
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-slate-300">
                 {documents?.length} files attached
               </p>
             </div>
@@ -72,7 +72,7 @@ const OrderAttachements: React.FC<OrderAttachementsProp> = ({ orderId }) => {
           {/* Coverage summary */}
 
           <div className="flex flex-col items-end gap-1">
-            <div className="text-sm text-gray-700 dark:text-gray-300">
+            <div className="text-sm text-gray-700 dark:text-slate-300">
               Types covered: <b className="font-semibold">{matchedOverTotal}</b>{" "}
               • {percent}%
             </div>
@@ -89,17 +89,17 @@ const OrderAttachements: React.FC<OrderAttachementsProp> = ({ orderId }) => {
             {documents?.map((attachment, index) => (
               <div
                 key={index}
-                className="group p-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg transition-all duration-200 bg-gradient-to-br from-gray-50 to-white dark:from-gray-700 dark:to-gray-800"
+                className="group p-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg transition-all duration-200 bg-gradient-to-br from-gray-50 to-white dark:from-slate-700 dark:to-slate-800"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-5 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
                     <FaFileInvoice />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 truncate">
                       {attachment?.fileName}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-gray-500 dark:text-slate-400">
                       {attachment?.fileType}
                     </p>
                   </div>

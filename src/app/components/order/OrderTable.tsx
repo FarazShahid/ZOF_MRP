@@ -85,14 +85,16 @@ const OrderTable: React.FC<OrderTableProps> = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div
-                    className={`text-sm flex items-center ${getDeadlineColor(
-                      order.Deadline
-                    )}`}
+                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm border ${
+                      order.StatusName === OrderItemShipmentEnum.SHIPPED
+                        ? "text-slate-600 border-slate-200"
+                        : getDeadlineColor(order.Deadline)
+                    }`}
                   >
-                    <Calendar className="w-4 h-4 mr-1" />
-                    {formatDate(order.Deadline)}
+                    <Calendar className="w-4 h-4 mr-2" />
+                    <span>Due: {formatDate(order.Deadline)}</span>
                     {getDeadlineStatus(order.Deadline) === "overdue" && (
-                      <AlertTriangle className="w-4 h-4 ml-1 text-red-500" />
+                      <AlertTriangle className="w-4 h-4 ml-1" />
                     )}
                   </div>
                 </td>
