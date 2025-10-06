@@ -7,7 +7,6 @@ import React, { useState, useMemo } from "react";
 
 import { Plus } from "lucide-react";
 import { OrderStatus } from "@/src/types/admin";
-import { GetClientsType } from "@/store/useClientStore";
 
 import DeleteModal from "../DeleteModal";
 import Pagination from "../shipment/Pagination";
@@ -38,10 +37,9 @@ const OrderGrid = dynamic(() => import("./OrderGrid"), {
 
 interface OrderListProps {
   orders: GetOrdersType[];
-  clients: GetClientsType[];
 }
 
-const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
+const OrderList: React.FC<OrderListProps> = ({ orders }) => {
   const router = useRouter();
 
   const [viewMode, setViewMode] = useState<"table" | "grid">("grid");
@@ -160,7 +158,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
         onClientChange={setClientFilter}
         dateRange={dateRange}
         onDateRangeChange={setDateRange}
-        orders= {orders}
+        orders={orders}
       />
 
       {/* Content */}
