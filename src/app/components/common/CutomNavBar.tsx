@@ -46,7 +46,7 @@ const CutomNavBar = () => {
       id: 4,
       label: "Inventory",
       icon: <IoStorefrontOutline size={14} />,
-      route: "/inventoryItems/Inventorysetup",
+      route: "/inventory",
       isNested: false,
     },
     {
