@@ -13,7 +13,7 @@ type Step2Props = {
 
 const OrderAttachments: React.FC<Step2Props> = ({ onFileSelect, orderId }) => {
   const { values } = useFormikContext<any>();
-  const selectedTypeId = values?.typeId ? Number(values.typeId) : undefined
+  const selectedTypeId = values?.typeId ? Number(values.typeId) : undefined;
   return (
     <div>
       <div className="flex flex-col gap-1">
@@ -48,6 +48,16 @@ const OrderAttachments: React.FC<Step2Props> = ({ onFileSelect, orderId }) => {
           />
         </div>
       )}
+
+      <div className="flex flex-col gap-1">
+        <Label isRequired={false} label="Description" />
+        <Field
+          as="textarea"
+          name="Description"
+          placeholder="Order Description..."
+          className="rounded-xl dark:text-gray-400 text-gray-800 min-h-[105px] h-full text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+        />
+      </div>
     </div>
   );
 };

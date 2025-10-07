@@ -87,7 +87,7 @@ const OrderGrid: React.FC<OrderGridProps> = ({
 
             {/* Description */}
             {order.Description && (
-              <p className="text-sm text-gray-600 line-clamp-2">
+              <p className="text-sm text-gray-600 line-clamp-1">
                 {order.Description}
               </p>
             )}
