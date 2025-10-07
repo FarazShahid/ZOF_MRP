@@ -49,7 +49,6 @@ const OrderAttachements: React.FC<OrderAttachementsProp> = ({ orderId }) => {
     ? `${coverage.matchedTypes}/${coverage.totalTypes}`
     : `0/${FileTypesEnum.length}`;
 
-  console.log("typeCoverageByReferenceId", typeCoverageByReferenceId);
 
   return (
     <>

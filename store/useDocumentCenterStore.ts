@@ -138,7 +138,14 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
         return;
       }
 
-      const docs = result.data ?? [];
+      const docs = (result.data ?? []).map((d) => {
+        const url = d?.fileUrl || "";
+        const absolute = url.startsWith("http")
+          ? url
+          : `${process.env.NEXT_PUBLIC_API_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+        return { ...d, fileUrl: absolute } as Document;
+      });
+
       const perTypeCount: Record<number, number> = {};
       for (const t of FileTypesEnum) perTypeCount[t.id] = 0;
 
@@ -157,10 +164,10 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
 
 
       set((state) => ({
-        documents: result.data,
+        documents: docs,
         documentsByReferenceId: {
           ...state.documentsByReferenceId,
-          [referenceId]: result.data,
+          [referenceId]: docs,
         },
         typeCoverageByReferenceId: {
           ...state.typeCoverageByReferenceId,
