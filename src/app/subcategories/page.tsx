@@ -101,7 +101,7 @@ const Subcategories = () => {
               startContent={<CiSearch />}
               variant="bordered"
             />
-            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.ADD}>
+            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.ADD}>
               <AddButton title="Add New" onClick={openAddModal} />
             </PermissionGuard>
           </div>
@@ -154,7 +154,7 @@ const Subcategories = () => {
                     ) : (
                       <div className="flex gap-2">
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.UPDATE}
+                          required={PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.UPDATE}
                         >
                           <button
                             type="button"
@@ -165,7 +165,7 @@ const Subcategories = () => {
                         </PermissionGuard>
 
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.DELETE}
+                          required={PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.DELETE}
                         >
                           <button
                             type="button"

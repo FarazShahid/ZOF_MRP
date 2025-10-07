@@ -109,7 +109,7 @@ const InventoryTransaction = () => {
               startContent={<CiSearch />}
               variant="bordered"
             />
-            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.ADD}>
+            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY_TRANSACTIONS.ADD}>
               <AddButton title="Add New" onClick={openAddModal} />
             </PermissionGuard>
           </div>
@@ -190,7 +190,7 @@ const InventoryTransaction = () => {
                     ) : (
                       <div className="flex gap-2">
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.UPDATE}
+                          required={PERMISSIONS_ENUM.INVENTORY_TRANSACTIONS.UPDATE}
                         >
                           <button
                             type="button"
@@ -201,7 +201,7 @@ const InventoryTransaction = () => {
                         </PermissionGuard>
 
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.DELETE}
+                          required={PERMISSIONS_ENUM.INVENTORY_TRANSACTIONS.DELETE}
                         >
                           <button
                             type="button"

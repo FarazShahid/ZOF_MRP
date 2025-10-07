@@ -81,7 +81,7 @@ const ProductGrid: React.FC<Props> = ({
           <div className="px-4 py-3 rounded-b-lg border-t border-slate-200">
             <div className="flex items-center justify-end space-x-2">
               <PermissionGuard
-                required={PERMISSIONS_ENUM.PRODUCT.CHANGE_STATUS}
+                required={PERMISSIONS_ENUM.PRODUCTS.CHANGE_STATUS}
               >
                 <button
                   type="button"
@@ -93,7 +93,7 @@ const ProductGrid: React.FC<Props> = ({
                 </button>
               </PermissionGuard>
 
-              <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT.UPDATE}>
+              <PermissionGuard required={PERMISSIONS_ENUM.PRODUCTS.UPDATE}>
                 <button
                   type="button"
                   onClick={() => handleEdit(p.Id)}
@@ -104,7 +104,7 @@ const ProductGrid: React.FC<Props> = ({
                 </button>
               </PermissionGuard>
 
-              <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT.DELETE}>
+              <PermissionGuard required={PERMISSIONS_ENUM.PRODUCTS.DELETE}>
                 <button
                   type="button"
                   onClick={() => onDelete(p.Id)}

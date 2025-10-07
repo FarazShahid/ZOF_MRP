@@ -68,7 +68,7 @@ const CarriorTable = () => {
             <p className="text-gray-600 mt-1">Manage shipping carriers</p>
           </div>
 
-          <PermissionGuard required={PERMISSIONS_ENUM.ADMIN_SETTING.ADD}>
+          <PermissionGuard required={PERMISSIONS_ENUM.CARRIERS.ADD}>
             <button
               type="button"
               onClick={openAddModal}
@@ -127,7 +127,7 @@ const CarriorTable = () => {
                       ) : (
                         <div className="flex gap-2">
                           <PermissionGuard
-                            required={PERMISSIONS_ENUM.ADMIN_SETTING.UPDATE}
+                            required={PERMISSIONS_ENUM.CARRIERS.UPDATE}
                           >
                             <button
                               type="button"
@@ -138,7 +138,7 @@ const CarriorTable = () => {
                           </PermissionGuard>
 
                           <PermissionGuard
-                            required={PERMISSIONS_ENUM.ADMIN_SETTING.DELETE}
+                            required={PERMISSIONS_ENUM.CARRIERS.DELETE}
                           >
                             <button
                               type="button"

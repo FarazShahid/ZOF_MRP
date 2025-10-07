@@ -6,7 +6,7 @@ import ProductModule from "../components/product/ProductModule";
 const page = () => {
   return (
     <AdminDashboardLayout>
-      <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT.VIEW}>
+      <PermissionGuard required={PERMISSIONS_ENUM.PRODUCTS.VIEW}>
         <ProductModule />
       </PermissionGuard>
     </AdminDashboardLayout>

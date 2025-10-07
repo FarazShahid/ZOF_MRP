@@ -108,7 +108,7 @@ const UserTable: React.FC<ComponentProp> = ({
                 ) : (
                   <div className="flex gap-2">
                     <PermissionGuard
-                      required={PERMISSIONS_ENUM.ADMIN_SETTING.UPDATE}
+                      required={PERMISSIONS_ENUM.USERS.UPDATE}
                     >
                       <button type="button" onClick={() => onEdit(item?.Id)}>
                         <GoPencil color="green" />
@@ -116,7 +116,7 @@ const UserTable: React.FC<ComponentProp> = ({
                     </PermissionGuard>
                     
                     <PermissionGuard
-                      required={PERMISSIONS_ENUM.ADMIN_SETTING.DELETE}
+                      required={PERMISSIONS_ENUM.USERS.DELETE}
                     >
                       <button
                         type="button"

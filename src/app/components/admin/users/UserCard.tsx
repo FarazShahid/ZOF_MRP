@@ -90,7 +90,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete }) => {
       </div>
 
       <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
-        <PermissionGuard required={PERMISSIONS_ENUM.ADMIN_SETTING.UPDATE}>
+        <PermissionGuard required={PERMISSIONS_ENUM.USERS.UPDATE}>
           <button
             type="button"
             onClick={() => onEdit(user.Id)}
@@ -101,7 +101,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete }) => {
           </button>
         </PermissionGuard>
 
-        <PermissionGuard required={PERMISSIONS_ENUM.ADMIN_SETTING.DELETE}>
+        <PermissionGuard required={PERMISSIONS_ENUM.USERS.DELETE}>
           <button
             type="button"
             onClick={() => onDelete(user.Id)}

@@ -112,7 +112,7 @@ const ProductCutOptions = () => {
           <h6 className="font-sans text-lg font-semibold">
             Product Cut Options
           </h6>
-          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.ADD}>
+          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.ADD}>
             <AddButton title="Add New" onClick={openAddModal} />
           </PermissionGuard>
         </div>
@@ -176,7 +176,7 @@ const ProductCutOptions = () => {
                     ) : (
                       <div className="flex gap-2">
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.UPDATE}
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
                         >
                           <button
                             type="button"
@@ -187,7 +187,7 @@ const ProductCutOptions = () => {
                         </PermissionGuard>
 
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.DELETE}
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
                         >
                           <button
                             type="button"

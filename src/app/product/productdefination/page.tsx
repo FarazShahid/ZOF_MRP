@@ -38,7 +38,7 @@ const page = () => {
 
   return (
     <AdminDashboardLayout>
-      <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.VIEW}>
+      <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW}>
         <div className="space-y-6">
           <div className="flex items-center">
             <Link

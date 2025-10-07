@@ -171,7 +171,7 @@ const ProductModule = () => {
         <div className="flex items-center gap-4">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
 
-          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.VIEW}>
+          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW}>
             <Tooltip content="Product Definition">
               <Link
                 href={"/product/productdefination"}
@@ -182,7 +182,7 @@ const ProductModule = () => {
             </Tooltip>
           </PermissionGuard>
 
-          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT.ADD}>
+          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCTS.ADD}>
             <button
               type="button"
               onClick={handleAddShipment}

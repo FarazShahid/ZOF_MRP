@@ -107,7 +107,7 @@ const Fabric = () => {
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <h6 className="font-sans text-lg font-semibold">Fabric Type</h6>
-        <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.ADD}>
+        <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.ADD}>
           <AddButton title="Add New" onClick={openAddModal} />
         </PermissionGuard>
       </div>
@@ -190,7 +190,7 @@ const Fabric = () => {
                   ) : (
                      <div className="flex gap-2">
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.UPDATE}
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
                         >
                           <button
                             type="button"
@@ -201,7 +201,7 @@ const Fabric = () => {
                         </PermissionGuard>
 
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.DELETE}
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
                         >
                           <button
                             type="button"

@@ -9,8 +9,8 @@ import { AiOutlineProduct } from "react-icons/ai";
 import { IoStorefrontOutline } from "react-icons/io5";
 import { GiCargoShip } from "react-icons/gi";
 import { IoIosArrowDown } from "react-icons/io";
-import Logo from "../../../../public/logoDark.png";
-import LogoLight from "../../../../public/logo.png";
+import Logo from "../../../../public/Sealforge.svg";
+import LogoLight from "../../../../public/Sealforge_dark.svg";
 import UserDropdown from "../header/UserDropdown";
 import { ThemeToggleButton } from "./ThemeToggleButton";
 
@@ -87,9 +87,9 @@ const CutomNavBar = () => {
       className="p-5 dark:bg-slate-900 bg-gray-100 border-b border-gray-300 flex items-center justify-between relative z-50"
       ref={navRef}
     >
-      <div className="w-7 h-7">
-        <Image src={Logo} alt="logo" className="hidden dark:block" />
+      <div className="w-20">
         <Image src={LogoLight} alt="logo" className="dark:hidden" />
+        <Image src={Logo} alt="logo" className="dark:block  hidden" />
       </div>
 
       <div className="flex items-center gap-6 relative">

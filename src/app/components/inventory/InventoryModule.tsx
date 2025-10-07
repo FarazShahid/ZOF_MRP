@@ -143,7 +143,7 @@ const InventoryModule = () => {
               <FiSettings size={23} />
             </Link>
           </Tooltip>
-          <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.ADD}>
+          <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY_ITEMS.ADD}>
             <button
               type="button"
               onClick={openAddModal}

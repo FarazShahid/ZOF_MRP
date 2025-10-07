@@ -103,7 +103,7 @@ const ProductTable: React.FC<Props> = ({
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
                     <PermissionGuard
-                      required={PERMISSIONS_ENUM.PRODUCT.CHANGE_STATUS}
+                      required={PERMISSIONS_ENUM.PRODUCTS.CHANGE_STATUS}
                     >
                       <button
                         onClick={(e) => {
@@ -117,7 +117,7 @@ const ProductTable: React.FC<Props> = ({
                       </button>
                     </PermissionGuard>
 
-                    <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT.UPDATE}>
+                    <PermissionGuard required={PERMISSIONS_ENUM.PRODUCTS.UPDATE}>
                       <button
                         onClick={() => handleEdit(p.Id)}
                         className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
@@ -128,7 +128,7 @@ const ProductTable: React.FC<Props> = ({
                       </button>
                     </PermissionGuard>
 
-                    <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT.DELETE}>
+                    <PermissionGuard required={PERMISSIONS_ENUM.PRODUCTS.DELETE}>
                       <button
                         onClick={() => onDelete(p.Id)}
                         className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"

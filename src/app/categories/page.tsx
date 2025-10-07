@@ -13,7 +13,6 @@ import {
 } from "@heroui/react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { formatDate } from "../interfaces";
 import useInventoryCategoryStore from "@/store/useInventoryCategoryStore";
 import DeleteCategories from "./DeleteCategories";
 import AddCategoires from "./AddCategoires";
@@ -67,7 +66,7 @@ const InventoryCategories = () => {
           <h6 className="font-sans text-lg font-semibold">
             Inventory Category
           </h6>
-          <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.ADD}>
+          <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY_CATEGORY.ADD}>
             <AddButton title="Add New" onClick={openAddModal} />
           </PermissionGuard>
         </div>
@@ -120,7 +119,7 @@ const InventoryCategories = () => {
                     ) : (
                       <div className="flex gap-2">
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.UPDATE}
+                          required={PERMISSIONS_ENUM.INVENTORY_CATEGORY.UPDATE}
                         >
                           <button
                             type="button"
@@ -131,7 +130,7 @@ const InventoryCategories = () => {
                         </PermissionGuard>
 
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.DELETE}
+                          required={PERMISSIONS_ENUM.INVENTORY_CATEGORY.DELETE}
                         >
                           <button
                             type="button"

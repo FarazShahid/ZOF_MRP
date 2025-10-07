@@ -35,7 +35,7 @@ const RoleModule = () => {
           </p>
         </div>
 
-        <PermissionGuard required={PERMISSIONS_ENUM.ADMIN_SETTING.ADD}>
+        <PermissionGuard required={PERMISSIONS_ENUM.ROLES_AND_RIGHTS.ADD}>
           <button
             type="button"
             onClick={openForCreate}

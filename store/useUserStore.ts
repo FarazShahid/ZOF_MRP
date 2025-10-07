@@ -25,6 +25,7 @@ export interface ClientAssignment {
 }
 
 export interface GetUsersType {
+  role: string;
   Id: number;
   firstName: string;
   lastName: string;

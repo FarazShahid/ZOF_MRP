@@ -54,7 +54,7 @@ const ColorOptions = () => {
       <div className="flex items-center justify-between">
         <h6 className="font-sans text-lg font-semibold">Color Options</h6>
 
-        <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.ADD}>
+        <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.ADD}>
           <Link
             href={"/setting/coloroptions/addColor"}
             className="text-sm rounded-full dark:bg-blue-600 bg-blue-800 text-white font-semibold px-3 py-2 flex items-center gap-2"
@@ -123,7 +123,7 @@ const ColorOptions = () => {
                   ) : (
                     <div className="flex gap-2">
                       <PermissionGuard
-                        required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.DELETE}
+                        required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
                       >
                         <button
                           type="button"

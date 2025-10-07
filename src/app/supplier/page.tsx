@@ -66,7 +66,7 @@ const Supplier = () => {
         <div className="flex items-center justify-between">
 
           <h6 className="font-sans text-lg font-semibold">Supplier</h6>
-          <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.ADD}>
+          <PermissionGuard required={PERMISSIONS_ENUM.SUPPLIERS.ADD}>
             <AddButton title="Add New" onClick={openAddModal} />
           </PermissionGuard>
 
@@ -142,7 +142,7 @@ const Supplier = () => {
                     ) : (
                       <div className="flex gap-2">
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.UPDATE}
+                          required={PERMISSIONS_ENUM.SUPPLIERS.UPDATE}
                         >
                           <button
                             type="button"
@@ -153,7 +153,7 @@ const Supplier = () => {
                         </PermissionGuard>
 
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.DELETE}
+                          required={PERMISSIONS_ENUM.SUPPLIERS.DELETE}
                         >
                           <button
                             type="button"

@@ -45,7 +45,7 @@ const EventsModule: React.FC = () => {
           <p className="text-gray-600 mt-1">Manage client events</p>
         </div>
 
-        <PermissionGuard required={PERMISSIONS_ENUM.ADMIN_SETTING.ADD}>
+        <PermissionGuard required={PERMISSIONS_ENUM.EVENTS.ADD}>
           <button
             type="button"
             onClick={openAddModal}

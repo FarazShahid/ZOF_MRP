@@ -88,13 +88,11 @@ export default function UserDropdown() {
           </Link>
         </PermissionGuard>
 
-        <PermissionGuard required={PERMISSIONS_ENUM.ADMIN_SETTING.VIEW}>
-          <Link href={"/adminsetting"}>
-            <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
-              <CiSettings size={19} /> Admin Setting
-            </div>
-          </Link>
-        </PermissionGuard>
+        <Link href={"/adminsetting"}>
+          <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
+            <CiSettings size={19} /> Admin Setting
+          </div>
+        </Link>
         <button
           type="button"
           onClick={logout}

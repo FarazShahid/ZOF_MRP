@@ -56,7 +56,7 @@ const UsersModule: React.FC = () => {
         <div className="flex items-center gap-4">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
 
-          <PermissionGuard required={PERMISSIONS_ENUM.ADMIN_SETTING.ADD}>
+          <PermissionGuard required={PERMISSIONS_ENUM.USERS.ADD}>
             <button
               type="button"
               onClick={openAddModal}

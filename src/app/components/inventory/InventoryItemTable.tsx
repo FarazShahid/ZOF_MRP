@@ -90,7 +90,7 @@ const InventoryItemTable: React.FC<Props> = ({ items, onView, onEdit, onDelete }
                       <Eye className="w-4 h-4" />
                     </button>
 
-                    <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.UPDATE}>
+                    <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY_ITEMS.UPDATE}>
                       <button
                         onClick={() => onEdit?.(it.Id)}
                         className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
@@ -101,7 +101,7 @@ const InventoryItemTable: React.FC<Props> = ({ items, onView, onEdit, onDelete }
                       </button>
                     </PermissionGuard>
 
-                    <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.DELETE}>
+                    <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY_ITEMS.DELETE}>
                       <button
                         onClick={() => onDelete?.(it.Id)}
                         className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"

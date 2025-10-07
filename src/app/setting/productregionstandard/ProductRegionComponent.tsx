@@ -112,7 +112,7 @@ const ProductRegionComponent = () => {
           <h6 className="font-sans text-lg font-semibold">
             Product Region Standard
           </h6>
-          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.ADD}>
+          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.ADD}>
             <AddButton title="Add New" onClick={openAddModal} />
           </PermissionGuard>
         </div>
@@ -177,7 +177,7 @@ const ProductRegionComponent = () => {
                     ) : (
                        <div className="flex gap-2">
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.UPDATE}
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
                         >
                           <button
                             type="button"
@@ -188,7 +188,7 @@ const ProductRegionComponent = () => {
                         </PermissionGuard>
 
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.PRODUCT_DEFINATION.DELETE}
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
                         >
                           <button
                             type="button"

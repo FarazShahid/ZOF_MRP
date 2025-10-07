@@ -64,7 +64,7 @@ const UnitofMeasure = () => {
       <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h6 className="font-sans text-lg font-semibold">Unit of measure</h6>
-          <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.ADD}>
+          <PermissionGuard required={PERMISSIONS_ENUM.UNIT_OF_MEASURE.ADD}>
             <AddButton title="Add New" onClick={openAddModal} />
           </PermissionGuard>
         </div>
@@ -119,7 +119,7 @@ const UnitofMeasure = () => {
                     ) : (
                       <div className="flex gap-2">
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.UPDATE}
+                          required={PERMISSIONS_ENUM.UNIT_OF_MEASURE.UPDATE}
                         >
                           <button
                             type="button"
@@ -130,7 +130,7 @@ const UnitofMeasure = () => {
                         </PermissionGuard>
 
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.DELETE}
+                          required={PERMISSIONS_ENUM.UNIT_OF_MEASURE.DELETE}
                         >
                           <button
                             type="button"

@@ -104,7 +104,7 @@ const CustomerTable: React.FC<ComponentProp> = ({
                 ) : (
                   <div className="flex gap-2">
                     <PermissionGuard
-                      required={PERMISSIONS_ENUM.ADMIN_SETTING.UPDATE}
+                      required={PERMISSIONS_ENUM.CLIENTS.UPDATE}
                     >
                       <button type="button" onClick={() => onEdit(item?.Id)}>
                         <GoPencil color="green" />
@@ -112,7 +112,7 @@ const CustomerTable: React.FC<ComponentProp> = ({
                     </PermissionGuard>
 
                     <PermissionGuard
-                      required={PERMISSIONS_ENUM.ADMIN_SETTING.DELETE}
+                      required={PERMISSIONS_ENUM.CLIENTS.DELETE}
                     >
                       <button
                         type="button"

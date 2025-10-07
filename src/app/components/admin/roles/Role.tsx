@@ -100,7 +100,7 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
                 <TableCell>
                   <div className="flex gap-2">
                     <PermissionGuard
-                      required={PERMISSIONS_ENUM.ADMIN_SETTING.UPDATE}
+                      required={PERMISSIONS_ENUM.ROLES_AND_RIGHTS.UPDATE}
                     >
                       <button
                         type="button"
@@ -111,7 +111,7 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
                     </PermissionGuard>
 
                     <PermissionGuard
-                      required={PERMISSIONS_ENUM.ADMIN_SETTING.DELETE}
+                      required={PERMISSIONS_ENUM.ROLES_AND_RIGHTS.DELETE}
                     >
                       <button
                         type="button"

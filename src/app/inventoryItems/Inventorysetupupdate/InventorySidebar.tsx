@@ -8,8 +8,6 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  // Items moved to /inventory
-  // { id: "items" as ActiveInventoryModule, label: "Items", icon: Boxes },
   { id: "categories" as ActiveInventoryModule, label: "Categories", icon: Layers },
   { id: "subcategories" as ActiveInventoryModule, label: "Sub Categories", icon: PackageSearch },
   { id: "uom" as ActiveInventoryModule, label: "Unit of Measure", icon: Ruler },

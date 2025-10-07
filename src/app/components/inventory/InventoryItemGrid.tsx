@@ -105,7 +105,7 @@ const InventoryItemGrid: React.FC<Props> = ({ items, onView, onEdit, onDelete })
             >
               <Eye className="w-4 h-4" /> View
             </button>
-            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.UPDATE}>
+            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY_ITEMS.UPDATE}>
               <button
                 type="button"
                 className="inline-flex items-center gap-1 px-3 py-1.5 text-sm rounded-md text-green-600 hover:bg-green-50"
@@ -114,7 +114,7 @@ const InventoryItemGrid: React.FC<Props> = ({ items, onView, onEdit, onDelete })
                 <Edit className="w-4 h-4" /> Edit
               </button>
             </PermissionGuard>
-            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.DELETE}>
+            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY_ITEMS.DELETE}>
               <button
                 type="button"
                 className="inline-flex items-center gap-1 px-3 py-1.5 text-sm rounded-md text-red-600 hover:bg-red-50"
