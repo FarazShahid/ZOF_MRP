@@ -11,6 +11,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { IoMdDownload } from "react-icons/io";
 import { CgAttachment } from "react-icons/cg";
 import { ViewMeasurementChart } from "@/src/app/orders/components/ViewMeasurementChart";
+import { downloadAtIndex } from "@/src/types/admin";
 
 interface OrderItemCardProps {
   item: OrderItem;
@@ -247,6 +248,12 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
                     </button>
                     <button
                       type="button"
+                      onClick={() => {
+                        const realIndex = (documents as any[]).findIndex(
+                          (d) => d?.fileUrl === attachment.fileUrl && d?.fileName === attachment.fileName
+                        );
+                        downloadAtIndex(documents as any, realIndex === -1 ? 0 : realIndex);
+                      }}
                       className="p-2 hover:bg-green-100 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 transition-colors"
                     >
                       <IoMdDownload />

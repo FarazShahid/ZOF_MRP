@@ -10,6 +10,7 @@ import AttachmentPreviewModal, {
   AttachmentItem,
 } from "../../AttachmentPreviewModal";
 import { FileTypesEnum } from "@/src/types/order";
+import { downloadAtIndex } from "@/src/types/admin";
 
 interface OrderAttachementsProp {
   orderId: number;
@@ -116,6 +117,7 @@ const OrderAttachements: React.FC<OrderAttachementsProp> = ({ orderId }) => {
                   <Button
                     variant="ghost"
                     size="sm"
+                    onPress={() => downloadAtIndex(documents as any, index)}
                     className="flex-1 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400"
                   >
                     <HiDownload />

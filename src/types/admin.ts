@@ -63,3 +63,19 @@ export const formatDate = (date: string) => {
   };
 
 export const MAX_CLIENT_CHIPS = 4;
+
+export const downloadAtIndex = (
+  documents: { fileUrl: string; fileName?: string }[],
+  index: number
+) => {
+  const att = documents?.[index] as { fileUrl: string; fileName?: string } | undefined;
+  if (!att?.fileUrl) return;
+  const link = document.createElement("a");
+  link.href = att.fileUrl;
+  link.download = att.fileName || "download";
+  link.target = "_blank";
+  link.rel = "noreferrer";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
