@@ -138,7 +138,8 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
         return;
       }
 
-      const docs = result.data ?? [];
+       const docs = result.data ?? [];
+
       const perTypeCount: Record<number, number> = {};
       for (const t of FileTypesEnum) perTypeCount[t.id] = 0;
 

@@ -17,6 +17,8 @@ import useCarriorStore from "@/store/useCarriorStore";
 import CarriorForm from "./CarriorForm";
 import DeleteCarrior from "./DeleteCarrior";
 import { Plus } from "lucide-react";
+import PermissionGuard from "@/src/app/components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const CarriorTable = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -65,14 +67,17 @@ const CarriorTable = () => {
             <h2 className="text-2xl font-bold text-gray-900">Carriers</h2>
             <p className="text-gray-600 mt-1">Manage shipping carriers</p>
           </div>
-          <button
-            type="button"
-            onClick={openAddModal}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Add Carrier
-          </button>
+
+          <PermissionGuard required={PERMISSIONS_ENUM.CARRIERS.ADD}>
+            <button
+              type="button"
+              onClick={openAddModal}
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Add Carrier
+            </button>
+          </PermissionGuard>
         </div>
 
         {/* Table */}
@@ -121,19 +126,28 @@ const CarriorTable = () => {
                         getKeyValue(item, columnKey)
                       ) : (
                         <div className="flex gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEditModal(item?.Id)}
+                          <PermissionGuard
+                            required={PERMISSIONS_ENUM.CARRIERS.UPDATE}
                           >
-                            <GoPencil color="green" />
-                          </button>
-                          <button
-                            type="button"
-                            className="hover:text-red-500 cursor-pointer"
-                            onClick={() => handleOpenDeleteModal(item?.Id)}
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEditModal(item?.Id)}
+                            >
+                              <GoPencil color="green" />
+                            </button>
+                          </PermissionGuard>
+
+                          <PermissionGuard
+                            required={PERMISSIONS_ENUM.CARRIERS.DELETE}
                           >
-                            <RiDeleteBin6Line color="red" />
-                          </button>
+                            <button
+                              type="button"
+                              className="hover:text-red-500 cursor-pointer"
+                              onClick={() => handleOpenDeleteModal(item?.Id)}
+                            >
+                              <RiDeleteBin6Line color="red" />
+                            </button>
+                          </PermissionGuard>
                         </div>
                       )}
                     </TableCell>

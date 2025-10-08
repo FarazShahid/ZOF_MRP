@@ -7,7 +7,6 @@ import React, { useState, useMemo } from "react";
 
 import { Plus } from "lucide-react";
 import { OrderStatus } from "@/src/types/admin";
-import { GetClientsType } from "@/store/useClientStore";
 
 import DeleteModal from "../DeleteModal";
 import Pagination from "../shipment/Pagination";
@@ -16,7 +15,8 @@ import { ViewToggle } from "../admin/common/ViewToggle";
 import SearchSkeleton from "../ui/Skeleton/SearchSkeleton";
 import { GetOrdersType } from "../../interfaces/OrderStoreInterface";
 import ReorderConfirmation from "../../orders/components/ReorderConfirmation";
-
+import PermissionGuard from "../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 // Lazy load
 const OrderDashboard = dynamic(() => import("./OrderDashboard"), {
@@ -37,10 +37,9 @@ const OrderGrid = dynamic(() => import("./OrderGrid"), {
 
 interface OrderListProps {
   orders: GetOrdersType[];
-  clients: GetClientsType[];
 }
 
-const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
+const OrderList: React.FC<OrderListProps> = ({ orders }) => {
   const router = useRouter();
 
   const [viewMode, setViewMode] = useState<"table" | "grid">("grid");
@@ -135,13 +134,15 @@ const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
         <div className="flex items-center gap-4">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
 
-          <Link
-            href={"/orders/addorder"}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Add New Order
-          </Link>
+          <PermissionGuard required={PERMISSIONS_ENUM.ORDER.ADD}>
+            <Link
+              href={"/orders/addorder"}
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Add New Order
+            </Link>
+          </PermissionGuard>
         </div>
       </div>
 
@@ -157,7 +158,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders, clients }) => {
         onClientChange={setClientFilter}
         dateRange={dateRange}
         onDateRangeChange={setDateRange}
-        clients={clients}
+        orders={orders}
       />
 
       {/* Content */}

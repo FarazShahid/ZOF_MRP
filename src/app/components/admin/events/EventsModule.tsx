@@ -4,6 +4,8 @@ import EventTable from "./EventTable";
 import useEventsStore from "@/store/useEventsStore";
 import DeleteEvent from "@/src/app/events/DeleteEvent";
 import EventsForm from "@/src/app/events/EventsForm";
+import PermissionGuard from "../../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const EventsModule: React.FC = () => {
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
@@ -42,14 +44,17 @@ const EventsModule: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900">Events</h2>
           <p className="text-gray-600 mt-1">Manage client events</p>
         </div>
-        <button
-          type="button"
-          onClick={openAddModal}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Add Event
-        </button>
+
+        <PermissionGuard required={PERMISSIONS_ENUM.EVENTS.ADD}>
+          <button
+            type="button"
+            onClick={openAddModal}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add Event
+          </button>
+        </PermissionGuard>
       </div>
 
       {/* Table */}
@@ -82,4 +87,4 @@ const EventsModule: React.FC = () => {
   );
 };
 
-export default EventsModule
+export default EventsModule;

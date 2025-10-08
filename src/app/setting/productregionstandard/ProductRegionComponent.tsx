@@ -15,13 +15,14 @@ import {
 import useProductRegionStore, {
   ProductRegion,
 } from "@/store/useProductRegionStore";
-import { FiPlus } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { GoPencil } from "react-icons/go";
 import DeleteProductRegion from "./DeleteColorOptions";
 import AddProductRegion from "./AddColorOptions";
 import AddButton from "../../components/common/AddButton";
+import PermissionGuard from "../../components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const ProductRegionComponent = () => {
   const [page, setPage] = useState<number>(1);
@@ -111,7 +112,9 @@ const ProductRegionComponent = () => {
           <h6 className="font-sans text-lg font-semibold">
             Product Region Standard
           </h6>
-          <AddButton title="Add New" onClick={openAddModal} />
+          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.ADD}>
+            <AddButton title="Add New" onClick={openAddModal} />
+          </PermissionGuard>
         </div>
         <Table
           isStriped
@@ -172,20 +175,29 @@ const ProductRegionComponent = () => {
                     ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
                     ) : (
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEditModal(item?.Id)}
+                       <div className="flex gap-2">
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
                         >
-                          <GoPencil color="green" />
-                        </button>
-                        <button
-                          type="button"
-                          className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item?.Id)}
+                          <button
+                            type="button"
+                            onClick={() => openEditModal(item?.Id)}
+                          >
+                            <GoPencil color="green" />
+                          </button>
+                        </PermissionGuard>
+
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
                         >
-                          <RiDeleteBin6Line color="red" />
-                        </button>
+                          <button
+                            type="button"
+                            className="hover:text-red-500 cursor-pointer"
+                            onClick={() => handleOpenDeleteModal(item?.Id)}
+                          >
+                            <RiDeleteBin6Line color="red" />
+                          </button>
+                        </PermissionGuard>
                       </div>
                     )}
                   </TableCell>

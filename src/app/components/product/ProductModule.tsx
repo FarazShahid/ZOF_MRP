@@ -17,6 +17,8 @@ import ChangeProductStatus from "../../product/component/ChangeProductStatus";
 import { Tooltip } from "@heroui/react";
 import Link from "next/link";
 import { FiSettings } from "react-icons/fi";
+import PermissionGuard from "../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const ProductModule = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("table");
@@ -168,22 +170,28 @@ const ProductModule = () => {
         </div>
         <div className="flex items-center gap-4">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-          <Tooltip content="Product Definition">
-            <Link
-              href={"/product/productdefination"}
-              className="dark:bg-slate-500 bg-slate-300 dark:text-white text-gray-800 rounded-lg p-2"
+
+          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW}>
+            <Tooltip content="Product Definition">
+              <Link
+                href={"/product/productdefination"}
+                className="dark:bg-slate-500 bg-slate-300 dark:text-white text-gray-800 rounded-lg p-2"
+              >
+                <FiSettings size={23} />
+              </Link>
+            </Tooltip>
+          </PermissionGuard>
+
+          <PermissionGuard required={PERMISSIONS_ENUM.PRODUCTS.ADD}>
+            <button
+              type="button"
+              onClick={handleAddShipment}
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              <FiSettings size={23} />
-            </Link>
-          </Tooltip>
-          <button
-            type="button"
-            onClick={handleAddShipment}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Add Product
-          </button>
+              <Plus className="w-4 h-4" />
+              Add Product
+            </button>
+          </PermissionGuard>
         </div>
       </div>
 

@@ -8,6 +8,8 @@ import AddUser from "@/src/app/components/admin/users/AddUser";
 import DeleteUser from "@/src/app/components/admin/users/DeleteUser";
 import useUserStore from "@/store/useUserStore";
 import UserTable from "./UserTable";
+import PermissionGuard from "../../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const UsersModule: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
@@ -53,19 +55,19 @@ const UsersModule: React.FC = () => {
         </div>
         <div className="flex items-center gap-4">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-          <button
-            type="button"
-            onClick={openAddModal}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Add User
-          </button>
+
+          <PermissionGuard required={PERMISSIONS_ENUM.USERS.ADD}>
+            <button
+              type="button"
+              onClick={openAddModal}
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Add User
+            </button>
+          </PermissionGuard>
         </div>
       </div>
-
-      {/* Stats */}
-      <UserStats users={users} />
 
       {/* Content */}
       {viewMode === "table" ? (
@@ -90,12 +92,15 @@ const UsersModule: React.FC = () => {
         </div>
       )}
 
-      <AddUser
-        isOpen={isAddModalOpen}
-        closeAddModal={closeAddModal}
-        isEdit={isEdit}
-        Id={selectedItemId}
-      />
+      {isAddModalOpen && (
+        <AddUser
+          isOpen={isAddModalOpen}
+          closeAddModal={closeAddModal}
+          isEdit={isEdit}
+          Id={selectedItemId}
+        />
+      )}
+
       <DeleteUser
         isOpen={isOpenDeletModal}
         onClose={closeDeleteModal}
@@ -104,6 +109,5 @@ const UsersModule: React.FC = () => {
     </div>
   );
 };
-
 
 export default UsersModule;

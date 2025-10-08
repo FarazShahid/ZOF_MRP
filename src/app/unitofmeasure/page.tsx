@@ -17,6 +17,8 @@ import useUnitOfMeasureStore from "@/store/useUnitOfMeasureStore";
 import DeleteModal from "./DeleteModal";
 import AddUnitOfMeasure from "./AddUnitOfMeasure";
 import AddButton from "../components/common/AddButton";
+import PermissionGuard from "../components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const UnitofMeasure = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -61,10 +63,10 @@ const UnitofMeasure = () => {
     <>
       <div className="w-full flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h6 className="font-sans text-lg font-semibold">
-            Unit of measure
-          </h6>
-          <AddButton title="Add New" onClick={openAddModal} />
+          <h6 className="font-sans text-lg font-semibold">Unit of measure</h6>
+          <PermissionGuard required={PERMISSIONS_ENUM.UNIT_OF_MEASURE.ADD}>
+            <AddButton title="Add New" onClick={openAddModal} />
+          </PermissionGuard>
         </div>
         <Table
           isStriped
@@ -116,19 +118,28 @@ const UnitofMeasure = () => {
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenEditModal(item?.Id)}
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.UNIT_OF_MEASURE.UPDATE}
                         >
-                          <GoPencil color="green" />
-                        </button>
-                        <button
-                          type="button"
-                          className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item?.Id)}
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditModal(item?.Id)}
+                          >
+                            <GoPencil color="green" />
+                          </button>
+                        </PermissionGuard>
+
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.UNIT_OF_MEASURE.DELETE}
                         >
-                          <RiDeleteBin6Line color="red" />
-                        </button>
+                          <button
+                            type="button"
+                            className="hover:text-red-500 cursor-pointer"
+                            onClick={() => handleOpenDeleteModal(item?.Id)}
+                          >
+                            <RiDeleteBin6Line color="red" />
+                          </button>
+                        </PermissionGuard>
                       </div>
                     )}
                   </TableCell>

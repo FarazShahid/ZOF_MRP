@@ -13,6 +13,8 @@ import ShipmentGrid from "./ShipmentGrid";
 import ShipmentDetail from "./ShipmentDetail";
 import DeleteShipment from "../../shipment/components/DeleteShipment";
 import { useRouter } from "next/navigation";
+import PermissionGuard from "../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const ShipmentModule = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("table");
@@ -34,17 +36,17 @@ const ShipmentModule = () => {
 
   // Filter shipments based on search and filters
   const filteredShipments = useMemo(() => {
-    return Shipments.filter((shipment) => {
+    return Shipments?.filter((shipment) => {
       const matchesSearch =
         searchTerm === "" ||
-        shipment.ShipmentCode.toLowerCase().includes(
+        shipment?.ShipmentCode?.toLowerCase().includes(
           searchTerm.toLowerCase()
         ) ||
-        shipment.ShipmentCarrierName.toLowerCase().includes(
+        shipment?.ShipmentCarrierName.toLowerCase().includes(
           searchTerm.toLowerCase()
         ) ||
-        shipment.Orders.some((order) =>
-          order.OrderNumber.toLowerCase().includes(searchTerm.toLowerCase())
+        shipment?.Orders.some((order) =>
+          order?.OrderNumber.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
       const matchesStatus =
@@ -55,7 +57,7 @@ const ShipmentModule = () => {
 
       let matchesDateRange = true;
       if (dateRange.start && dateRange.end) {
-        const shipmentDate = new Date(shipment.ShipmentDate);
+        const shipmentDate = new Date(shipment?.ShipmentDate);
         const startDate = new Date(dateRange.start);
         const endDate = new Date(dateRange.end);
         matchesDateRange = shipmentDate >= startDate && shipmentDate <= endDate;
@@ -68,9 +70,9 @@ const ShipmentModule = () => {
   }, [Shipments, searchTerm, statusFilter, carrierFilter, dateRange]);
 
   // Pagination
-  const totalPages = Math.ceil(filteredShipments.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredShipments?.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedShipments = filteredShipments.slice(
+  const paginatedShipments = filteredShipments?.slice(
     startIndex,
     startIndex + itemsPerPage
   );
@@ -114,14 +116,17 @@ const ShipmentModule = () => {
         </div>
         <div className="flex items-center gap-4">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-          <button
-            type="button"
-            onClick={handleAddShipment}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Add Shipment
-          </button>
+
+          <PermissionGuard required={PERMISSIONS_ENUM.SHIPMENT.ADD}>
+            <button
+              type="button"
+              onClick={handleAddShipment}
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Add Shipment
+            </button>
+          </PermissionGuard>
         </div>
       </div>
 
@@ -160,7 +165,7 @@ const ShipmentModule = () => {
           currentPage={currentPage}
           totalPages={totalPages}
           itemsPerPage={itemsPerPage}
-          totalItems={filteredShipments.length}
+          totalItems={filteredShipments?.length}
           onPageChange={setCurrentPage}
           onItemsPerPageChange={setItemsPerPage}
         />

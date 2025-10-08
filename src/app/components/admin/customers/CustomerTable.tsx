@@ -12,6 +12,8 @@ import {
 import React, { useMemo, useState } from "react";
 import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import PermissionGuard from "../../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 interface ComponentProp {
   clients: GetClientsType[];
@@ -101,12 +103,25 @@ const CustomerTable: React.FC<ComponentProp> = ({
                   getKeyValue(item, columnKey)
                 ) : (
                   <div className="flex gap-2">
-                    <button type="button" onClick={() => onEdit(item?.Id)}>
-                      <GoPencil color="green" />
-                    </button>
-                    <button type="button" onClick={() => onDelete(item?.Id)}>
-                      <RiDeleteBin6Line color="red" />
-                    </button>
+                    <PermissionGuard
+                      required={PERMISSIONS_ENUM.CLIENTS.UPDATE}
+                    >
+                      <button type="button" onClick={() => onEdit(item?.Id)}>
+                        <GoPencil color="green" />
+                      </button>
+                    </PermissionGuard>
+
+                    <PermissionGuard
+                      required={PERMISSIONS_ENUM.CLIENTS.DELETE}
+                    >
+                      <button
+                        type="button"
+                        className="hover:text-red-500 cursor-pointer"
+                        onClick={() => onDelete(item?.Id)}
+                      >
+                        <RiDeleteBin6Line color="red" />
+                      </button>
+                    </PermissionGuard>
                   </div>
                 )}
               </TableCell>

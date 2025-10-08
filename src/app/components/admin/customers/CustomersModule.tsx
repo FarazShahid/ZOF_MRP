@@ -9,6 +9,8 @@ import CustomerCard from "./CustomerCard";
 import AddClients from "../../AddClients";
 import DeleteClient from "../../DeleteClient";
 import CustomerTable from "./CustomerTable";
+import PermissionGuard from "../../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const CustomersModule: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
@@ -59,14 +61,17 @@ const CustomersModule: React.FC = () => {
         </div>
         <div className="flex items-center gap-4">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-          <button
-            type="button"
-            onClick={openAddModal}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Add Client
-          </button>
+          
+          <PermissionGuard required={PERMISSIONS_ENUM.CLIENTS.ADD}>
+            <button
+              type="button"
+              onClick={openAddModal}
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Add Client
+            </button>
+          </PermissionGuard>
         </div>
       </div>
 

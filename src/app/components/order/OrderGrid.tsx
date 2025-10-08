@@ -14,6 +14,8 @@ import { GetOrdersType } from "../../interfaces/OrderStoreInterface";
 import { formatDate } from "@/src/types/admin";
 import { getDeadlineColor, getDeadlineStatus } from "@/src/types/order";
 import { OrderItemShipmentEnum } from "@/interface";
+import PermissionGuard from "../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 interface OrderGridProps {
   orders: GetOrdersType[];
@@ -70,9 +72,11 @@ const OrderGrid: React.FC<OrderGridProps> = ({
 
             {/* Deadline */}
             <div
-              className={`inline-flex items-center px-3 py-1 rounded-full text-sm border ${getDeadlineColor(
-                order.Deadline
-              )}`}
+              className={`inline-flex items-center px-3 py-1 rounded-full text-sm border ${
+                order.StatusName === OrderItemShipmentEnum.SHIPPED
+                  ? "text-slate-600 border-slate-200"
+                  : getDeadlineColor(order.Deadline)
+              }`}
             >
               <Calendar className="w-4 h-4 mr-2" />
               <span>Due: {formatDate(order.Deadline)}</span>
@@ -83,7 +87,7 @@ const OrderGrid: React.FC<OrderGridProps> = ({
 
             {/* Description */}
             {order.Description && (
-              <p className="text-sm text-gray-600 line-clamp-2">
+              <p className="text-sm text-gray-600 line-clamp-1">
                 {order.Description}
               </p>
             )}
@@ -92,14 +96,16 @@ const OrderGrid: React.FC<OrderGridProps> = ({
           {/* Actions */}
           <div className="px-4 py-3 rounded-b-lg border-t border-slate-200">
             <div className="flex items-center justify-end space-x-2">
-              <button
-                onClick={() => onReorderOrder(order.Id)}
-                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors"
-                title="Re-order"
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span>Re-order</span>
-              </button>
+              <PermissionGuard required={PERMISSIONS_ENUM.ORDER.REORDER}>
+                <button
+                  onClick={() => onReorderOrder(order.Id)}
+                  className="flex items-center space-x-1 px-3 py-1.5 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                  title="Re-order"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>Re-order</span>
+                </button>
+              </PermissionGuard>
               <button
                 onClick={() => onViewOrder(order.Id)}
                 className="flex items-center space-x-1 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
@@ -108,40 +114,45 @@ const OrderGrid: React.FC<OrderGridProps> = ({
                 <Eye className="w-4 h-4" />
                 <span>View</span>
               </button>
-              <button
-                onClick={() => onEditOrder(order.Id)}
-                className={`flex items-center space-x-1 px-3 py-1.5 text-sm text-slate-600  rounded-md transition-colors ${
-                  order.StatusName === OrderItemShipmentEnum.SHIPPED
-                    ? "cursor-not-allowed"
-                    : "hover:bg-slate-100"
-                }`}
-                title="Edit"
-                disabled={
-                  order.StatusName === OrderItemShipmentEnum.SHIPPED
-                    ? true
-                    : false
-                }
-              >
-                <Edit className="w-4 h-4" />
-                <span>Edit</span>
-              </button>
-              <button
-                onClick={() => onDeleteOrder(order.Id)}
-                className={`flex items-center space-x-1 px-3 py-1.5 text-sm text-red-600  rounded-md transition-colors ${
-                  order.StatusName === OrderItemShipmentEnum.SHIPPED
-                    ? "cursor-not-allowed"
-                    : "hover:bg-red-50"
-                }`}
-                title="Delete"
-                disabled={
-                  order.StatusName === OrderItemShipmentEnum.SHIPPED
-                    ? true
-                    : false
-                }
-              >
-                <Trash2 className="w-4 h-4" />
-                <span>Delete</span>
-              </button>
+              <PermissionGuard required={PERMISSIONS_ENUM.ORDER.UPDATE}>
+                <button
+                  onClick={() => onEditOrder(order.Id)}
+                  className={`flex items-center space-x-1 px-3 py-1.5 text-sm text-slate-600 dark:text-slate-400 rounded-md transition-colors ${
+                    order.StatusName === OrderItemShipmentEnum.SHIPPED
+                      ? "cursor-not-allowed"
+                      : "hover:bg-slate-100"
+                  }`}
+                  title="Edit"
+                  disabled={
+                    order.StatusName === OrderItemShipmentEnum.SHIPPED
+                      ? true
+                      : false
+                  }
+                >
+                  <Edit className="w-4 h-4" />
+                  <span>Edit</span>
+                </button>
+              </PermissionGuard>
+
+              <PermissionGuard required={PERMISSIONS_ENUM.ORDER.DELETE}>
+                <button
+                  onClick={() => onDeleteOrder(order.Id)}
+                  className={`flex items-center space-x-1 px-3 py-1.5 text-sm text-red-600  rounded-md transition-colors ${
+                    order.StatusName === OrderItemShipmentEnum.SHIPPED
+                      ? "cursor-not-allowed"
+                      : "hover:bg-red-50"
+                  }`}
+                  title="Delete"
+                  disabled={
+                    order.StatusName === OrderItemShipmentEnum.SHIPPED
+                      ? true
+                      : false
+                  }
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete</span>
+                </button>
+              </PermissionGuard>
             </div>
           </div>
         </div>

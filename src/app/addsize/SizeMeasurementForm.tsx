@@ -78,7 +78,7 @@ const SizeMeasurementForm = ({
   useEffect(() => {
     if (isEdit) {
       const matchedCategory = productCategories.find(
-        (cat) => cat.id === sizeMeasurementById?.ProductCategoryId
+        (cat) => cat.Id === sizeMeasurementById?.ProductCategoryId
       );
 
       if (matchedCategory) {
@@ -189,7 +189,7 @@ const SizeMeasurementForm = ({
                             form.setFieldValue("ProductCategoryId", selectedId);
 
                             const matchedCategory = productCategories.find(
-                              (cat) => cat.id === selectedId
+                              (cat) => cat.Id === selectedId
                             );
 
                             if (matchedCategory) {
@@ -220,8 +220,8 @@ const SizeMeasurementForm = ({
                         >
                           <option value="">Select a Product Category</option>
                           {productCategories?.map((category, idx) => (
-                            <option value={category.id} key={idx}>
-                              {category.type}
+                            <option value={category.Id} key={idx}>
+                              {category.Type}
                             </option>
                           ))}
                         </select>

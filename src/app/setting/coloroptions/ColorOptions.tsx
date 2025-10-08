@@ -16,17 +16,15 @@ import useColorOptionsStore from "@/store/useColorOptionsStore";
 import { FiPlus } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DeleteColorOptions from "./DeleteColorOptions";
-import AdminLayout from "../../adminDashboard/lauout";
-import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
+import PermissionGuard from "../../components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const ColorOptions = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [selectedProductCatId, setSelectedProductCatId] = useState<number>(0);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const { colorOptions, fetchColorOptions, loading, error } =
+  const { colorOptions, fetchColorOptions, loading } =
     useColorOptionsStore();
 
   useEffect(() => {
@@ -36,22 +34,13 @@ const ColorOptions = () => {
   const rowsPerPage = 10;
   const pages = Math.ceil(colorOptions?.length / rowsPerPage);
 
-  const openAddModal = () => setIsAddModalOpen(true);
-
   const handleOpenDeleteModal = (productCatagoryId: number) => {
     setSelectedProductCatId(productCatagoryId);
     setIsOpenDeleteModal(true);
   };
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
-  const closeAddModal = () => {
-    setIsAddModalOpen(false);
-    setIsEdit(false);
-  };
-  const openEditModal = (clientId: number) => {
-    setSelectedProductCatId(clientId);
-    setIsAddModalOpen(true);
-    setIsEdit(true);
-  };
+  
+
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -64,13 +53,16 @@ const ColorOptions = () => {
     <div className="flex flex-col gap-3 w-full">
       <div className="flex items-center justify-between">
         <h6 className="font-sans text-lg font-semibold">Color Options</h6>
-        <Link
-          href={"/setting/coloroptions/addColor"}
-          className="text-sm rounded-full dark:bg-blue-600 bg-blue-800 text-white font-semibold px-3 py-2 flex items-center gap-2"
-        >
-          <FiPlus />
-          Add New
-        </Link>
+
+        <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.ADD}>
+          <Link
+            href={"/setting/coloroptions/addColor"}
+            className="text-sm rounded-full dark:bg-blue-600 bg-blue-800 text-white font-semibold px-3 py-2 flex items-center gap-2"
+          >
+            <FiPlus />
+            Add New
+          </Link>
+        </PermissionGuard>
       </div>
       <Table
         isStriped
@@ -130,13 +122,17 @@ const ColorOptions = () => {
                     getKeyValue(item, columnKey)
                   ) : (
                     <div className="flex gap-2">
-                      <button
-                        type="button"
-                        className="hover:text-red-500 cursor-pointer"
-                        onClick={() => handleOpenDeleteModal(item?.Id)}
+                      <PermissionGuard
+                        required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
                       >
-                        <RiDeleteBin6Line color="red" />
-                      </button>
+                        <button
+                          type="button"
+                          className="hover:text-red-500 cursor-pointer"
+                          onClick={() => handleOpenDeleteModal(item?.Id)}
+                        >
+                          <RiDeleteBin6Line color="red" />
+                        </button>
+                      </PermissionGuard>
                     </div>
                   )}
                 </TableCell>

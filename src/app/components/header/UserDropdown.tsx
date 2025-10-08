@@ -7,6 +7,8 @@ import AuthContext, { fetchLoginEmail } from "../../services/authservice";
 import Link from "next/link";
 import { AiOutlineAudit } from "react-icons/ai";
 import { CiSettings } from "react-icons/ci";
+import PermissionGuard from "../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,11 +79,15 @@ export default function UserDropdown() {
             {email}
           </span>
         </div>
-        <Link href={"/auditlog"}>
-          <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
-            <AiOutlineAudit size={19} /> Audit Log
-          </div>
-        </Link>
+
+        <PermissionGuard required={PERMISSIONS_ENUM.AUDIT_LOGS.VIEW}>
+          <Link href={"/auditlog"}>
+            <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
+              <AiOutlineAudit size={19} /> Audit Log
+            </div>
+          </Link>
+        </PermissionGuard>
+
         <Link href={"/adminsetting"}>
           <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
             <CiSettings size={19} /> Admin Setting

@@ -77,4 +77,5 @@ export const FileTypesEnum = [
   { id: 1, name: "Design File" },
   { id: 2, name: "Mockup File" },
   { id: 3, name: "Product Requirement File" },
+  {id: 4, name: "QA Sheet"}
 ];

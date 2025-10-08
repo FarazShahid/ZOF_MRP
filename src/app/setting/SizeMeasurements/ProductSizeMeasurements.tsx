@@ -24,6 +24,8 @@ import { useRouter } from "next/navigation";
 import { ViewMeasurementChart } from "../../orders/components/ViewMeasurementChart";
 import { useSearch } from "@/src/hooks/useSearch";
 import { CiSearch } from "react-icons/ci";
+import PermissionGuard from "../../components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const ProductSizeMeasurements = () => {
   const [page, setPage] = useState<number>(1);
@@ -32,39 +34,39 @@ const ProductSizeMeasurements = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isViewModal, setIsViewModal] = useState<boolean>(false);
-   const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>("");
 
   const router = useRouter();
 
   const { fetchSizeMeasurements, sizeMeasurement, loading } =
     useSizeMeasurementsStore();
 
-   // Search on 4 fields
-    const filtered = useSearch(sizeMeasurement, query, [
-      "Measurement1",
-      "ProductCategoryType",
-      "SizeOptionName",
-      "ClientName",
-    ]);
-     const rowsPerPage = 10;
-      const total = filtered?.length ?? 0;
-      const rawPages = Math.ceil(total / rowsPerPage);
-      const pages = Math.max(1, rawPages);
-    
-      const items = useMemo(() => {
-        const safePage = Math.min(page, pages);
-        const start = (safePage - 1) * rowsPerPage;
-        return filtered?.slice(start, start + rowsPerPage) ?? [];
-      }, [filtered, page, pages]);
-    
-      // reset page on new search
-      useEffect(() => setPage(1), [query]);
-    
-      // also clamp page whenever filtered changes (e.g., after search)
-      useEffect(() => {
-        if (page > pages) setPage(pages);
-        if (page < 1) setPage(1);
-      }, [pages, page]);
+  // Search on 4 fields
+  const filtered = useSearch(sizeMeasurement, query, [
+    "Measurement1",
+    "ProductCategoryType",
+    "SizeOptionName",
+    "ClientName",
+  ]);
+  const rowsPerPage = 10;
+  const total = filtered?.length ?? 0;
+  const rawPages = Math.ceil(total / rowsPerPage);
+  const pages = Math.max(1, rawPages);
+
+  const items = useMemo(() => {
+    const safePage = Math.min(page, pages);
+    const start = (safePage - 1) * rowsPerPage;
+    return filtered?.slice(start, start + rowsPerPage) ?? [];
+  }, [filtered, page, pages]);
+
+  // reset page on new search
+  useEffect(() => setPage(1), [query]);
+
+  // also clamp page whenever filtered changes (e.g., after search)
+  useEffect(() => {
+    if (page > pages) setPage(pages);
+    if (page < 1) setPage(1);
+  }, [pages, page]);
 
   useEffect(() => {
     fetchSizeMeasurements();
@@ -116,7 +118,9 @@ const ProductSizeMeasurements = () => {
               startContent={<CiSearch />}
               variant="bordered"
             />
-            <AddButton title="Add New" onClick={openAddModal} />
+            <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.ADD}>
+              <AddButton title="Add New" onClick={openAddModal} />
+            </PermissionGuard>
           </div>
         </div>
         <Table
@@ -152,7 +156,7 @@ const ProductSizeMeasurements = () => {
               key="Measurement1"
               className="text-medium font-bold cursor-pointer"
             >
-                Name
+              Name
             </TableColumn>
             <TableColumn
               key="ProductCategoryType"
@@ -184,23 +188,29 @@ const ProductSizeMeasurements = () => {
                     ) : columnKey !== "action" ? (
                       getKeyValue(item, columnKey)
                     ) : (
-                      <div
-                        className="flex gap-2"
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => openEditModal(item?.Id)}
+                      <div className="flex gap-2">
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
                         >
-                          <GoPencil color="green" />
-                        </button>
-                        <button
-                          type="button"
-                          className="hover:text-red-500 cursor-pointer"
-                          onClick={() => handleOpenDeleteModal(item?.Id)}
+                          <button
+                            type="button"
+                            onClick={() => openEditModal(item?.Id)}
+                          >
+                            <GoPencil color="green" />
+                          </button>
+                        </PermissionGuard>
+
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
                         >
-                          <RiDeleteBin6Line color="red" />
-                        </button>
+                          <button
+                            type="button"
+                            className="hover:text-red-500 cursor-pointer"
+                            onClick={() => handleOpenDeleteModal(item?.Id)}
+                          >
+                            <RiDeleteBin6Line color="red" />
+                          </button>
+                        </PermissionGuard>
                       </div>
                     )}
                   </TableCell>

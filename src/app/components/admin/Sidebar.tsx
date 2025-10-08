@@ -1,17 +1,27 @@
 import React from 'react';
-import { Users, UserCheck, Calendar, Truck } from 'lucide-react';
+import { Users, UserCheck, Calendar, Truck, Shield } from 'lucide-react';
 import { ActiveModule } from '@/src/types/admin';
+import { PERMISSIONS_ENUM } from '@/src/types/rightids';
+import PermissionGuard from '../auth/PermissionGaurd';
 
 interface SidebarProps {
   activeModule: ActiveModule;
   onModuleChange: (module: ActiveModule) => void;
 }
 
-const menuItems = [
-  { id: 'users' as ActiveModule, label: 'Users', icon: Users },
-  { id: 'customers' as ActiveModule, label: 'Clients', icon: UserCheck },
-  { id: 'events' as ActiveModule, label: 'Events', icon: Calendar },
-  { id: 'carriers' as ActiveModule, label: 'Carriers', icon: Truck }
+type MenuItem = {
+  id: ActiveModule;
+  label: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  required: number | number[];
+};
+
+const menuItems: MenuItem[] = [
+  { id: 'users' as ActiveModule, label: 'Users',    icon: Users,     required: PERMISSIONS_ENUM.USERS.VIEW },
+  { id: 'customers' as ActiveModule, label: 'Clients',  icon: UserCheck, required: PERMISSIONS_ENUM.CLIENTS.VIEW },
+  { id: 'events' as ActiveModule, label: 'Events',   icon: Calendar,  required: PERMISSIONS_ENUM.EVENTS.VIEW },
+  { id: 'carriers' as ActiveModule, label: 'Carriers', icon: Truck,     required: PERMISSIONS_ENUM.CARRIERS.VIEW },
+  { id: 'roles' as ActiveModule, label: 'Role & Permissions', icon: Shield, required: PERMISSIONS_ENUM.ROLES_AND_RIGHTS.VIEW },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }) => {
@@ -27,21 +37,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeModule === item.id;
-            
+
             return (
-              <li key={item.id}>
-                <button
-                  onClick={() => onModuleChange(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                    isActive
-                      ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
-                >
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-500'}`} />
-                  <span className="font-medium">{item.label}</span>
-                </button>
-              </li>
+              <PermissionGuard key={item.id} required={item.required}>
+                <li>
+                  <button
+                    onClick={() => onModuleChange(item.id)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                      isActive
+                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                    }`}
+                  >
+                    <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-500'}`} />
+                    <span className="font-medium">{item.label}</span>
+                  </button>
+                </li>
+              </PermissionGuard>
             );
           })}
         </ul>

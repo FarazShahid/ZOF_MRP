@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Search } from "lucide-react";
 import { Client } from "../../services/useFetchClients";
 import { OrderStatus } from "@/src/types/admin";
+import { GetOrdersType } from "../../interfaces/OrderStoreInterface";
 
 interface OrderSearchAndFiltersProps {
   searchTerm: string;
@@ -12,7 +13,7 @@ interface OrderSearchAndFiltersProps {
   onClientChange: (client: string) => void;
   dateRange: { start: string; end: string };
   onDateRangeChange: (range: { start: string; end: string }) => void;
-  clients: Client[];
+  orders: GetOrdersType[];
 }
 
 const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
@@ -24,8 +25,19 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
   onClientChange,
   dateRange,
   onDateRangeChange,
-  clients,
+  orders,
 }) => {
+  const clients = useMemo(
+    () =>
+      Array.from(new Set(orders.map((p) => `${p.ClientId}|${p.ClientName}`)))
+        .map((str) => {
+          const [id, name] = str.split("|");
+          return { id: Number(id), name };
+        })
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    [orders]
+  );
+
   return (
     <div className="space-y-4 mt-4">
       <div className="flex flex-wrap gap-4">
@@ -69,8 +81,8 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
           >
             <option value="all">All Clients</option>
             {clients.map((client) => (
-              <option key={client.Id} value={client.Id}>
-                {client.Name}
+              <option key={client.id} value={client.id}>
+                {client.name}
               </option>
             ))}
           </select>
