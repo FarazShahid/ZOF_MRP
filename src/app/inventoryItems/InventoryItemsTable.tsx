@@ -119,7 +119,7 @@ const InventoryItemsTable = () => {
               startContent={<CiSearch />}
               variant="bordered"
             />
-            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY.ADD}>
+            <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY_ITEMS.ADD}>
               <AddButton title="Add New" onClick={openAddModal} />
             </PermissionGuard>
           </div>
@@ -216,7 +216,7 @@ const InventoryItemsTable = () => {
                           className="dark:text-blue-300 text-blue-500"
                         />
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.UPDATE}
+                          required={PERMISSIONS_ENUM.INVENTORY_ITEMS.UPDATE}
                         >
                           <ActionBtn
                             title="Edit"
@@ -227,7 +227,7 @@ const InventoryItemsTable = () => {
                         </PermissionGuard>
 
                         <PermissionGuard
-                          required={PERMISSIONS_ENUM.INVENTORY.DELETE}
+                          required={PERMISSIONS_ENUM.INVENTORY_ITEMS.DELETE}
                         >
                         <ActionBtn
                           title="Delete"
