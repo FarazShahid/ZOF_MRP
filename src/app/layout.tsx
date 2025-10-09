@@ -12,8 +12,8 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "MRP",
-  description: "Zero One Forge - MRP",
+  title: "Seal Forge",
+  description: "Seal Forge",
 };
 
 export default function RootLayout({
