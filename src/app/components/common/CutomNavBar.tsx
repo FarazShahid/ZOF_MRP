@@ -10,7 +10,7 @@ import { IoStorefrontOutline } from "react-icons/io5";
 import { GiCargoShip } from "react-icons/gi";
 import { IoIosArrowDown } from "react-icons/io";
 import Logo from "@/public/Sealforge.svg";
-import LogoLight from "@/public//Sealforge_dark.svg";
+import LogoLight from "@/public/Sealforge_dark.svg";
 import UserDropdown from "../header/UserDropdown";
 import { ThemeToggleButton } from "./ThemeToggleButton";
 
@@ -88,8 +88,14 @@ const CutomNavBar = () => {
       ref={navRef}
     >
       <div className="w-20">
-        <Image src={LogoLight} alt="sealforge" className="dark:hidden" />
-        <Image src={Logo} alt="sealforge" className="dark:block  hidden" />
+        {/* <Image src={LogoLight} alt="sealforge" className="dark:hidden" />
+        <Image src={Logo} alt="sealforge" className="dark:block  hidden" /> */}
+        <img src="/Sealforge_dark.svg" alt="Sealforge" className="dark:hidden" />
+        <img
+          src="/Sealforge.svg"
+          alt="Sealforge dark"
+          className="dark:block hidden"
+        />
       </div>
 
       <div className="flex items-center gap-6 relative">
