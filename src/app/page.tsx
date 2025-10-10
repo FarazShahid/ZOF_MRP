@@ -46,7 +46,8 @@ export default function Home() {
 
               <div className="flex items-baseline justify-center space-x-2">
                 <span className="h-px w-16 bg-gray-200"></span>
-                <Image alt="sealforge" src={Logo} className="w-20 h-10" />
+                {/* <Image alt="sealforge" src={Logo} className="w-20 h-10" /> */}
+                <img src="/Sealforge.svg" alt="Sealforge" className="w-20 h-10" />
                 <span className="h-px w-16 bg-gray-200"></span>
               </div>
               <Formik
