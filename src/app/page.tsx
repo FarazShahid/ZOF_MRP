@@ -9,7 +9,7 @@ import { LoginSchemaValidation } from "./schema/loginSchema";
 import AuthContext from "./services/authservice";
 import { loginInitialValues } from "./interfaces";
 import LoginAnimator from "./components/LoginAnimator";
-import Logo from "../../public/Sealforge.svg";
+import Logo from "@/public/Sealforge.svg";
 
 export default function Home() {
   const authContext = useContext(AuthContext);
@@ -46,7 +46,7 @@ export default function Home() {
 
               <div className="flex items-baseline justify-center space-x-2">
                 <span className="h-px w-16 bg-gray-200"></span>
-                <Image alt="MRP" src={Logo} className="w-20 h-10" />
+                <Image alt="sealforge" src={Logo} className="w-20 h-10" />
                 <span className="h-px w-16 bg-gray-200"></span>
               </div>
               <Formik
