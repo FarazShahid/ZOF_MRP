@@ -16,6 +16,7 @@ import {
 import { FiPlus } from "react-icons/fi";
 import toast from "react-hot-toast";
 import useRoleRightsStore, { AddRoleType } from "@/store/useRoleRightsStore";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 /**
  * Reusable Modal for both Add & Edit Role.
@@ -43,6 +44,141 @@ const RoleFormModal: React.FC<RoleFormModalProps> = ({ isOpen, onClose, roleId }
   } = useRoleRightsStore();
 
   const isEdit = !!roleId;
+
+  // Dependencies: selecting key permissions should also select their prerequisites
+  const DEPENDENCIES: Record<number, number[]> = {
+    // Products
+    [PERMISSIONS_ENUM.PRODUCTS.VIEW]: [
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW,
+    ],
+    [PERMISSIONS_ENUM.PRODUCTS.ADD]: [
+      PERMISSIONS_ENUM.PRODUCTS.VIEW,
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW,
+    ],
+    [PERMISSIONS_ENUM.PRODUCTS.UPDATE]: [
+      PERMISSIONS_ENUM.PRODUCTS.VIEW,
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW,
+    ],
+
+    // Orders
+    [PERMISSIONS_ENUM.ORDER.VIEW]: [
+      PERMISSIONS_ENUM.PRODUCTS.VIEW,
+      PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW,
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.EVENTS.VIEW,
+    ],
+    [PERMISSIONS_ENUM.ORDER.ADD]: [
+      PERMISSIONS_ENUM.ORDER.VIEW,
+      PERMISSIONS_ENUM.PRODUCTS.VIEW,
+      PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW,
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.EVENTS.VIEW,
+    ],
+    [PERMISSIONS_ENUM.ORDER.UPDATE]: [
+      PERMISSIONS_ENUM.ORDER.VIEW,
+      PERMISSIONS_ENUM.PRODUCTS.VIEW,
+      PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW,
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.EVENTS.VIEW,
+    ],
+
+    // Shipment
+    [PERMISSIONS_ENUM.SHIPMENT.VIEW]: [
+      PERMISSIONS_ENUM.ORDER.VIEW,
+      PERMISSIONS_ENUM.CARRIERS.VIEW,
+      PERMISSIONS_ENUM.UNIT_OF_MEASURE.VIEW,
+    ],
+    [PERMISSIONS_ENUM.SHIPMENT.ADD]: [
+      PERMISSIONS_ENUM.SHIPMENT.VIEW,
+      PERMISSIONS_ENUM.ORDER.VIEW,
+      PERMISSIONS_ENUM.CARRIERS.VIEW,
+      PERMISSIONS_ENUM.UNIT_OF_MEASURE.VIEW,
+    ],
+    [PERMISSIONS_ENUM.SHIPMENT.UPDATE]: [
+      PERMISSIONS_ENUM.SHIPMENT.VIEW,
+      PERMISSIONS_ENUM.ORDER.VIEW,
+      PERMISSIONS_ENUM.CARRIERS.VIEW,
+      PERMISSIONS_ENUM.UNIT_OF_MEASURE.VIEW,
+    ],
+
+    // Inventory Items
+    [PERMISSIONS_ENUM.INVENTORY_ITEMS.VIEW]: [
+      PERMISSIONS_ENUM.INVENTORY_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.UNIT_OF_MEASURE.VIEW,
+      PERMISSIONS_ENUM.SUPPLIERS.VIEW,
+    ],
+    [PERMISSIONS_ENUM.INVENTORY_ITEMS.ADD]: [
+      PERMISSIONS_ENUM.INVENTORY_ITEMS.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.UNIT_OF_MEASURE.VIEW,
+      PERMISSIONS_ENUM.SUPPLIERS.VIEW,
+    ],
+    [PERMISSIONS_ENUM.INVENTORY_ITEMS.UPDATE]: [
+      PERMISSIONS_ENUM.INVENTORY_ITEMS.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.UNIT_OF_MEASURE.VIEW,
+      PERMISSIONS_ENUM.SUPPLIERS.VIEW,
+    ],
+
+    // Inventory Sub Category depends on Inventory Category
+    [PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.VIEW]: [
+      PERMISSIONS_ENUM.INVENTORY_CATEGORY.VIEW,
+    ],
+
+    // Inventory Transactions
+    [PERMISSIONS_ENUM.INVENTORY_TRANSACTIONS.VIEW]: [
+      PERMISSIONS_ENUM.ORDER.VIEW,
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.SUPPLIERS.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_ITEMS.VIEW,
+      // Flattened dependencies of inventory items to avoid recursion
+      PERMISSIONS_ENUM.INVENTORY_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.UNIT_OF_MEASURE.VIEW,
+    ],
+    [PERMISSIONS_ENUM.INVENTORY_TRANSACTIONS.ADD]: [
+      PERMISSIONS_ENUM.INVENTORY_TRANSACTIONS.VIEW,
+      PERMISSIONS_ENUM.ORDER.VIEW,
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.SUPPLIERS.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_ITEMS.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.UNIT_OF_MEASURE.VIEW,
+    ],
+    [PERMISSIONS_ENUM.INVENTORY_TRANSACTIONS.UPDATE]: [
+      PERMISSIONS_ENUM.INVENTORY_TRANSACTIONS.VIEW,
+      PERMISSIONS_ENUM.ORDER.VIEW,
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.SUPPLIERS.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_ITEMS.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.VIEW,
+      PERMISSIONS_ENUM.UNIT_OF_MEASURE.VIEW,
+    ],
+
+    // Users
+    [PERMISSIONS_ENUM.USERS.VIEW]: [
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.ROLES_AND_RIGHTS.VIEW,
+    ],
+    [PERMISSIONS_ENUM.USERS.ADD]: [
+      PERMISSIONS_ENUM.USERS.VIEW,
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.ROLES_AND_RIGHTS.VIEW,
+    ],
+    [PERMISSIONS_ENUM.USERS.UPDATE]: [
+      PERMISSIONS_ENUM.USERS.VIEW,
+      PERMISSIONS_ENUM.CLIENTS.VIEW,
+      PERMISSIONS_ENUM.ROLES_AND_RIGHTS.VIEW,
+    ],
+  };
 
   // Fetch base data
   useEffect(() => {
@@ -77,17 +213,83 @@ const RoleFormModal: React.FC<RoleFormModalProps> = ({ isOpen, onClose, roleId }
     return (ids: number[]) => ids.every((id) => set.has(id));
   }, [selectedRights]);
 
+  // Map DELETE -> its corresponding VIEW id
+  const getViewForDelete = (id: number): number | undefined => {
+    const groups = Object.values(PERMISSIONS_ENUM) as Array<Record<string, number>>;
+    for (const group of groups) {
+      if (group && typeof group === "object" && group.DELETE === id && typeof group.VIEW === "number") {
+        return group.VIEW;
+      }
+    }
+    return undefined;
+  };
+
+  // Expand dependencies for any selected id(s), including:
+  // - direct DEPENDENCIES[id]
+  // - if id is a DELETE, include its VIEW and that VIEW's dependencies
+  // - recursively expand dependencies of dependencies
+  const expandDependencies = (baseIds: number[]): number[] => {
+    const result = new Set<number>();
+    const queue: number[] = [];
+
+    const enqueueDeps = (sourceId: number) => {
+      const direct = DEPENDENCIES[sourceId] || [];
+      for (const d of direct) {
+        if (!result.has(d)) {
+          result.add(d);
+          queue.push(d);
+        }
+      }
+    };
+
+    for (const id of baseIds) {
+      // If it's a DELETE, add its VIEW and expand its deps too
+      const viewId = getViewForDelete(id);
+      if (typeof viewId === "number") {
+        if (!result.has(viewId)) {
+          result.add(viewId);
+          queue.push(viewId);
+        }
+      }
+
+      // Add direct deps of the id
+      enqueueDeps(id);
+    }
+
+    // BFS expand transitive dependencies
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      enqueueDeps(current);
+    }
+
+    return Array.from(result);
+  };
+
   const toggleRight = (id: number) => {
-    setSelectedRights((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+    setSelectedRights((prev) => {
+      const isSelected = prev.includes(id);
+      if (isSelected) {
+        // Only remove the clicked permission; keep any dependents user may still want
+        return prev.filter((x) => x !== id);
+      }
+      const toAdd = [id, ...expandDependencies([id])];
+      return [...new Set([...prev, ...toAdd])];
+    });
   };
 
   const toggleGroup = (ids: number[]) => {
     const allSelected = groupAllChecked(ids);
-    setSelectedRights((prev) =>
-      allSelected ? prev.filter((id) => !ids.includes(id)) : [...new Set([...prev, ...ids])]
-    );
+    setSelectedRights((prev) => {
+      if (allSelected) {
+        return prev.filter((id) => !ids.includes(id));
+      }
+      const next = new Set(prev);
+      ids.forEach((id) => {
+        next.add(id);
+        expandDependencies([id]).forEach((depId) => next.add(depId));
+      });
+      return Array.from(next);
+    });
   };
 
   const save = async () => {

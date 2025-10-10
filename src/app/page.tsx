@@ -9,7 +9,7 @@ import { LoginSchemaValidation } from "./schema/loginSchema";
 import AuthContext from "./services/authservice";
 import { loginInitialValues } from "./interfaces";
 import LoginAnimator from "./components/LoginAnimator";
-import Logo from "../../public/logoDark.png";
+import Logo from "../../public/Sealforge.svg";
 
 export default function Home() {
   const authContext = useContext(AuthContext);
@@ -44,9 +44,9 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="flex items-center justify-center space-x-2">
+              <div className="flex items-baseline justify-center space-x-2">
                 <span className="h-px w-16 bg-gray-200"></span>
-                <Image alt="MRP" src={Logo} className="w-10 h-10" />
+                <Image alt="MRP" src={Logo} className="w-20 h-10" />
                 <span className="h-px w-16 bg-gray-200"></span>
               </div>
               <Formik
@@ -57,7 +57,7 @@ export default function Home() {
                 {({ isSubmitting }) => (
                   <Form className="mt-8 space-y-6">
                     <div className="relative">
-                      <label className="ml-3 text-sm font-bold text-gray-700 tracking-wide">
+                      <label className="ml-3 text-sm font-bold text-slate-400 tracking-wide">
                         Email
                       </label>
                       <div className="flex flex-col w-full">
@@ -76,7 +76,7 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="mt-8 content-center">
-                      <label className="ml-3 text-sm font-bold text-gray-500 tracking-wide">
+                      <label className="ml-3 text-sm font-bold text-slate-400 tracking-wide">
                         Password
                       </label>
                       <div className="flex flex-col w-full">
@@ -111,7 +111,7 @@ export default function Home() {
                           type="checkbox"
                           className="h-4 w-4 bg-blue-500 focus:ring-blue-400 border-gray-300 rounded"
                         />
-                        <label className="ml-2 block text-sm text-gray-500">
+                        <label className="ml-2 block text-sm text-slate-400">
                           Remember me
                         </label>
                       </div>

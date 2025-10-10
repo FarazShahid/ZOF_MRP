@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import Logo from "../../../public/logo.png";
+import Logo from "../../../public/Seal 2.png";
 
 const LoginAnimator = () => {
   return (
@@ -8,11 +8,10 @@ const LoginAnimator = () => {
       <div className="absolute bg-gradient-to-b from-indigo-600 to-blue-100 opacity-75 inset-0 z-0"></div>
       <div className="w-full  max-w-md z-10">
         <div className="sm:text-4xl xl:text-5xl font-bold leading-tight mb-6 flex items-center gap-1">
-          <Image alt="MRP" src={Logo} className="w-10 h-10" /> MRP
+          <Image alt="MRP" src={Logo} />
         </div>
         <div className="sm:text-sm xl:text-md text-gray-200 font-normal">
-          ZeroOneForge MRP is a cutting-edge Material Requirements Planning
-          (MRP) software tailored for textile businesses. It streamlines fabric
+          Seal Forge is a cutting-edge Material Requirements Planning software tailored for textile businesses. It streamlines fabric
           item management, order processing, and production planning with a
           focus on efficiency and scalability.
         </div>
