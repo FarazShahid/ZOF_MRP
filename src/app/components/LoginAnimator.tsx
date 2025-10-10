@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import Logo from "../../../public/Seal 2.png";
+import Logo from "@/public/Seal 2.png";
 
 const LoginAnimator = () => {
   return (
