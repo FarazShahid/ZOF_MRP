@@ -126,6 +126,11 @@ const RoleFormModal: React.FC<RoleFormModalProps> = ({ isOpen, onClose, roleId }
       PERMISSIONS_ENUM.SUPPLIERS.VIEW,
     ],
 
+    // Inventory Sub Category depends on Inventory Category
+    [PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.VIEW]: [
+      PERMISSIONS_ENUM.INVENTORY_CATEGORY.VIEW,
+    ],
+
     // Inventory Transactions
     [PERMISSIONS_ENUM.INVENTORY_TRANSACTIONS.VIEW]: [
       PERMISSIONS_ENUM.ORDER.VIEW,
@@ -208,6 +213,58 @@ const RoleFormModal: React.FC<RoleFormModalProps> = ({ isOpen, onClose, roleId }
     return (ids: number[]) => ids.every((id) => set.has(id));
   }, [selectedRights]);
 
+  // Map DELETE -> its corresponding VIEW id
+  const getViewForDelete = (id: number): number | undefined => {
+    const groups = Object.values(PERMISSIONS_ENUM) as Array<Record<string, number>>;
+    for (const group of groups) {
+      if (group && typeof group === "object" && group.DELETE === id && typeof group.VIEW === "number") {
+        return group.VIEW;
+      }
+    }
+    return undefined;
+  };
+
+  // Expand dependencies for any selected id(s), including:
+  // - direct DEPENDENCIES[id]
+  // - if id is a DELETE, include its VIEW and that VIEW's dependencies
+  // - recursively expand dependencies of dependencies
+  const expandDependencies = (baseIds: number[]): number[] => {
+    const result = new Set<number>();
+    const queue: number[] = [];
+
+    const enqueueDeps = (sourceId: number) => {
+      const direct = DEPENDENCIES[sourceId] || [];
+      for (const d of direct) {
+        if (!result.has(d)) {
+          result.add(d);
+          queue.push(d);
+        }
+      }
+    };
+
+    for (const id of baseIds) {
+      // If it's a DELETE, add its VIEW and expand its deps too
+      const viewId = getViewForDelete(id);
+      if (typeof viewId === "number") {
+        if (!result.has(viewId)) {
+          result.add(viewId);
+          queue.push(viewId);
+        }
+      }
+
+      // Add direct deps of the id
+      enqueueDeps(id);
+    }
+
+    // BFS expand transitive dependencies
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      enqueueDeps(current);
+    }
+
+    return Array.from(result);
+  };
+
   const toggleRight = (id: number) => {
     setSelectedRights((prev) => {
       const isSelected = prev.includes(id);
@@ -215,7 +272,7 @@ const RoleFormModal: React.FC<RoleFormModalProps> = ({ isOpen, onClose, roleId }
         // Only remove the clicked permission; keep any dependents user may still want
         return prev.filter((x) => x !== id);
       }
-      const toAdd = [id, ...(DEPENDENCIES[id] || [])];
+      const toAdd = [id, ...expandDependencies([id])];
       return [...new Set([...prev, ...toAdd])];
     });
   };
@@ -229,7 +286,7 @@ const RoleFormModal: React.FC<RoleFormModalProps> = ({ isOpen, onClose, roleId }
       const next = new Set(prev);
       ids.forEach((id) => {
         next.add(id);
-        (DEPENDENCIES[id] || []).forEach((depId) => next.add(depId));
+        expandDependencies([id]).forEach((depId) => next.add(depId));
       });
       return Array.from(next);
     });
