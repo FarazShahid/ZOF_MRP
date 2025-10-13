@@ -108,15 +108,16 @@ const AddItems: React.FC<AddComponentProps> = ({
     } else {
       const result = await addInventoryItem(values);
 
-      if (result && files.length > 0) {
-        for (const fileObj of files) {
-          await uploadDocument(
-            fileObj.file,
-            DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS,
-            result.Id
-          );
+      if (result) {
+        if (files.length > 0) {
+          for (const fileObj of files) {
+            await uploadDocument(
+              fileObj.file,
+              DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS,
+              result.Id
+            );
+          }
         }
-
         resetAllFiles();
         closeAddModal();
       }

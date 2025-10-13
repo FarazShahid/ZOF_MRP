@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 import ShipmentStats from "./ShipmentStats";
 import useShipmentStore from "@/store/useShipmentStore";
 import ShipmentTable from "./ShipmentTable";
-import Pagination from "./Pagination";
+import Pagination from "../common/Pagination";
 import SearchAndFilters from "./SearchAndFilters";
 import ShipmentGrid from "./ShipmentGrid";
 import ShipmentDetail from "./ShipmentDetail";
@@ -70,7 +70,10 @@ const ShipmentModule = () => {
   }, [Shipments, searchTerm, statusFilter, carrierFilter, dateRange]);
 
   // Pagination
-  const totalPages = Math.ceil(filteredShipments?.length / itemsPerPage);
+  const totalPages = Math.max(
+    1,
+    Math.ceil((filteredShipments?.length || 0) / Math.max(1, itemsPerPage))
+  );
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedShipments = filteredShipments?.slice(
     startIndex,
@@ -81,6 +84,17 @@ const ShipmentModule = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, statusFilter, carrierFilter, dateRange]);
+
+  // Clamp current page when page size or filtered length changes
+  useEffect(() => {
+    const newTotalPages = Math.max(
+      1,
+      Math.ceil((filteredShipments?.length || 0) / Math.max(1, itemsPerPage))
+    );
+    if (currentPage > newTotalPages) {
+      setCurrentPage(newTotalPages);
+    }
+  }, [itemsPerPage, filteredShipments?.length]);
 
   // handel view detail
   const handleonViewDetails = (shipmentId: number) => {
@@ -160,16 +174,18 @@ const ShipmentModule = () => {
         />
       )}
 
-      <div className="p-6 bg-white dark:bg-slate-700 border-t border-slate-200 mt-4">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          itemsPerPage={itemsPerPage}
-          totalItems={filteredShipments?.length}
-          onPageChange={setCurrentPage}
-          onItemsPerPageChange={setItemsPerPage}
-        />
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        pageSize={itemsPerPage}
+        onPageSizeChange={(size) => {
+          setItemsPerPage(size);
+          setCurrentPage(1);
+        }}
+        pageSizeOptions={[5, 10, 20, 50, 100]}
+      />
+  
 
       {/* Overlay Drawer */}
       {isDetailOpen && selectedShipment && (

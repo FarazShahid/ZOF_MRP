@@ -30,7 +30,7 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({ viewMode, onViewModeChan
         }`}
       >
         <Grid3X3 className="w-4 h-4" />
-        Grid
+        Card
       </button>
     </div>
   );

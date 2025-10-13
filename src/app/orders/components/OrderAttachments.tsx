@@ -50,7 +50,7 @@ const OrderAttachments: React.FC<Step2Props> = ({ onFileSelect, orderId }) => {
       )}
 
       <div className="flex flex-col gap-1">
-        <Label isRequired={false} label="Description" />
+        <Label isRequired={true} label="Description" />
         <Field
           as="textarea"
           name="Description"

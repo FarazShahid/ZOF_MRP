@@ -80,7 +80,7 @@ const Step1 = ({ formik }: { formik: any }) => {
       </div>
       <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Deadline" />
-        <Field type="date" name="Deadline" className={fieldStyle} />
+        <Field type="date" name="Deadline" className={fieldStyle} min={new Date().toISOString().split('T')[0]} />
         <ErrorMessage
           name="Deadline"
           component="div"

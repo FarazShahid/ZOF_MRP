@@ -194,7 +194,7 @@ const Fabric = () => {
                         >
                           <button
                             type="button"
-                            onClick={() => openEditModal(item?.Id)}
+                            onClick={() => openEditModal(item?.id)}
                           >
                             <GoPencil color="green" />
                           </button>
@@ -206,7 +206,7 @@ const Fabric = () => {
                           <button
                             type="button"
                             className="hover:text-red-500 cursor-pointer"
-                            onClick={() => handleOpenDeleteModal(item?.Id)}
+                            onClick={() => handleOpenDeleteModal(item?.id)}
                           >
                             <RiDeleteBin6Line color="red" />
                           </button>
