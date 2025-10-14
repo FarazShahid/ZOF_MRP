@@ -34,13 +34,11 @@ const handleSelectItem = (itemId: number) => {
           <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-5 rounded-xl flex items-center justify-center">
             <IoBag size={23} />
           </div>
-          <div>
+          <div className="flex items-center gap-2">
             <h2 className="text-xl font-bold text-gray-900">
-              Order Items
+              Order Items 
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {OrderById?.items?.length} items in this order
-            </p>
+            <span className="bg-green-500 text-white rounded-full px-2 py-1 text-xs mr-1">{OrderById?.items?.length}</span>
           </div>
         </div>
         <div className="flex items-center gap-4">

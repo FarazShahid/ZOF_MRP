@@ -7,7 +7,7 @@ const LoginAnimator = () => {
     <div className="sm:w-1/2 xl:w-3/5 h-full hidden md:flex flex-auto items-center justify-center p-10 overflow-hidden bg-purple-900 text-white bg-no-repeat bg-cover relative loginAnimator">
       <div className="absolute bg-gradient-to-b from-indigo-600 to-blue-100 opacity-75 inset-0 z-0"></div>
       <div className="w-full  max-w-md z-10">
-        <div className="sm:text-4xl xl:text-5xl font-bold leading-tight mb-6 flex items-center gap-1">
+        <div className="mb-6 flex items-center gap-1">
           <Image alt="MRP" src={Logo} />
         </div>
         <div className="sm:text-sm xl:text-md text-gray-200 font-normal">

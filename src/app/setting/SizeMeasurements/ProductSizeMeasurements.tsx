@@ -18,7 +18,7 @@ import useSizeMeasurementsStore, {
 import DeleteSizeOptions from "./DeleteSizeOptions";
 import AddSizeOptions from "./AddSizeOptions";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { GoPencil } from "react-icons/go";
+import { GoPencil, GoEye } from "react-icons/go";
 import AddButton from "../../components/common/AddButton";
 import { useRouter } from "next/navigation";
 import { ViewMeasurementChart } from "../../orders/components/ViewMeasurementChart";
@@ -176,11 +176,7 @@ const ProductSizeMeasurements = () => {
           </TableHeader>
           <TableBody isLoading={loading} items={items}>
             {(items ?? []).map((item: any, index: number) => (
-              <TableRow
-                key={item.Id}
-                onClick={() => openViewModal(item?.Id)}
-                className="cursor-pointer"
-              >
+              <TableRow key={item.Id}>
                 {(columnKey) => (
                   <TableCell>
                     {columnKey === "Sr" ? (
@@ -189,6 +185,12 @@ const ProductSizeMeasurements = () => {
                       getKeyValue(item, columnKey)
                     ) : (
                       <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openViewModal(item?.Id)}
+                        >
+                          <GoEye />
+                        </button>
                         <PermissionGuard
                           required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
                         >

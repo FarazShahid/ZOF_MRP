@@ -17,8 +17,11 @@ import DownloadPdfMenu from "../../components/order/DownloadPdfMenu";
 import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import OrderInfo from "../../components/order/view order/OrderInfo";
 import OrderAttachements from "../../components/order/view order/OrderAttachements";
+import ShipmentAttachments from "../../components/order/view order/ShipmentAttachments";
 import OrderItemsCard from "../../components/order/view order/OrderItemsCard";
 import { OrderInfoSkeleton } from "../../components/order/view order/OrderInfoSkeleton";
+import PermissionGuard from "../../components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const OrderItemCard = dynamic(
   () => import("../../components/order/view order/OrderItemCard"),
@@ -89,7 +92,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             {loading && !OrderById ? (
               <span className="animate-pulse">Loading…</span>
             ) : (
-              OrderById?.OrderNumber
+              OrderById?.OrderName
             )}
           </h2>
         </div>
@@ -99,6 +102,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             OrderById={OrderById.Id}
             handleDownloadPdf={(v) => handleDownloadPdf(v)}
           />
+          <PermissionGuard required={PERMISSIONS_ENUM.ORDER.UPDATE}>   
           {OrderById.OrderShipmentStatus !== OrderItemShipmentEnum.SHIPPED && (
             <Button
               type="button"
@@ -108,6 +112,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
               Change Status
             </Button>
           )}
+          </PermissionGuard>
         </div>
       </div>
 
@@ -131,6 +136,11 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
         <Tab key="OrderAttachements" title="Order Attachements">
           <OrderAttachements orderId={OrderById.Id} />
         </Tab>
+        {OrderById?.StatusName === 'Shipped' && (
+          <Tab key="ShipmentAttachments" title="Shipment Attachements">
+            <ShipmentAttachments orderId={OrderById.Id} />
+          </Tab>
+        )}
       </Tabs>
       
 

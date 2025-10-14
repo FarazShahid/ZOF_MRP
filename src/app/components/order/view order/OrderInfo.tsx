@@ -8,15 +8,15 @@ import { formatDate } from "@/src/app/interfaces";
 import useOrderStore from "@/store/useOrderStore";
 import OrderStatusTimeline from "@/src/app/orders/components/OrderStatusTimeline";
 
-interface OrderInfoProp{
-    OrderById: GetOrderByIdType
+interface OrderInfoProp {
+  OrderById: GetOrderByIdType
 }
 
-const OrderInfo:React.FC<OrderInfoProp> = ({
-    OrderById
+const OrderInfo: React.FC<OrderInfoProp> = ({
+  OrderById
 }) => {
 
-  const {OrderStatusLogs} = useOrderStore();
+  const { OrderStatusLogs } = useOrderStore();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -29,6 +29,12 @@ const OrderInfo:React.FC<OrderInfoProp> = ({
             <h2 className="text-xl font-bold text-gray-900">Order Details</h2>
           </div>
           <div className="space-y-4">
+          <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
+              <span className="text-sm font-medium text-gray-900">
+                Order Number
+              </span>
+              {OrderById?.OrderNumber}
+            </div>
             <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
               <span className="text-sm font-medium text-gray-900">
                 Order Status
@@ -39,7 +45,7 @@ const OrderInfo:React.FC<OrderInfoProp> = ({
               <span className="text-sm font-medium text-gray-900">
                 Shipment Status
               </span>
-             {OrderById?.OrderShipmentStatus}
+              {OrderById?.OrderShipmentStatus}
             </div>
             <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
               <span className="text-sm font-medium text-gray-900">
@@ -94,7 +100,7 @@ const OrderInfo:React.FC<OrderInfoProp> = ({
               Status Logs
             </h2>
           </div>
-           <OrderStatusTimeline OrderStatusLogs={OrderStatusLogs} />
+          <OrderStatusTimeline OrderStatusLogs={OrderStatusLogs} />
         </div>
       </Card>
     </div>

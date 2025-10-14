@@ -158,7 +158,11 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
       </div>
 
       {/* Dashboard Stats */}
-      <OrderDashboard orders={orders} />
+      <OrderDashboard
+        orders={orders}
+        statusFilter={statusFilter}
+        onStatusChange={setStatusFilter}
+      />
 
       <OrderSearchAndFilters
         searchTerm={searchTerm}

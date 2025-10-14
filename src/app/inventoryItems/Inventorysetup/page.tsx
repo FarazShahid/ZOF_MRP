@@ -56,7 +56,6 @@ const Page = () => {
 
   return (
     <AdminDashboardLayout>
-      <PermissionGuard required={PERMISSIONS_ENUM.INVENTORY_CATEGORY.VIEW}>
         <div className="bg-gray-50 flex">
           <InventorySidebar
             activeModule={activeModule}
@@ -64,7 +63,6 @@ const Page = () => {
           />
           <div className="flex-1 overflow-auto p-4">{renderActiveModule()}</div>
         </div>
-      </PermissionGuard>
     </AdminDashboardLayout>
   );
 };
