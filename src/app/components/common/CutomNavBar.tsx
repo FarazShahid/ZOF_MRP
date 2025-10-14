@@ -87,9 +87,7 @@ const CutomNavBar = () => {
       className="p-5 dark:bg-slate-900 bg-gray-100 border-b border-gray-300 flex items-center justify-between relative z-50"
       ref={navRef}
     >
-      <div className="w-20">
-        {/* <Image src={LogoLight} alt="sealforge" className="dark:hidden" />
-        <Image src={Logo} alt="sealforge" className="dark:block  hidden" /> */}
+      <div className="w-32">
         <img src="/Sealforge_dark.svg" alt="Sealforge" className="dark:hidden" />
         <img
           src="/Sealforge.svg"

@@ -25,7 +25,7 @@ export const AuditLogs: React.FC = () => {
 
   const { fetchAuditLogs, logs, loading } = useAuditLogStore();
 
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
   useEffect(() => {
     fetchAuditLogs();
@@ -117,6 +117,17 @@ export const AuditLogs: React.FC = () => {
 
   const totalPages = Math.max(1, Math.ceil(filteredLogs.length / itemsPerPage));
 
+  // Clamp current page when itemsPerPage changes or filtered length changes
+  useEffect(() => {
+    const newTotalPages = Math.max(
+      1,
+      Math.ceil(filteredLogs.length / Math.max(1, itemsPerPage))
+    );
+    if (currentPage > newTotalPages) {
+      setCurrentPage(newTotalPages);
+    }
+  }, [itemsPerPage, filteredLogs.length]);
+
   const handleRowClick = (log: AuditLogEntry) => {
     setSelectedLog(log);
     setSidebarOpen(true);
@@ -129,6 +140,11 @@ export const AuditLogs: React.FC = () => {
   const handleFilterChange = (newFilters: FilterState) => {
     setFilters(newFilters);
     setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setItemsPerPage(size);
+    setCurrentPage(1);
   };
 
   return (
@@ -175,6 +191,9 @@ export const AuditLogs: React.FC = () => {
             totalPages={totalPages}
             onPageChange={handlePageChange}
             onRowClick={handleRowClick}
+            pageSize={itemsPerPage}
+            onPageSizeChange={handlePageSizeChange}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
           />
         </div>
       </div>

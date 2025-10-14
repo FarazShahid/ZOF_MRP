@@ -8,7 +8,7 @@ import InventoryStats from "./InventoryStats";
 import InventorySeachAndFilter from "./InventorySeachAndFilter";
 import InventoryItemTable from "./InventoryItemTable";
 import InventoryItemGrid from "./InventoryItemGrid";
-import Pagination from "../shipment/Pagination";
+import Pagination from "../common/Pagination";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import useInventoryItemsStore, { InventoryItemResponse } from "@/store/useInventoryItemsStore";
@@ -92,6 +92,17 @@ const InventoryModule = () => {
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+
+  // clamp page when page size or filtered length changes
+  useEffect(() => {
+    const newTotalPages = Math.max(
+      1,
+      Math.ceil(filteredItems.length / Math.max(1, itemsPerPage))
+    );
+    if (currentPage > newTotalPages) {
+      setCurrentPage(newTotalPages);
+    }
+  }, [itemsPerPage, filteredItems.length]);
 
   // reset page on filters change
   useEffect(() => {
@@ -196,16 +207,17 @@ const InventoryModule = () => {
       )}
 
       {/* Pagination */}
-      <div className="p-6 bg-white dark:bg-slate-700 border-t border-slate-200 mt-4">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          itemsPerPage={itemsPerPage}
-          totalItems={filteredItems.length}
-          onPageChange={setCurrentPage}
-          onItemsPerPageChange={setItemsPerPage}
-        />
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        pageSize={itemsPerPage}
+        onPageSizeChange={(size) => {
+          setItemsPerPage(size);
+          setCurrentPage(1);
+        }}
+        pageSizeOptions={[5, 10, 20, 50, 100]}
+      />
 
       {/* Modals */}
       <DeleteInventoryItem

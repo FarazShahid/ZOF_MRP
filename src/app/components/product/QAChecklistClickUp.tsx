@@ -67,38 +67,11 @@ const QAChecklistClickUp: React.FC<QAChecklistClickUpProps> = ({
         <div className="divide-y divide-gray-100">
           {items.map((item) => (
             <div key={item.id} className="flex items-center gap-3 px-4 py-3">
-              {/* checkbox circle */}
-              {/* <button
-                type="button"
-                onClick={() => toggleItem(item.id)}
-                className={`shrink-0 size-5 rounded-full border flex items-center justify-center transition ${
-                  item.done
-                    ? "bg-violet-600 border-violet-600"
-                    : "border-gray-300 bg-white"
-                }`}
-                aria-label={item.done ? "Mark as undone" : "Mark as done"}
-              >
-                {item.done && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="white"
-                    className="size-4"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10.28 16.28a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l2.47 2.47 5.47-5.47a.75.75 0 1 1 1.06 1.06l-6 6Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                )}
-              </button> */}
-
-              {/* title */}
               <span
-                className={`flex-1 text-sm ${
+                className={`flex-1 min-w-0 truncate text-sm ${
                   item.done ? "line-through text-gray-400" : "text-gray-800"
                 }`}
+                title={item.title}
               >
                 {item.title}
               </span>
@@ -107,7 +80,7 @@ const QAChecklistClickUp: React.FC<QAChecklistClickUpProps> = ({
               <button
                 type="button"
                 onClick={() => removeItem(item.id)}
-                className="p-2 rounded-xl border border-transparent text-gray-400 hover:text-red-600 hover:border-red-200"
+                className="shrink-0 p-2 rounded-xl border border-transparent text-gray-400 hover:text-red-600 hover:border-red-200"
                 title="Remove item"
                 aria-label={`Remove ${item.title}`}
               >
@@ -153,7 +126,7 @@ const QAChecklistClickUp: React.FC<QAChecklistClickUpProps> = ({
                   }
                 }}
                 placeholder="Write item title and press Enter"
-                className="flex-1 px-3 py-2 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-gray-900"
+                className="flex-1 px-3 py-2 rounded-xl border border-gray-300 bg-white text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900"
               />
               <button
                 type="button"

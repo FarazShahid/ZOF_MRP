@@ -155,11 +155,18 @@ const useFabricStore = create<CategoryState>((set, get) => ({
         { method: "DELETE" }
       );
 
-      if (!response.ok){
-         const error = await response.json();
-         toast.error(error.message || "Failed to Update fabric type");
+      if (!response.ok) {
+        let errorMessage = "Failed to delete fabric type";
+        try {
+          const error = await response.json();
+          errorMessage = error.message || errorMessage;
+        } catch {}
+        set({ loading: false });
+        toast.error(errorMessage);
+        return;
       }
-      set({ loading: false, error: null});
+
+      set({ loading: false, error: null });
       toast.success("Delete successfully");
       if (onSuccess) onSuccess();
       await get().fetchFabricType();

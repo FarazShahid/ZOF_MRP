@@ -9,7 +9,7 @@ import { Plus } from "lucide-react";
 import { OrderStatus } from "@/src/types/admin";
 
 import DeleteModal from "../DeleteModal";
-import Pagination from "../shipment/Pagination";
+import Pagination from "../common/Pagination";
 import { TableSkel } from "../ui/Skeleton/TableSkel";
 import { ViewToggle } from "../admin/common/ViewToggle";
 import SearchSkeleton from "../ui/Skeleton/SearchSkeleton";
@@ -42,10 +42,10 @@ interface OrderListProps {
 const OrderList: React.FC<OrderListProps> = ({ orders }) => {
   const router = useRouter();
 
-  const [viewMode, setViewMode] = useState<"table" | "grid">("grid");
+  const [viewMode, setViewMode] = useState<"table" | "grid">("table");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
-  const [clientFilter, setClientFilter] = useState("all");
+  const [clientFilter, setClientFilter] = useState<number[]>([]);
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -72,7 +72,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
       const matchesStatus =
         statusFilter === "all" || order.StatusName === statusFilter;
       const matchesClient =
-        clientFilter === "all" || order.ClientId.toString() === clientFilter;
+        clientFilter.length === 0 || clientFilter.includes(order.ClientId);
 
       let matchesDateRange = true;
       if (dateRange.start && dateRange.end) {
@@ -90,7 +90,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
   }, [orders, searchTerm, statusFilter, clientFilter, dateRange]);
 
   // Pagination
-  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(filteredOrders.length / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedOrders = filteredOrders.slice(
     startIndex,
@@ -101,6 +101,17 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
   React.useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, statusFilter, clientFilter, dateRange]);
+
+  // Clamp current page when page size or filtered length changes
+  React.useEffect(() => {
+    const newTotalPages = Math.max(
+      1,
+      Math.ceil(filteredOrders.length / Math.max(1, itemsPerPage))
+    );
+    if (currentPage > newTotalPages) {
+      setCurrentPage(newTotalPages);
+    }
+  }, [itemsPerPage, filteredOrders.length]);
 
   const handleViewOrder = (orderId: number) => {
     router.push(`/orders/vieworder/${orderId}`);
@@ -147,7 +158,11 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
       </div>
 
       {/* Dashboard Stats */}
-      <OrderDashboard orders={orders} />
+      <OrderDashboard
+        orders={orders}
+        statusFilter={statusFilter}
+        onStatusChange={setStatusFilter}
+      />
 
       <OrderSearchAndFilters
         searchTerm={searchTerm}
@@ -183,16 +198,19 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
       </div>
 
       {/* Pagination */}
-      <div className="p-6 border-t border-slate-200">
+
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          itemsPerPage={itemsPerPage}
-          totalItems={filteredOrders.length}
           onPageChange={setCurrentPage}
-          onItemsPerPageChange={setItemsPerPage}
+          pageSize={itemsPerPage}
+          onPageSizeChange={(size) => {
+            setItemsPerPage(size);
+            setCurrentPage(1);
+          }}
+          pageSizeOptions={[5, 10, 20, 50, 100]}
         />
-      </div>
+
 
       {isOpenDeleteModal && (
         <DeleteModal

@@ -11,7 +11,7 @@ import { ProductStatus } from "@/src/types/product";
 import ProductSearchAndFilters from "./ProductSearchAndFilters";
 import ProductTable from "./ProductTable";
 import ProductGrid from "./ProductGrid";
-import Pagination from "../shipment/Pagination";
+import Pagination from "../common/Pagination";
 import DeleteProduct from "../../products/DeleteProduct";
 import ChangeProductStatus from "../../product/component/ChangeProductStatus";
 import { Tooltip } from "@heroui/react";
@@ -127,6 +127,17 @@ const ProductModule = () => {
     startIndex + itemsPerPage
   );
 
+  // clamp page when page size or filtered length changes
+  useEffect(() => {
+    const newTotalPages = Math.max(
+      1,
+      Math.ceil(filteredProducts.length / Math.max(1, itemsPerPage))
+    );
+    if (currentPage > newTotalPages) {
+      setCurrentPage(newTotalPages);
+    }
+  }, [itemsPerPage, filteredProducts.length]);
+
   // reset page on filters change
   useEffect(() => {
     setCurrentPage(1);
@@ -235,16 +246,19 @@ const ProductModule = () => {
       )}
 
       {/* Pagination */}
-      <div className="p-6 bg-white dark:bg-slate-700 border-t border-slate-200 mt-4">
+      
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          itemsPerPage={itemsPerPage}
-          totalItems={filteredProducts.length}
           onPageChange={setCurrentPage}
-          onItemsPerPageChange={setItemsPerPage}
+          pageSize={itemsPerPage}
+          onPageSizeChange={(size) => {
+            setItemsPerPage(size);
+            setCurrentPage(1);
+          }}
+          pageSizeOptions={[5, 10, 20, 50, 100]}
         />
-      </div>
+
 
       {/* Delete Product */}
       <DeleteProduct

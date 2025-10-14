@@ -1,5 +1,7 @@
 import React from "react";
 import { Boxes, Layers, PackageSearch, Ruler, Truck, ClipboardList } from "lucide-react";
+import PermissionGuard from "@/src/app/components/auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import { ActiveInventoryModule } from "@/src/types/inventory";
 
 interface SidebarProps {
@@ -8,11 +10,36 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { id: "categories" as ActiveInventoryModule, label: "Categories", icon: Layers },
-  { id: "subcategories" as ActiveInventoryModule, label: "Sub Categories", icon: PackageSearch },
-  { id: "uom" as ActiveInventoryModule, label: "Unit of Measure", icon: Ruler },
-  { id: "suppliers" as ActiveInventoryModule, label: "Suppliers", icon: Truck },
-  { id: "transactions" as ActiveInventoryModule, label: "Transactions", icon: ClipboardList },
+  {
+    id: "categories" as ActiveInventoryModule,
+    label: "Categories",
+    icon: Layers,
+    required: PERMISSIONS_ENUM.INVENTORY_CATEGORY.VIEW,
+  },
+  {
+    id: "subcategories" as ActiveInventoryModule,
+    label: "Sub Categories",
+    icon: PackageSearch,
+    required: PERMISSIONS_ENUM.INVENTORY_SUB_CATEGORY.VIEW,
+  },
+  {
+    id: "uom" as ActiveInventoryModule,
+    label: "Unit of Measure",
+    icon: Ruler,
+    required: PERMISSIONS_ENUM.UNIT_OF_MEASURE.VIEW,
+  },
+  {
+    id: "suppliers" as ActiveInventoryModule,
+    label: "Suppliers",
+    icon: Truck,
+    required: PERMISSIONS_ENUM.SUPPLIERS.VIEW,
+  },
+  {
+    id: "transactions" as ActiveInventoryModule,
+    label: "Transactions",
+    icon: ClipboardList,
+    required: PERMISSIONS_ENUM.INVENTORY_TRANSACTIONS.VIEW,
+  },
 ];
 
 export const InventorySidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }) => {
@@ -29,19 +56,21 @@ export const InventorySidebar: React.FC<SidebarProps> = ({ activeModule, onModul
             const Icon = item.icon;
             const isActive = activeModule === item.id;
             return (
-              <li key={item.id}>
-                <button
-                  onClick={() => onModuleChange(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                    isActive
-                      ? "bg-blue-50 text-blue-700 border border-blue-200"
-                      : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                  }`}
-                >
-                  <Icon className={`w-5 h-5 ${isActive ? "text-blue-600" : "text-gray-500"}`} />
-                  <span className="font-medium">{item.label}</span>
-                </button>
-              </li>
+              <PermissionGuard required={item.required} key={item.id}>
+                <li>
+                  <button
+                    onClick={() => onModuleChange(item.id)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                      isActive
+                        ? "bg-blue-50 text-blue-700 border border-blue-200"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                    }`}
+                  >
+                    <Icon className={`w-5 h-5 ${isActive ? "text-blue-600" : "text-gray-500"}`} />
+                    <span className="font-medium">{item.label}</span>
+                  </button>
+                </li>
+              </PermissionGuard>
             );
           })}
         </ul>

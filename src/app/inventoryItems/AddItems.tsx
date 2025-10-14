@@ -62,6 +62,14 @@ const AddItems: React.FC<AddComponentProps> = ({
     }
   }, [Id, isEdit]);
 
+  // When editing, prefetch subcategories for the pre-selected CategoryId
+  useEffect(() => {
+    const categoryId = Number(inventoryItemById?.CategoryId ?? 0);
+    if (isEdit && isOpen && categoryId > 0) {
+      fetchSubCategories(categoryId);
+    }
+  }, [isEdit, isOpen, inventoryItemById?.CategoryId]);
+
   useEffect(() => {
     fetchSuppliers();
     fetchUnitOfMeasures();
@@ -108,15 +116,16 @@ const AddItems: React.FC<AddComponentProps> = ({
     } else {
       const result = await addInventoryItem(values);
 
-      if (result && files.length > 0) {
-        for (const fileObj of files) {
-          await uploadDocument(
-            fileObj.file,
-            DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS,
-            result.Id
-          );
+      if (result) {
+        if (files.length > 0) {
+          for (const fileObj of files) {
+            await uploadDocument(
+              fileObj.file,
+              DOCUMENT_REFERENCE_TYPE.INVENTORY_ITEMS,
+              result.Id
+            );
+          }
         }
-
         resetAllFiles();
         closeAddModal();
       }
@@ -183,10 +192,14 @@ const AddItems: React.FC<AddComponentProps> = ({
                               ) => {
                                 const value = Number(e.target.value);
                                 setFieldValue("CategoryId", value);
-                                fetchSubCategories(value);
+                                // reset SubCategory on Category change
+                                setFieldValue("SubCategoryId", 0);
+                                if (value > 0) {
+                                  fetchSubCategories(value);
+                                }
                               }}
                             >
-                              <option value={""}>Select category</option>
+                              <option value={0}>Select category</option>
                               {inventoryCategories?.map((category, index) => {
                                 return (
                                   <option value={category?.Id} key={index}>
@@ -196,7 +209,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                               })}
                             </Field>
                             <ErrorMessage
-                              name="SubCategoryId"
+                              name="CategoryId"
                               component="div"
                               className="text-red-400 text-sm"
                             />
@@ -211,8 +224,11 @@ const AddItems: React.FC<AddComponentProps> = ({
                               name="SubCategoryId"
                               as="select"
                               className="formInputdefault border-1"
+                              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                                setFieldValue("SubCategoryId", Number(e.target.value))
+                              }
                             >
-                              <option value={""}>Select sub category</option>
+                              <option value={0}>Select sub category</option>
                               {subCategories?.map((category, index) => {
                                 return (
                                   <option value={category?.Id} key={index}>

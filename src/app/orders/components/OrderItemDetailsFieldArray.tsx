@@ -64,7 +64,7 @@ const OrderItemDetailsFieldArray = ({
                     />
                   </div>
                   <div>
-                    <Label isRequired label="Priority" />
+                    <Label isRequired={false} label="Priority" />
                     <Field
                       as="select"
                       name={`items[${index}].orderItemDetails[${detailIndex}].Priority`}

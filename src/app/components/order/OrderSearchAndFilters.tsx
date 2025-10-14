@@ -1,6 +1,5 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { Client } from "../../services/useFetchClients";
 import { OrderStatus } from "@/src/types/admin";
 import { GetOrdersType } from "../../interfaces/OrderStoreInterface";
 
@@ -9,8 +8,8 @@ interface OrderSearchAndFiltersProps {
   onSearchChange: (term: string) => void;
   statusFilter: OrderStatus | "all";
   onStatusChange: (status: OrderStatus | "all") => void;
-  clientFilter: string;
-  onClientChange: (client: string) => void;
+  clientFilter: number[];
+  onClientChange: (clientIds: number[]) => void;
   dateRange: { start: string; end: string };
   onDateRangeChange: (range: { start: string; end: string }) => void;
   orders: GetOrdersType[];
@@ -37,6 +36,28 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
         .sort((a, b) => a.name.localeCompare(b.name)),
     [orders]
   );
+
+  const [isClientOpen, setIsClientOpen] = useState(false);
+
+  const toggleClient = (id: number) => {
+    const isSelected = clientFilter.includes(id);
+    const updated = isSelected
+      ? clientFilter.filter((cid) => cid !== id)
+      : [...clientFilter, id];
+    onClientChange(updated);
+  };
+
+  const clearClients = () => onClientChange([]);
+
+  const selectedClientNames = useMemo(() => {
+    if (clientFilter.length === 0) return "All Clients";
+    const idToName = new Map(clients.map((c) => [c.id, c.name] as const));
+    const names = clientFilter
+      .map((id) => idToName.get(id))
+      .filter(Boolean) as string[];
+    if (names.length <= 2) return names.join(", ");
+    return `${names.length} selected`;
+  }, [clientFilter, clients]);
 
   return (
     <div className="space-y-4 mt-4">
@@ -72,20 +93,55 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
           </select>
         </div>
 
-        {/* Client Filter */}
-        <div className="min-w-32">
-          <select
-            value={clientFilter}
-            onChange={(e) => onClientChange(e.target.value)}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+        {/* Client Filter - Multi-select with checkboxes */}
+        <div className="min-w-32 relative">
+          <button
+            type="button"
+            onClick={() => setIsClientOpen((o) => !o)}
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-left focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
           >
-            <option value="all">All Clients</option>
-            {clients.map((client) => (
-              <option key={client.id} value={client.id}>
-                {client.name}
-              </option>
-            ))}
-          </select>
+            {selectedClientNames}
+          </button>
+          {isClientOpen && (
+            <div className="absolute right-0 z-10 mt-1 w-64 max-h-64 overflow-auto bg-white border border-slate-200 rounded-lg shadow">
+              <div className="px-3 py-2 border-b border-slate-200 flex items-center justify-between">
+                <span className="text-sm text-slate-600">Clients</span>
+                <button
+                  type="button"
+                  onClick={clearClients}
+                  className="text-xs text-blue-600 hover:underline"
+                >
+                  Clear
+                </button>
+              </div>
+              <ul className="p-2 space-y-1">
+                <li>
+                  <label className="flex items-center gap-2 text-base text-slate-700 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={clientFilter.length === 0}
+                      className="h-5 w-5"
+                      onChange={clearClients}
+                    />
+                    All Clients
+                  </label>
+                </li>
+                {clients.map((client) => (
+                  <li key={client.id}>
+                    <label className="flex items-center gap-2 text-base text-slate-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={clientFilter.includes(client.id)}
+                        className="h-5 w-5"
+                        onChange={() => toggleClient(client.id)}
+                      />
+                      {client.name}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 
