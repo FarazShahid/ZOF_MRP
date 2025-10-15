@@ -78,7 +78,7 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
                 <tr
                   key={log.id}
                   onClick={() => onRowClick(log)}
-                  className="cursor-pointer transition-colors hover:bg-gray-50"
+                  className="cursor-pointer transition-colors hover:bg-gray-50 even:bg-green-50"
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="text-gray-900 font-medium">{date}</div>

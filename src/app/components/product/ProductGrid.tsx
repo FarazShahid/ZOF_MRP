@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Eye, Edit, Trash2, Package, Layers, Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ProductStatusBadge from "./ProductStatusBadge";
@@ -8,6 +8,7 @@ import { Product } from "@/store/useProductStore";
 import { TbStatusChange } from "react-icons/tb";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import ViewProductDetails from "./ViewProductDetails";
 
 interface Props {
   products: Product[];
@@ -21,6 +22,9 @@ const ProductGrid: React.FC<Props> = ({
   onDelete,
 }) => {
   const router = useRouter();
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString("en-US", {
       month: "short",
@@ -29,6 +33,11 @@ const ProductGrid: React.FC<Props> = ({
     });
 
   const handleEdit = (id: number) => router.push(`/product/editproduct/${id}`);
+
+  const openView = (id: number) => {
+    setSelectedId(id);
+    setIsViewOpen(true);
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
@@ -104,6 +113,15 @@ const ProductGrid: React.FC<Props> = ({
                 </button>
               </PermissionGuard>
 
+              <button
+                type="button"
+                onClick={() => openView(p.Id)}
+                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-gray-600 hover:bg-slate-100 rounded-md transition-colors"
+              >
+                <Eye className="w-4 h-4" />
+                <span>View</span>
+              </button>
+
               <PermissionGuard required={PERMISSIONS_ENUM.PRODUCTS.DELETE}>
                 <button
                   type="button"
@@ -123,6 +141,15 @@ const ProductGrid: React.FC<Props> = ({
           No products match your filters.
         </div>
       )}
+
+
+
+
+<ViewProductDetails
+        isOpen={isViewOpen}
+        productId={selectedId}
+        onClose={() => setIsViewOpen(false)}
+      />
     </div>
   );
 };

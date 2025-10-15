@@ -71,7 +71,7 @@ const ShipmentTable: React.FC<ShipmentTableProps> = ({
               <tr
                 key={shipment.Id}
                 className={
-                  "hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                  "hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors even:bg-green-50"
                 }
               >
                 <td className="px-6 py-4 whitespace-nowrap">

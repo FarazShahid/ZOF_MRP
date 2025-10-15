@@ -61,7 +61,7 @@ const InventoryItemTable: React.FC<Props> = ({ items, onView, onEdit, onDelete }
           </thead>
           <tbody className="divide-y divide-slate-200">
             {items.map((it) => (
-              <tr key={it.Id} className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+              <tr key={it.Id} className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors even:bg-green-50">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <Package className="w-4 h-4 text-slate-400 mr-2" />

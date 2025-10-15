@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Eye, Edit, Trash2, Package } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ProductStatusBadge from "./ProductStatusBadge";
@@ -6,6 +6,7 @@ import { Product } from "@/store/useProductStore";
 import { TbStatusChange } from "react-icons/tb";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import ViewProductDetails from "./ViewProductDetails";
 
 interface Props {
   products: Product[];
@@ -19,6 +20,8 @@ const ProductTable: React.FC<Props> = ({
   onDelete,
 }) => {
   const router = useRouter();
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString("en-US", {
@@ -28,6 +31,10 @@ const ProductTable: React.FC<Props> = ({
     });
 
   const handleEdit = (id: number) => router.push(`/product/editproduct/${id}`);
+  const handleView = (id: number) => {
+    setSelectedId(id);
+    setIsViewOpen(true);
+  };
 
   return (
     <div className="rounded-lg border border-slate-200 dark:border-gray-50 overflow-hidden">
@@ -65,7 +72,7 @@ const ProductTable: React.FC<Props> = ({
             {products.map((p) => (
               <tr
                 key={p.Id}
-                className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors even:bg-green-50"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
@@ -85,7 +92,7 @@ const ProductTable: React.FC<Props> = ({
                   {p.ClientName}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {p.FabricType} —{" "}
+                  {p.FabricType} — {" "}
                   <span className="text-slate-600">{p.FabricName}</span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -102,6 +109,22 @@ const ProductTable: React.FC<Props> = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
+                    <PermissionGuard
+                      required={PERMISSIONS_ENUM.PRODUCTS.VIEW}
+                    >
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleView(p.Id);
+                        }}
+                        className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                        title="View"
+                        type="button"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                    </PermissionGuard>
+
                     <PermissionGuard
                       required={PERMISSIONS_ENUM.PRODUCTS.CHANGE_STATUS}
                     >
@@ -155,6 +178,11 @@ const ProductTable: React.FC<Props> = ({
           </tbody>
         </table>
       </div>
+      <ViewProductDetails
+        isOpen={isViewOpen}
+        productId={selectedId}
+        onClose={() => setIsViewOpen(false)}
+      />
     </div>
   );
 };
