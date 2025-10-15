@@ -13,7 +13,7 @@ import PermissionGuard from "../../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const CustomersModule: React.FC = () => {
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [viewMode, setViewMode] = useState<ViewMode>("table");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] =
     useState<GetClientsType | null>(null);
@@ -77,7 +77,7 @@ const CustomersModule: React.FC = () => {
 
       {/* Stats */}
 
-      <CustomerStats customers={clients} />
+      {/* <CustomerStats customers={clients} /> */}
 
       {/* Content */}
       {viewMode === "table" ? (
@@ -119,14 +119,14 @@ const CustomersModule: React.FC = () => {
       />
 
       {/* Customer Detail Sidebar */}
-      <CustomerDetailSidebar
+      {/* <CustomerDetailSidebar
         customer={selectedCustomer}
         isOpen={sidebarOpen}
         onClose={() => {
           setSidebarOpen(false);
           setSelectedCustomer(null);
         }}
-      />
+      /> */}
     </div>
   );
 };

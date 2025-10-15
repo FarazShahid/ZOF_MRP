@@ -61,7 +61,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
               <tr
                 key={order?.Id}
                 className={
-                  "hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                  "hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors even:bg-green-50 dark:even:bg-slate-700"
                 }
               >
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -87,7 +87,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
                   <div
                     className={`inline-flex items-center px-3 py-1 rounded-full text-sm border ${
                       order.StatusName === OrderItemShipmentEnum.SHIPPED
-                        ? "text-slate-600 border-slate-200"
+                        ? "text-gray-600 border-slate-200"
                         : getDeadlineColor(order.Deadline)
                     }`}
                   >

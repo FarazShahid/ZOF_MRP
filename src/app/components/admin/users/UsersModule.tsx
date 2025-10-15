@@ -12,7 +12,7 @@ import PermissionGuard from "../../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const UsersModule: React.FC = () => {
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [viewMode, setViewMode] = useState<ViewMode>("table");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);

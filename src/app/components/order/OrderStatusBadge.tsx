@@ -32,6 +32,12 @@ const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({ status }) => {
           className: 'bg-gray-100 text-gray-800 border-gray-200',
           icon: Archive
         };
+      case 'Pending':
+        return {
+          label: 'Pending',
+          className: 'bg-orange-100 text-orange-800 border-orange-200',
+          icon: Factory
+        };
       default:
         return {
           label: 'Unknown',

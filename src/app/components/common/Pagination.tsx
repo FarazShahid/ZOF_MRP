@@ -134,7 +134,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               id="desktop-page-size"
               value={effectivePageSize}
               onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
-              className="block border border-gray-300 rounded-md text-sm py-1 px-2 bg-white text-gray-700 focus:outline-none"
+              className="block border rounded-md text-sm py-1 px-2 text-gray-700 focus:outline-none"
             >
               {sizeOptions.map((opt) => (
                 <option key={opt} value={opt}>
