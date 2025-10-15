@@ -39,6 +39,7 @@ const defaultValues: FormValues = {
   OrderPriority: "",
   items: [],
   typeId: "",
+  
 };
 
 const OrderForm = ({ orderId }: { orderId?: string }) => {
@@ -155,7 +156,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   };
 
   const handleSubmit = async (values: any) => {
-    // values.Description = values.ClientId + "order description";
+  
     if (!values.OrderEventId) delete values.OrderEventId;
 
     const finalPayload = { ...values };

@@ -50,7 +50,12 @@ const RoleModule = () => {
       <Role onEditRole={openForEdit} />
 
       {/* Modal for Add/Edit */}
-      <RoleFormModal isOpen={isOpen} onClose={onClose} roleId={editingRoleId} />
+      {
+        isOpen && (
+          <RoleFormModal isOpen={isOpen} onClose={onClose} roleId={editingRoleId} />
+        )
+      }
+     
     </div>
   );
 };

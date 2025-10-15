@@ -24,5 +24,7 @@ export const OrderValidationSchemas = [
     Deadline: Yup.string().required("Deadline is required"),
   }),
   null,
-  null,
+  Yup.object({
+    Description: Yup.string().trim().required("Description is required"),
+  }),
 ];

@@ -72,7 +72,7 @@ const ProductTable: React.FC<Props> = ({
             {products.map((p) => (
               <tr
                 key={p.Id}
-                className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors even:bg-green-50"
+                className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors even:bg-green-50 dark:even:bg-slate-700"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
@@ -81,7 +81,7 @@ const ProductTable: React.FC<Props> = ({
                       <span className="text-sm font-medium text-gray-900">
                         {p.Name}
                       </span>
-                      <span className="text-xs text-slate-500">#{p.Id}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-100">#{p.Id}</span>
                     </div>
                   </div>
                 </td>
@@ -93,7 +93,7 @@ const ProductTable: React.FC<Props> = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {p.FabricType} — {" "}
-                  <span className="text-slate-600">{p.FabricName}</span>
+                  <span className="text-slate-600 dark:text-slate-400">{p.FabricName}</span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {p.GSM}
