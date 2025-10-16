@@ -38,7 +38,7 @@ const ReorderConfirmation: React.FC<DeleteModalProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Confirm Deletion
+              Confirm Reorder
             </ModalHeader>
             <ModalBody>
               <p>Are you sure you want to Reorder?</p>

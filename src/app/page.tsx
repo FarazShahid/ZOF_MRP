@@ -35,6 +35,12 @@ export default function Home() {
           <LoginAnimator />
           <div className="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full xl:w-2/5 p-8  md:p-10 lg:p-14 sm:rounded-lg md:rounded-none bg-black">
             <div className="max-w-md w-full space-y-8">
+              <div className="flex items-baseline justify-center space-x-2">
+                {/* <span className="h-px w-16 bg-gray-200"></span> */}
+                <img src="/Sealforge.svg" alt="Sealforge" className="w-[200px] h-[80px]" />
+                {/* <span className="h-px w-16 bg-gray-200"></span> */}
+              </div>
+
               <div className="text-center">
                 <h2 className="mt-6 text-3xl font-bold text-blue-300">
                   Welcome Back!
@@ -44,11 +50,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="flex items-baseline justify-center space-x-2">
-                <span className="h-px w-16 bg-gray-200"></span>
-                <img src="/Sealforge.svg" alt="Sealforge" className="w-32 h-10" />
-                <span className="h-px w-16 bg-gray-200"></span>
-              </div>
+
               <Formik
                 validationSchema={LoginSchemaValidation}
                 initialValues={loginInitialValues}

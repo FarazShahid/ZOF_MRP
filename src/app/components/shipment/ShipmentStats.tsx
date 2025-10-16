@@ -1,5 +1,6 @@
 import React from "react";
 import { Package, Clock, Truck, CheckCircle, XCircle } from "lucide-react";
+import Image from "next/image";
 import { GetAllShipments } from "@/store/useShipmentStore";
 import { ShipmentStatus } from "@/src/types/admin";
 
@@ -25,7 +26,8 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
       icon: Package,
       bgColor: "bg-slate-400",
       textColor: "text-white",
-      iconBg: "bg-slate-400",
+      iconBg: "bg-slate-600",
+      seal: "/Seal 1.png",
       onClick: () => onStatusChange('all' as const),
       active: statusFilter === 'all'
     },
@@ -36,6 +38,7 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
       bgColor: "bg-blue-500",
       textColor: "text-white",
       iconBg: "bg-blue-600",
+      seal: "/Seal 2.png",
       onClick: () => onStatusChange('In Transit' as ShipmentStatus),
       active: statusFilter === 'In Transit'
     },
@@ -46,6 +49,7 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
       bgColor: "bg-green-500",
       textColor: "text-white",
       iconBg: "bg-green-600",
+      seal: "/Seal 3.png",
       onClick: () => onStatusChange('Delivered' as ShipmentStatus),
       active: statusFilter === 'Delivered'
     },
@@ -56,6 +60,7 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
       bgColor: "bg-yellow-500",
       textColor: "text-white",
       iconBg: "bg-yellow-600",
+      seal: "/Seal 4.png",
       onClick: () => onStatusChange('Damaged' as ShipmentStatus),
       active: statusFilter === 'Damaged'
     },
@@ -67,6 +72,7 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
       bgColor: "bg-red-500",
       textColor: "text-white",
       iconBg: "bg-red-600",
+      seal: "/Seal 5.png",
       onClick: () => onStatusChange('Cancelled' as ShipmentStatus),
       active: statusFilter === 'Cancelled'
     },
@@ -83,15 +89,27 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
             aria-pressed={card.active}
             onClick={card.onClick}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') card.onClick(); }}
-            className={`${card.textColor} ${card.bgColor} rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer ${card.active ? 'ring-2 ring-offset-2 ring-white/80' : ''}`}
+            className={`${card.textColor} ${card.bgColor} rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group relative overflow-hidden ${card.active ? 'ring-2 ring-offset-2 ring-white/80' : ''}`}
           >
-            <div className="flex items-center justify-between">
+            {/* Decorative seal image */}
+            <div className="pointer-events-none absolute -right-4 -bottom-6 group-hover:opacity-30 transition-opacity duration-300">
+              <div className="relative w-28 h-28 transform group-hover:rotate-6 group-hover:scale-105 transition-transform duration-300 ease-out">
+                <Image src={card.seal} alt="decorative seal" fill className="object-contain" sizes="112px" />
+              </div>
+            </div>
+
+            {/* Soft radial highlight on hover */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden>
+              <div className="absolute -inset-16 rounded-full bg-white/5 blur-2xl group-hover:scale-105 transition-transform" />
+            </div>
+
+            <div className="relative z-10 flex items-center gap-3">
+              <div className={`${card.iconBg} p-3 rounded-lg transform group-hover:scale-110 transition-transform`}>
+                <card.icon className="w-6 h-6" />
+              </div>
               <div>
                 <p className="text-sm font-medium opacity-90">{card.title}</p>
                 <p className="text-2xl font-bold mt-1">{card.value}</p>
-              </div>
-              <div className={`${card.iconBg} p-3 rounded-lg`}>
-                <card.icon className="w-6 h-6" />
               </div>
             </div>
           </div>

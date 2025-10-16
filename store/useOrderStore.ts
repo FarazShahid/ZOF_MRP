@@ -438,7 +438,7 @@ const useOrderStore = create<StoreState>((set, get) => ({
         toast.success("Order reordered successfully.");
         if (onSuccess) onSuccess();
 
-        await get().fetchOrders(clientId);
+        await get().fetchOrders();
       } else {
         set({ loading: false, error: null });
         const error = await response.json();

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShoppingCart, Factory, Truck, Package, Archive } from 'lucide-react';
+import Image from 'next/image';
 import { GetOrdersType } from '../../interfaces/OrderStoreInterface';
 import { OrderStatus } from '@/src/types/admin';
 
@@ -26,7 +27,8 @@ const OrderDashboard: React.FC<OrderDashboardProps> = ({ orders, statusFilter, o
       bgColor: 'bg-slate-400',
       textColor: 'text-white',
       iconBg: 'bg-slate-600',
-      status: 'all' as const
+      status: 'all' as const,
+      seal: '/Seal 1.png'
     },
     {
       title: 'In Production',
@@ -35,7 +37,8 @@ const OrderDashboard: React.FC<OrderDashboardProps> = ({ orders, statusFilter, o
       bgColor: 'bg-orange-400',
       textColor: 'text-white',
       iconBg: 'bg-orange-600',
-      status: 'Production' as OrderStatus
+      status: 'Production' as OrderStatus,
+      seal: '/Seal 2.png'
     },
     {
       title: 'Shipped',
@@ -44,7 +47,8 @@ const OrderDashboard: React.FC<OrderDashboardProps> = ({ orders, statusFilter, o
       bgColor: 'bg-green-400',
       textColor: 'text-white',
       iconBg: 'bg-green-600',
-      status: 'Shipped' as OrderStatus
+      status: 'Shipped' as OrderStatus,
+      seal: '/Seal 3.png'
     },
     {
       title: 'Packing',
@@ -53,7 +57,8 @@ const OrderDashboard: React.FC<OrderDashboardProps> = ({ orders, statusFilter, o
       bgColor: 'bg-blue-400',
       textColor: 'text-white',
       iconBg: 'bg-blue-600',
-      status: 'Packing' as OrderStatus
+      status: 'Packing' as OrderStatus,
+      seal: '/Seal 4.png'
     },
     {
       title: 'Kept in Stock',
@@ -62,7 +67,8 @@ const OrderDashboard: React.FC<OrderDashboardProps> = ({ orders, statusFilter, o
       bgColor: 'bg-gray-400',
       textColor: 'text-white',
       iconBg: 'bg-gray-600',
-      status: 'Kept in Stock' as OrderStatus
+      status: 'Kept in Stock' as OrderStatus,
+      seal: '/Seal 5.png'
     }
   ];
 
@@ -81,16 +87,28 @@ const OrderDashboard: React.FC<OrderDashboardProps> = ({ orders, statusFilter, o
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') onStatusChange(card.status);
               }}
-              className={`${card.bgColor} ${card.textColor} rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer ${active ? 'ring-2 ring-offset-2 ring-white/80' : ''}`}
+              className={`${card.bgColor} ${card.textColor} rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group relative overflow-hidden ${active ? 'ring-2 ring-offset-2 ring-white/80' : ''}`}
             >
-              <div className="flex items-center justify-between">
+              {/* Decorative seal image */}
+              <div className="pointer-events-none absolute -right-4 -bottom-6 group-hover:opacity-30 transition-opacity duration-300">
+                <div className="relative w-28 h-28 transform group-hover:rotate-6 group-hover:scale-105 transition-transform duration-300 ease-out">
+                  <Image src={card.seal} alt="decorative seal" fill className="object-contain" sizes="112px" />
+                </div>
+              </div>
+              {/* Soft radial highlight on hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden>
+                <div className="absolute -inset-16 rounded-full bg-white/5 blur-2xl group-hover:scale-105 transition-transform" />
+              </div>
+
+              <div className="relative z-10 flex items-center gap-3">
+              <div className={`${card.iconBg} p-3 rounded-lg transform group-hover:scale-110 transition-transform`}>
+                  <card.icon className="w-6 h-6" />
+                </div>
                 <div>
                   <p className="text-sm font-medium opacity-90">{card.title}</p>
                   <p className="text-2xl font-bold mt-1">{card.value}</p>
                 </div>
-                <div className={`${card.iconBg} p-3 rounded-lg`}>
-                  <card.icon className="w-6 h-6" />
-                </div>
+                
               </div>
             </div>
           );
