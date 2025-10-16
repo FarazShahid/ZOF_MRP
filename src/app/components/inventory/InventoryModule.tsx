@@ -9,6 +9,7 @@ import InventorySeachAndFilter from "./InventorySeachAndFilter";
 import InventoryItemTable from "./InventoryItemTable";
 import InventoryItemGrid from "./InventoryItemGrid";
 import Pagination from "../common/Pagination";
+import NoData from "../common/NoData";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import useInventoryItemsStore, { InventoryItemResponse } from "@/store/useInventoryItemsStore";
@@ -29,6 +30,9 @@ const InventoryModule = () => {
   const [supplierFilter, setSupplierFilter] = useState<string | "all">("all");
   const [uomFilter, setUomFilter] = useState<string | "all">("all");
   const [stockFilter, setStockFilter] = useState<"all" | "low" | "normal" | "high">("all");
+  const [quickFilter, setQuickFilter] = useState<
+    "all" | "lowStock" | "withUom" | "withSupplier" | "noSubcategory"
+  >("all");
 
   // selection & overlays
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
@@ -77,16 +81,25 @@ const InventoryModule = () => {
       const level = computeStockLevel(it);
       const matchesStock = stockFilter === "all" || level === stockFilter;
 
+      // quick filters from stats cards
+      const matchesQuick =
+        quickFilter === "all" ||
+        (quickFilter === "lowStock" && level === "low") ||
+        (quickFilter === "withUom" && Boolean(it.UnitOfMeasureId || it.UnitOfMeasureName)) ||
+        (quickFilter === "withSupplier" && Boolean(it.SupplierName)) ||
+        (quickFilter === "noSubcategory" && !it.SubCategoryName);
+
       return (
         matchesSearch &&
         matchesCategory &&
         matchesSubCategory &&
         matchesSupplier &&
         matchesUom &&
-        matchesStock
+        matchesStock &&
+        matchesQuick
       );
     });
-  }, [inventoryItems, searchTerm, categoryFilter, subCategoryFilter, supplierFilter, uomFilter, stockFilter]);
+  }, [inventoryItems, searchTerm, categoryFilter, subCategoryFilter, supplierFilter, uomFilter, stockFilter, quickFilter]);
 
   // pagination
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage) || 1;
@@ -107,7 +120,7 @@ const InventoryModule = () => {
   // reset page on filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, categoryFilter, subCategoryFilter, supplierFilter, uomFilter, stockFilter]);
+  }, [searchTerm, categoryFilter, subCategoryFilter, supplierFilter, uomFilter, stockFilter, quickFilter]);
 
   // actions
   const openDeleteModal = (id: number) => {
@@ -168,7 +181,11 @@ const InventoryModule = () => {
       </div>
 
       {/* Stats */}
-      <InventoryStats items={inventoryItems || []} />
+      <InventoryStats
+        items={inventoryItems || []}
+        quickFilter={quickFilter}
+        onQuickFilterChange={setQuickFilter}
+      />
 
       {/* Filters */}
       <InventorySeachAndFilter
@@ -188,36 +205,44 @@ const InventoryModule = () => {
       />
 
       {/* Content */}
-      {viewMode === "table" ? (
-        <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
-          <InventoryItemTable
-            items={paginatedItems}
-            onView={openViewModal}
-            onEdit={openEditModal}
-            onDelete={openDeleteModal}
-          />
+      {filteredItems.length === 0 ? (
+        <div className="rounded-lg border border-gray-200 overflow-hidden mt-6 p-10 bg-white dark:bg-slate-800">
+          <NoData title="No items found" message="Try adjusting filters or add a new item." />
         </div>
       ) : (
-        <InventoryItemGrid
-          items={paginatedItems}
-          onView={openViewModal}
-          onEdit={openEditModal}
-          onDelete={openDeleteModal}
-        />
-      )}
+        <>
+          {viewMode === "table" ? (
+            <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
+              <InventoryItemTable
+                items={paginatedItems}
+                onView={openViewModal}
+                onEdit={openEditModal}
+                onDelete={openDeleteModal}
+              />
+            </div>
+          ) : (
+            <InventoryItemGrid
+              items={paginatedItems}
+              onView={openViewModal}
+              onEdit={openEditModal}
+              onDelete={openDeleteModal}
+            />
+          )}
 
-      {/* Pagination */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-        pageSize={itemsPerPage}
-        onPageSizeChange={(size) => {
-          setItemsPerPage(size);
-          setCurrentPage(1);
-        }}
-        pageSizeOptions={[5, 10, 20, 50, 100]}
-      />
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            pageSize={itemsPerPage}
+            onPageSizeChange={(size) => {
+              setItemsPerPage(size);
+              setCurrentPage(1);
+            }}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
+          />
+        </>
+      )}
 
       {/* Modals */}
       <DeleteInventoryItem

@@ -8,6 +8,7 @@ import ShipmentStats from "./ShipmentStats";
 import useShipmentStore from "@/store/useShipmentStore";
 import ShipmentTable from "./ShipmentTable";
 import Pagination from "../common/Pagination";
+import NoData from "../common/NoData";
 import SearchAndFilters from "./SearchAndFilters";
 import ShipmentGrid from "./ShipmentGrid";
 import ShipmentDetail from "./ShipmentDetail";
@@ -145,7 +146,11 @@ const ShipmentModule = () => {
       </div>
 
       {/* Stats */}
-      <ShipmentStats shipments={Shipments} />
+      <ShipmentStats
+        shipments={Shipments}
+        statusFilter={statusFilter}
+        onStatusChange={setStatusFilter}
+      />
       <SearchAndFilters
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -158,33 +163,41 @@ const ShipmentModule = () => {
         shipments={Shipments}
       />
       {/* Content */}
-      {viewMode === "table" ? (
-        <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
-          <ShipmentTable
-            onViewDetails={(id) => handleonViewDetails(id)}
-            onDelete={(id) => handleOpenDeleteModal(id)}
-            shipments={paginatedShipments}
-          />
+      {(filteredShipments?.length || 0) === 0 ? (
+        <div className="rounded-lg border border-gray-200 overflow-hidden mt-6 p-10 bg-white dark:bg-slate-800">
+          <NoData title="No shipments found" message="Try adjusting filters or create a new shipment." />
         </div>
       ) : (
-        <ShipmentGrid
-          onViewDetails={(id) => handleonViewDetails(id)}
-          onDelete={(id) => handleOpenDeleteModal(id)}
-          shipments={paginatedShipments}
-        />
-      )}
+        <>
+          {viewMode === "table" ? (
+            <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
+              <ShipmentTable
+                onViewDetails={(id) => handleonViewDetails(id)}
+                onDelete={(id) => handleOpenDeleteModal(id)}
+                shipments={paginatedShipments}
+              />
+            </div>
+          ) : (
+            <ShipmentGrid
+              onViewDetails={(id) => handleonViewDetails(id)}
+              onDelete={(id) => handleOpenDeleteModal(id)}
+              shipments={paginatedShipments}
+            />
+          )}
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-        pageSize={itemsPerPage}
-        onPageSizeChange={(size) => {
-          setItemsPerPage(size);
-          setCurrentPage(1);
-        }}
-        pageSizeOptions={[5, 10, 20, 50, 100]}
-      />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            pageSize={itemsPerPage}
+            onPageSizeChange={(size) => {
+              setItemsPerPage(size);
+              setCurrentPage(1);
+            }}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
+          />
+        </>
+      )}
   
 
       {/* Overlay Drawer */}

@@ -19,6 +19,7 @@ import Link from "next/link";
 import { FiSettings } from "react-icons/fi";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import NoData from "../common/NoData";
 
 const ProductModule = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("table");
@@ -207,7 +208,13 @@ const ProductModule = () => {
       </div>
 
       {/* Stats */}
-      <ProductStats products={products || []} />
+      <ProductStats
+        products={products || []}
+        statusFilter={statusFilter}
+        onStatusChange={setStatusFilter}
+        archivedFilter={archivedFilter}
+        onArchivedChange={setArchivedFilter}
+      />
 
       {/* Filters */}
       <ProductSearchAndFilters
@@ -229,35 +236,42 @@ const ProductModule = () => {
       />
 
       {/* Content */}
-      {viewMode === "table" ? (
-        <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
-          <ProductTable
-            products={paginatedProducts}
-            onChangeStatus={handleChangeStatus}
-            onDelete={openDeleteModal}
-          />
+      {filteredProducts.length === 0 ? (
+        <div className="rounded-lg border border-gray-200 overflow-hidden mt-6 p-10 bg-white dark:bg-slate-800">
+          <NoData title="No products found" message="Try adjusting filters or create a new product." />
         </div>
       ) : (
-        <ProductGrid
-          products={paginatedProducts}
-          onChangeStatus={handleChangeStatus}
-          onDelete={openDeleteModal}
-        />
-      )}
+        <>
+          {viewMode === "table" ? (
+            <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
+              <ProductTable
+                products={paginatedProducts}
+                onChangeStatus={handleChangeStatus}
+                onDelete={openDeleteModal}
+              />
+            </div>
+          ) : (
+            <ProductGrid
+              products={paginatedProducts}
+              onChangeStatus={handleChangeStatus}
+              onDelete={openDeleteModal}
+            />
+          )}
 
-      {/* Pagination */}
-      
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-          pageSize={itemsPerPage}
-          onPageSizeChange={(size) => {
-            setItemsPerPage(size);
-            setCurrentPage(1);
-          }}
-          pageSizeOptions={[5, 10, 20, 50, 100]}
-        />
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            pageSize={itemsPerPage}
+            onPageSizeChange={(size) => {
+              setItemsPerPage(size);
+              setCurrentPage(1);
+            }}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
+          />
+        </>
+      )}
 
 
       {/* Delete Product */}
