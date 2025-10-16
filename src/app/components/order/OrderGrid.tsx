@@ -16,6 +16,7 @@ import { getDeadlineColor, getDeadlineStatus } from "@/src/types/order";
 import { OrderItemShipmentEnum } from "@/interface";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import NoData from "../common/NoData";
 
 interface OrderGridProps {
   orders: GetOrdersType[];
@@ -34,7 +35,12 @@ const OrderGrid: React.FC<OrderGridProps> = ({
 }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {orders?.map((order) => (
+      {(!orders || orders.length === 0) ? (
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 py-16">
+          <NoData title="No orders found" message="Try adjusting filters or create a new order." />
+        </div>
+      ) : (
+      orders?.map((order) => (
         <div
           key={order.Id}
           className="rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
@@ -156,7 +162,8 @@ const OrderGrid: React.FC<OrderGridProps> = ({
             </div>
           </div>
         </div>
-      ))}
+      ))
+      )}
     </div>
   );
 };

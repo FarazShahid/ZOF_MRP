@@ -16,6 +16,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import useRoleRightsStore from "@/store/useRoleRightsStore";
 import PermissionGuard from "../../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import DeleteRole from "./DeleteRole";
 
 const rowsPerPage = 8;
 
@@ -27,9 +28,11 @@ type RoleProps = {
 const Role: React.FC<RoleProps> = ({ onEditRole }) => {
   const router = useRouter();
 
-  const { fetchRoles, deleteRole, roles, loading } = useRoleRightsStore();
+  const { fetchRoles, roles, loading } = useRoleRightsStore();
 
   const [page, setPage] = useState<number>(1);
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+  const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
 
   const pages = Math.max(1, Math.ceil((roles?.length ?? 0) / rowsPerPage));
 
@@ -49,7 +52,11 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
     }
   };
 
-  const handleDelete = async (id: number) => {};
+  const handleDelete = (id: number) => {
+    if (!id) return;
+    setSelectedRoleId(id);
+    setIsDeleteOpen(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -116,6 +123,7 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
                       <button
                         type="button"
                         className="hover:text-red-500 cursor-pointer"
+                        disabled={loading}
                         onClick={() => handleDelete(role?.id)}
                       >
                         <RiDeleteBin6Line color="red" />
@@ -128,6 +136,16 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
           })}
         </TableBody>
       </Table>
+      {isDeleteOpen && selectedRoleId !== null && (
+        <DeleteRole
+          isOpen={isDeleteOpen}
+          onClose={() => {
+            setIsDeleteOpen(false);
+            setSelectedRoleId(null);
+          }}
+          id={selectedRoleId}
+        />
+      )}
     </div>
   );
 };

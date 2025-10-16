@@ -1,18 +1,21 @@
 import React from "react";
 import { Package, Clock, Truck, CheckCircle, XCircle } from "lucide-react";
 import { GetAllShipments } from "@/store/useShipmentStore";
+import { ShipmentStatus } from "@/src/types/admin";
 
 interface DashboardProps {
   shipments: GetAllShipments[];
+  statusFilter: ShipmentStatus | 'all';
+  onStatusChange: (status: ShipmentStatus | 'all') => void;
 }
 
-const ShipmentStats: React.FC<DashboardProps> = ({ shipments }) => {
+const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onStatusChange }) => {
   const stats = {
     total: shipments?.length,
     pending: shipments?.filter((s) => s.Status === "Damaged").length,
     shipped: shipments?.filter((s) => s.Status === "In Transit").length,
     delivered: shipments?.filter((s) => s.Status === "Delivered").length,
-    cancelled: shipments?.filter((s) => s.Status === "cancelled").length,
+    cancelled: shipments?.filter((s) => s.Status === "Cancelled").length,
   };
 
   const statCards = [
@@ -23,6 +26,8 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments }) => {
       bgColor: "bg-slate-400",
       textColor: "text-white",
       iconBg: "bg-slate-400",
+      onClick: () => onStatusChange('all' as const),
+      active: statusFilter === 'all'
     },
     {
       title: "In Transit",
@@ -31,6 +36,8 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments }) => {
       bgColor: "bg-blue-500",
       textColor: "text-white",
       iconBg: "bg-blue-600",
+      onClick: () => onStatusChange('In Transit' as ShipmentStatus),
+      active: statusFilter === 'In Transit'
     },
     {
       title: "Delivered",
@@ -39,6 +46,8 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments }) => {
       bgColor: "bg-green-500",
       textColor: "text-white",
       iconBg: "bg-green-600",
+      onClick: () => onStatusChange('Delivered' as ShipmentStatus),
+      active: statusFilter === 'Delivered'
     },
     {
       title: "Damaged Shipments",
@@ -47,6 +56,8 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments }) => {
       bgColor: "bg-yellow-500",
       textColor: "text-white",
       iconBg: "bg-yellow-600",
+      onClick: () => onStatusChange('Damaged' as ShipmentStatus),
+      active: statusFilter === 'Damaged'
     },
 
     {
@@ -56,6 +67,8 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments }) => {
       bgColor: "bg-red-500",
       textColor: "text-white",
       iconBg: "bg-red-600",
+      onClick: () => onStatusChange('Cancelled' as ShipmentStatus),
+      active: statusFilter === 'Cancelled'
     },
   ];
 
@@ -65,7 +78,12 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments }) => {
         {statCards.map((card) => (
           <div
             key={card.title}
-            className={`${card.textColor} ${card.bgColor} rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow`}
+            role="button"
+            tabIndex={0}
+            aria-pressed={card.active}
+            onClick={card.onClick}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') card.onClick(); }}
+            className={`${card.textColor} ${card.bgColor} rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer ${card.active ? 'ring-2 ring-offset-2 ring-white/80' : ''}`}
           >
             <div className="flex items-center justify-between">
               <div>

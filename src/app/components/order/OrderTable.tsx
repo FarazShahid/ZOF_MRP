@@ -14,6 +14,7 @@ import { getDeadlineColor, getDeadlineStatus } from "@/src/types/order";
 import { OrderItemShipmentEnum } from "@/interface";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import NoData from "../common/NoData";
 
 interface OrderTableProps {
   orders: GetOrdersType[];
@@ -33,6 +34,11 @@ const OrderTable: React.FC<OrderTableProps> = ({
   return (
     <div className=" rounded-lg border border-slate-200 dark:border-gray-50 overflow-hidden">
       <div className="overflow-x-auto">
+        {(!orders || orders.length === 0) ? (
+          <div className="flex items-center justify-center py-16">
+            <NoData title="No orders found" message="Try adjusting filters or create a new order." />
+          </div>
+        ) : (
         <table className="min-w-full divide-y divide-slate-200">
           <thead className="bg-white dark:bg-slate-700">
             <tr>
@@ -159,6 +165,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
             ))}
           </tbody>
         </table>
+        )}
       </div>
     </div>
   );
