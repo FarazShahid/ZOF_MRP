@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { OrderStatus } from "@/src/types/admin";
 import { GetOrdersType } from "../../interfaces/OrderStoreInterface";
@@ -38,6 +38,26 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
   );
 
   const [isClientOpen, setIsClientOpen] = useState(false);
+  const clientDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        clientDropdownRef.current &&
+        !clientDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsClientOpen(false);
+      }
+    };
+
+    if (isClientOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isClientOpen]);
 
   const toggleClient = (id: number) => {
     const isSelected = clientFilter.includes(id);
@@ -94,7 +114,7 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
         </div>
 
         {/* Client Filter - Multi-select with checkboxes */}
-        <div className="min-w-32 relative">
+        <div className="min-w-32 relative" ref={clientDropdownRef}>
           <button
             type="button"
             onClick={() => setIsClientOpen((o) => !o)}
