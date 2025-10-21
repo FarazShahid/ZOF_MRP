@@ -17,7 +17,7 @@ const NoData: React.FC<NoDataProps> = ({
       <div className="flex items-center justify-center w-14 h-14 rounded-full bg-gray-100 dark:bg-slate-700 mb-3">
         <Inbox className="w-7 h-7 text-gray-400" />
       </div>
-      <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
+      <h3 className="text-base font-semibold text-gray-900">{title}</h3>
       {message && (
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{message}</p>
       )}

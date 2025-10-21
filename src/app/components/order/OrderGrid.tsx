@@ -80,7 +80,7 @@ const OrderGrid: React.FC<OrderGridProps> = ({
             <div
               className={`inline-flex items-center px-3 py-1 rounded-full text-sm border ${
                 order.StatusName === OrderItemShipmentEnum.SHIPPED
-                  ? "text-slate-600 border-slate-200"
+                  ? "text-gray-900 border-slate-200"
                   : getDeadlineColor(order.Deadline)
               }`}
             >

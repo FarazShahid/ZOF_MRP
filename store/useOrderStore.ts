@@ -461,7 +461,7 @@ const useOrderStore = create<StoreState>((set, get) => ({
       if (!response.ok) throw new Error("Failed to delete order");
       set({ loading: false, error: null, isResolved: true });
       if (onSuccess) onSuccess();
-      await get().fetchOrders(clientId);
+      await get().fetchOrders();
     } catch (error) {
       set({ error: "Failed to delete order", loading: false });
     }

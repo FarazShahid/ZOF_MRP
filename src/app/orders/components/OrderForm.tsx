@@ -232,7 +232,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
         </aside>
         <main className="flex flex-col justify-center items-center w-full">
           <h1 className="text-sm font-bold text-gray-500 mb-2">
-            Add New Order
+          {orderId ? "Edit Order" : "Add New Order"} 
           </h1>
           <h2 className="text-xl font-semibold mb-4">
             {steps[currentStep - 1]}

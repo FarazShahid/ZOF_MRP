@@ -8,7 +8,7 @@ export default function Step3({ formik, handleFileSelect, productId }: any) {
   return (
     <div className="space-y-6 w-[500px]">
       <div className="flex flex-col gap-1">
-        <Label isRequired={true} label="Product Status" />
+        <Label isRequired={false} label="Product Status" />
         <Field
           as="select"
           name={`productStatus`}
