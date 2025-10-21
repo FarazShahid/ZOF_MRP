@@ -111,7 +111,7 @@ const useColorOptionsStore = create<ColorOptionState>((set, get) => ({
         set({ loading: false, error: null });
         toast.success("Color add successfully");
         const setSelectedItem = useUIStore.getState().setSelectedItem;
-        setSelectedItem(7);
+        setSelectedItem(8);
         if (onSuccess) onSuccess();
         await get().fetchColorOptions();
       } else {

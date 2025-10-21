@@ -96,7 +96,8 @@ const ProductSearchAndFilters: React.FC<Props> = ({
             <option value="all">All Status</option>
             <option value="Approved">Approved</option>
             <option value="Sample">Sample</option>
-            <option value="">No Status</option>
+            <option value="Rejected">Rejected</option>
+            <option value="">Pending</option>
           </select>
         </div>
 

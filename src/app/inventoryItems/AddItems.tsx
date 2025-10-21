@@ -305,6 +305,7 @@ const AddItems: React.FC<AddComponentProps> = ({
                               name="ReorderLevel"
                               type="number"
                               min={0}
+                              step="any"
                               className="formInputdefault border-1"
                             />
                             <ErrorMessage

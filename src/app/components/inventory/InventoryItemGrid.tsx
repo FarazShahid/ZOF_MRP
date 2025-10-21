@@ -97,7 +97,7 @@ const InventoryItemGrid: React.FC<Props> = ({ items, onView, onEdit, onDelete })
           </div>
 
           {/* Footer */}
-          <div className="p-3 border-t border-slate-200 bg-gray-50 flex items-center justify-end gap-2">
+          <div className="p-3 border-t border-slate-200 flex items-center justify-end gap-2">
             <button
               type="button"
               className="inline-flex items-center gap-1 px-3 py-1.5 text-sm rounded-md text-blue-600 hover:bg-blue-50"

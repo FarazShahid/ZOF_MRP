@@ -29,7 +29,7 @@ export const getDeadlineColor = (deadline: string) => {
     case "upcoming":
       return "text-orange-600 border-orange-200";
     default:
-      return "text-slate-600 border-slate-200";
+      return "text-gray-900 border-slate-200";
   }
 };
 
