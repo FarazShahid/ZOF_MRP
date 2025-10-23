@@ -56,12 +56,16 @@ const handleSelectItem = (itemId: number) => {
               Select All ({selectedItems.length}/{OrderById?.items?.length})
             </span>
           </label>
-          {selectedItems.length > 0 && (
+        {
+          selectedItems.length > 0 ? (
             <QASheetGenerator
               orderId={OrderById.Id}
               selectedItems={selectedItems}
             />
-          )}
+          ) : (
+            <div className="text-sm text-gray-500 dark:text-gray-400 bg-blue-100 text-gray-900 rounded-lg p-2">Select items to generate QA sheet</div>
+          )
+        }
         </div>
       </div>
 

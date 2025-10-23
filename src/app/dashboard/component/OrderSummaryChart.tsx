@@ -16,14 +16,14 @@ const OrderSummaryChart = () => {
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: "40%",
-        borderRadius: 4,
+        columnWidth: "38%",
+        borderRadius: 6,
       },
     },
     dataLabels: { enabled: false },
     stroke: {
       show: true,
-      width: 4,
+      width: 2,
       colors: ["transparent"],
     },
     xaxis: {
@@ -54,9 +54,7 @@ const OrderSummaryChart = () => {
         },
       },
     },
-    legend: {
-      show: false,
-    },
+    legend: { show: false },
     fill: {
       opacity: 1,
     },
@@ -77,10 +75,13 @@ const OrderSummaryChart = () => {
   ];
 
   return (
-    <div className="p-4 rounded-2xl border border-gray-200 bg-white dark:border-[#1d2939] dark:bg-white/[0.03] shadow-md">
-      <div className="flex justify-between items-center mb-4">
-        <span className="dark:text-white text-gray-800">Orders Summary</span>
-        <span className="text-sm dark:text-gray-400 text-gray-600">Jan - Dec</span>
+    <div className="p-4 rounded-2xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 dark:border-[#1d2939] dark:from-white/[0.05] dark:to-transparent shadow-sm">
+      <div className="flex justify-between items-center mb-3">
+        <div>
+          <span className="dark:text-white text-gray-900 font-medium">Orders Summary</span>
+          <p className="text-xs text-gray-500">Created vs Fulfilled (range)</p>
+        </div>
+        <span className="text-xs dark:text-gray-400 text-gray-600">Jan - Dec</span>
       </div>
       <Chart options={options} series={series} type="bar" height={420} />
     </div>

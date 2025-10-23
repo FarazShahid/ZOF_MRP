@@ -1,21 +1,19 @@
 import React from "react";
-import { IoIosRedo, IoIosUndo } from "react-icons/io";
+import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
 const PercentageWidget = ({ percentage }: { percentage: number }) => {
   return (
-    <div className="flex items-center gap-1">
-      <div
-        className={` ${
-          percentage > 10 ? " bg-yellow-300" : "bg-red-300 "
-        } p-1 rounded`}
-      >
-        {percentage > 10 ? (
-          <IoIosRedo className="text-gray-800" />
-        ) : (
-          <IoIosUndo className="text-gray-800" />
-        )}
-      </div>
-      <span className="text-sm text-white">{percentage}%</span>
+    <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ring-1 ${
+      percentage >= 0
+        ? "bg-green-50 text-green-700 ring-green-200 dark:bg-white/[0.06] dark:text-green-300 dark:ring-white/10"
+        : "bg-red-50 text-red-700 ring-red-200 dark:bg-white/[0.06] dark:text-red-300 dark:ring-white/10"
+    }`}>
+      {percentage >= 0 ? (
+        <IoIosArrowUp className="h-3 w-3" />
+      ) : (
+        <IoIosArrowDown className="h-3 w-3" />
+      )}
+      <span>{Math.abs(percentage)}%</span>
     </div>
   );
 };
