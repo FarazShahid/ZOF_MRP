@@ -1,23 +1,64 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useMemo, useRef } from "react";
 import { AiFillProduct } from "react-icons/ai";
 import { FiPackage, FiShoppingCart, FiUsers } from "react-icons/fi";
-import { RiAlertLine } from "react-icons/ri";
 import Widget from "./Widget";
+import useDashboardReportsStore from "@/store/useDashboardReportsStore";
 
 const KpiTiles: React.FC = () => {
-  const data = [
-    { icon: <FiShoppingCart />, title: "orders (range)", number: "1,248", percentage: 12.4 },
-    { icon: <AiFillProduct />, title: "active products", number: "642", percentage: 5.2 },
-    { icon: <FiPackage />, title: "shipments (range)", number: "318", percentage: 8.9 },
-    { icon: <FiUsers />, title: "active clients", number: "92", percentage: 3.1 },
-    { icon: <RiAlertLine />, title: "open events", number: "17", percentage: -6.0 },
-  ];
+  const widgets = useDashboardReportsStore((s) => s.widgets);
+  const loading = useDashboardReportsStore((s) => s.loading);
+  const fetchWidgets = useDashboardReportsStore((s) => s.fetchWidgets);
+
+  const hasRequested = useRef(false);
+  useEffect(() => {
+    if (!hasRequested.current && !widgets && !loading) {
+      hasRequested.current = true;
+      fetchWidgets();
+    }
+  }, [widgets, loading, fetchWidgets]);
+
+  const data = useMemo(
+    () => [
+      {
+        icon: <FiShoppingCart />,
+        title: "orders",
+        number: widgets?.totalOrders?.toLocaleString?.() ?? "-",
+      },
+      {
+        icon: <AiFillProduct />,
+        title: "active products",
+        number: widgets?.totalProducts?.toLocaleString?.() ?? "-",
+
+      },
+      {
+        icon: <FiPackage />,
+        title: "shipments",
+        number: widgets?.totalShipments?.toLocaleString?.() ?? "-",
+
+      },
+      {
+        icon: <FiUsers />,
+        title: "active clients",
+        number: widgets?.totalClients?.toLocaleString?.() ?? "-",
+
+      },
+    ],
+    [widgets]
+  );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-      {data.map((d, i) => (
-        <Widget key={i} icon={d.icon} percentage={d.percentage} title={d.title} number={d.number} />
-      ))}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {(!widgets && loading) ? (
+        Array?.from({ length: 4 })?.map((_, i) => (
+          <div key={i} className="rounded-2xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-4 dark:border-[#1d2939] dark:from-white/[0.05] dark:to-transparent shadow-sm animate-pulse h-[116px]" />
+        ))
+      ) : (
+        data?.map((d, i) => (
+          <Widget key={i} icon={d.icon} title={d.title} number={d.number} />
+        ))
+      )}
     </div>
   );
 };

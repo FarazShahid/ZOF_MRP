@@ -1,20 +1,49 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
+import useDashboardReportsStore from "@/store/useDashboardReportsStore";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const OrderStatusDonut: React.FC = () => {
-  const labels = ["New", "In Production", "QA", "Ready", "Shipped", "Delivered"];
-  const series = [24, 38, 12, 8, 10, 56];
+  const summary = useDashboardReportsStore((s) => s.orderStatusSummary);
+  const loading = useDashboardReportsStore((s) => s.loading);
+  const fetchOrderStatusSummary = useDashboardReportsStore((s) => s.fetchOrderStatusSummary);
+
+  const hasRequested = useRef(false);
+  useEffect(() => {
+    if (!hasRequested.current && (!summary || summary?.length === 0) && !loading) {
+      hasRequested.current = true;
+      fetchOrderStatusSummary();
+    }
+  }, [summary, loading, fetchOrderStatusSummary]);
+
+  const { labels, series, colors } = useMemo(() => {
+    const basePalette: Record<string, string> = {
+      Pending: "#f59e0b",
+      Production: "#60a5fa",
+      "In Production": "#60a5fa",
+      Packing: "#a78bfa",
+      "Kept in Stock": "#f97316",
+      Shipped: "#10b981",
+      Delivered: "#22c55e",
+      QA: "#eab308",
+      Ready: "#3b82f6",
+    };
+
+    const lbls = (summary ?? [])?.map((s) => s?.statusName);
+    const sers = (summary ?? [])?.map((s) => s?.count);
+    const cols = lbls?.map((name) => basePalette[name] || "#94a3b8");
+    return { labels: lbls, series: sers, colors: cols };
+  }, [summary]);
 
   const options: ApexOptions = {
     chart: { type: "donut", background: "transparent" },
     labels,
     legend: { show: true, position: "bottom", labels: { colors: "#CBD5E1" } },
-    colors: ["#60a5fa", "#f59e0b", "#22c55e", "#a78bfa", "#f97316", "#10b981"],
+    colors,
     dataLabels: { enabled: false },
     plotOptions: {
       pie: {
@@ -36,7 +65,11 @@ const OrderStatusDonut: React.FC = () => {
           <p className="text-xs text-gray-500">Distribution across lifecycle</p>
         </div>
       </div>
-      <Chart options={options} series={series} type="donut" height={360} />
+      {(!summary || summary?.length === 0) && loading ? (
+        <div className="animate-pulse h-[360px] rounded-xl bg-gray-100 dark:bg-white/[0.06]" />
+      ) : (
+        <Chart options={options} series={series?.length ? series : [1]} type="donut" height={360} />
+      )}
     </div>
   );
 };

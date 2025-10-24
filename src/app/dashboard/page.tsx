@@ -50,7 +50,7 @@ const page = () => {
             <TopClientsWidget />
           </div>
           <div className="col-span-1 md:col-span-1 lg:col-span-4">
-            <ProductWidget loading={loading} />
+            <ProductWidget />
           </div>
           <div className="col-span-1 md:col-span-1 lg:col-span-4">
             <StockWidegt />
