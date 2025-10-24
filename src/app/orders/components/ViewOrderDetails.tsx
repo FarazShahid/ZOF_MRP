@@ -1,18 +1,14 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Button, Tab, Tabs } from "@heroui/react";
 import { IoReturnDownBack } from "react-icons/io5";
-import { FiDownload, FiLoader } from "react-icons/fi";
 
 import useOrderStore from "@/store/useOrderStore";
 import { PdfVariant } from "@/src/types/OrderPDfType";
-import useQAchecklistStore from "@/store/useQAchecklistStore";
 import {OrderItemShipmentEnum } from "@/interface";
-import { useOrderItemSelectionStore } from "@/store/useOrderItemSelectionStore";
 
 import OrderStatus from "./OrderStatus";
-import { OrderItem } from "../../interfaces/OrderStoreInterface";
 import DownloadPdfMenu from "../../components/order/DownloadPdfMenu";
 import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import OrderInfo from "../../components/order/view order/OrderInfo";
