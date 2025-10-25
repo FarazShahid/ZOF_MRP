@@ -54,9 +54,13 @@ const OrderAttachments: React.FC<Step2Props> = ({ onFileSelect, orderId }) => {
         <Field
           as="textarea"
           name="Description"
+          maxLength={200}
           placeholder="Order Description..."
           className="rounded-xl dark:text-gray-400 text-gray-800 min-h-[105px] h-full text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
         />
+        <span className="text-xs text-gray-500">
+          {values.Description?.length || 0}/200
+        </span>
         <ErrorMessage
           name="Description"
           component="div"
