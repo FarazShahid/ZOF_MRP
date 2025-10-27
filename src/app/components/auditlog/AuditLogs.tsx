@@ -8,7 +8,7 @@ import { AuditLog, FilterState } from "@/src/types/audit";
 import { mockAuditLogs } from "@/src/data/mockAuditLogs";
 import AuditLogStats from "./Stats";
 import useAuditLogStore, { AuditLogEntry } from "@/store/useAuditLogStore";
-import { AuditLogDetailSidebar } from "./AuditLogDetailSidebar";
+import AuditLogDetails from "./AuditLogDetails";
 
 export const AuditLogs: React.FC = () => {
   const [filters, setFilters] = useState<FilterState>({
@@ -197,6 +197,11 @@ export const AuditLogs: React.FC = () => {
           />
         </div>
       </div>
+      <AuditLogDetails
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        log={selectedLog}
+      />
     </div>
   );
 };

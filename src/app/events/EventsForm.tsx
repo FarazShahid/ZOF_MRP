@@ -85,7 +85,7 @@ const EventsForm: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="EventName"
                               type="text"
-                              maxlength="180"
+                              maxLength="180"
                               placeholder="Enter Type"
                               className="formInputdefault border-1"
                             />

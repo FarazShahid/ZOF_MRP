@@ -7,7 +7,11 @@ export const SupplierSchema = Yup.object().shape({
 
 
 export const UserSchema = Yup.object().shape({
+    firstName: Yup.string().required('First name is required'),
+    lastName: Yup.string().required('Last name is required'),
     Email: Yup.string().required('Email is required'),
+    Password: Yup.string().required('Password is required'),
+    roleId: Yup.number().required('Role is required'),
 })
 
 
