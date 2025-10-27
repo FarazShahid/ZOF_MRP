@@ -94,7 +94,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 name="Name"
                                 type="text"
-                                maxLength="180"
+                                maxLength="100"
                                 placeholder="Enter Business Name"
                                 className="formInputdefault border-1"
                               />
@@ -113,7 +113,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Email"
-                                maxLength="180"
+                                maxLength="100"
                                 placeholder="Enter Business Email"
                                 className="formInputdefault border-1"
                               />
@@ -135,7 +135,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="POCName"
-                                maxLength="180"
+                                maxLength="100"
                                 placeholder="Enter Name"
                                 className="formInputdefault border-1"
                               />
@@ -154,7 +154,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Phone"
-                                maxLength="180"
+                                maxLength="100"
                                 placeholder="Enter Phone"
                                 className="formInputdefault border-1"
                               />
@@ -173,7 +173,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="POCEmail"
-                                maxLength="180"
+                                maxLength="100"
                                 placeholder="Enter Email"
                                 className="formInputdefault border-1"
                               />
@@ -190,7 +190,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Website"
-                                maxLength="180"
+                                maxLength="100"
                                 placeholder="Enter Website"
                                 className="formInputdefault border-1"
                               />
@@ -204,7 +204,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Linkedin"
-                                maxLength="180"
+                                maxLength="100"
                                 placeholder="Enter Linkedin"
                                 className="formInputdefault border-1"
                               />
@@ -218,7 +218,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Field
                                 type="text"
                                 name="Instagram"
-                                maxLength="180"
+                                maxLength="100"
                                 placeholder="Enter Instagram"
                                 className="formInputdefault border-1"
                               />

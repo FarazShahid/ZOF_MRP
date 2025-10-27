@@ -2,14 +2,12 @@
 
 import { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import Image from "next/image";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import Spinner from "./components/Spinner";
 import { LoginSchemaValidation } from "./schema/loginSchema";
 import AuthContext from "./services/authservice";
 import { loginInitialValues } from "./interfaces";
 import LoginAnimator from "./components/LoginAnimator";
-import Logo from "@/public/Sealforge.svg";
 
 export default function Home() {
   const authContext = useContext(AuthContext);
@@ -36,9 +34,7 @@ export default function Home() {
           <div className="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full xl:w-2/5 p-8  md:p-10 lg:p-14 sm:rounded-lg md:rounded-none bg-black">
             <div className="max-w-md w-full space-y-8">
               <div className="flex items-baseline justify-center space-x-2">
-                {/* <span className="h-px w-16 bg-gray-200"></span> */}
-                <img src="/Sealforge.svg" alt="Sealforge" className="w-[200px] h-[80px]" />
-                {/* <span className="h-px w-16 bg-gray-200"></span> */}
+                <img src="/Logo-SealForge-Light.svg" alt="Sealforge" className="w-[200px] h-[80px]" />
               </div>
 
               <div className="text-center">

@@ -12,8 +12,8 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Seal Forge",
-  description: "Seal Forge",
+  title: "Seals Forge",
+  description: "Seals Forge",
 };
 
 export default function RootLayout({

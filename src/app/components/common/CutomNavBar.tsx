@@ -2,15 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
 import { RiDashboard2Line } from "react-icons/ri";
 import { FaClipboardList } from "react-icons/fa";
 import { AiOutlineProduct } from "react-icons/ai";
 import { IoStorefrontOutline } from "react-icons/io5";
 import { GiCargoShip } from "react-icons/gi";
 import { IoIosArrowDown } from "react-icons/io";
-import Logo from "@/public/Sealforge.svg";
-import LogoLight from "@/public/Sealforge_dark.svg";
 import UserDropdown from "../header/UserDropdown";
 import { ThemeToggleButton } from "./ThemeToggleButton";
 
@@ -88,9 +85,9 @@ const CutomNavBar = () => {
       ref={navRef}
     >
       <div className="w-32">
-        <img src="/Sealforge_dark.svg" alt="Sealforge" className="dark:hidden" />
+        <img src="/Logo-Sealforge.svg" alt="Sealforge" className="dark:hidden" />
         <img
-          src="/Sealforge.svg"
+          src="/Logo-SealForge-Light.svg"
           alt="Sealforge dark"
           className="dark:block hidden"
         />

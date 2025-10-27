@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import { Package, Layers, Tag, Ruler, Warehouse, CalendarClock } from "lucide-react";
-import { Eye, Edit, Trash2 } from "lucide-react";
+import { Package, Layers, Tag, Ruler, Warehouse, CalendarClock, Eye, Edit, Trash2, RefreshCwIcon } from "lucide-react";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import { InventoryItemResponse } from "@/store/useInventoryItemsStore";
@@ -18,10 +17,10 @@ const InventoryItemGrid: React.FC<Props> = ({ items, onView, onEdit, onDelete })
   const formatDate = (iso?: string) =>
     iso
       ? new Date(iso).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
       : "-";
 
   return (
@@ -81,18 +80,20 @@ const InventoryItemGrid: React.FC<Props> = ({ items, onView, onEdit, onDelete })
               <span className="text-gray-900">{it.SupplierName}</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-1">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-700">Reorder Level</span>
-                <span className="text-gray-900">{it.ReorderLevel}</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-gray-700">
+                <RefreshCwIcon className="w-4 h-4" />
+                <span className="font-medium">Reorder Level</span>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1 text-gray-700">
-                  <CalendarClock className="w-4 h-4" />
-                  <span>Updated</span>
-                </div>
-                <span className="text-gray-900">{formatDate(it.UpdatedOn)}</span>
+              <span className="text-gray-900">{it.ReorderLevel}</span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-gray-700">
+                <CalendarClock className="w-4 h-4" />
+                <span className="font-medium">Updated</span>
               </div>
+              <span className="text-gray-900">{formatDate(it.UpdatedOn)}</span>
             </div>
           </div>
 
