@@ -8,6 +8,7 @@ export interface Client {
 export const loginInitialValues = {
   email: "",
   password: "",
+  remember_me: true,
 };
 
 export function formatDate(inputDate: string) {

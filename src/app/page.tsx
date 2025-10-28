@@ -22,8 +22,8 @@ export default function Home() {
 
   const { login } = authContext;
 
-  const handleSubmit = async (values: { email: string; password: string }) => {
-    await login(values);
+  const handleSubmit = async (values: { email: string; password: string; remember_me?: boolean }) => {
+    await login({ email: values.email, password: values.password }, !!values.remember_me);
   };
 
   return (
@@ -103,10 +103,11 @@ export default function Home() {
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <input
+                        <Field
                           id="remember_me"
                           name="remember_me"
                           type="checkbox"
+                          as="input"
                           className="h-4 w-4 bg-blue-500 focus:ring-blue-400 border-gray-300 rounded"
                         />
                         <label className="ml-2 block text-sm text-slate-400">
