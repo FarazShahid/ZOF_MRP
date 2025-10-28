@@ -81,7 +81,7 @@ const OrderInfo: React.FC<OrderInfoProp> = ({
               Order Description
             </h2>
           </div>
-          <div className="p-4 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-lg border-l-4 border-orange-500">
+          <div className="OrderStatusTimeLineWrapper p-4 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-lg border-l-4 border-orange-500">
             <p className="text-sm text-gray-900 leading-relaxed">{OrderById?.Description}</p>
           </div>
         </div>

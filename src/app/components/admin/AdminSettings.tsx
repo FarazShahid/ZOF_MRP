@@ -1,10 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Sidebar } from "./Sidebar";
 import { ActiveModule } from "@/src/types/admin";
 import { TableSkel } from "../ui/Skeleton/TableSkel";
+import PermissionGuard from "../auth/PermissionGaurd";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import usePermissionStore from "@/store/usePermissionStore";
 
 // lazy load
 const UsersModule = dynamic(() => import("./users/UsersModule"), {
@@ -30,30 +33,67 @@ const RoleModule = dynamic(() => import("./roles/RoleModule"), {
   loading: () => <TableSkel />,
 });
 
+// Define module order and their required view permissions
+const MODULE_ORDER: ActiveModule[] = [
+  "users",
+  "customers",
+  "events",
+  "carriers",
+  "roles",
+];
+
+const MODULE_PERMISSION_MAP: Record<ActiveModule, number> = {
+  users: PERMISSIONS_ENUM.USERS.VIEW,
+  customers: PERMISSIONS_ENUM.CLIENTS.VIEW,
+  events: PERMISSIONS_ENUM.EVENTS.VIEW,
+  carriers: PERMISSIONS_ENUM.CARRIERS.VIEW,
+  roles: PERMISSIONS_ENUM.ROLES_AND_RIGHTS.VIEW,
+};
+
 export const AdminSettings: React.FC = () => {
   const [activeModule, setActiveModule] = useState<ActiveModule>("users");
+  const permissions = usePermissionStore((state) => state.permissions);
+
+  // Pick the first accessible module dynamically based on permissions
+  useEffect(() => {
+    if (!permissions || permissions.length === 0) return;
+    const firstAllowed = MODULE_ORDER.find((mod) =>
+      permissions.includes(MODULE_PERMISSION_MAP[mod])
+    );
+    if (firstAllowed && firstAllowed !== activeModule) {
+      setActiveModule(firstAllowed);
+    }
+  }, [permissions]);
 
   const renderActiveModule = () => {
     switch (activeModule) {
       case "users":
-        return <UsersModule />;
+        return <PermissionGuard required={PERMISSIONS_ENUM.USERS.VIEW}><UsersModule /></PermissionGuard>;
       case "customers":
-        return <CustomersModule />;
+        return <PermissionGuard required={PERMISSIONS_ENUM.CLIENTS.VIEW}><CustomersModule /></PermissionGuard>;
       case "events":
-        return <EventsModule />;
+        return <PermissionGuard required={PERMISSIONS_ENUM.EVENTS.VIEW}><EventsModule /></PermissionGuard>;
       case "carriers":
-        return <CarriorTable />;
+        return <PermissionGuard required={PERMISSIONS_ENUM.CARRIERS.VIEW}><CarriorTable /></PermissionGuard>;
       case "roles":
-        return <RoleModule />;
+        return <PermissionGuard required={PERMISSIONS_ENUM.ROLES_AND_RIGHTS.VIEW}><RoleModule /></PermissionGuard>;
       default:
-        return <UsersModule />;
+        return <PermissionGuard required={PERMISSIONS_ENUM.USERS.VIEW}><UsersModule /></PermissionGuard>;
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar activeModule={activeModule} onModuleChange={setActiveModule} />
-      <div className="flex-1 overflow-auto">{renderActiveModule()}</div>
+      <div className="flex-1 overflow-auto">
+        {renderActiveModule() || (
+          permissions?.length > 0 ? (
+            <div className="p-6 text-gray-500">You don't have access to any Admin modules.</div>
+          ) : (
+            <TableSkel />
+          )
+        )}
+      </div>
     </div>
   );
 };

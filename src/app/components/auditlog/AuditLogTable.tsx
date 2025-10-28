@@ -4,6 +4,7 @@ import { ActionBadge } from "./ActionBadge";
 import { ModuleBadge } from "./ModuleBadge";
 import { AuditLogEntry } from "@/store/useAuditLogStore";
 import Pagination from "../common/Pagination";
+import { EyeIcon } from "lucide-react";
 
 interface AuditLogTableProps {
   logs: AuditLogEntry[];
@@ -69,6 +70,7 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Details
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -109,6 +111,11 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
                   <td className="px-6 py-4 text-sm text-gray-900">
                     <div className="max-w-xs truncate">{log.details}</div>
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button className="text-blue-500 hover:text-blue-700" onClick={() => onRowClick(log)}>
+                      <EyeIcon className="w-4 h-4" />
+                    </button>
+                  </td>
                 </tr>
               );
             })}
@@ -132,6 +139,9 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
         onPageSizeChange={onPageSizeChange}
         pageSizeOptions={pageSizeOptions}
       />
+
+
+      
     </div>
   );
 };

@@ -1220,7 +1220,7 @@ span.flatpickr-weekday,
 
 }
 .OrderStatusTimeLineWrapper {
-  height: calc(50vh - 100px);
+  max-height: calc(50vh - 100px);
   overflow-y: auto;
   padding-left: 30px;
 }

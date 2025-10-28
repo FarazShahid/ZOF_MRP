@@ -37,7 +37,7 @@ export const AuditLogFilters: React.FC<AuditLogFiltersProps> = ({
       </div>
 
       {/* Filter Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
         {/* Date Range */}
         <div className="lg:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Date Range</label>

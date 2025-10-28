@@ -192,6 +192,7 @@ const AddUser: React.FC<AddComponentProps> = ({
                             {({ field }: FieldProps) => (
                               <Input
                                 {...field}
+                                maxLength={100}
                                 variant="bordered"
                                 radius="md"
                                 placeholder="Enter first name"

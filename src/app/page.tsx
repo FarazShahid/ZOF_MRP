@@ -2,14 +2,12 @@
 
 import { useContext, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import Image from "next/image";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import Spinner from "./components/Spinner";
 import { LoginSchemaValidation } from "./schema/loginSchema";
 import AuthContext from "./services/authservice";
 import { loginInitialValues } from "./interfaces";
 import LoginAnimator from "./components/LoginAnimator";
-import Logo from "@/public/Sealforge.svg";
 
 export default function Home() {
   const authContext = useContext(AuthContext);
@@ -24,8 +22,8 @@ export default function Home() {
 
   const { login } = authContext;
 
-  const handleSubmit = async (values: { email: string; password: string }) => {
-    await login(values);
+  const handleSubmit = async (values: { email: string; password: string; remember_me?: boolean }) => {
+    await login({ email: values.email, password: values.password }, !!values.remember_me);
   };
 
   return (
@@ -36,9 +34,7 @@ export default function Home() {
           <div className="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full xl:w-2/5 p-8  md:p-10 lg:p-14 sm:rounded-lg md:rounded-none bg-black">
             <div className="max-w-md w-full space-y-8">
               <div className="flex items-baseline justify-center space-x-2">
-                {/* <span className="h-px w-16 bg-gray-200"></span> */}
-                <img src="/Sealforge.svg" alt="Sealforge" className="w-[200px] h-[80px]" />
-                {/* <span className="h-px w-16 bg-gray-200"></span> */}
+                <img src="/Logo-SealForge-Light.svg" alt="Sealforge" className="w-[200px] h-[80px]" />
               </div>
 
               <div className="text-center">
@@ -107,10 +103,11 @@ export default function Home() {
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <input
+                        <Field
                           id="remember_me"
                           name="remember_me"
                           type="checkbox"
+                          as="input"
                           className="h-4 w-4 bg-blue-500 focus:ring-blue-400 border-gray-300 rounded"
                         />
                         <label className="ml-2 block text-sm text-slate-400">
