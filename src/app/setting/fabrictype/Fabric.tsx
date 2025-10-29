@@ -21,6 +21,7 @@ import AddFabricType from "./AddFabricType";
 import AddButton from "../../components/common/AddButton";
 import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import { ROWS_PER_PAGE } from "@/src/types/admin";
 
 const Fabric = () => {
   const [page, setPage] = useState<number>(1);
@@ -37,8 +38,7 @@ const Fabric = () => {
     fetchFabricType();
   }, []);
 
-  const rowsPerPage = 10;
-  const pages = Math.ceil(fabricTypeData?.length / rowsPerPage);
+  const pages = Math.ceil(fabricTypeData?.length / ROWS_PER_PAGE);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
@@ -85,8 +85,8 @@ const Fabric = () => {
       return 0;
     });
 
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+    const start = (page - 1) * ROWS_PER_PAGE;
+    const end = start + ROWS_PER_PAGE;
     return sorted.slice(start, end);
   }, [page, fabricTypeData, sortColumn, sortDirection]);
 
@@ -120,10 +120,11 @@ const Fabric = () => {
           th: "tableHeaderWrapper",
         }}
         bottomContent={
-          <div className="grid grid-cols-2 mt-5">
-            <span className="w-[30%] text-small text-gray-500">
-              Total: {fabricTypeData?.length || 0}
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-small text-gray-500">
+              Items per Page: {items?.length || 0}
             </span>
+
             <Pagination
               isCompact
               showControls
@@ -133,6 +134,9 @@ const Fabric = () => {
               total={pages}
               onChange={(page) => setPage(page)}
             />
+            <span className="text-small text-gray-500">
+              Total Items : {fabricTypeData?.length || 0}
+            </span>
           </div>
         }
       >
@@ -188,30 +192,30 @@ const Fabric = () => {
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
-                     <div className="flex gap-2">
-                        <PermissionGuard
-                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
+                    <div className="flex gap-2">
+                      <PermissionGuard
+                        required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => openEditModal(item?.id)}
                         >
-                          <button
-                            type="button"
-                            onClick={() => openEditModal(item?.id)}
-                          >
-                            <GoPencil color="green" />
-                          </button>
-                        </PermissionGuard>
+                          <GoPencil color="green" />
+                        </button>
+                      </PermissionGuard>
 
-                        <PermissionGuard
-                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
+                      <PermissionGuard
+                        required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
+                      >
+                        <button
+                          type="button"
+                          className="hover:text-red-500 cursor-pointer"
+                          onClick={() => handleOpenDeleteModal(item?.id)}
                         >
-                          <button
-                            type="button"
-                            className="hover:text-red-500 cursor-pointer"
-                            onClick={() => handleOpenDeleteModal(item?.id)}
-                          >
-                            <RiDeleteBin6Line color="red" />
-                          </button>
-                        </PermissionGuard>
-                      </div>
+                          <RiDeleteBin6Line color="red" />
+                        </button>
+                      </PermissionGuard>
+                    </div>
                   )}
                 </TableCell>
               )}

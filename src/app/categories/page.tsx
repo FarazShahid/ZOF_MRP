@@ -19,6 +19,7 @@ import AddCategoires from "./AddCategoires";
 import AddButton from "../components/common/AddButton";
 import PermissionGuard from "../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import { ROWS_PER_PAGE } from "@/src/types/admin";
 
 const InventoryCategories = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -30,11 +31,11 @@ const InventoryCategories = () => {
   const { loading, fetchInventoryCategories, inventoryCategories } =
     useInventoryCategoryStore();
 
-  const rowsPerPage = 15;
-  const pages = Math.ceil(inventoryCategories?.length / rowsPerPage);
+  
+  const pages = Math.ceil(inventoryCategories?.length / ROWS_PER_PAGE);
   const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+    const start = (page - 1) * ROWS_PER_PAGE;
+    const end = start + ROWS_PER_PAGE;
 
     return inventoryCategories?.slice(start, end);
   }, [page, inventoryCategories]);
@@ -75,19 +76,22 @@ const InventoryCategories = () => {
           isHeaderSticky
           aria-label="Client Table with pagination"
           bottomContent={
-            <div className="grid grid-cols-2">
-              <span className="w-[30%] text-small text-gray-500">
-                Total: {items?.length || 0}
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-small text-gray-500">
+               Items per Page: {items?.length || 0}
               </span>
-              <Pagination
-                isCompact
-                showControls
-                showShadow
-                color="secondary"
-                page={page}
-                total={pages}
-                onChange={(page) => setPage(page)}
-              />
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  color="secondary"
+                  page={page}
+                  total={pages}
+                  onChange={(page) => setPage(page)}
+                />
+                <span className="text-small text-gray-500">
+                  Total Items: {inventoryCategories?.length || 0}
+                </span>
             </div>
           }
           classNames={{

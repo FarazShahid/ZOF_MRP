@@ -92,7 +92,7 @@ const page = () => {
                     return <PrintingOptions />;
 
                   default:
-                    return <div>Select an option</div>;
+                    return <Fabric />;
                 }
               })()}
             </main>

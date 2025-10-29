@@ -18,6 +18,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import DeleteColorOptions from "./DeleteColorOptions";
 import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import { ROWS_PER_PAGE } from "@/src/types/admin";
 
 const ColorOptions = () => {
   const [page, setPage] = useState<number>(1);
@@ -31,8 +32,7 @@ const ColorOptions = () => {
     fetchColorOptions();
   }, []);
 
-  const rowsPerPage = 10;
-  const pages = Math.ceil(colorOptions?.length / rowsPerPage);
+  const pages = Math.ceil(colorOptions?.length / ROWS_PER_PAGE);
 
   const handleOpenDeleteModal = (productCatagoryId: number) => {
     setSelectedProductCatId(productCatagoryId);
@@ -43,8 +43,8 @@ const ColorOptions = () => {
 
 
   const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+    const start = (page - 1) * ROWS_PER_PAGE;
+    const end = start + ROWS_PER_PAGE;
 
     return colorOptions?.slice(start, end);
   }, [page, colorOptions]);
@@ -73,9 +73,9 @@ const ColorOptions = () => {
           th: "tableHeaderWrapper",
         }}
         bottomContent={
-          <div className="grid grid-cols-2 mt-5">
-            <span className="w-[30%] text-small text-gray-500">
-              Total: {colorOptions?.length || 0}
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-small text-gray-500">
+              Items per Page: {items?.length || 0}
             </span>
             <Pagination
               isCompact
@@ -86,6 +86,9 @@ const ColorOptions = () => {
               total={pages}
               onChange={(page) => setPage(page)}
             />
+            <span className="text-small text-gray-500">
+              Total Items   : {colorOptions?.length || 0}
+            </span>
           </div>
         }
       >

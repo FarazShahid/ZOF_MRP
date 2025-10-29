@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 
 export const SupplierSchema = Yup.object().shape({
     Name: Yup.string().required('Name is required'),
-    Email: Yup.string().required("Email is required"),
+    Email: Yup.string().email('Invalid email').required("Email is required"),
 })
 
 
