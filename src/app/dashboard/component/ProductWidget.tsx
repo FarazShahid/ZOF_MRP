@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useRef } from "react";
-import { FiShoppingCart, FiPackage } from "react-icons/fi";
+import { FiShoppingCart } from "react-icons/fi";
 import ProductSkeleton from "./ProductSkeleton";
 import ViewMoreButton from "./ViewMoreButton";
 import useDashboardReportsStore from "@/store/useDashboardReportsStore";
@@ -49,7 +49,7 @@ const ProductWidget = () => {
         <span className="dark:text-white text-gray-800">Top products</span>
         <ViewMoreButton path="/product" />
       </div>
-      <div className="space-y-2 h-[290px] overflow-x-auto px-2">
+      <div className="flex flex-col gap-2 h-[290px] overflow-x-auto p-2">
         {isLoading ? (
           <div className="flex flex-col gap-2">
             <ProductSkeleton />
@@ -60,7 +60,7 @@ const ProductWidget = () => {
           topFive.map((item, idx) => {
             return (
               <div
-                className="mt-2 bg-gray-100 dark:bg-[#353535] w-full rounded-2xl p-3 flex items-center gap-4 ring-1 ring-gray-200/60 dark:ring-white/10 transition-all hover:shadow-md hover:-translate-y-0.5"
+                className=" bg-gray-100 dark:bg-[#353535] w-full rounded-2xl p-3 flex items-center gap-4 ring-1 ring-gray-200/60 dark:ring-white/10 transition-all hover:shadow-md hover:-translate-y-0.5"
                 key={item.id}
               >
                 <div
@@ -73,42 +73,12 @@ const ProductWidget = () => {
                 <div className="flex flex-col gap-2 w-full min-w-0">
                   <div className="flex items-center justify-between gap-3">
                     <h6 className="dark:text-white text-gray-800 text-base font-medium truncate">{item.name}</h6>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-200/70 text-gray-700 dark:bg-white/10 dark:text-gray-300">#{idx + 1}</span>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-gray-200/70 text-gray-800 dark:bg-white/10 dark:text-gray-200">
+                    <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-gray-200/70 text-gray-900 dark:bg-white/10">
                       <FiShoppingCart className="text-[12px]" /> {item.type}
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 ring-1 ring-blue-200 dark:bg-blue-400/10 dark:text-blue-300 dark:ring-blue-400/20">
-                      <FiPackage className="text-[12px]" /> {item.qtyLabel}
-                    </span>
                   </div>
-                  {maxQty > 0 ? (
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] text-gray-500">relative volume</span>
-                        <span className="text-[11px] text-gray-700 dark:text-gray-300">
-                          {Math.max(1, Math.round((Number(item.totalQty) / maxQty) * 100))}%
-                        </span>
-                      </div>
-                      <div className="mt-1 h-1.5 w-full rounded bg-gray-200 dark:bg-white/10">
-                        <div
-                          className="h-full rounded bg-blue-500"
-                          style={{ width: `${Math.max(4, Math.min(100, Math.round((Number(item.totalQty) / maxQty) * 100)))}%` }}
-                        />
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-                <div className="ml-auto text-right shrink-0">
-                  <div className="text-sm dark:text-white text-gray-900 font-semibold leading-tight">
-                    {item.orderCount?.toLocaleString?.() ?? item.orderCount}
-                  </div>
-                  <div className="text-[11px] text-gray-500">orders</div>
-                  <div className="text-sm dark:text-white text-gray-900 font-semibold leading-tight mt-1">
-                    {item.totalQty?.toLocaleString?.() ?? item.totalQty}
-                  </div>
-                  <div className="text-[11px] text-gray-500">qty</div>
                 </div>
               </div>
             );

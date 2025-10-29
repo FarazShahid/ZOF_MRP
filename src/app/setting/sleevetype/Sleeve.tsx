@@ -20,6 +20,7 @@ import { GoPencil } from "react-icons/go";
 import AddButton from "../../components/common/AddButton";
 import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import { ROWS_PER_PAGE } from "@/src/types/admin";
 
 const Sleeve = () => {
   const [page, setPage] = useState<number>(1);
@@ -37,8 +38,7 @@ const Sleeve = () => {
     fetchSleeveType();
   }, []);
 
-  const rowsPerPage = 10;
-  const pages = Math.ceil(sleeveTypeData?.length / rowsPerPage);
+  const pages = Math.ceil(sleeveTypeData?.length / ROWS_PER_PAGE);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
@@ -88,8 +88,8 @@ const Sleeve = () => {
       return 0;
     });
 
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+    const start = (page - 1) * ROWS_PER_PAGE;
+    const end = start + ROWS_PER_PAGE;
     return sorted.slice(start, end);
   }, [page, sleeveTypeData, sortColumn, sortDirection]);
 
@@ -124,9 +124,9 @@ const Sleeve = () => {
             th: "tableHeaderWrapper",
           }}
           bottomContent={
-            <div className="grid grid-cols-2 mt-5">
-              <span className="w-[30%] text-small text-gray-500">
-                Total: {sleeveTypeData?.length || 0}
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-small text-gray-500">
+                Items per Page: {items?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -137,6 +137,9 @@ const Sleeve = () => {
                 total={pages}
                 onChange={(page) => setPage(page)}
               />
+              <span className="text-small text-gray-500">
+                Total Items: {sleeveTypeData?.length || 0}
+              </span>
             </div>
           }
         >

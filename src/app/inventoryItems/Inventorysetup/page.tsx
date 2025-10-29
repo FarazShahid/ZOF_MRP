@@ -3,8 +3,6 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
-import PermissionGuard from "../../components/auth/PermissionGaurd";
-import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import { ActiveInventoryModule } from "@/src/types/inventory";
 import { InventorySidebar } from "../Inventorysetupupdate/InventorySidebar";
 import { TableSkel } from "../../components/ui/Skeleton/TableSkel";

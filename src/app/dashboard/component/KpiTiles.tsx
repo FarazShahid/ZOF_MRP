@@ -25,24 +25,25 @@ const KpiTiles: React.FC = () => {
         icon: <FiShoppingCart />,
         title: "orders",
         number: widgets?.totalOrders?.toLocaleString?.() ?? "-",
+        href: "/orders",
       },
       {
         icon: <AiFillProduct />,
         title: "active products",
         number: widgets?.totalProducts?.toLocaleString?.() ?? "-",
-
+        href: "/product",
       },
       {
         icon: <FiPackage />,
         title: "shipments",
         number: widgets?.totalShipments?.toLocaleString?.() ?? "-",
-
+        href: "/shipment",
       },
       {
         icon: <FiUsers />,
         title: "active clients",
         number: widgets?.totalClients?.toLocaleString?.() ?? "-",
-
+        href: "/adminsetting",
       },
     ],
     [widgets]
@@ -56,7 +57,7 @@ const KpiTiles: React.FC = () => {
         ))
       ) : (
         data?.map((d, i) => (
-          <Widget key={i} icon={d.icon} title={d.title} number={d.number} />
+          <Widget key={i} icon={d.icon} title={d.title} number={d.number} href={d.href} />
         ))
       )}
     </div>

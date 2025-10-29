@@ -79,3 +79,5 @@ export const downloadAtIndex = (
   link.click();
   document.body.removeChild(link);
 };
+
+export const ROWS_PER_PAGE = 10;

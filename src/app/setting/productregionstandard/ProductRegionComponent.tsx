@@ -23,6 +23,7 @@ import AddProductRegion from "./AddColorOptions";
 import AddButton from "../../components/common/AddButton";
 import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import { ROWS_PER_PAGE } from "@/src/types/admin";
 
 const ProductRegionComponent = () => {
   const [page, setPage] = useState<number>(1);
@@ -40,8 +41,7 @@ const ProductRegionComponent = () => {
     fetchProductRegions();
   }, []);
 
-  const rowsPerPage = 10;
-  const pages = Math.ceil(productRegions?.length / rowsPerPage);
+  const pages = Math.ceil(productRegions?.length / ROWS_PER_PAGE);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
@@ -88,8 +88,8 @@ const ProductRegionComponent = () => {
       return 0;
     });
 
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+    const start = (page - 1) * ROWS_PER_PAGE;
+    const end = start + ROWS_PER_PAGE;
     return sorted.slice(start, end);
   }, [page, productRegions, sortColumn, sortDirection]);
 
@@ -125,9 +125,9 @@ const ProductRegionComponent = () => {
             th: "tableHeaderWrapper",
           }}
           bottomContent={
-            <div className="grid grid-cols-2 mt-5">
-              <span className="w-[30%] text-small text-gray-500">
-                Total: {productRegions?.length || 0}
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-small text-gray-500">
+                Items per Page: {items?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -138,6 +138,9 @@ const ProductRegionComponent = () => {
                 total={pages}
                 onChange={(page) => setPage(page)}
               />
+              <span className="text-small text-gray-500">
+                Total Items: {productRegions?.length || 0}
+              </span>
             </div>
           }
         >

@@ -23,6 +23,7 @@ import AddPrintingOptions from "./AddPrintingOptions";
 import AddButton from "../../components/common/AddButton";
 import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import { ROWS_PER_PAGE } from "@/src/types/admin";
 
 const PrintingOptions = () => {
   const [page, setPage] = useState<number>(1);
@@ -41,8 +42,8 @@ const PrintingOptions = () => {
     fetchprintingOptions();
   }, []);
 
-  const rowsPerPage = 10;
-  const pages = Math.ceil(printingOptions?.length / rowsPerPage);
+  
+  const pages = Math.ceil(printingOptions?.length / ROWS_PER_PAGE);
 
   const openAddModal = () => setIsAddModalOpen(true);
 
@@ -89,8 +90,8 @@ const PrintingOptions = () => {
       return 0;
     });
 
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+    const start = (page - 1) * ROWS_PER_PAGE;
+    const end = start + ROWS_PER_PAGE;
     return sorted.slice(start, end);
   }, [page, printingOptions, sortColumn, sortDirection]);
 
@@ -125,9 +126,9 @@ const PrintingOptions = () => {
             th: "tableHeaderWrapper",
           }}
           bottomContent={
-            <div className="grid grid-cols-2 mt-5">
-              <span className="w-[30%] text-small text-gray-500">
-                Total: {printingOptions?.length || 0}
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-small text-gray-500">
+                Items per Page: {items?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -138,6 +139,9 @@ const PrintingOptions = () => {
                 total={pages}
                 onChange={(page) => setPage(page)}
               />
+              <span className="text-small text-gray-500">
+                Total Items: {printingOptions?.length || 0}
+              </span>
             </div>
           }
         >

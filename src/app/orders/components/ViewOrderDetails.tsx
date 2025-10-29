@@ -18,6 +18,8 @@ import OrderItemsCard from "../../components/order/view order/OrderItemsCard";
 import { OrderInfoSkeleton } from "../../components/order/view order/OrderInfoSkeleton";
 import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import usePermissionStore from "@/store/usePermissionStore";
+import usePermission from "@/src/hooks/usePermission";
 
 const OrderItemCard = dynamic(
   () => import("../../components/order/view order/OrderItemCard"),
@@ -38,6 +40,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const [downloading, setDownloading] = useState<boolean>(false);
   const [openUpdateStatusModal, setOpenUpdateStatusModal] =
     useState<boolean>(false);
+  const hasChangeStatusPermission = usePermission(PERMISSIONS_ENUM.ORDER.UPDATE);
 
   const {
     changeOrderStatus,
@@ -70,9 +73,11 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   useEffect(() => {
     if (orderId) {
       getOrderById(orderId);
-      getOrderStatusLog(orderId);
+      if(hasChangeStatusPermission){
+        getOrderStatusLog(orderId);
+      }
     }
-  }, [orderId, refetchData]);
+  }, [orderId, refetchData, hasChangeStatusPermission]);
 
   return (
     <div className="space-y-5 p-3">

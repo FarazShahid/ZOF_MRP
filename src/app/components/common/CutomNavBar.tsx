@@ -85,7 +85,7 @@ const CutomNavBar = () => {
       ref={navRef}
     >
       <div className="w-32">
-        <img src="/Logo-Sealforge.svg" alt="Sealforge" className="dark:hidden" />
+        <img src="/Logo-SealForge-Dark.svg" alt="Sealforge" className="dark:hidden" />
         <img
           src="/Logo-SealForge-Light.svg"
           alt="Sealforge dark"

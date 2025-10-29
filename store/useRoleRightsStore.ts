@@ -201,9 +201,10 @@ const useRoleRightsStore = create<StoreState>((set, get) => ({
       } else {
         set({ loading: false, error: null, isResolved: true });
         toast.success("Role deleted successfully");
-        if (onSuccess) onSuccess();
+       
         await get().fetchRoles();
       }
+      if (onSuccess) onSuccess();
     } catch (error) {
       console.error(error);
       set({ error: "Failed to delete role", loading: false });

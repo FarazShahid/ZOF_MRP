@@ -26,6 +26,7 @@ import { useSearch } from "@/src/hooks/useSearch";
 import { CiSearch } from "react-icons/ci";
 import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import { ROWS_PER_PAGE } from "@/src/types/admin";
 
 const ProductSizeMeasurements = () => {
   const [page, setPage] = useState<number>(1);
@@ -48,15 +49,15 @@ const ProductSizeMeasurements = () => {
     "SizeOptionName",
     "ClientName",
   ]);
-  const rowsPerPage = 10;
+
   const total = filtered?.length ?? 0;
-  const rawPages = Math.ceil(total / rowsPerPage);
+  const rawPages = Math.ceil(total / ROWS_PER_PAGE);
   const pages = Math.max(1, rawPages);
 
   const items = useMemo(() => {
     const safePage = Math.min(page, pages);
-    const start = (safePage - 1) * rowsPerPage;
-    return filtered?.slice(start, start + rowsPerPage) ?? [];
+    const start = (safePage - 1) * ROWS_PER_PAGE;
+    return filtered?.slice(start, start + ROWS_PER_PAGE) ?? [];
   }, [filtered, page, pages]);
 
   // reset page on new search
@@ -132,9 +133,9 @@ const ProductSizeMeasurements = () => {
             th: "tableHeaderWrapper",
           }}
           bottomContent={
-            <div className="grid grid-cols-2 mt-5">
-              <span className="w-[30%] text-small text-gray-500">
-                Total: {sizeMeasurement?.length || 0}
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-small text-gray-500">
+                Items per Page: {items?.length || 0}
               </span>
               <Pagination
                 isCompact
@@ -145,6 +146,9 @@ const ProductSizeMeasurements = () => {
                 total={pages}
                 onChange={(page) => setPage(page)}
               />
+              <span className="text-small text-gray-500">
+                Total Items: {sizeMeasurement?.length || 0}
+              </span>
             </div>
           }
         >

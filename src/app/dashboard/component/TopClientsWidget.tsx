@@ -32,10 +32,10 @@ const TopClientsWidget: React.FC = () => {
   return (
     <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-3 dark:border-[#1d2939] dark:from-white/[0.05] dark:to-transparent shadow-sm space-y-3">
       <div className="flex items-center justify-between">
-        <span className="dark:text-white text-gray-900 font-medium">Top clients</span>
-        <ViewMoreButton path="/clients" />
+        <span className="text-gray-900 font-medium">Top clients</span>
+        <ViewMoreButton path="/adminsetting" />
       </div>
-      <div className="space-y-2 h-[290px] overflow-x-auto px-1 pt-1">
+      <div className="flex flex-col gap-2 h-[290px] overflow-x-auto p-2">
         {(!topClients || topClients?.length === 0) && loading ? (
           Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="rounded-2xl bg-gray-100 p-3 ring-1 ring-gray-200/60 dark:bg-white/[0.06] dark:ring-white/10">
@@ -54,13 +54,13 @@ const TopClientsWidget: React.FC = () => {
               className="rounded-2xl bg-gray-100 p-3 ring-1 ring-gray-200/60 dark:bg-white/[0.06] dark:ring-white/10 transition-all hover:shadow-md hover:-translate-y-0.5"
             >
               <div className="flex items-center gap-2">
-                <span className="p-2 rounded-lg bg-gray-200/80 dark:bg-white/10 text-gray-700 dark:text-gray-200">
+                <span className="p-2 rounded-lg bg-gray-200/80 dark:bg-white/10 text-gray-900">
                   <FiUser />
                 </span>
                 <p className="dark:text-white text-gray-900 font-medium truncate">{c.name}</p>
               </div>
-              <div className="mt-2 flex items-center gap-2 flex-wrap">
-                <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-gray-200/70 text-gray-800 dark:bg-white/10 dark:text-gray-200">
+              <div className=" flex items-center gap-2 flex-wrap">
+                <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-gray-200/70 text-gray-900 dark:bg-white/10">
                   <FiShoppingCart className="text-[12px]" /> {c.orders} total
                 </span>
                 <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 ring-1 ring-amber-200 dark:bg-amber-400/10 dark:text-amber-300 dark:ring-amber-400/20">
