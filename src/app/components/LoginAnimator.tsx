@@ -11,7 +11,7 @@ const LoginAnimator = () => {
           <Image alt="MRP" src={Logo} />
         </div>
         <div className="sm:text-sm xl:text-md text-gray-200 font-normal">
-          Seal Forge is a cutting-edge Material Requirements Planning software tailored for textile businesses. It streamlines fabric
+          Seals Forge is a cutting-edge Material Requirements Planning software tailored for textile businesses. It streamlines fabric
           item management, order processing, and production planning with a
           focus on efficiency and scalability.
         </div>
