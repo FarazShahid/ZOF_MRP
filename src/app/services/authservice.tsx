@@ -140,7 +140,8 @@ const scheduleTokenRefresh = () => {
   if (delay <= 0) return;
   refreshTimeoutId = window.setTimeout(() => {
     void refreshAccessToken().catch(() => {
-      // ignore here; requests will handle auth failures
+      // If refresh failed (likely expired), clear stored tokens
+      clearTokens();
     });
   }, delay);
 };
@@ -193,6 +194,10 @@ export const refreshAccessToken = async (): Promise<string | void> => {
       );
 
       if (!response.ok) {
+        if (response.status === 401 || response.status === 400) {
+          // refresh token invalid/expired – clear stored credentials
+          clearTokens();
+        }
         throw new Error("Failed to refresh token");
       }
 
@@ -322,7 +327,10 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
             return;
           }
         } catch {
-          // fall through to redirect
+          // If refresh failed (likely expired), clear stored tokens and state
+          clearTokens();
+          setToken(undefined);
+          setIsAuthenticated(false);
         }
       }
 
@@ -377,6 +385,8 @@ export const fetchWithAuth = async (
       // ignore and fall through to redirect
     }
     console.error("Unauthorized! Redirecting to login.");
+    // Ensure any stale tokens are cleared if unauthorized persists
+    clearTokens();
     window.location.href = "/";
   }
 
