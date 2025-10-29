@@ -53,7 +53,7 @@ const ShipmentsWidget: React.FC = () => {
           <div className="p-2 rounded-xl bg-gray-100 ring-1 ring-gray-200/60 dark:ring-white/10 dark:bg-white/[0.06]"><FiTruck /></div>
           <span className="dark:text-white text-gray-900 font-medium">Shipments</span>
         </div>
-        <ViewMoreButton path="/shipments" />
+        <ViewMoreButton path="/shipment" />
       </div>
       <div className="grid grid-cols-2 gap-3">
         {(!summary && loading) ? (

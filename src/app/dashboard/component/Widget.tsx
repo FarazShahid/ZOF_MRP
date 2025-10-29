@@ -1,14 +1,16 @@
+import Link from "next/link";
 import React, { FC } from "react";
 
 interface WidgetProps {
   icon: React.ReactNode;
   title: string;
   number: string;
+  href: string;
 }
 
-const Widget: FC<WidgetProps> = ({ icon, title, number }) => {
+const Widget: FC<WidgetProps> = ({ icon, title, number, href }) => {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-white/60 bg-white/70 p-4 backdrop-blur-md shadow-sm ring-1 ring-black/5 transition-all hover:-translate-y-0.5 hover:shadow-xl dark:border-white/10 dark:bg-white/[0.04] dark:ring-white/5">
+    <Link href={href} className="group relative overflow-hidden rounded-2xl border border-white/60 bg-white/70 p-4 backdrop-blur-md shadow-sm ring-1 ring-black/5 transition-all hover:-translate-y-0.5 hover:shadow-xl dark:border-white/10 dark:bg-white/[0.04] dark:ring-white/5">
       {/* soft ambient accents */}
       <div className="pointer-events-none absolute -top-10 right-0 h-28 w-28 rounded-full bg-gradient-to-tr from-indigo-400/10 to-fuchsia-400/10 blur-2xl" />
       <div className="pointer-events-none absolute -bottom-16 -left-8 h-32 w-32 rounded-full bg-gradient-to-tr from-cyan-400/10 to-violet-400/10 blur-2xl" />
@@ -34,7 +36,7 @@ const Widget: FC<WidgetProps> = ({ icon, title, number }) => {
 
       {/* bottom glow */}
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-    </div>
+    </Link>
   );
 };
 

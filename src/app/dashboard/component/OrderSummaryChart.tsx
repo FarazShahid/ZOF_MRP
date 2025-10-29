@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import useDashboardReportsStore from "@/store/useDashboardReportsStore";
+import { useTheme } from "../../context/ThemeContext";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -11,6 +12,8 @@ const OrderSummaryChart = () => {
   const summary = useDashboardReportsStore((s) => s?.orderSummaryByMonth);
   const loading = useDashboardReportsStore((s) => s?.loading);
   const fetchOrderSummaryByMonth = useDashboardReportsStore((s) => s?.fetchOrderSummaryByMonth);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   const hasRequested = useRef(false);
   useEffect(() => {
@@ -51,6 +54,7 @@ const OrderSummaryChart = () => {
       background: "transparent",
       toolbar: { show: false },
     },
+    theme: { mode: isDark ? "dark" : "light" },
     plotOptions: {
       bar: {
         horizontal: false,
@@ -68,27 +72,27 @@ const OrderSummaryChart = () => {
       categories,
       labels: {
         style: {
-          colors: "#CBD5E1",
+          colors: isDark ? "#CBD5E1" : "#64748B",
         },
       },
     },
     yaxis: {
       labels: {
         style: {
-          colors: "#CBD5E1",
+          colors: isDark ? "#CBD5E1" : "#64748B",
         },
       },
     },
-    legend: { show: true, position: "top", labels: { colors: "#CBD5E1" } },
+    legend: { show: true, position: "top", labels: { colors: isDark ? "#CBD5E1" : "#334155" } },
     fill: {
       opacity: 1,
     },
     colors: ["#3B82F6", "#10B981"],
     tooltip: {
-      theme: "dark",
+      theme: isDark ? "dark" : "light",
     },
     grid: {
-      borderColor: "#334155",
+      borderColor: isDark ? "#334155" : "#E5E7EB",
     },
   };
 
