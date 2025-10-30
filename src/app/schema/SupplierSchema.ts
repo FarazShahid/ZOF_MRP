@@ -2,7 +2,20 @@ import * as Yup from 'yup';
 
 export const SupplierSchema = Yup.object().shape({
     Name: Yup.string().required('Name is required'),
-    Email: Yup.string().email('Invalid email').required("Email is required"),
+    Email: Yup.string()
+        .trim()
+        .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i, 'Invalid email')
+        .required("Email is required"),
+    Phone: Yup.string()
+        .trim()
+        .test(
+            'phone-allowed-chars',
+            'Phone can include numbers, + - ( ) and spaces',
+            (value) => {
+                if (!value || value.trim() === '') return true;
+                return /^(?=.*\d)[+()\-\s\d]+$/.test(value);
+            }
+        ),
 })
 
 

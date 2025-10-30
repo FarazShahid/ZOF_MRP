@@ -86,6 +86,7 @@ const AddPrintingOptions: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="Name"
                               type="text"
+                              maxLength={50}
                               placeholder="Enter Printing Option"
                               className="formInputdefault bg-gray-100"
                             />

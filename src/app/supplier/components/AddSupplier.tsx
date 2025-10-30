@@ -103,16 +103,23 @@ const AddSupplier: React.FC<AddComponentProps> = ({
                             <Field
                               name="Phone"
                               type="text"
+                              // inputMode="numeric"
+                              // pattern="[0-9]*"
                               maxLength={100}
                               placeholder="Enter Phone No."
                               className="formInputdefault border-1"
+                            />
+                            <ErrorMessage
+                              name="Phone"
+                              component="div"
+                              className="text-red-400 text-sm"
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
                             <Label isRequired={true} label="Email" />
                             <Field
                               name="Email"
-                              type="text"
+                              type="email"
                               maxLength={100}
                               placeholder="Enter Email"
                               className="formInputdefault border-1"
