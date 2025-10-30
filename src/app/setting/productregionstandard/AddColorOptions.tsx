@@ -84,7 +84,7 @@ const AddProductRegion: React.FC<AddClientComponentProps> = ({
                             <Field
                               name="Name"
                               type="text"
-                               maxLength={100}
+                               maxLength={50}
                               placeholder="Enter Type"
                               className="formInputdefault bg-gray-100"
                             />

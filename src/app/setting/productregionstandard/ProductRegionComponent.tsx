@@ -209,6 +209,8 @@ const ProductRegionComponent = () => {
             ))}
           </TableBody>
         </Table>
+
+        
         <AddProductRegion
           isOpen={isAddModalOpen}
           closeAddModal={closeAddModal}
