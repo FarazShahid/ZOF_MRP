@@ -90,6 +90,29 @@ export interface ProductAvailableColors {
   ImageId: number;
 }
 
+// Attachments model for product gallery/doc center integrations
+export interface ProductAttachmentItem {
+  mediaId: number;
+  fileName: string;
+  fileType: string;
+  fileUrl: string;
+  tag: string | null;
+}
+
+export interface ProductAttachments {
+  productId: number;
+  productName: string;
+  description: string;
+  clientId: number;
+  clientName: string;
+  attachments: ProductAttachmentItem[];
+}
+
+interface GetProductAttachmentsResponse {
+  data: ProductAttachments[];
+  message?: string;
+}
+
 interface AddProduct {
   ProductCategoryId: number;
   FabricTypeId: number;
@@ -107,6 +130,7 @@ interface CategoryState {
   productAvailableColors: ProductAvailableColors[];
   availableSizes: AvailableSizes[];
   availablePrintingOptions: PrintingOptionType[];
+  productAttachments: ProductAttachments[];
   loading: boolean;
   error: string | null;
 
@@ -118,6 +142,7 @@ interface CategoryState {
     id: number
   ) => Promise<PrintingOptionType[] | null>;
   fetchAvailableSizes: (id: number) => Promise<AvailableSizes[] | null>;
+  fetchProductAttachments: () => Promise<void>;
   getProductById: (id: number) => Promise<void>;
   addProduct: (
     productType: AddProduct
@@ -143,6 +168,7 @@ const useProductStore = create<CategoryState>((set, get) => ({
   productAvailableColors: [],
   availableSizes: [],
   availablePrintingOptions: [],
+  productAttachments: [],
   loading: false,
   error: null,
 
@@ -162,6 +188,26 @@ const useProductStore = create<CategoryState>((set, get) => ({
       set({ products: data.data, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
+    }
+  },
+
+  fetchProductAttachments: async () => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/with-attachments/all`
+      );
+      if (!response.ok) {
+        set({ loading: false });
+        const error = await response.json();
+        toast.error(error.message || "Failed to fetch product attachments.");
+        return;
+      }
+      const result: GetProductAttachmentsResponse = await response.json();
+      set({ productAttachments: result.data || [], loading: false });
+    } catch (error) {
+      set({ loading: false, error: "Failed to fetch product attachments" });
+      toast.error("Failed to fetch product attachments");
     }
   },
 
