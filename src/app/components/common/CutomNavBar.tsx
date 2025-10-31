@@ -6,10 +6,12 @@ import { RiDashboard2Line } from "react-icons/ri";
 import { FaClipboardList } from "react-icons/fa";
 import { AiOutlineProduct } from "react-icons/ai";
 import { IoStorefrontOutline } from "react-icons/io5";
+import { MdPhotoLibrary } from "react-icons/md";
 import { GiCargoShip } from "react-icons/gi";
 import { IoIosArrowDown } from "react-icons/io";
 import UserDropdown from "../header/UserDropdown";
 import { ThemeToggleButton } from "./ThemeToggleButton";
+import { TfiGallery } from "react-icons/tfi";
 
 const CutomNavBar = () => {
   const pathname = usePathname();
@@ -37,6 +39,13 @@ const CutomNavBar = () => {
       label: "Product",
       icon: <AiOutlineProduct size={14} />,
       route: "/product",
+      isNested: false,
+    },
+    {
+      id: 6,
+      label: "Gallery",
+      icon: <TfiGallery   size={16} />,
+      route: "/gallery",
       isNested: false,
     },
     {
