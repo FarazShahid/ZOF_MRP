@@ -8,6 +8,7 @@ interface ProductTileProps {
   imageSrc?: string;
   linkUrl?: string;
   onClick?: () => void;
+  fit?: "cover" | "contain";
 }
 
 const fallbackImages = [
@@ -23,7 +24,7 @@ function pickImageKey(key: string): string {
   return fallbackImages[idx];
 }
 
-const ProductTile = ({ name, category, imageSrc, linkUrl, onClick }: ProductTileProps) => {
+const ProductTile = ({ name, category, imageSrc, linkUrl, onClick, fit = "cover" }: ProductTileProps) => {
   const src = imageSrc || pickImageKey(name);
   const fileType = (() => {
     try {
@@ -50,7 +51,7 @@ const ProductTile = ({ name, category, imageSrc, linkUrl, onClick }: ProductTile
           src={src}
           alt={name}
           fill
-          className="object-cover transform transition-transform duration-300 group-hover:scale-[1.02]"
+          className={`${fit === "contain" ? "object-contain p-2" : "object-cover"} transform transition-transform duration-300 group-hover:scale-[1.02]`}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         {/* Bottom fade for legible text */}
