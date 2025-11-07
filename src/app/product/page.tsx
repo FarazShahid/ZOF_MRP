@@ -9,7 +9,7 @@ const page = () => {
     <AdminDashboardLayout>
       <PermissionGuard required={PERMISSIONS_ENUM.PRODUCTS.VIEW}>
         <div className="flex flex-col gap-4">
-          <ProductTabs />
+          {/* <ProductTabs /> */}
           <ProductModule />
         </div>
       </PermissionGuard>

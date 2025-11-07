@@ -159,7 +159,7 @@ const GalleryPage = () => {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search products… (press /)"
+                  placeholder="Search products…"
                   className="w-full text-sm bg-transparent pl-9 pr-14 py-2 rounded-md border border-gray-200 dark:border-gray-700 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40 outline-none"
                 />
                 {query ? (
@@ -176,7 +176,6 @@ const GalleryPage = () => {
                     </svg>
                   </button>
                 ) : null}
-                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 border border-gray-200 dark:border-gray-700 rounded px-1.5 py-0.5">/</span>
               </div>
 
               <div className="relative" ref={clientMenuRef}>
