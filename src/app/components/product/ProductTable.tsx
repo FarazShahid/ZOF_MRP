@@ -6,7 +6,6 @@ import { Product } from "@/store/useProductStore";
 import { TbStatusChange } from "react-icons/tb";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
-import ViewProductDetails from "./ViewProductDetails";
 
 interface Props {
   products: Product[];
@@ -20,8 +19,6 @@ const ProductTable: React.FC<Props> = ({
   onDelete,
 }) => {
   const router = useRouter();
-  const [isViewOpen, setIsViewOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString("en-US", {
@@ -31,10 +28,6 @@ const ProductTable: React.FC<Props> = ({
     });
 
   const handleEdit = (id: number) => router.push(`/product/editproduct/${id}`);
-  const handleView = (id: number) => {
-    setSelectedId(id);
-    setIsViewOpen(true);
-  };
 
   return (
     <div className="rounded-lg border border-slate-200 dark:border-gray-50 overflow-hidden">
@@ -115,7 +108,7 @@ const ProductTable: React.FC<Props> = ({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleView(p.Id);
+                          router.push(`/product/${p.Id}`);
                         }}
                         className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                         title="View"
@@ -178,11 +171,6 @@ const ProductTable: React.FC<Props> = ({
           </tbody>
         </table>
       </div>
-      <ViewProductDetails
-        isOpen={isViewOpen}
-        productId={selectedId}
-        onClose={() => setIsViewOpen(false)}
-      />
     </div>
   );
 };

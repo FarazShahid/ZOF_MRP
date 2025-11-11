@@ -54,8 +54,11 @@ interface GetProductByIdResponse {
 interface ProductById {
   Id: string;
   ClientId: number;
+  ClientName: string;
   ProductCategoryId: number;
   FabricTypeId: number;
+  FabricName: string;
+  FabricType: string
   Name: string;
   Description: string;
   CreatedOn: string;
@@ -63,12 +66,17 @@ interface ProductById {
   UpdatedOn: string;
   UpdatedBy: string;
   printingOptions: [{ PrintingOptionId: number }];
-  productColors: [{ Id: number; colorId: number; ImageId: string }];
+  productColors: [{
+    Id: number; colorId: number; ColorName: string;
+    ImageId: string
+  }];
   productDetails: [
     {
       Id: number;
       ProductCutOptionId: number;
+      OptionProductCutOptions: string;
       SleeveTypeId: number;
+      SleeveTypeName: string;
     }
   ];
   productSizes: [{ Id: number; sizeId: number }];

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import useProductStore from "@/store/useProductStore";
 import Lightbox from "@/src/app/components/gallery/Lightbox";
+import Link from "next/link";
 
 const GalleryPage = () => {
   const [selectedClientId, setSelectedClientId] = useState<number | "all">("all");
@@ -369,6 +370,17 @@ const GalleryPage = () => {
                         <path d="M10 14 21 3" />
                       </svg>
                     </a>
+                    <Link
+                      href={`/product/${e.productId}`}
+                      onClick={(ev) => ev.stopPropagation()}
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-md bg-black/30 hover:bg-black/40 text-white backdrop-blur-sm"
+                      title="Open product details"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    </Link>
                   </div>
                 </div>
               ))}
