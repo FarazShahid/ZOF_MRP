@@ -251,14 +251,14 @@ const ProductDetailPage = () => {
                     <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                       <div className="flex items-center gap-2">
                         <CgAttachment />
-                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Downloads</span>
+                        <span className="text-sm font-bold text-gray-900 uppercase tracking-wider">Downloads</span>
                       </div>
                       <span className="text-xs text-slate-500">{otherDocs.length} files</span>
                     </div>
                     <div className="p-4 space-y-2">
                       {otherDocs.map((attachment: any, index: number) => (
                         <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
-                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                          <span className="text-sm font-medium text-gray-900 truncate">
                             {attachment.fileName}.{attachment.fileType}
                           </span>
                           <button
