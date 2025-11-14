@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { GetClientsType } from "@/store/useClientStore";
 import { getInitials } from "../users/getRoleColor";
 import { StatusBadge } from "../common/StatusBadge";
@@ -22,7 +23,7 @@ const CustomerCard: React.FC<CardProps> = ({
   return (
     <div
       key={customer.Id}
-      className=" rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+      className=" rounded-lg border border-gray-200 bg-gray-50 p-6 hover:shadow-md transition-shadow cursor-pointer"
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -49,22 +50,16 @@ const CustomerCard: React.FC<CardProps> = ({
           <Mail className="w-4 h-4" />
           {customer.Email}
         </div>
-        {/* <div className="flex items-center justify-between pt-2">
-          <span className="text-sm font-medium text-gray-900">
-            0 Total Orders
-          </span>
-          <span className="text-xs text-gray-500">0 in progress</span>
-        </div> */}
       </div>
 
       <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
-        {/* <button
-          onClick={() => onCustomerClick(customer)}
-          className="flex items-center space-x-1 px-3 py-1.5 text-sm text-slate-600 bg-slate-200 rounded-md transition-colors"
+        <Link
+          href={`/client/${customer.Id}`}
+          className="flex items-center space-x-1 px-3 py-1.5 text-sm text-slate-600 bg-slate-200 rounded-md transition-colors hover:bg-slate-300"
         >
           <Eye className="w-4 h-4" />
           <span>View</span>
-        </button> */}
+        </Link>
 
         <PermissionGuard required={PERMISSIONS_ENUM.CLIENTS.UPDATE}>
           <button

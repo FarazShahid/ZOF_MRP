@@ -8,6 +8,7 @@ import Link from "next/link";
 
 const GalleryPage = () => {
   const [selectedClientId, setSelectedClientId] = useState<number | "all">("all");
+  const [selectedProductId, setSelectedProductId] = useState<number | "all">("all");
   const [query, setQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [clientMenuOpen, setClientMenuOpen] = useState(false);
@@ -16,6 +17,12 @@ const GalleryPage = () => {
   const clientButtonRef = useRef<HTMLButtonElement | null>(null);
   const clientPanelRef = useRef<HTMLDivElement | null>(null);
   const [clientPanelPos, setClientPanelPos] = useState<{ left: number; top: number; width: number }>({ left: 0, top: 0, width: 288 });
+  const [productMenuOpen, setProductMenuOpen] = useState(false);
+  const [productSearch, setProductSearch] = useState("");
+  const productMenuRef = useRef<HTMLDivElement | null>(null);
+  const productButtonRef = useRef<HTMLButtonElement | null>(null);
+  const productPanelRef = useRef<HTMLDivElement | null>(null);
+  const [productPanelPos, setProductPanelPos] = useState<{ left: number; top: number; width: number }>({ left: 0, top: 0, width: 288 });
 
   const [density, setDensity] = useState<"comfortable" | "compact">("comfortable");
 
@@ -33,9 +40,12 @@ const GalleryPage = () => {
   useEffect(() => {
     const onClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
-      const insideButton = clientMenuRef.current?.contains(target);
-      const insidePanel = clientPanelRef.current?.contains(target);
-      if (!insideButton && !insidePanel) setClientMenuOpen(false);
+      const insideClientButton = clientMenuRef.current?.contains(target);
+      const insideClientPanel = clientPanelRef.current?.contains(target);
+      if (!insideClientButton && !insideClientPanel) setClientMenuOpen(false);
+      const insideProductButton = productMenuRef.current?.contains(target);
+      const insideProductPanel = productPanelRef.current?.contains(target);
+      if (!insideProductButton && !insideProductPanel) setProductMenuOpen(false);
     };
     document.addEventListener("mousedown", onClickOutside);
     return () => document.removeEventListener("mousedown", onClickOutside);
@@ -80,6 +90,29 @@ const GalleryPage = () => {
     };
   }, [clientMenuOpen]);
 
+  const updateProductPanelPosition = () => {
+    const btn = productButtonRef.current;
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    setProductPanelPos({
+      left: rect.right - 288,
+      top: rect.bottom + 8,
+      width: 288,
+    });
+  };
+
+  useEffect(() => {
+    if (!productMenuOpen) return;
+    updateProductPanelPosition();
+    const onWin = () => updateProductPanelPosition();
+    window.addEventListener("resize", onWin);
+    window.addEventListener("scroll", onWin, true);
+    return () => {
+      window.removeEventListener("resize", onWin);
+      window.removeEventListener("scroll", onWin, true);
+    };
+  }, [productMenuOpen]);
+
   const imageTypes = useMemo(() => new Set(["png","jpg","jpeg","gif","webp","svg","bmp","tiff","avif"]), []);
 
   type ImageEntry = { key: string; productId: number; productName: string; clientId: number; clientName: string; fileName: string; fileUrl: string };
@@ -118,20 +151,36 @@ const GalleryPage = () => {
     return counts;
   }, [allImageEntries]);
 
+  const productOptions = useMemo(() => {
+    const map = new Map<number, string>();
+    for (const e of allImageEntries) map.set(e.productId, e.productName);
+    return Array.from(map.entries())
+      .map(([id, name]) => ({ id, name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [allImageEntries]);
+
+  const productCounts = useMemo(() => {
+    const counts = new Map<number, number>();
+    for (const e of allImageEntries) counts.set(e.productId, (counts.get(e.productId) || 0) + 1);
+    return counts;
+  }, [allImageEntries]);
+
   const filteredImages = useMemo(() => {
     let result = allImageEntries;
     if (selectedClientId !== "all") result = result.filter((e) => e.clientId === selectedClientId);
+    if (selectedProductId !== "all") result = result.filter((e) => e.productId === selectedProductId);
     if (query.trim()) {
       const q = query.toLowerCase();
       result = result.filter((e) => e.productName.toLowerCase().includes(q) || e.fileName.toLowerCase().includes(q));
     }
     return result;
-  }, [allImageEntries, selectedClientId, query]);
+  }, [allImageEntries, selectedClientId, selectedProductId, query]);
 
   const isLoading = storeLoading;
 
   const resetFilters = () => {
     setSelectedClientId("all");
+    setSelectedProductId("all");
     setQuery("");
   };
 
@@ -244,6 +293,71 @@ const GalleryPage = () => {
                 )}
               </div>
 
+              <div className="relative" ref={productMenuRef}>
+                <button
+                  type="button"
+                  ref={productButtonRef}
+                  onClick={() => setProductMenuOpen((v) => !v)}
+                  aria-haspopup="listbox"
+                  aria-expanded={productMenuOpen}
+                  className="inline-flex items-center gap-2 text-sm px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-neutral-800"
+                >
+                  <span className="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                  {selectedProductId === "all"
+                    ? "Product: All"
+                    : `Product: ${productOptions.find((p) => p.id === selectedProductId)?.name || selectedProductId}`}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`${productMenuOpen ? "rotate-180" : ""} transition-transform`}>
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                {productMenuOpen && createPortal(
+                  <div
+                    ref={productPanelRef}
+                    style={{ position: "fixed", left: productPanelPos.left, top: productPanelPos.top, width: productPanelPos.width, zIndex: 10000 }}
+                    className="max-h-96 overflow-hidden rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-900 shadow-xl"
+                  >
+                    <div className="p-2 border-b border-gray-100 dark:border-neutral-800">
+                      <input
+                        type="text"
+                        value={productSearch}
+                        onChange={(e) => setProductSearch(e.target.value)}
+                        placeholder="Search products…"
+                        className="w-full text-sm bg-transparent px-2 py-1.5 rounded-md border border-gray-200 dark:border-gray-700"
+                      />
+                    </div>
+                    <div className="max-h-72 overflow-auto">
+                      <button
+                        className={`w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-neutral-800 ${selectedProductId === "all" ? "bg-emerald-50 dark:bg-emerald-900/20" : ""}`}
+                        onClick={() => { setSelectedProductId("all"); setProductMenuOpen(false); }}
+                      >
+                        <span>All products</span>
+                        <span className="text-[11px] text-gray-500">{allImageEntries.length}</span>
+                      </button>
+                      {productOptions
+                        .filter((p) => p.name.toLowerCase().includes(productSearch.toLowerCase()))
+                        .map((p) => (
+                          <button
+                            key={p.id}
+                            className={`w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-neutral-800 ${selectedProductId === p.id ? "bg-emerald-50 dark:bg-emerald-900/20" : ""}`}
+                            onClick={() => { setSelectedProductId(p.id); setProductMenuOpen(false); }}
+                          >
+                            <span className="truncate">{p.name}</span>
+                            <span className="flex items-center gap-1">
+                              {selectedProductId === p.id ? (
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-600">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                              ) : null}
+                              <span className="text-[11px] text-gray-500">{productCounts.get(p.id) || 0}</span>
+                            </span>
+                          </button>
+                        ))}
+                    </div>
+                  </div>,
+                  document.body
+                )}
+              </div>
+
               <div className="hidden md:flex items-center gap-1 border border-gray-200 dark:border-gray-700 rounded-md p-0.5">
                 <button
                   type="button"
@@ -264,7 +378,6 @@ const GalleryPage = () => {
               </div>
 
               
-
               <div className="ml-auto flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-gray-100 dark:bg-neutral-800 border border-gray-200 dark:border-gray-700">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
@@ -273,7 +386,7 @@ const GalleryPage = () => {
                   </svg>
                   {isLoading ? "Loading…" : `${filteredImages.length} images`}
                 </span>
-                {(selectedClientId !== "all" || query) && (
+                {(selectedClientId !== "all" || selectedProductId !== "all" || query) && (
                   <button
                     type="button"
                     onClick={resetFilters}
@@ -286,11 +399,16 @@ const GalleryPage = () => {
             </div>
           </div>
 
-          {(selectedClientId !== "all" || query) ? (
+          {(selectedClientId !== "all" || selectedProductId !== "all" || query) ? (
             <div className="flex flex-wrap items-center gap-2 -mt-2">
               {selectedClientId !== "all" ? (
                 <span className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60">
                   Client: {clientOptions.find((c) => c.id === selectedClientId)?.name || selectedClientId}
+                </span>
+              ) : null}
+              {selectedProductId !== "all" ? (
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
+                  Product: {productOptions.find((p) => p.id === selectedProductId)?.name || selectedProductId}
                 </span>
               ) : null}
               {query ? (

@@ -143,6 +143,7 @@ interface CategoryState {
   error: string | null;
 
   fetchProducts: () => Promise<void>;
+  getProductByClientId: (clientId: number) => Promise<void>;
   fetchProductAvailableColors: (
     id: number
   ) => Promise<ProductAvailableColors[] | null>;
@@ -196,6 +197,26 @@ const useProductStore = create<CategoryState>((set, get) => ({
       set({ products: data.data, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
+    }
+  },
+
+  getProductByClientId: async (clientId: number) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/client/${clientId}`
+      );
+      if (!response.ok) {
+        set({ loading: false, error: "Error Fetching Data" });
+        const error = await response.json();
+        toast.error(error.message || "Fail to fetch data.");
+        return;
+      }
+      const data: GetProductsResponse = await response.json();
+      set({ products: data.data, loading: false });
+    } catch (error) {
+      set({ loading: false, error: "Error Fetching Data" });
+      toast.error("Fail to fetch data.");
     }
   },
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, UserCheck, Calendar, Truck, Shield } from 'lucide-react';
+import { Users, Calendar, Truck, Shield } from 'lucide-react';
 import { ActiveModule } from '@/src/types/admin';
 import { PERMISSIONS_ENUM } from '@/src/types/rightids';
 import PermissionGuard from '../auth/PermissionGaurd';
@@ -18,7 +18,6 @@ type MenuItem = {
 
 const menuItems: MenuItem[] = [
   { id: 'users' as ActiveModule, label: 'Users', icon: Users, required: PERMISSIONS_ENUM.USERS.VIEW },
-  { id: 'customers' as ActiveModule, label: 'Clients', icon: UserCheck, required: PERMISSIONS_ENUM.CLIENTS.VIEW },
   { id: 'events' as ActiveModule, label: 'Events', icon: Calendar, required: PERMISSIONS_ENUM.EVENTS.VIEW },
   { id: 'carriers' as ActiveModule, label: 'Carriers', icon: Truck, required: PERMISSIONS_ENUM.CARRIERS.VIEW },
   { id: 'roles' as ActiveModule, label: 'Role & Permissions', icon: Shield, required: PERMISSIONS_ENUM.ROLES_AND_RIGHTS.VIEW },

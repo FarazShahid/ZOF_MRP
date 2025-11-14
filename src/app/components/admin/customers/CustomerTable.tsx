@@ -14,6 +14,8 @@ import { GoPencil } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import PermissionGuard from "../../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import { Eye } from "lucide-react";
+import Link from "next/link";
 
 interface ComponentProp {
   clients: GetClientsType[];
@@ -103,6 +105,13 @@ const CustomerTable: React.FC<ComponentProp> = ({
                   getKeyValue(item, columnKey)
                 ) : (
                   <div className="flex gap-2">
+                    <Link
+                      href={`/client/${item.Id}`}
+                      className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      title="View Client Profile"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Link>
                     <PermissionGuard
                       required={PERMISSIONS_ENUM.CLIENTS.UPDATE}
                     >

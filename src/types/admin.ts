@@ -46,7 +46,7 @@ export interface Carrier {
 }
 
 export type ViewMode = 'table' | 'grid';
-export type ActiveModule = 'users' | 'customers' | 'events' | 'carriers' | 'roles';
+export type ActiveModule = 'users' | 'events' | 'carriers' | 'roles';
 
 
 export type ShipmentStatus = 'In Transit' | 'Damaged' | 'Delivered' | 'Cancelled';
