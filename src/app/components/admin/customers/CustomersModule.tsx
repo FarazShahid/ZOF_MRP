@@ -1,10 +1,10 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { ViewToggle } from "../common/ViewToggle";
 import { ViewMode } from "@/src/types/admin";
-import { CustomerDetailSidebar } from "./CustomerDetailSidebar";
 import useClientStore, { GetClientsType } from "@/store/useClientStore";
-import CustomerStats from "./CustomerStats";
 import CustomerCard from "./CustomerCard";
 import AddClients from "../../AddClients";
 import DeleteClient from "../../DeleteClient";
@@ -74,10 +74,6 @@ const CustomersModule: React.FC = () => {
           </PermissionGuard>
         </div>
       </div>
-
-      {/* Stats */}
-
-      {/* <CustomerStats customers={clients} /> */}
 
       {/* Content */}
       {viewMode === "table" ? (

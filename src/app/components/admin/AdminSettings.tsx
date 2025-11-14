@@ -13,10 +13,6 @@ import usePermissionStore from "@/store/usePermissionStore";
 const UsersModule = dynamic(() => import("./users/UsersModule"), {
   loading: () => <TableSkel />,
 });
-const CustomersModule = dynamic(() => import("./customers/CustomersModule"), {
-  ssr: false,
-  loading: () => <TableSkel />,
-});
 const EventsModule = dynamic(() => import("./events/EventsModule"), {
   ssr: false,
   loading: () => <TableSkel />,
@@ -36,7 +32,6 @@ const RoleModule = dynamic(() => import("./roles/RoleModule"), {
 // Define module order and their required view permissions
 const MODULE_ORDER: ActiveModule[] = [
   "users",
-  "customers",
   "events",
   "carriers",
   "roles",
@@ -44,7 +39,6 @@ const MODULE_ORDER: ActiveModule[] = [
 
 const MODULE_PERMISSION_MAP: Record<ActiveModule, number> = {
   users: PERMISSIONS_ENUM.USERS.VIEW,
-  customers: PERMISSIONS_ENUM.CLIENTS.VIEW,
   events: PERMISSIONS_ENUM.EVENTS.VIEW,
   carriers: PERMISSIONS_ENUM.CARRIERS.VIEW,
   roles: PERMISSIONS_ENUM.ROLES_AND_RIGHTS.VIEW,
@@ -69,8 +63,6 @@ export const AdminSettings: React.FC = () => {
     switch (activeModule) {
       case "users":
         return <PermissionGuard required={PERMISSIONS_ENUM.USERS.VIEW}><UsersModule /></PermissionGuard>;
-      case "customers":
-        return <PermissionGuard required={PERMISSIONS_ENUM.CLIENTS.VIEW}><CustomersModule /></PermissionGuard>;
       case "events":
         return <PermissionGuard required={PERMISSIONS_ENUM.EVENTS.VIEW}><EventsModule /></PermissionGuard>;
       case "carriers":
