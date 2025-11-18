@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Pagination,
   Table,
@@ -26,7 +25,6 @@ type RoleProps = {
 };
 
 const Role: React.FC<RoleProps> = ({ onEditRole }) => {
-  const router = useRouter();
 
   const { fetchRoles, roles, loading } = useRoleRightsStore();
 
@@ -111,9 +109,11 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
                     >
                       <button
                         type="button"
+                        disabled={role.id === 1 ? true : false}
                         onClick={() => handleEdit(role?.id)}
+                        className={`${role.id === 1 ? "cursor-not-allowed text-gray-500" : "cursor-pointer text-green-500"}`}
                       >
-                        <GoPencil color="green" />
+                        <GoPencil />
                       </button>
                     </PermissionGuard>
 
@@ -122,11 +122,11 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
                     >
                       <button
                         type="button"
-                        className="hover:text-red-500 cursor-pointer"
-                        disabled={loading}
+                        className={`${role.id === 1 ? "cursor-not-allowed text-gray-500" : "cursor-pointer text-red-500"}`}
+                        disabled={loading || role.id === 1 ? true : false}
                         onClick={() => handleDelete(role?.id)}
                       >
-                        <RiDeleteBin6Line color="red" />
+                        <RiDeleteBin6Line />
                       </button>
                     </PermissionGuard>
                   </div>

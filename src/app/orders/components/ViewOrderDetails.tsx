@@ -20,6 +20,7 @@ import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import usePermissionStore from "@/store/usePermissionStore";
 import usePermission from "@/src/hooks/usePermission";
+import FeedbackTab from "../../components/order/view order/FeedbackTab";
 
 const OrderItemCard = dynamic(
   () => import("../../components/order/view order/OrderItemCard"),
@@ -137,11 +138,16 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
         <Tab key="OrderAttachements" title="Order Attachements">
           <OrderAttachements orderId={OrderById.Id} />
         </Tab>
+       
         {OrderById?.StatusName === 'Shipped' && (
           <Tab key="ShipmentAttachments" title="Shipment Attachements">
             <ShipmentAttachments orderId={OrderById.Id} />
           </Tab>
         )}
+         <Tab key="Feedback" title="Feedback">
+          <FeedbackTab orderId={OrderById.Id} />
+        </Tab>
+     
       </Tabs>
       
 
