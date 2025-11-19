@@ -4,7 +4,6 @@ import { ProductProp } from "./Step2";
 import TextAreaField from "./TextAreaField";
 import PrintingOptionsMultiSelect from "./PrintingOptionsMultiSelect";
 import OrderItemDetailsFieldArray from "./OrderItemDetailsFieldArray";
-import DropZone from "../../components/DropZone/DropZone";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 
