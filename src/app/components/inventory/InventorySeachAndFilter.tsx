@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Search } from "lucide-react";
 import { InventoryItemResponse } from "@/store/useInventoryItemsStore";
 
@@ -15,9 +15,6 @@ interface Props {
   supplierFilter: string | "all";
   onSupplierChange: (v: string | "all") => void;
 
-  uomFilter: string | "all";
-  onUomChange: (v: string | "all") => void;
-
   stockFilter: "all" | "low" | "normal" | "high";
   onStockChange: (v: "all" | "low" | "normal" | "high") => void;
 
@@ -29,7 +26,6 @@ const InventorySeachAndFilter: React.FC<Props> = ({
   categoryFilter, onCategoryChange,
   subCategoryFilter, onSubCategoryChange,
   supplierFilter, onSupplierChange,
-  uomFilter, onUomChange,
   stockFilter, onStockChange,
   items
 }) => {
@@ -41,13 +37,23 @@ const InventorySeachAndFilter: React.FC<Props> = ({
     [items]
   );
 
-  const subCategories = useMemo(
-    () => Array.from(new Set(items.map(i => i.SubCategoryName || ""))).
-      filter(Boolean).
-      map(name => ({ name })).
-      sort((a, b) => String(a.name).localeCompare(String(b.name))),
-    [items]
-  );
+  const subCategories = useMemo(() => {
+    const relevantItems = categoryFilter === "all"
+      ? items
+      : items.filter(i => i.CategoryId === categoryFilter);
+
+    return Array.from(new Set(relevantItems.map(i => i.SubCategoryName || "")))
+      .filter(Boolean)
+      .map(name => ({ name }))
+      .sort((a, b) => String(a.name).localeCompare(String(b.name)));
+  }, [items, categoryFilter]);
+
+  // Ensure subCategory stays valid when category changes
+  useEffect(() => {
+    if (subCategoryFilter !== "all" && !subCategories.some(s => s.name === subCategoryFilter)) {
+      onSubCategoryChange("all");
+    }
+  }, [categoryFilter, subCategories, subCategoryFilter, onSubCategoryChange]);
 
   const suppliers = useMemo(
     () => Array.from(new Set(items.map(i => i.SupplierName || "")))
@@ -57,13 +63,7 @@ const InventorySeachAndFilter: React.FC<Props> = ({
     [items]
   );
 
-  const uoms = useMemo(
-    () => Array.from(new Set(items.map(i => i.UnitOfMeasureShortForm || i.UnitOfMeasureName || "")))
-      .filter(Boolean)
-      .map(name => ({ name }))
-      .sort((a, b) => String(a.name).localeCompare(String(b.name))),
-    [items]
-  );
+
 
   return (
     <div className="space-y-4">
@@ -99,14 +99,20 @@ const InventorySeachAndFilter: React.FC<Props> = ({
         {/* Sub Category */}
         <div className="min-w-40">
           <select
-            value={subCategoryFilter}
+            value={categoryFilter === "all" ? "" : subCategoryFilter}
             onChange={(e) => onSubCategoryChange(e.target.value as string | "all")}
             className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
           >
-            <option value="all">All Sub Categories</option>
-            {subCategories.map(s => (
-              <option key={s.name} value={s.name}>{s.name}</option>
-            ))}
+            {categoryFilter === "all" ? (
+              <option value="" disabled>Select category</option>
+            ) : (
+              <>
+                <option value="all">All Sub Categories</option>
+                {subCategories.map(s => (
+                  <option key={s.name} value={s.name}>{s.name}</option>
+                ))}
+              </>
+            )}
           </select>
         </div>
 
@@ -124,19 +130,7 @@ const InventorySeachAndFilter: React.FC<Props> = ({
           </select>
         </div>
 
-        {/* UOM */}
-        <div className="min-w-40">
-          <select
-            value={uomFilter}
-            onChange={(e) => onUomChange(e.target.value as string | "all")}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-          >
-            <option value="all">All UOMs</option>
-            {uoms.map(u => (
-              <option key={u.name} value={u.name}>{u.name}</option>
-            ))}
-          </select>
-        </div>
+
 
         {/* Stock Level */}
         <div className="min-w-36">

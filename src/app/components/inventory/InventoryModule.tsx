@@ -28,10 +28,9 @@ const InventoryModule = () => {
   const [categoryFilter, setCategoryFilter] = useState<number | "all">("all");
   const [subCategoryFilter, setSubCategoryFilter] = useState<string | "all">("all");
   const [supplierFilter, setSupplierFilter] = useState<string | "all">("all");
-  const [uomFilter, setUomFilter] = useState<string | "all">("all");
   const [stockFilter, setStockFilter] = useState<"all" | "low" | "normal" | "high">("all");
   const [quickFilter, setQuickFilter] = useState<
-    "all" | "lowStock" | "withUom" | "withSupplier" | "noSubcategory"
+    "all" | "lowStock" | "withSupplier" | "noSubcategory"
   >("all");
 
   // selection & overlays
@@ -45,7 +44,7 @@ const InventoryModule = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const { fetchInventoryItems, inventoryItems, loading } = useInventoryItemsStore();
+  const { fetchInventoryItems, inventoryItems } = useInventoryItemsStore();
 
   useEffect(() => {
     fetchInventoryItems();
@@ -76,8 +75,6 @@ const InventoryModule = () => {
       const matchesCategory = categoryFilter === "all" || it.CategoryId === categoryFilter;
       const matchesSubCategory = subCategoryFilter === "all" || (it.SubCategoryName || "") === subCategoryFilter;
       const matchesSupplier = supplierFilter === "all" || (it.SupplierName || "") === supplierFilter;
-      const matchesUom = uomFilter === "all" || (it.UnitOfMeasureShortForm || it.UnitOfMeasureName || "") === uomFilter;
-
       const level = computeStockLevel(it);
       const matchesStock = stockFilter === "all" || level === stockFilter;
 
@@ -85,7 +82,6 @@ const InventoryModule = () => {
       const matchesQuick =
         quickFilter === "all" ||
         (quickFilter === "lowStock" && level === "low") ||
-        (quickFilter === "withUom" && Boolean(it.UnitOfMeasureId || it.UnitOfMeasureName)) ||
         (quickFilter === "withSupplier" && Boolean(it.SupplierName)) ||
         (quickFilter === "noSubcategory" && !it.SubCategoryName);
 
@@ -94,12 +90,11 @@ const InventoryModule = () => {
         matchesCategory &&
         matchesSubCategory &&
         matchesSupplier &&
-        matchesUom &&
         matchesStock &&
         matchesQuick
       );
     });
-  }, [inventoryItems, searchTerm, categoryFilter, subCategoryFilter, supplierFilter, uomFilter, stockFilter, quickFilter]);
+  }, [inventoryItems, searchTerm, categoryFilter, subCategoryFilter, supplierFilter, stockFilter, quickFilter]);
 
   // pagination
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage) || 1;
@@ -120,7 +115,7 @@ const InventoryModule = () => {
   // reset page on filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, categoryFilter, subCategoryFilter, supplierFilter, uomFilter, stockFilter, quickFilter]);
+  }, [searchTerm, categoryFilter, subCategoryFilter, supplierFilter, stockFilter, quickFilter]);
 
   // actions
   const openDeleteModal = (id: number) => {
@@ -197,8 +192,6 @@ const InventoryModule = () => {
         onSubCategoryChange={setSubCategoryFilter}
         supplierFilter={supplierFilter}
         onSupplierChange={setSupplierFilter}
-        uomFilter={uomFilter}
-        onUomChange={setUomFilter}
         stockFilter={stockFilter}
         onStockChange={setStockFilter}
         items={inventoryItems || []}
