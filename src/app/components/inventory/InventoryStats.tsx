@@ -1,9 +1,9 @@
 import React from "react";
-import { Package, AlertTriangle, Boxes, Ruler, Warehouse } from "lucide-react";
+import { Package, AlertTriangle, Boxes, Warehouse } from "lucide-react";
 import Image from "next/image";
 import { InventoryItemResponse } from "@/store/useInventoryItemsStore";
 
-type QuickFilter = "all" | "lowStock" | "withUom" | "withSupplier" | "noSubcategory";
+type QuickFilter = "all" | "lowStock" | "withSupplier" | "noSubcategory";
 
 interface Props {
   items: InventoryItemResponse[];
@@ -14,21 +14,19 @@ interface Props {
 const InventoryStats: React.FC<Props> = ({ items, quickFilter, onQuickFilterChange }) => {
   const total = items.length;
   const lowStock = items.filter((i) => Number(i.Stock) <= Number(i.ReorderLevel)).length;
-  const withUom = items.filter((i) => Boolean(i.UnitOfMeasureId || i.UnitOfMeasureName)).length;
   const withSupplier = items.filter((i) => Boolean(i.SupplierName)).length;
   const withoutSubcategory = items.filter((i) => !i.SubCategoryName).length;
 
   const cards = [
     { title: "Total Items", value: total, icon: Package, bg: "bg-slate-500", iconBg: "bg-slate-700", seal: "/Seal 1.png", onClick: () => onQuickFilterChange("all" as QuickFilter), active: quickFilter === "all" },
     { title: "Low Stock", value: lowStock, icon: AlertTriangle, bg: "bg-red-600", iconBg: "bg-red-800", seal: "/Seal 2.png", onClick: () => onQuickFilterChange("lowStock" as QuickFilter), active: quickFilter === "lowStock" },
-    { title: "With UOM", value: withUom, icon: Ruler, bg: "bg-blue-600", iconBg: "bg-blue-800", seal: "/Seal 3.png", onClick: () => onQuickFilterChange("withUom" as QuickFilter), active: quickFilter === "withUom" },
     { title: "With Supplier", value: withSupplier, icon: Warehouse, bg: "bg-green-600", iconBg: "bg-green-800", seal: "/Seal 4.png", onClick: () => onQuickFilterChange("withSupplier" as QuickFilter), active: quickFilter === "withSupplier" },
     { title: "No Subcategory", value: withoutSubcategory, icon: Boxes, bg: "bg-yellow-600", iconBg: "bg-yellow-800", seal: "/Seal 5.png", onClick: () => onQuickFilterChange("noSubcategory" as QuickFilter), active: quickFilter === "noSubcategory" },
   ];
 
   return (
     <div className="p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {cards.map((card) => (
           <div
             key={card.title}
