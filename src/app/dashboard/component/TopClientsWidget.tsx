@@ -33,7 +33,7 @@ const TopClientsWidget: React.FC = () => {
     <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-3 dark:border-[#1d2939] dark:from-white/[0.05] dark:to-transparent shadow-sm space-y-3">
       <div className="flex items-center justify-between">
         <span className="text-gray-900 font-medium">Top clients</span>
-        <ViewMoreButton path="/adminsetting" />
+        <ViewMoreButton path="/client" />
       </div>
       <div className="flex flex-col gap-2 h-[290px] overflow-x-auto p-2">
         {(!topClients || topClients?.length === 0) && loading ? (

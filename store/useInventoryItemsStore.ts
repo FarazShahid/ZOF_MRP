@@ -19,6 +19,7 @@ export interface InventoryItemResponse {
   Name: string;
   ItemCode: string;
   CategoryId: number;
+  CategoryName: string;
   SubCategoryId?: number;
   SubCategoryName: string;
   UnitOfMeasureId: string;

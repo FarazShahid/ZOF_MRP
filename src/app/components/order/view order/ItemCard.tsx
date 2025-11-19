@@ -196,7 +196,7 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
           <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
             <div className="flex items-center gap-2 mb-4">
               <CgAttachment />
-              <span className="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+              <span className="text-sm font-bold text-gray-900 uppercase tracking-wider">
                 Product Attachments
               </span>
             </div>
@@ -234,7 +234,7 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
                     <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white">
                       <FaFileInvoice />
                     </div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <span className="text-sm font-medium text-gray-900">
                       {attachment.fileName}.{attachment.fileType}
                     </span>
                   </div>

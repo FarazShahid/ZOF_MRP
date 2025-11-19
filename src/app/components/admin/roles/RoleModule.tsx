@@ -7,7 +7,7 @@ import PermissionGuard from "../../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const RoleModule = () => {
-  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [editingRoleId, setEditingRoleId] = React.useState<number | undefined>(
     undefined
   );

@@ -71,7 +71,7 @@ const InventoryItemTable: React.FC<Props> = ({ items, onView, onEdit, onDelete }
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{it.CategoryId}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{it.CategoryName}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{it.SubCategoryName || "-"}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{it.UnitOfMeasureShortForm || it.UnitOfMeasureName}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{it.SupplierName}</td>

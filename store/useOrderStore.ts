@@ -81,6 +81,8 @@ interface StoreState {
   statuses: OderStatus[];
   availableColors: { [productId: number]: AvailableColor[] };
   OrderStatusLogs: OrderStatusLogsType[];
+  // Order Comments
+  orderCommentsByOrderId: Record<number, OrderComment[]>;
   loading: boolean;
   error: string | null;
   isResolved: boolean;
@@ -96,6 +98,9 @@ interface StoreState {
     orderStatus: ChangeOrderStatusType,
     onSuccess: () => void
   ) => Promise<void>;
+  // Comments
+  getOrderComments: (orderId: number) => Promise<void>;
+  addOrderComment: (orderId: number, payload: { Comment: string }) => Promise<void>;
   addOrder: (category: AddOrderType) => Promise<AddOrderResponse | null>;
   updateOrder: (
     id: number,
@@ -121,6 +126,23 @@ interface StoreState {
   
 }
 
+// -------------------- Types for Comments --------------------
+export interface OrderComment {
+  Id: number;
+  OrderId: number;
+  Comment: string;
+  CreatedBy: string;
+  CreatedOn: string; // ISO date
+  UpdatedBy?: string | null;
+  UpdatedOn?: string | null;
+}
+
+interface OrderCommentsResponse {
+  data: OrderComment[];
+  message?: string;
+  statusCode?: number;
+}
+
 const useOrderStore = create<StoreState>((set, get) => ({
   Orders: [],
   OrderById: {
@@ -144,6 +166,7 @@ const useOrderStore = create<StoreState>((set, get) => ({
   statuses: [],
   availableColors: {},
   OrderStatusLogs: [],
+  orderCommentsByOrderId: {},
   loading: false,
   error: null,
   isResolved: false,
@@ -169,6 +192,65 @@ const useOrderStore = create<StoreState>((set, get) => ({
       set({ Orders: data.data, loading: false });
     } catch (error) {
       set({ loading: false, error: "Error Fetching Data" });
+    }
+  },
+
+  // -------------------- Order Comments --------------------
+  getOrderComments: async (orderId: number) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/comments`
+      );
+      if (!response.ok) {
+        set({ loading: false });
+        const error = await response.json();
+        toast.error(error?.message || "Failed to load comments");
+        return;
+      }
+      const result: OrderCommentsResponse = await response.json();
+      const list = Array.isArray(result?.data) ? result.data : [];
+      set((state) => ({
+        orderCommentsByOrderId: {
+          ...state.orderCommentsByOrderId,
+          [orderId]: list,
+        },
+        loading: false,
+      }));
+    } catch (error) {
+      set({ loading: false, error: "Failed to load comments" });
+      toast.error("Failed to load comments");
+    }
+  },
+
+  addOrderComment: async (orderId: number, payload: { Comment: string }) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/comments`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+      if (!response.ok) {
+        set({ loading: false });
+        let message = "Failed to add comment";
+        try {
+          const err = await response.json();
+          message = err?.message || message;
+        } catch {}
+        toast.error(message);
+        return;
+      }
+      toast.success("Comment added");
+      // Refresh comments after successful post
+      await get().getOrderComments(orderId);
+      set({ loading: false });
+    } catch (error) {
+      set({ loading: false, error: "Failed to add comment" });
+      toast.error("Failed to add comment");
     }
   },
 
