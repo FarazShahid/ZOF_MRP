@@ -31,9 +31,20 @@ const InventorySeachAndFilter: React.FC<Props> = ({
 }) => {
 
   const categories = useMemo(
-    () => Array.from(new Set(items.map(i => i.CategoryId))).
-      map(id => ({ id, name: `Cat-${id}` })).
-      sort((a, b) => String(a.name).localeCompare(String(b.name))),
+    () => {
+      const idToName = new Map<number, string>();
+      for (const item of items) {
+        const id = item.CategoryId;
+        if (id === undefined || id === null) continue;
+        const existing = idToName.get(id);
+        const categoryNameFromApi = (item as { CategoryName?: string }).CategoryName;
+        const resolvedName = categoryNameFromApi || existing || `Cat-${id}`;
+        idToName.set(id, resolvedName);
+      }
+      return Array.from(idToName.entries())
+        .map(([id, name]) => ({ id, name }))
+        .sort((a, b) => String(a.name).localeCompare(String(b.name)));
+    },
     [items]
   );
 

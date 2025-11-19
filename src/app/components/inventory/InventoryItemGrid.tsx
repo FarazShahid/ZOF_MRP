@@ -53,7 +53,7 @@ const InventoryItemGrid: React.FC<Props> = ({ items, onView, onEdit, onDelete })
                 <Layers className="w-4 h-4" />
                 <span className="font-medium">Category</span>
               </div>
-              <span className="text-gray-900">{it.CategoryId}</span>
+              <span className="text-gray-900">{it.CategoryName}</span>
             </div>
 
             <div className="flex items-center justify-between">
