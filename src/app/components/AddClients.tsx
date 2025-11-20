@@ -68,7 +68,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {!isEdit ? <> Add Client</> : <> Edit Client</>}
+              {!isEdit ? <> Add Client</> : <> Update Client</>}
             </ModalHeader>
             <Formik
               validationSchema={SchemaValidation}
@@ -241,7 +241,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Edit" : "Add"} Client
+                      {isEdit ? "Update" : "Add"} Client
                     </Button>
                   </ModalFooter>
                 </Form>

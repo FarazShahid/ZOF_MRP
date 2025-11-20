@@ -69,7 +69,7 @@ const InventoryItemGrid: React.FC<Props> = ({ items, onView, onEdit, onDelete })
                 <Ruler className="w-4 h-4" />
                 <span className="font-medium">UOM</span>
               </div>
-              <span className="text-gray-900">{it.UnitOfMeasureShortForm || it.UnitOfMeasureName}</span>
+              <span className="text-gray-900">{it.UnitOfMeasureName}</span>
             </div>
 
             <div className="flex items-center justify-between">
