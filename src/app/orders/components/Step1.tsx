@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { ErrorMessage, Field } from "formik";
 import useClientStore from "@/store/useClientStore";
 import useEventsStore from "@/store/useEventsStore";
-import { PRIORITY_ENUM } from "@/interface/GetFileType";
+import { ORDER_TYPE_ENUM, PRIORITY_ENUM } from "@/interface/GetFileType";
 import Label from "../../components/common/Label";
 
 const Step1 = ({ formik }: { formik: any }) => {
@@ -94,6 +94,18 @@ const Step1 = ({ formik }: { formik: any }) => {
           {PRIORITY_ENUM.map((priority, index) => (
             <option value={priority.id} key={index}>
               {priority.label}
+            </option>
+          ))}
+        </Field>
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <Label isRequired={false} label="Order Type" />
+        <Field as="select" name="OrderType" className={fieldStyle}>
+          <option value="">Select a type</option>
+          {ORDER_TYPE_ENUM.map((type, index) => (
+            <option value={type.label} key={index}>
+              {type.label}
             </option>
           ))}
         </Field>

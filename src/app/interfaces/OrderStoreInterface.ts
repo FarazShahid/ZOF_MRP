@@ -12,6 +12,7 @@ export interface GetOrdersType {
   EventName: string;
   ClientName: string;
   StatusName: string;
+  OrderType: string;
   CreatedOn: string;
   UpdatedOn: string;
 }
@@ -75,6 +76,7 @@ export interface GetOrderByIdType {
   ClientName: string;
   OrderEventId: number;
   EventName: string;
+  OrderType: string;
   OrderPriority: number;
   Description: string;
   OrderNumber: string;

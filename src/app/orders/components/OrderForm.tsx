@@ -32,6 +32,7 @@ const formSteps = [
 const defaultValues: FormValues = {
   OrderName: "",
   OrderNumber: "",
+  OrderType: "",
   ClientId: "",
   OrderEventId: "",
   Description: "",
@@ -67,6 +68,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
         OrderName: OrderById.OrderName,
         OrderNumber: OrderById.OrderNumber,
         ClientId: String(OrderById.ClientId),
+        OrderType: OrderById.OrderType,
         OrderEventId: OrderById.OrderEventId
           ? String(OrderById.OrderEventId)
           : undefined,

@@ -150,6 +150,7 @@ const useOrderStore = create<StoreState>((set, get) => ({
     Id: 0,
     OrderEventId: 0,
     OrderPriority: 0,
+    OrderType: "",
     Description: "",
     OrderNumber: "",
     OrderName: "",

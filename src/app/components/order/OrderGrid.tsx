@@ -17,6 +17,7 @@ import { OrderItemShipmentEnum } from "@/interface";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import NoData from "../common/NoData";
+import { getOrderTypeLabelColor } from "@/interface/GetFileType";
 
 interface OrderGridProps {
   orders: GetOrdersType[];
@@ -91,6 +92,14 @@ const OrderGrid: React.FC<OrderGridProps> = ({
               )}
             </div>
 
+            {/* Type */}
+            {order?.OrderType && (
+            <div className="flex items-center space-x-2">
+                <span className={`${getOrderTypeLabelColor(order?.OrderType)} rounded p-1 text-xs`}>
+                  {order?.OrderType}
+                </span>
+              </div>
+            )}
             {/* Description */}
             {order.Description && (
               <p className="text-sm text-gray-600 line-clamp-1">
