@@ -25,6 +25,7 @@ export interface orderItemDetailsType {
   ColorOptionId: number;
   Quantity: number;
   Priority: number;
+  MeasurementId?: number;
 }
 
 export interface GetOrderByIdResponse{
