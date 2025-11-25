@@ -157,6 +157,7 @@ const SizeMeasurementForm = ({
                       name="Measurement1"
                       type="text"
                       placeholder="Enter Name"
+                      disabled={isEdit}
                       className="formInputdefault border-1"
                     />
                     <ErrorMessage
@@ -183,6 +184,7 @@ const SizeMeasurementForm = ({
                       }) => (
                         <select
                           {...field}
+                          disabled={isEdit}
                           className="formInputdefault border-1"
                           onChange={(e) => {
                             const selectedId = Number(e.target.value);
@@ -241,6 +243,7 @@ const SizeMeasurementForm = ({
                     <Field
                       name="ClientId"
                       as="select"
+                      disabled={isEdit}
                       className="formInputdefault border-1"
                     >
                       <option value="">Select a Client</option>
@@ -267,6 +270,7 @@ const SizeMeasurementForm = ({
                     <Field
                       name="SizeOptionId"
                       as="select"
+                      disabled={isEdit}
                       className="formInputdefault border-1"
                     >
                       <option value="">Select an option</option>

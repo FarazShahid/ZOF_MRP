@@ -1,12 +1,16 @@
 import React from "react";
-import { Card } from "@heroui/react";
+import { Card, Button } from "@heroui/react";
 import { FaFileLines } from "react-icons/fa6";
 import { PiFileDuotone } from "react-icons/pi";
+import { FiExternalLink } from "react-icons/fi";
 import ClientInfoCard from "./ClientInfoCard";
 import { GetOrderByIdType } from "@/src/app/interfaces/OrderStoreInterface";
 import { formatDate } from "@/src/app/interfaces";
 import useOrderStore from "@/store/useOrderStore";
 import OrderStatusTimeline from "@/src/app/orders/components/OrderStatusTimeline";
+import OrderStatusBadge from "../OrderStatusBadge";
+import { getOrderTypeLabelColor, ORDER_TYPE } from "@/interface/GetFileType";
+import Link from "next/link";
 
 interface OrderInfoProp {
   OrderById: GetOrderByIdType
@@ -26,42 +30,61 @@ const OrderInfo: React.FC<OrderInfoProp> = ({
             <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
               <FaFileLines />
             </div>
-            <h2 className="text-xl font-bold text-gray-900">Order Details</h2>
+            <h2 className="text-xl font-bold text-gray-900">Order Details <OrderStatusBadge status={OrderById.StatusName} /></h2>
           </div>
           <div className="space-y-4">
-          <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
-              <span className="text-sm font-medium text-gray-900">
+            <div className="p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
+              <span className="text-xs font-medium text-gray-900 uppercase tracking-wide">
                 Order Number
               </span>
-              {OrderById?.OrderNumber}
+              <p className="font-semibold text-gray-900 mt-1">{OrderById?.OrderNumber}</p>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
-              <span className="text-sm font-medium text-gray-900">
-                Order Status
+            {
+              OrderById?.OrderType && (
+                <div className="p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
+                  <span className="text-xs font-medium text-gray-900 uppercase tracking-wide">
+                    Order Type
+                  </span>
+                  <p className={`font-semibold text-gray-900 mt-1 w-fit ${getOrderTypeLabelColor(OrderById?.OrderType)}`}>{ OrderById?.OrderType}</p>
+                  {OrderById.OrderType === ORDER_TYPE.RE_ORDER && !!OrderById.ParentOrderId ? (
+                    <div className="mt-2 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-900">Parent Order</span>
+                        <span className="text-[11px] text-gray-600">#{OrderById.ParentOrderId}</span>
+                      </div>
+                      <Button
+                        as={Link}
+                        href={`/orders/vieworder/${OrderById.ParentOrderId}`}
+                        size="sm"
+                        color="primary"
+                        variant="flat"
+                        className="h-7 px-2 text-xs"
+                        startContent={<FiExternalLink className="w-3.5 h-3.5" />}
+                      >
+                        Open
+                      </Button>
+                    </div>
+                  ) : null}
+                </div>
+              )
+            }
+            <div className="p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
+              <span className="text-xs font-medium text-gray-900 uppercase tracking-wide">
+              Shipment Status
               </span>
-              {OrderById?.StatusName}
+              <p className="font-semibold text-gray-900 mt-1">{OrderById?.OrderShipmentStatus}</p>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
-              <span className="text-sm font-medium text-gray-900">
-                Shipment Status
+            <div className="p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
+              <span className="text-xs font-medium text-gray-900 uppercase tracking-wide">
+              Event
               </span>
-              {OrderById?.OrderShipmentStatus}
+              <p className="font-semibold text-gray-900 mt-1"> {OrderById?.EventName}</p>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
-              <span className="text-sm font-medium text-gray-900">
-                Event
+            <div className="p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
+              <span className="text-xs font-medium text-gray-900 uppercase tracking-wide">
+              Due Date
               </span>
-              {OrderById?.EventName}
-            </div>
-            {/* <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
-              <span className="text-sm font-medium text-gray-900">Created</span>
-              <span className="font-semibold text-gray-900">12/05/2025</span>
-            </div> */}
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-300 rounded-lg">
-              <span className="text-sm font-medium text-gray-900">
-                Due Date
-              </span>
-              <span className="font-semibold text-gray-900">{formatDate(OrderById?.Deadline)}</span>
+              <p className="font-semibold text-gray-900 mt-1"> {formatDate(OrderById?.Deadline)}</p>
             </div>
           </div>
         </div>

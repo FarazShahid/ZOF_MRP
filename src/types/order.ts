@@ -60,6 +60,7 @@ export type RowMap = Record<number, RowVals>;
 export interface FormValues {
   OrderName: string;
   OrderNumber: string;
+  OrderType: string;
   ClientId: string;
   OrderEventId?: string;
   Description: string;

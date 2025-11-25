@@ -43,3 +43,22 @@ export const handleView = (path: string) => {
     if (!path) return;
     window.open(path, "_blank");
   };
+
+export const ORDER_TYPE={
+  SAMPLING: "Sampling",
+  PRODUCTION: "Production",
+  RE_ORDER: "Re-order",
+}
+
+export const ORDER_TYPE_ENUM = [
+  { id: 1, label: ORDER_TYPE.SAMPLING },
+  { id: 2, label: ORDER_TYPE.PRODUCTION },  
+  { id: 3, label: ORDER_TYPE.RE_ORDER },
+];
+
+export const getOrderTypeLabelColor = (type: string) => {
+  if (type === ORDER_TYPE.SAMPLING) return "bg-gray-100 text-gray-800 border-gray-200 px-2.5 py-0.5 rounded-full text-xs font-medium border";
+  if (type === ORDER_TYPE.PRODUCTION) return "bg-orange-100 text-orange-800 border-orange-200 px-2.5 py-0.5 rounded-full text-xs font-medium border";
+  if (type === ORDER_TYPE.RE_ORDER) return "bg-green-100 text-green-800 border-green-200 px-2.5 py-0.5 rounded-full text-xs font-medium border";
+  return "";
+};

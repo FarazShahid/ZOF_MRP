@@ -15,6 +15,7 @@ import { OrderItemShipmentEnum } from "@/interface";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import NoData from "../common/NoData";
+import { getOrderTypeLabelColor } from "@/interface/GetFileType";
 
 interface OrderTableProps {
   orders: GetOrdersType[];
@@ -55,6 +56,9 @@ const OrderTable: React.FC<OrderTableProps> = ({
                 Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                Type
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                 Deadline
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
@@ -88,6 +92,11 @@ const OrderTable: React.FC<OrderTableProps> = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <OrderStatusBadge status={order.StatusName} />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                  <span className={`${getOrderTypeLabelColor(order?.OrderType)} rounded p-1 text-xs`}>
+                    {order?.OrderType}
+                  </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div

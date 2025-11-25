@@ -32,6 +32,7 @@ const formSteps = [
 const defaultValues: FormValues = {
   OrderName: "",
   OrderNumber: "",
+  OrderType: "",
   ClientId: "",
   OrderEventId: "",
   Description: "",
@@ -67,6 +68,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
         OrderName: OrderById.OrderName,
         OrderNumber: OrderById.OrderNumber,
         ClientId: String(OrderById.ClientId),
+        OrderType: OrderById.OrderType,
         OrderEventId: OrderById.OrderEventId
           ? String(OrderById.OrderEventId)
           : undefined,
@@ -159,7 +161,24 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   
     if (!values.OrderEventId) delete values.OrderEventId;
 
-    const finalPayload = { ...values };
+    // Normalize payload and omit falsy MeasurementId (backend defaults to latest)
+    const finalPayload = {
+      ...values,
+      items: (values.items || []).map((item: any) => ({
+        ...item,
+        orderItemDetails: (item.orderItemDetails || []).map((d: any) => {
+          const normalized: any = {
+            ...d,
+          };
+          if (!normalized?.MeasurementId) {
+            delete normalized.MeasurementId;
+          } else {
+            normalized.MeasurementId = Number(normalized.MeasurementId);
+          }
+          return normalized;
+        }),
+      })),
+    };
 
     const result = orderId
       ? await updateOrder(Number(orderId), finalPayload)

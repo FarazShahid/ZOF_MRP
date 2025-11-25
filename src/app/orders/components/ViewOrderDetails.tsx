@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { Button, Tab, Tabs } from "@heroui/react";
 import { IoReturnDownBack } from "react-icons/io5";
 
@@ -10,7 +9,6 @@ import {OrderItemShipmentEnum } from "@/interface";
 
 import OrderStatus from "./OrderStatus";
 import DownloadPdfMenu from "../../components/order/DownloadPdfMenu";
-import CardSkeleton from "../../components/ui/Skeleton/CardSkeleton";
 import OrderInfo from "../../components/order/view order/OrderInfo";
 import OrderAttachements from "../../components/order/view order/OrderAttachements";
 import ShipmentAttachments from "../../components/order/view order/ShipmentAttachments";
@@ -18,16 +16,10 @@ import OrderItemsCard from "../../components/order/view order/OrderItemsCard";
 import { OrderInfoSkeleton } from "../../components/order/view order/OrderInfoSkeleton";
 import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
-import usePermissionStore from "@/store/usePermissionStore";
 import usePermission from "@/src/hooks/usePermission";
 import FeedbackTab from "../../components/order/view order/FeedbackTab";
 
-const OrderItemCard = dynamic(
-  () => import("../../components/order/view order/OrderItemCard"),
-  {
-    loading: () => <CardSkeleton />,
-  }
-);
+
 
 interface ViewOrderProps {
   orderId: number;
@@ -36,7 +28,6 @@ interface ViewOrderProps {
 const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
  
  
-  const [localStatusName, setLocalStatusName] = useState<string>("");
   const [refetchData, setRefetchData] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
   const [openUpdateStatusModal, setOpenUpdateStatusModal] =
@@ -62,7 +53,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
   const handleStatusChange = useCallback(
     (statusId: number, statusName: string) => {
       changeOrderStatus({ id: orderId, statusId }, handleCloseStatusModal);
-      setLocalStatusName(statusName);
+     
     },
     [changeOrderStatus, handleCloseStatusModal, orderId]
   );

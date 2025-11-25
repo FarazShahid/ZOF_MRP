@@ -150,10 +150,12 @@ const useOrderStore = create<StoreState>((set, get) => ({
     Id: 0,
     OrderEventId: 0,
     OrderPriority: 0,
+    OrderType: "",
     Description: "",
     OrderNumber: "",
     OrderName: "",
     ExternalOrderId: "",
+    ParentOrderId: 0,
     OrderStatusId: 0,
     Deadline: "",
     EventName: "",
@@ -439,31 +441,6 @@ const useOrderStore = create<StoreState>((set, get) => ({
     }
   },
 
-  // updateOrder: async (
-  //   id: number,
-  //   orderType: AddOrderType,
-  //   onSuccess?: () => void
-  // ) => {
-  //   set({ loading: true, error: null, isResolved: false });
-  //   try {
-  //     const response = await fetchWithAuth(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/orders/${id}`,
-  //       {
-  //         method: "PUT",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify(orderType),
-  //       }
-  //     );
-
-  //     if (!response.ok) throw new Error("Failed to update order");
-  //     set({ loading: false, error: null, isResolved: true });
-  //     if (onSuccess) onSuccess();
-  //     await get().fetchOrders(orderType?.ClientId);
-  //   } catch (error) {
-  //     set({ error: "Failed to update order", loading: false });
-  //   }
-  // },
-
   updateOrder: async (
     id: number,
     orderType: AddOrderType
@@ -540,12 +517,28 @@ const useOrderStore = create<StoreState>((set, get) => ({
         { method: "DELETE" }
       );
 
-      if (!response.ok) throw new Error("Failed to delete order");
+      if (!response.ok) {
+        let message = "Failed to delete order";
+        try {
+          const err = await response.json();
+          const rawMessage = err?.message;
+          if (Array.isArray(rawMessage)) {
+            message = rawMessage.join(" ");
+          } else if (typeof rawMessage === "string") {
+            message = rawMessage;
+          }
+        } catch {}
+        set({ loading: false, error: message, isResolved: false });
+        toast.error(message);
+        return;
+      }
+
       set({ loading: false, error: null, isResolved: true });
       if (onSuccess) onSuccess();
       await get().fetchOrders();
     } catch (error) {
       set({ error: "Failed to delete order", loading: false });
+      toast.error("Failed to delete order");
     }
   },
 

@@ -43,6 +43,10 @@ export interface AddSizeMeasurementType {
 
 export interface SizeMeasurements {
   Id: number;
+  OriginalSizeMeasurementId?: number;
+  Version: number;
+  IsLatest: boolean;
+  IsActive: boolean;
   ClientName: string;
   ClientId: number;
   ProductCategoryId: number;
@@ -172,6 +176,8 @@ interface StoreState {
     onSuccess: () => void
   ) => Promise<void>;
   deleteSizeOption: (id: number, onSuccess: () => void) => Promise<void>;
+  getMeasurementsBySizeOption: (sizeOptionId: number) => Promise<SizeMeasurements[]>;
+  getVersionsBySizeMeasurement: (measurementId: number) => Promise<SizeMeasurements[]>;
 }
 
 const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
@@ -357,6 +363,60 @@ const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
     } catch (error) {
       set({ error: "Failed to delete size", loading: false });
       toast.error("Failed to delete size");
+    }
+  },
+
+  getMeasurementsBySizeOption: async (sizeOptionId: number): Promise<SizeMeasurements[]> => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/size-option/${sizeOptionId}`
+      );
+      if (!response.ok) {
+        let message = "Failed to fetch measurements";
+        try {
+          const err = await response.json();
+          message = err?.message || message;
+        } catch {}
+        set({ loading: false, error: message });
+        toast.error(message);
+        return [];
+      }
+      const json = await response.json();
+      const list: SizeMeasurements[] = Array.isArray(json) ? json : (json?.data ?? []);
+      set({ loading: false });
+      return list;
+    } catch (error) {
+      set({ loading: false, error: "Failed to fetch measurements" });
+      toast.error("Failed to fetch measurements");
+      return [];
+    }
+  },
+
+  getVersionsBySizeMeasurement: async (measurementId: number): Promise<SizeMeasurements[]> => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/${measurementId}/versions`
+      );
+      if (!response.ok) {
+        let message = "Failed to fetch versions";
+        try {
+          const err = await response.json();
+          message = err?.message || message;
+        } catch {}
+        set({ loading: false, error: message });
+        toast.error(message);
+        return [];
+      }
+      const json = await response.json();
+      const list: SizeMeasurements[] = Array.isArray(json) ? json : (json?.data ?? []);
+      set({ loading: false });
+      return list;
+    } catch (error) {
+      set({ loading: false, error: "Failed to fetch versions" });
+      toast.error("Failed to fetch versions");
+      return [];
     }
   },
 }));
