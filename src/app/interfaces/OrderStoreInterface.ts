@@ -86,6 +86,7 @@ export interface GetOrderByIdType {
   StatusName: string;
   OrderShipmentStatus?: string;
   Deadline: string;
+  ParentOrderId: number;
   items: OrderItem[];
 }
 
