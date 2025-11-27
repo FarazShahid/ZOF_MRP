@@ -1,5 +1,5 @@
 import React from "react";
-import { Package, Clock, Truck, CheckCircle, XCircle } from "lucide-react";
+import { Package, Truck, CheckCircle, XCircle } from "lucide-react";
 import Image from "next/image";
 import { GetAllShipments } from "@/store/useShipmentStore";
 import { ShipmentStatus } from "@/src/types/admin";
@@ -13,7 +13,6 @@ interface DashboardProps {
 const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onStatusChange }) => {
   const stats = {
     total: shipments?.length,
-    pending: shipments?.filter((s) => s.Status === "Damaged").length,
     shipped: shipments?.filter((s) => s.Status === "In Transit").length,
     delivered: shipments?.filter((s) => s.Status === "Delivered").length,
     cancelled: shipments?.filter((s) => s.Status === "Cancelled").length,
@@ -53,17 +52,6 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
       onClick: () => onStatusChange('Delivered' as ShipmentStatus),
       active: statusFilter === 'Delivered'
     },
-    {
-      title: "Damaged Shipments",
-      value: stats.pending,
-      icon: Clock,
-      bgColor: "bg-yellow-500",
-      textColor: "text-white",
-      iconBg: "bg-yellow-600",
-      seal: "/Seal 4.png",
-      onClick: () => onStatusChange('Damaged' as ShipmentStatus),
-      active: statusFilter === 'Damaged'
-    },
 
     {
       title: "Cancelled",
@@ -80,7 +68,7 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
 
   return (
     <div className="p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card) => (
           <div
             key={card.title}

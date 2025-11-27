@@ -56,6 +56,11 @@ export const ORDER_TYPE_ENUM = [
   { id: 3, label: ORDER_TYPE.RE_ORDER },
 ];
 
+export const ORDER_TYPE_ENUM_WITHOUT_RE_ORDER = [
+  { id: 1, label: ORDER_TYPE.SAMPLING },
+  { id: 2, label: ORDER_TYPE.PRODUCTION },
+];
+
 export const getOrderTypeLabelColor = (type: string) => {
   if (type === ORDER_TYPE.SAMPLING) return "bg-gray-100 text-gray-800 border-gray-200 px-2.5 py-0.5 rounded-full text-xs font-medium border";
   if (type === ORDER_TYPE.PRODUCTION) return "bg-orange-100 text-orange-800 border-orange-200 px-2.5 py-0.5 rounded-full text-xs font-medium border";

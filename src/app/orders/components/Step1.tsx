@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { ErrorMessage, Field } from "formik";
 import useClientStore from "@/store/useClientStore";
 import useEventsStore from "@/store/useEventsStore";
-import { ORDER_TYPE_ENUM, PRIORITY_ENUM } from "@/interface/GetFileType";
+import { ORDER_TYPE_ENUM_WITHOUT_RE_ORDER, PRIORITY_ENUM, ORDER_TYPE } from "@/interface/GetFileType";
 import Label from "../../components/common/Label";
 
 const Step1 = ({ formik }: { formik: any }) => {
@@ -22,6 +22,9 @@ const Step1 = ({ formik }: { formik: any }) => {
 
   const fieldStyle =
     "rounded-xl dark:text-gray-400 text-gray-800 text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100";
+
+  const hideOrderTypeSelect =
+    formik?.initialValues?.OrderType === ORDER_TYPE.RE_ORDER;
 
   return (
     <div className="space-y-6 w-[500px]">
@@ -99,17 +102,19 @@ const Step1 = ({ formik }: { formik: any }) => {
         </Field>
       </div>
 
-      <div className="flex flex-col gap-1">
-        <Label isRequired={false} label="Order Type" />
-        <Field as="select" name="OrderType" className={fieldStyle}>
-          <option value="">Select a type</option>
-          {ORDER_TYPE_ENUM.map((type, index) => (
-            <option value={type.label} key={index}>
-              {type.label}
-            </option>
-          ))}
-        </Field>
-      </div>
+      {!hideOrderTypeSelect && (
+        <div className="flex flex-col gap-1">
+          <Label isRequired={false} label="Order Type" />
+          <Field as="select" name="OrderType" className={fieldStyle}>
+            <option value="">Select a type</option>
+            {ORDER_TYPE_ENUM_WITHOUT_RE_ORDER.map((type, index) => (
+              <option value={type.label} key={index}>
+                {type.label}
+              </option>
+            ))}
+          </Field>
+        </div>
+      )}
     </div>
   );
 };

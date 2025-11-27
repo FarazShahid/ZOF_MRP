@@ -1,5 +1,5 @@
 import { GetOrderByIdType } from "@/src/app/interfaces/OrderStoreInterface";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IoBag } from "react-icons/io5";
 import QASheetGenerator from "./QASheetGenerator";
 import ItemCard from "./ItemCard";
@@ -10,13 +10,38 @@ interface CardProps {
 
 const OrderItemsCard: React.FC<CardProps> = ({ OrderById }) => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [categoryFilter, setCategoryFilter] = useState<string>("All");
+
+  const categoryOptions = useMemo(() => {
+    const names = Array.from(
+      new Set((OrderById?.items || []).map((i) => i.ProductCategoryName).filter(Boolean))
+    );
+    return ["All", ...names];
+  }, [OrderById?.items]);
+
+  const filteredItems = useMemo(() => {
+    if (!categoryFilter || categoryFilter === "All") return OrderById?.items || [];
+    return (OrderById?.items || []).filter(
+      (i) => i.ProductCategoryName === categoryFilter
+    );
+  }, [OrderById?.items, categoryFilter]);
+
+  const visibleItemIds = useMemo(() => filteredItems.map((i) => i.Id), [filteredItems]);
+  const selectedVisibleCount = useMemo(
+    () => selectedItems.filter((id) => visibleItemIds.includes(id)).length,
+    [selectedItems, visibleItemIds]
+  );
+  const areAllVisibleSelected = useMemo(
+    () => visibleItemIds.length > 0 && selectedVisibleCount === visibleItemIds.length,
+    [visibleItemIds, selectedVisibleCount]
+  );
 
   const handleSelectAll = () => {
-    if (selectedItems.length === OrderById.items.length) {
-      setSelectedItems([]);
-    } else {
-      setSelectedItems(OrderById.items.map((item) => item.Id));
+    if (areAllVisibleSelected) {
+      setSelectedItems((prev) => prev.filter((id) => !visibleItemIds.includes(id)));
+      return;
     }
+    setSelectedItems((prev) => Array.from(new Set([...prev, ...visibleItemIds])));
   };
 
 const handleSelectItem = (itemId: number) => {
@@ -26,6 +51,10 @@ const handleSelectItem = (itemId: number) => {
         : [...prev, itemId]
     );
   };
+
+  useEffect(() => {
+    setSelectedItems((prev) => prev.filter((id) => visibleItemIds.includes(id)));
+  }, [categoryFilter, visibleItemIds]);
 
   return (
     <div className="space-y-5">
@@ -42,18 +71,29 @@ const handleSelectItem = (itemId: number) => {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Category</span>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="text-sm px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600 focus:outline-none"
+            >
+              {categoryOptions.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </div>
           <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
             <input
               type="checkbox"
-              checked={
-                selectedItems.length === OrderById?.items?.length &&
-                OrderById?.items?.length > 0
-              }
+              checked={areAllVisibleSelected}
               onChange={handleSelectAll}
               className="w-4 h-4 text-blue-600 rounded cursor-pointer"
             />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Select All ({selectedItems.length}/{OrderById?.items?.length})
+              Select All ({selectedVisibleCount}/{visibleItemIds.length})
             </span>
           </label>
         {
@@ -70,7 +110,7 @@ const handleSelectItem = (itemId: number) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {OrderById?.items?.map((item) => (
+        {filteredItems.map((item) => (
           <ItemCard key={item.Id} 
            isSelected={selectedItems.includes(item.Id)}
            onSelect={() => handleSelectItem(item.Id)} 
