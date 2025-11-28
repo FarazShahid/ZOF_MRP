@@ -2,23 +2,25 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  getKeyValue,
   Input,
   Pagination,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
 } from "@heroui/react";
 import useSizeMeasurementsStore, {
   SizeMeasurements,
 } from "@/store/useSizeMeasurementsStore";
 import DeleteSizeOptions from "./DeleteSizeOptions";
 import AddSizeOptions from "./AddSizeOptions";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { GoPencil, GoEye } from "react-icons/go";
+import { RiArchiveLine, RiDeleteBin6Line } from "react-icons/ri";
+import {
+  GoPencil,
+  GoEye,
+  GoCheckCircle,
+  GoChevronDown,
+  GoChevronRight,
+  GoGitCompare,
+} from "react-icons/go";
+import SetDefaultConfirm from "./SetDefaultConfirm";
+import CompareMeasurementsModal from "./CompareMeasurementsModal";
 import AddButton from "../../components/common/AddButton";
 import { useRouter } from "next/navigation";
 import { ViewMeasurementChart } from "../../orders/components/ViewMeasurementChart";
@@ -27,6 +29,8 @@ import { CiSearch } from "react-icons/ci";
 import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import { ROWS_PER_PAGE } from "@/src/types/admin";
+import toast from "react-hot-toast";
+import { fetchWithAuth } from "@/src/app/services/authservice";
 
 const ProductSizeMeasurements = () => {
   const [page, setPage] = useState<number>(1);
@@ -36,11 +40,35 @@ const ProductSizeMeasurements = () => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isViewModal, setIsViewModal] = useState<boolean>(false);
   const [query, setQuery] = useState<string>("");
+  const [expandedRootIds, setExpandedRootIds] = useState<Set<number>>(
+    new Set()
+  );
+  const [versionsByRootId, setVersionsByRootId] = useState<
+    Record<number, SizeMeasurements[]>
+  >({});
+  const [loadingVersions, setLoadingVersions] = useState<
+    Record<number, boolean>
+  >({});
+  const [confirmDefaultOpen, setConfirmDefaultOpen] = useState<boolean>(false);
+  const [pendingDefaultId, setPendingDefaultId] = useState<number | null>(null);
+  const [compareOpen, setCompareOpen] = useState<boolean>(false);
+  const [compareLeft, setCompareLeft] = useState<SizeMeasurements | null>(null);
+  const [compareRight, setCompareRight] = useState<SizeMeasurements | null>(null);
+  const [compareSelectionByRootId, setCompareSelectionByRootId] = useState<
+    Record<number, { leftId?: number; rightId?: number }>
+  >({});
+  const [comparePickedIdsByRootId, setComparePickedIdsByRootId] = useState<
+    Record<number, number[]>
+  >({});
 
   const router = useRouter();
 
-  const { fetchSizeMeasurements, sizeMeasurement, loading } =
-    useSizeMeasurementsStore();
+  const {
+    fetchSizeMeasurements,
+    sizeMeasurement,
+    loading,
+    getVersionsBySizeMeasurement,
+  } = useSizeMeasurementsStore();
 
   // Search on 4 fields
   const filtered = useSearch(sizeMeasurement, query, [
@@ -50,15 +78,33 @@ const ProductSizeMeasurements = () => {
     "ClientName",
   ]);
 
-  const total = filtered?.length ?? 0;
+  // Show only originals (no OriginalSizeMeasurementId)
+  const filteredTopLevel: SizeMeasurements[] = useMemo(
+    () => (filtered ?? []).filter((m: any) => !m?.OriginalSizeMeasurementId),
+    [filtered]
+  );
+
+  // Map of versions count for each root (original) id
+  const versionsCountMap = useMemo(() => {
+    const map: Record<number, number> = {};
+    (sizeMeasurement ?? []).forEach((m: any) => {
+      const rootId = m?.OriginalSizeMeasurementId;
+      if (rootId) {
+        map[rootId] = (map[rootId] ?? 0) + 1;
+      }
+    });
+    return map;
+  }, [sizeMeasurement]);
+
+  const total = filteredTopLevel?.length ?? 0;
   const rawPages = Math.ceil(total / ROWS_PER_PAGE);
   const pages = Math.max(1, rawPages);
 
   const items = useMemo(() => {
     const safePage = Math.min(page, pages);
     const start = (safePage - 1) * ROWS_PER_PAGE;
-    return filtered?.slice(start, start + ROWS_PER_PAGE) ?? [];
-  }, [filtered, page, pages]);
+    return filteredTopLevel?.slice(start, start + ROWS_PER_PAGE) ?? [];
+  }, [filteredTopLevel, page, pages]);
 
   // reset page on new search
   useEffect(() => setPage(1), [query]);
@@ -96,6 +142,76 @@ const ProductSizeMeasurements = () => {
   const handleCloseModal = () => {
     setIsViewModal(false);
   };
+  const openConfirmDefault = (id: number) => {
+    setPendingDefaultId(id);
+    setConfirmDefaultOpen(true);
+  };
+  const closeConfirmDefault = () => {
+    setPendingDefaultId(null);
+    setConfirmDefaultOpen(false);
+  };
+
+  const getRootId = (m: SizeMeasurements) =>
+    m.OriginalSizeMeasurementId ? m.OriginalSizeMeasurementId : m.Id;
+
+  const toggleArchive = async (m: SizeMeasurements) => {
+    const rootId = getRootId(m);
+    const next = new Set(expandedRootIds);
+    if (next.has(rootId)) {
+      next.delete(rootId);
+      setExpandedRootIds(next);
+      return;
+    }
+    // Expand: fetch versions if not cached
+    if (!versionsByRootId[rootId]) {
+      setLoadingVersions((prev) => ({ ...prev, [rootId]: true }));
+      const list = await getVersionsBySizeMeasurement(rootId);
+      // Keep only true versions; exclude the original/root record
+      const versionsOnly = (list ?? []).filter(
+        (v) => (v as any)?.OriginalSizeMeasurementId && v.Id !== rootId
+      );
+      const sorted = [...versionsOnly].sort(
+        (a, b) =>
+          new Date(b.CreatedOn).getTime() - new Date(a.CreatedOn).getTime()
+      );
+      setVersionsByRootId((prev) => ({ ...prev, [rootId]: sorted }));
+      setLoadingVersions((prev) => ({ ...prev, [rootId]: false }));
+    }
+    next.add(rootId);
+    setExpandedRootIds(next);
+  };
+
+  const setAsDefault = async (measurementId: number) => {
+    try {
+      const resp = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/${measurementId}/set-default`,
+        { method: "POST" }
+      );
+      if (!resp.ok) {
+        let message = "Failed to set default";
+        try {
+          const err = await resp.json();
+          message = err?.message || message;
+        } catch {}
+        toast.error(message);
+        return;
+      }
+      toast.success("Default version set");
+      await fetchSizeMeasurements();
+      // refresh any expanded groups
+      const rootIds = Array.from(expandedRootIds);
+      for (const rootId of rootIds) {
+        const list = await getVersionsBySizeMeasurement(rootId);
+        const sorted = [...list].sort(
+          (a, b) =>
+            new Date(b.CreatedOn).getTime() - new Date(a.CreatedOn).getTime()
+        );
+        setVersionsByRootId((prev) => ({ ...prev, [rootId]: sorted }));
+      }
+    } catch {
+      toast.error("Failed to set default");
+    }
+  };
 
   return (
     <>
@@ -124,16 +240,301 @@ const ProductSizeMeasurements = () => {
             </PermissionGuard>
           </div>
         </div>
-        <Table
-          isStriped
-          isHeaderSticky
-          aria-label="Product Table with pagination"
-          classNames={{
-            wrapper: "min-h-[222px]",
-            th: "tableHeaderWrapper",
-          }}
-          bottomContent={
-            <div className="flex items-center justify-between gap-2">
+        {/* Custom Table */}
+        <div className="w-full rounded-medium border border-default-200 overflow-hidden">
+          {/* Header */}
+          <div className="grid grid-cols-12 gap-2 bg-default-100 px-4 py-3 text-sm font-semibold">
+            <div className="text-default-700 col-span-1">Sr</div>
+            <div className="text-default-700 col-span-2">Name</div>
+            <div className="text-default-700 col-span-2">Product Category</div>
+            <div className="text-default-700 col-span-2">Size Option</div>
+            <div className="text-default-700 col-span-2">Client Name</div>
+            <div className="text-default-700 col-span-3">Action</div>
+          </div>
+          {/* Body */}
+          <div className="divide-y divide-default-200">
+            {(items ?? []).map((item: SizeMeasurements, index: number) => {
+              const rootId = getRootId(item);
+              const isExpanded = expandedRootIds.has(rootId);
+              const hasArchive =
+                !!(item as any)?.hasVersions || !!(item as any)?.HasVersions;
+              const versionCount = versionsCountMap[rootId] ?? 0;
+              return (
+                <div key={item.Id}>
+                  {/* Row */}
+                  <div className="grid grid-cols-12 gap-2 px-4 py-3 items-center odd:bg-default-50 hover:bg-default-100 transition-colors">
+                    <div className="text-sm text-default-700 col-span-1">{index + 1}</div>
+                    <div className="text-sm text-default-700 flex items-center gap-2 col-span-2">
+                      {hasArchive ? (
+                        <button
+                          type="button"
+                          onClick={() => toggleArchive(item)}
+                          className="p-1 hover:bg-default-200 rounded inline-flex items-center"
+                          aria-label={isExpanded ? "Collapse" : "Expand"}
+                          title={isExpanded ? "Collapse" : "Expand"}
+                        >
+                          {isExpanded ? <GoChevronDown /> : <GoChevronRight />}
+                        </button>
+                      ) : null}
+                      <span>{item.Measurement1}</span>
+                      {item.IsLatest && hasArchive ? (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-success-100 text-success-700 border border-success-200">
+                          Latest
+                        </span>
+                      ) : null}
+                      {hasArchive && versionCount > 0 ? (
+                        <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-default-200 text-default-700">
+                          {versionCount}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="text-sm text-default-700 col-span-2">{item.ProductCategoryType}</div>
+                    <div className="text-sm text-default-700 col-span-2">{item.SizeOptionName}</div>
+                    <div className="text-sm text-default-700 col-span-2">{item.ClientName}</div>
+                    <div className="flex items-center gap-2 justify-start col-span-3">
+                      <button
+                        type="button"
+                        onClick={() => openViewModal(item.Id)}
+                        className="p-1 hover:bg-default-200 rounded"
+                        aria-label="View"
+                        title="View"
+                      >
+                        <GoEye />
+                      </button>
+                      <PermissionGuard
+                        required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => openEditModal(item.Id)}
+                          className="p-1 hover:bg-default-200 rounded"
+                          aria-label="Edit"
+                          title="Edit"
+                        >
+                          <GoPencil color="green" />
+                        </button>
+                      </PermissionGuard>
+                      <PermissionGuard
+                        required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
+                      >
+                        <button
+                          type="button"
+                          className="p-1 hover:bg-default-200 rounded hover:text-red-500"
+                          onClick={() => handleOpenDeleteModal(item.Id)}
+                          aria-label="Delete"
+                          title="Delete"
+                        >
+                          <RiDeleteBin6Line color="red" />
+                        </button>
+                      </PermissionGuard>
+                      {/* Archive chevron moved to Name cell */}
+                      {hasArchive ? (
+                        <PermissionGuard
+                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
+                        >
+                          <button
+                            type="button"
+                            className={`p-1 rounded border inline-flex items-center justify-center ${
+                              item.IsLatest
+                                ? "border-success-300 text-success-600"
+                                : "border-default-300 hover:bg-default-100"
+                            }`}
+                            onClick={() => openConfirmDefault(item.Id)}
+                            disabled={item.IsLatest}
+                            title={item.IsLatest ? "Default" : "Set as default"}
+                            aria-label={item.IsLatest ? "Default" : "Set as default"}
+                          >
+                            <GoCheckCircle />
+                          </button>
+                        </PermissionGuard>
+                      ) : null}
+                    </div>
+                  </div>
+                  {/* Expanded versions */}
+                  {isExpanded ? (
+                    <div className="bg-default-50">
+                      {loadingVersions[rootId] ? (
+                        <div className="px-8 py-3">
+                          <div className="h-3 bg-default-200 rounded w-1/3 mb-2 animate-pulse"></div>
+                          <div className="h-3 bg-default-200 rounded w-1/2 mb-2 animate-pulse"></div>
+                          <div className="h-3 bg-default-200 rounded w-2/3 animate-pulse"></div>
+                        </div>
+                      ) : (
+                        <>
+                          {/* Compare toolbar (appears when exactly two picks) */}
+                          {(() => {
+                            const picks = comparePickedIdsByRootId[rootId] || [];
+                            if (picks.length === 2) {
+                              return (
+                                <div className="px-8 py-2 flex items-center justify-between bg-default-100 border-y border-default-200">
+                                  <span className="text-xs text-default-600">
+                                    2 versions selected
+                                  </span>
+                                  <button
+                                    type="button"
+                                    className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded bg-primary-600 text-white hover:bg-primary-700 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+                                    onClick={() => {
+                                      const all = [item, ...(versionsByRootId[rootId] ?? [])];
+                                      const left =
+                                        all.find((x) => x.Id === picks[0]) ?? null;
+                                      const right =
+                                        all.find((x) => x.Id === picks[1]) ?? null;
+                                      setCompareLeft(left);
+                                      setCompareRight(right);
+                                      setCompareOpen(true);
+                                    }}
+                                  >
+                                    <GoGitCompare />
+                                    Compare
+                                  </button>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })()}
+                          {/* Nested header */}
+                          <div className="grid grid-cols-7 gap-2 px-8 py-2 text-[11px] font-semibold text-default-600 uppercase tracking-wide">
+                            <div className="col-span-3">Name</div>
+                            <div className="col-span-1">Version</div>
+                            <div className="col-span-3 text-left">Action</div>
+                          </div>
+                          <div className="px-6 pb-3">
+                            <div className="border-l-2 border-default-200 ml-2">
+                              {(versionsByRootId[rootId] ?? []).map(
+                                (v) => (
+                                  <div
+                                    key={v.Id}
+                                    className="relative grid grid-cols-7 gap-2 items-center px-4 py-2 ml-4 odd:bg-default-100/50 hover:bg-default-200/40 rounded"
+                                  >
+                                    <span
+                                      className={`absolute -left-3 top-3 rounded-full ${
+                                        v.IsLatest
+                                          ? "h-2.5 w-2.5 bg-success-500 ring-2 ring-success-200"
+                                          : "h-2 w-2 bg-default-300"
+                                      }`}
+                                    ></span>
+                                    <div className="col-span-3 text-sm flex items-center gap-2">
+                                      {((versionsByRootId[rootId] ?? []).length > 1) ? (
+                                        <input
+                                          type="checkbox"
+                                          className="h-3 w-3 accent-primary-500"
+                                          checked={(comparePickedIdsByRootId[rootId] || []).includes(
+                                            v.Id
+                                          )}
+                                          onChange={(e) => {
+                                            setComparePickedIdsByRootId((prev) => {
+                                              const list = prev[rootId] ? [...prev[rootId]] : [];
+                                              if (e.target.checked) {
+                                                if (!list.includes(v.Id)) {
+                                                  list.push(v.Id);
+                                                }
+                                              } else {
+                                                const idx = list.indexOf(v.Id);
+                                                if (idx >= 0) list.splice(idx, 1);
+                                              }
+                                              // limit to 2 selections
+                                              const trimmed = list.slice(-2);
+                                              return { ...prev, [rootId]: trimmed };
+                                            });
+                                          }}
+                                        />
+                                      ) : null}
+                                      <span>{v.Measurement1}</span>
+                                    </div>
+                                    <div className="col-span-1 text-sm flex items-center gap-2">
+                                      <span>{v.Version}</span>
+                                    </div>
+                                    <div className="col-span-3 flex items-center gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() => openViewModal(v.Id)}
+                                        className="p-1 hover:bg-default-200 rounded"
+                                        aria-label="View"
+                                        title="View"
+                                      >
+                                        <GoEye />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setCompareLeft(item);
+                                          setCompareRight(v);
+                                          setCompareOpen(true);
+                                        }}
+                                        className="p-1 hover:bg-default-200 rounded inline-flex items-center gap-1"
+                                        aria-label="Compare with original"
+                                        title="Compare with original"
+                                      >
+                                        <GoGitCompare />
+                                      </button>
+                                      <PermissionGuard
+                                        required={
+                                          PERMISSIONS_ENUM.PRODUCT_DEFINITIONS
+                                            .DELETE
+                                        }
+                                      >
+                                        <button
+                                          type="button"
+                                          className="p-1 hover:bg-default-200 rounded hover:text-red-500"
+                                          onClick={() =>
+                                            handleOpenDeleteModal(v.Id)
+                                          }
+                                          aria-label="Delete"
+                                          title="Delete"
+                                        >
+                                          <RiDeleteBin6Line color="red" />
+                                        </button>
+                                      </PermissionGuard>
+                                      <PermissionGuard
+                                        required={
+                                          PERMISSIONS_ENUM.PRODUCT_DEFINITIONS
+                                            .UPDATE
+                                        }
+                                      >
+                                        <button
+                                          type="button"
+                                          className={`p-1 rounded border inline-flex items-center justify-center ${
+                                            v.IsLatest
+                                              ? "border-success-300 text-success-600"
+                                              : "border-default-300 hover:bg-default-100"
+                                          }`}
+                                          onClick={() => openConfirmDefault(v.Id)}
+                                          disabled={v.IsLatest}
+                                          title={
+                                            v.IsLatest
+                                              ? "Default"
+                                              : "Set as default"
+                                          }
+                                        >
+                                          <GoCheckCircle />
+                                        </button>
+                                      </PermissionGuard>
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+            {loading && (
+              <div className="px-4 py-6 text-sm text-default-500">
+                Loading...
+              </div>
+            )}
+            {!loading && (items ?? []).length === 0 && (
+              <div className="px-4 py-6 text-sm text-default-500">
+                No records found.
+              </div>
+            )}
+          </div>
+          {/* Footer */}
+          <div className="flex items-center justify-between gap-2 px-4 py-3 bg-default-50">
               <span className="text-small text-gray-500">
                 Items per Page: {items?.length || 0}
               </span>
@@ -147,84 +548,15 @@ const ProductSizeMeasurements = () => {
                 onChange={(page) => setPage(page)}
               />
               <span className="text-small text-gray-500">
-                Total Items: {sizeMeasurement?.length || 0}
+              Total Items:{" "}
+              {
+                (sizeMeasurement ?? []).filter(
+                  (m: any) => !m?.OriginalSizeMeasurementId
+                ).length
+              }
               </span>
             </div>
-          }
-        >
-          <TableHeader>
-            <TableColumn key="Sr" className="text-medium font-bold">
-              Sr
-            </TableColumn>
-            <TableColumn
-              key="Measurement1"
-              className="text-medium font-bold cursor-pointer"
-            >
-              Name
-            </TableColumn>
-            <TableColumn
-              key="ProductCategoryType"
-              className="text-medium font-bold"
-            >
-              Product Category
-            </TableColumn>
-            <TableColumn key="SizeOptionName" className="text-medium font-bold">
-              Size Option
-            </TableColumn>
-            <TableColumn key="ClientName" className="text-medium font-bold">
-              Client Name
-            </TableColumn>
-            <TableColumn key="action" className="text-medium font-bold">
-              Action
-            </TableColumn>
-          </TableHeader>
-          <TableBody isLoading={loading} items={items}>
-            {(items ?? []).map((item: any, index: number) => (
-              <TableRow key={item.Id}>
-                {(columnKey) => (
-                  <TableCell>
-                    {columnKey === "Sr" ? (
-                      index + 1
-                    ) : columnKey !== "action" ? (
-                      getKeyValue(item, columnKey)
-                    ) : (
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openViewModal(item?.Id)}
-                        >
-                          <GoEye />
-                        </button>
-                        <PermissionGuard
-                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
-                        >
-                          <button
-                            type="button"
-                            onClick={() => openEditModal(item?.Id)}
-                          >
-                            <GoPencil color="green" />
-                          </button>
-                        </PermissionGuard>
-
-                        <PermissionGuard
-                          required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
-                        >
-                          <button
-                            type="button"
-                            className="hover:text-red-500 cursor-pointer"
-                            onClick={() => handleOpenDeleteModal(item?.Id)}
-                          >
-                            <RiDeleteBin6Line color="red" />
-                          </button>
-                        </PermissionGuard>
                       </div>
-                    )}
-                  </TableCell>
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
 
         {isViewModal ? (
           <ViewMeasurementChart
@@ -252,6 +584,22 @@ const ProductSizeMeasurements = () => {
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
           sizeOptionId={selectedSizeOptionId}
+        />
+        <SetDefaultConfirm
+          isOpen={confirmDefaultOpen}
+          measurementId={pendingDefaultId}
+          onClose={closeConfirmDefault}
+          onSuccess={closeConfirmDefault}
+        />
+        <CompareMeasurementsModal
+          isOpen={compareOpen}
+          left={compareLeft}
+          right={compareRight}
+          onClose={() => {
+            setCompareOpen(false);
+            setCompareLeft(null);
+            setCompareRight(null);
+          }}
         />
       </div>
     </>
