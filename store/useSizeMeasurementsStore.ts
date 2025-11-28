@@ -141,7 +141,7 @@ export interface SizeMeasurements {
   H_FusionInside: string;
   H_PatchSize: string;
   H_PatchPlacement: string;
-
+  hasVersions: boolean;
   CreatedOn: string;
   CreatedBy: string;
   UpdatedOn: string;
@@ -178,6 +178,7 @@ interface StoreState {
   deleteSizeOption: (id: number, onSuccess: () => void) => Promise<void>;
   getMeasurementsBySizeOption: (sizeOptionId: number) => Promise<SizeMeasurements[]>;
   getVersionsBySizeMeasurement: (measurementId: number) => Promise<SizeMeasurements[]>;
+  setAsDefault: (measurementId: number, onSuccess?: () => void) => Promise<void>;
 }
 
 const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
@@ -417,6 +418,33 @@ const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
       set({ loading: false, error: "Failed to fetch versions" });
       toast.error("Failed to fetch versions");
       return [];
+    }
+  },
+
+  setAsDefault: async (measurementId: number, onSuccess?: () => void) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/${measurementId}/set-as-default`,
+        { method: "PATCH" }
+      );
+      if (!response.ok) {
+        let message = "Failed to set default";
+        try {
+          const err = await response.json();
+          message = err?.message || message;
+        } catch {}
+        set({ loading: false, error: message });
+        toast.error(message);
+        return;
+      }
+      set({ loading: false, error: null });
+      if (onSuccess) onSuccess();
+      await get().fetchSizeMeasurements();
+      toast.success("Default version set");
+    } catch (error) {
+      set({ loading: false, error: "Failed to set default" });
+      toast.error("Failed to set default");
     }
   },
 }));

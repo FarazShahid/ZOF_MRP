@@ -1,5 +1,5 @@
 import { Field, FieldArray } from "formik";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PRIORITY_ENUM } from "@/interface/GetFileType";
 import Label from "../../components/common/Label";
 import useSizeMeasurementsStore, { SizeMeasurements } from "@/store/useSizeMeasurementsStore";
@@ -19,7 +19,7 @@ const OrderItemDetailsFieldArray = ({
   setFieldValue: (field: string, value: any) => void;
 }) => {
   const { getMeasurementsBySizeOption } = useSizeMeasurementsStore();
-  const [measurementOptionsByDetail, setMeasurementOptionsByDetail] = useState<Record<number, SizeMeasurements[]>>({});
+  const [, setMeasurementOptionsByDetail] = useState<Record<number, SizeMeasurements[]>>({});
 
   // Initialize default detail if none exists
   useEffect(() => {
@@ -63,9 +63,7 @@ const OrderItemDetailsFieldArray = ({
     }
   };
 
-  const buildNameLabel = (m: SizeMeasurements) => {
-    return m.Measurement1 || m.SizeOptionName || "Measurement";
-  };
+ 
 
   return (
     <FieldArray name={`items[${index}].orderItemDetails`}>
@@ -128,33 +126,7 @@ const OrderItemDetailsFieldArray = ({
                         </option>
                       ))}
                     </Field>
-                    {/* Measurement version selector or display */}
-                    {Array.isArray(measurementOptionsByDetail[detailIndex]) &&
-                      measurementOptionsByDetail[detailIndex].length > 1 && (
-                        <div className="mt-2">
-                          <Label isRequired={false} label="Size measurement version" />
-                          <Field
-                            as="select"
-                            name={`items[${index}].orderItemDetails[${detailIndex}].MeasurementId`}
-                            className="rounded-xl dark:text-gray-400 text-black text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
-                          >
-                            {(() => {
-                              const list = measurementOptionsByDetail[detailIndex] || [];
-                              const sorted = [...list].sort((a, b) => {
-                                // Keep latest first to align with auto-selection, but labels are name only
-                                if (a.IsLatest && !b.IsLatest) return -1;
-                                if (!a.IsLatest && b.IsLatest) return 1;
-                                return (b.Version || 0) - (a.Version || 0);
-                              });
-                              return sorted.map((m) => (
-                                <option key={m.Id} value={m.Id}>
-                                  {buildNameLabel(m)}
-                                </option>
-                              ));
-                            })()}
-                          </Field>
-                        </div>
-                      )}
+ 
                   </div>
                 </div>
                 <div className="flex items-center justify-end w-full space-x-2">
