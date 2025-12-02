@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import {
   Input,
   Pagination,
@@ -10,7 +10,7 @@ import useSizeMeasurementsStore, {
 } from "@/store/useSizeMeasurementsStore";
 import DeleteSizeOptions from "./DeleteSizeOptions";
 import AddSizeOptions from "./AddSizeOptions";
-import { RiArchiveLine, RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import {
   GoPencil,
   GoEye,
@@ -29,8 +29,6 @@ import { CiSearch } from "react-icons/ci";
 import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import { ROWS_PER_PAGE } from "@/src/types/admin";
-import toast from "react-hot-toast";
-import { fetchWithAuth } from "@/src/app/services/authservice";
 
 const ProductSizeMeasurements = () => {
   const [page, setPage] = useState<number>(1);
@@ -54,12 +52,10 @@ const ProductSizeMeasurements = () => {
   const [compareOpen, setCompareOpen] = useState<boolean>(false);
   const [compareLeft, setCompareLeft] = useState<SizeMeasurements | null>(null);
   const [compareRight, setCompareRight] = useState<SizeMeasurements | null>(null);
-  const [compareSelectionByRootId, setCompareSelectionByRootId] = useState<
-    Record<number, { leftId?: number; rightId?: number }>
-  >({});
   const [comparePickedIdsByRootId, setComparePickedIdsByRootId] = useState<
     Record<number, number[]>
   >({});
+  const [selectedRootId, setSelectedRootId] = useState<number | null>(null);
 
   const router = useRouter();
 
@@ -119,36 +115,143 @@ const ProductSizeMeasurements = () => {
     fetchSizeMeasurements();
   }, []);
 
-  const openAddModal = () => {
-    router.push("/product/addsizeOptions");
-  };
+  const compareByCreatedOnDesc = useCallback(
+    (a: SizeMeasurements, b: SizeMeasurements) =>
+      new Date(b.CreatedOn).getTime() - new Date(a.CreatedOn).getTime(),
+    []
+  );
 
-  const handleOpenDeleteModal = (sizeOptionId: number) => {
+  const openAddModal = useCallback(() => {
+    router.push("/product/addsizeOptions");
+  }, [router]);
+
+  const handleOpenDeleteModal = useCallback((sizeOptionId: number, rootId?: number) => {
     setSelectedSizeOptionId(sizeOptionId);
+    if (rootId !== undefined) {
+      setSelectedRootId(rootId);
+    } else {
+      const found = (sizeMeasurement ?? []).find((m: any) => m.Id === sizeOptionId) as
+        | SizeMeasurements
+        | undefined;
+      const computedRoot = found?.OriginalSizeMeasurementId
+        ? found.OriginalSizeMeasurementId
+        : sizeOptionId;
+      setSelectedRootId(computedRoot ?? null);
+    }
     setIsOpenDeleteModal(true);
-  };
-  const closeDeleteModal = () => setIsOpenDeleteModal(false);
-  const closeAddModal = () => {
+  }, [sizeMeasurement]);
+  const closeDeleteModal = useCallback(() => setIsOpenDeleteModal(false), []);
+  const closeAddModal = useCallback(() => {
     setIsAddModalOpen(false);
     setIsEdit(false);
-  };
-  const openEditModal = (sizeId: number) => {
+  }, []);
+  const openEditModal = useCallback((sizeId: number) => {
     router.push(`/product/editsizeoptions/${sizeId}`);
-  };
-  const openViewModal = (sizeId: number) => {
+  }, [router]);
+  const openViewModal = useCallback((sizeId: number) => {
     setSelectedSizeOptionId(sizeId);
     setIsViewModal(true);
-  };
-  const handleCloseModal = () => {
+  }, []);
+  const handleCloseModal = useCallback(() => {
     setIsViewModal(false);
-  };
-  const openConfirmDefault = (id: number) => {
+  }, []);
+  const openConfirmDefault = useCallback((id: number) => {
     setPendingDefaultId(id);
     setConfirmDefaultOpen(true);
-  };
-  const closeConfirmDefault = () => {
+  }, []);
+  const closeConfirmDefault = useCallback(() => {
     setPendingDefaultId(null);
     setConfirmDefaultOpen(false);
+  }, []);
+
+  const refreshRootVersions = useCallback(
+    async (rootId: number) => {
+      setLoadingVersions((prev) => ({ ...prev, [rootId]: true }));
+      const list = await getVersionsBySizeMeasurement(rootId);
+      const versionsOnly = (list ?? []).filter(
+        (v) => (v as any)?.OriginalSizeMeasurementId && v.Id !== rootId
+      );
+      const sorted = [...versionsOnly].sort(compareByCreatedOnDesc);
+      setVersionsByRootId((prev) => ({ ...prev, [rootId]: sorted }));
+      setLoadingVersions((prev) => ({ ...prev, [rootId]: false }));
+    },
+    [getVersionsBySizeMeasurement, compareByCreatedOnDesc]
+  );
+
+  const handleSetDefaultSuccess = async () => {
+    try {
+      // Determine root id for the pending default item
+      const targetId = pendingDefaultId ?? 0;
+      const found = (sizeMeasurement ?? []).find((m: any) => m.Id === targetId) as
+        | SizeMeasurements
+        | undefined;
+      const rootId = found?.OriginalSizeMeasurementId
+        ? found.OriginalSizeMeasurementId
+        : targetId;
+
+      // Keep the parent expanded
+      setExpandedRootIds((prev) => {
+        const next = new Set(prev);
+        next.add(rootId);
+        return next;
+      });
+
+      // Refresh versions for the root
+      await refreshRootVersions(rootId);
+
+      // Clear any compare selections for this root
+      setComparePickedIdsByRootId((prev) => ({ ...prev, [rootId]: [] }));
+
+      // Refresh top-level list so "Latest" flags and counts update
+      await fetchSizeMeasurements();
+    } catch {
+      // no-op; UI already provides general error handling via store/toasts
+    }
+  };
+
+  const handleDeleteSuccess = async (_deletedId: number) => {
+    try {
+      // Determine target root to refresh
+      const targetRootId =
+        selectedRootId ??
+        (() => {
+          const found = (sizeMeasurement ?? []).find(
+            (m: any) => m.Id === _deletedId
+          ) as SizeMeasurements | undefined;
+          return found?.OriginalSizeMeasurementId
+            ? found.OriginalSizeMeasurementId
+            : _deletedId;
+        })();
+
+      if (!targetRootId) {
+        await fetchSizeMeasurements();
+        return;
+      }
+
+      // Keep root expanded
+      setExpandedRootIds((prev) => {
+        const next = new Set(prev);
+        next.add(targetRootId);
+        return next;
+      });
+
+      // Refresh versions list
+      await refreshRootVersions(targetRootId);
+
+      // Remove any compare picks that included the deleted version
+      setComparePickedIdsByRootId((prev) => {
+        const picks = prev[targetRootId] ?? [];
+        const filtered = picks.filter((id) => id !== _deletedId);
+        return { ...prev, [targetRootId]: filtered };
+      });
+
+      // Finally refresh main list
+      await fetchSizeMeasurements();
+    } catch {
+      // no-op
+    } finally {
+      setSelectedRootId(null);
+    }
   };
 
   const getRootId = (m: SizeMeasurements) =>
@@ -164,54 +267,12 @@ const ProductSizeMeasurements = () => {
     }
     // Expand: fetch versions if not cached
     if (!versionsByRootId[rootId]) {
-      setLoadingVersions((prev) => ({ ...prev, [rootId]: true }));
-      const list = await getVersionsBySizeMeasurement(rootId);
-      // Keep only true versions; exclude the original/root record
-      const versionsOnly = (list ?? []).filter(
-        (v) => (v as any)?.OriginalSizeMeasurementId && v.Id !== rootId
-      );
-      const sorted = [...versionsOnly].sort(
-        (a, b) =>
-          new Date(b.CreatedOn).getTime() - new Date(a.CreatedOn).getTime()
-      );
-      setVersionsByRootId((prev) => ({ ...prev, [rootId]: sorted }));
-      setLoadingVersions((prev) => ({ ...prev, [rootId]: false }));
+      await refreshRootVersions(rootId);
     }
     next.add(rootId);
     setExpandedRootIds(next);
   };
 
-  const setAsDefault = async (measurementId: number) => {
-    try {
-      const resp = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/${measurementId}/set-default`,
-        { method: "POST" }
-      );
-      if (!resp.ok) {
-        let message = "Failed to set default";
-        try {
-          const err = await resp.json();
-          message = err?.message || message;
-        } catch {}
-        toast.error(message);
-        return;
-      }
-      toast.success("Default version set");
-      await fetchSizeMeasurements();
-      // refresh any expanded groups
-      const rootIds = Array.from(expandedRootIds);
-      for (const rootId of rootIds) {
-        const list = await getVersionsBySizeMeasurement(rootId);
-        const sorted = [...list].sort(
-          (a, b) =>
-            new Date(b.CreatedOn).getTime() - new Date(a.CreatedOn).getTime()
-        );
-        setVersionsByRootId((prev) => ({ ...prev, [rootId]: sorted }));
-      }
-    } catch {
-      toast.error("Failed to set default");
-    }
-  };
 
   return (
     <>
@@ -320,7 +381,7 @@ const ProductSizeMeasurements = () => {
                         <button
                           type="button"
                           className="p-1 hover:bg-default-200 rounded hover:text-red-500"
-                          onClick={() => handleOpenDeleteModal(item.Id)}
+                          onClick={() => handleOpenDeleteModal(item.Id, rootId)}
                           aria-label="Delete"
                           title="Delete"
                         >
@@ -476,9 +537,7 @@ const ProductSizeMeasurements = () => {
                                         <button
                                           type="button"
                                           className="p-1 hover:bg-default-200 rounded hover:text-red-500"
-                                          onClick={() =>
-                                            handleOpenDeleteModal(v.Id)
-                                          }
+                                          onClick={() => handleOpenDeleteModal(v.Id, rootId)}
                                           aria-label="Delete"
                                           title="Delete"
                                         >
@@ -583,13 +642,14 @@ const ProductSizeMeasurements = () => {
         <DeleteSizeOptions
           isOpen={isOpenDeletModal}
           onClose={closeDeleteModal}
+          onSuccess={handleDeleteSuccess}
           sizeOptionId={selectedSizeOptionId}
         />
         <SetDefaultConfirm
           isOpen={confirmDefaultOpen}
           measurementId={pendingDefaultId}
           onClose={closeConfirmDefault}
-          onSuccess={closeConfirmDefault}
+          onSuccess={handleSetDefaultSuccess}
         />
         <CompareMeasurementsModal
           isOpen={compareOpen}

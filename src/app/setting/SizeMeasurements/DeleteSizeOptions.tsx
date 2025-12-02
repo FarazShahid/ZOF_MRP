@@ -11,12 +11,14 @@ import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
 interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: (deletedId: number) => void;
   sizeOptionId: number;
 }
 
 const DeleteSizeOptions: React.FC<DeleteModalProps> = ({
   isOpen,
   onClose,
+  onSuccess,
   sizeOptionId,
 }) => {
   const { deleteSizeOption, loading } = useSizeMeasurementsStore();
@@ -24,6 +26,7 @@ const DeleteSizeOptions: React.FC<DeleteModalProps> = ({
   const handleDelete = async () => {
     try {
       await deleteSizeOption(sizeOptionId, () => {
+        onSuccess?.(sizeOptionId);
         onClose();
       });
     } catch (error) {
