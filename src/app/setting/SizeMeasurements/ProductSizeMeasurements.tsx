@@ -339,8 +339,8 @@ const ProductSizeMeasurements = () => {
                       ) : null}
                       <span>{item.Measurement1}</span>
                       {item.IsLatest && hasArchive ? (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-success-100 text-success-700 border border-success-200">
-                          Latest
+                        <span className="text-[10px] w-3 h-3 rounded-full bg-success-100 text-success-700 border border-success-200">
+                          
                         </span>
                       ) : null}
                       {hasArchive && versionCount > 0 ? (
