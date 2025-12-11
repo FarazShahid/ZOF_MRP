@@ -44,7 +44,7 @@ const OverviewTab: React.FC<Props> = ({
         <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg p-5 border border-purple-200 dark:border-purple-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Completed Orders</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Shipped Orders</p>
               <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
                 {completedOrdersCount}
               </p>

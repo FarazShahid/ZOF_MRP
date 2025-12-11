@@ -32,10 +32,32 @@ const GalleryPage = () => {
   const attachments = useProductStore((s) => s.productAttachments);
   const fetchProductAttachments = useProductStore((s) => s.fetchProductAttachments);
   const storeLoading = useProductStore((s) => s.loading);
+  const attachmentsPagination = useProductStore((s) => s.attachmentsPagination);
+  const hasMore = useProductStore((s) => s.attachmentsPagination?.hasMore ?? false);
+  const loadMoreProductAttachments = useProductStore((s) => s.loadMoreProductAttachments);
+  const loadingMore = useProductStore((s) => s.attachmentsLoadingMore);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!attachments || attachments.length === 0) fetchProductAttachments();
-  }, [attachments?.length, fetchProductAttachments]);
+    if (!Array.isArray(attachments) || attachments.length === 0) fetchProductAttachments();
+  }, [Array.isArray(attachments) ? attachments.length : 0, fetchProductAttachments]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const el = loadMoreRef.current;
+    if (!el) return;
+    if (!hasMore) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      if (entry.isIntersecting && hasMore && !loadingMore) {
+        loadMoreProductAttachments();
+      }
+    }, { rootMargin: "200px 0px" });
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasMore, loadingMore, loadMoreProductAttachments]);
 
   useEffect(() => {
     const onClickOutside = (e: MouseEvent) => {
@@ -119,7 +141,8 @@ const GalleryPage = () => {
 
   const allImageEntries = useMemo(() => {
     const list: ImageEntry[] = [];
-    for (const item of attachments || []) {
+    const src = Array.isArray(attachments) ? attachments : [];
+    for (const item of src) {
       for (const att of item.attachments || []) {
         const type = (att.fileType || "").toLowerCase();
         if (!imageTypes.has(type)) continue;
@@ -176,7 +199,8 @@ const GalleryPage = () => {
     return result;
   }, [allImageEntries, selectedClientId, selectedProductId, query]);
 
-  const isLoading = storeLoading;
+  // Show skeleton only for initial load (not while fetching more pages)
+  const isLoading = storeLoading && (!Array.isArray(attachments) || attachments.length === 0);
 
   const resetFilters = () => {
     setSelectedClientId("all");
@@ -502,8 +526,29 @@ const GalleryPage = () => {
                   </div>
                 </div>
               ))}
+              {/* Sentinel for infinite scroll */}
+              <div ref={loadMoreRef} className="h-8 w-full" />
             </div>
           )}
+
+          {/* Load-more indicator / end-of-list message */}
+          {!isLoading && Array.isArray(attachments) && attachments.length > 0 ? (
+            <div className="flex items-center justify-center py-3 text-xs text-gray-600 dark:text-gray-300">
+              {loadingMore ? (
+                <span className="inline-flex items-center gap-2 px-2 py-1 rounded-md bg-gray-100 dark:bg-neutral-800 border border-gray-200 dark:border-gray-700">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">
+                    <circle cx="12" cy="12" r="10" strokeOpacity="0.25"></circle>
+                    <path d="M22 12a10 10 0 0 1-10 10" strokeOpacity="0.9"></path>
+                  </svg>
+                  Loading more…
+                </span>
+              ) : hasMore ? null : (
+                <span className="px-2 py-1 rounded-md bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-gray-700">
+                  No more results
+                </span>
+              )}
+            </div>
+          ) : null}
 
           <Lightbox
             open={lightboxOpen}

@@ -53,6 +53,14 @@ export type ShipmentStatus = 'In Transit' | 'Damaged' | 'Delivered' | 'Cancelled
 
 export type OrderStatus = 'Production' | 'Shipped' | 'Packing' | 'Kept in stock';
 
+export const OrderStatusEnum = {
+  Production: 'Production',
+  Shipped: 'Shipped',
+  Packing: 'Packing',
+  Pending: 'Pending',
+  'Kept in stock': 'Kept in stock',
+} as const;
+
 
 export const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {

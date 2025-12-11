@@ -12,6 +12,7 @@ import TabsNav, { TabType } from "@/src/app/components/admin/customers/TabsNav";
 import OverviewTab from "@/src/app/components/admin/customers/OverviewTab";
 import OrdersTab from "@/src/app/components/admin/customers/OrdersTab";
 import ProductsTab from "@/src/app/components/admin/customers/ProductsTab";
+import { OrderStatusEnum } from "@/src/types/admin";
 
 const ClientProfilePage = () => {
   const params = useParams<{ id: string }>();
@@ -33,7 +34,7 @@ const ClientProfilePage = () => {
     [products]
   );
   const completedOrdersCount = useMemo(
-    () => Orders.filter((o) => o.StatusName.toLowerCase().includes("completed")).length,
+    () => Orders.filter((o) => o.StatusName.includes(OrderStatusEnum.Shipped)).length,
     [Orders]
   );
 

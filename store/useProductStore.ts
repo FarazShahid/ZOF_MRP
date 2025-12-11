@@ -116,9 +116,23 @@ export interface ProductAttachments {
   attachments: ProductAttachmentItem[];
 }
 
+// Pagination metadata returned by backend for attachments
+interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
 interface GetProductAttachmentsResponse {
   data: ProductAttachments[];
   message?: string;
+}
+
+interface GetProductAttachmentsPaginatedResponse {
+  data: ProductAttachments[];
+  pagination: PaginationMeta;
 }
 
 interface AddProduct {
@@ -139,6 +153,8 @@ interface CategoryState {
   availableSizes: AvailableSizes[];
   availablePrintingOptions: PrintingOptionType[];
   productAttachments: ProductAttachments[];
+  attachmentsPagination: PaginationMeta | null;
+  attachmentsLoadingMore: boolean;
   loading: boolean;
   error: string | null;
 
@@ -152,6 +168,7 @@ interface CategoryState {
   ) => Promise<PrintingOptionType[] | null>;
   fetchAvailableSizes: (id: number) => Promise<AvailableSizes[] | null>;
   fetchProductAttachments: () => Promise<void>;
+  loadMoreProductAttachments: () => Promise<void>;
   getProductById: (id: number) => Promise<void>;
   addProduct: (
     productType: AddProduct
@@ -178,6 +195,8 @@ const useProductStore = create<CategoryState>((set, get) => ({
   availableSizes: [],
   availablePrintingOptions: [],
   productAttachments: [],
+  attachmentsPagination: null,
+  attachmentsLoadingMore: false,
   loading: false,
   error: null,
 
@@ -221,10 +240,11 @@ const useProductStore = create<CategoryState>((set, get) => ({
   },
 
   fetchProductAttachments: async () => {
+    // Initial load with pagination (page=1, limit=10 by default)
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/with-attachments/all`
+        `${process.env.NEXT_PUBLIC_API_URL}/products/with-attachments/all?page=1&limit=10`
       );
       if (!response.ok) {
         set({ loading: false });
@@ -232,11 +252,57 @@ const useProductStore = create<CategoryState>((set, get) => ({
         toast.error(error.message || "Failed to fetch product attachments.");
         return;
       }
-      const result: GetProductAttachmentsResponse = await response.json();
-      set({ productAttachments: result.data || [], loading: false });
+      const result: any = await response.json();
+      // Support both shapes:
+      // A) { data: Product[], pagination: {...} }
+      // B) { data: { data: Product[], pagination: {...} }, statusCode, message, ... }
+      const payload = (result && result.data && result.data.pagination !== undefined && Array.isArray(result.data.data))
+        ? result.data
+        : result;
+      const items: ProductAttachments[] = Array.isArray(payload?.data) ? payload.data : [];
+      const pagination: PaginationMeta | null = payload?.pagination ?? null;
+      set({
+        productAttachments: items,
+        attachmentsPagination: pagination,
+        loading: false,
+      });
     } catch (error) {
       set({ loading: false, error: "Failed to fetch product attachments" });
       toast.error("Failed to fetch product attachments");
+    }
+  },
+
+  loadMoreProductAttachments: async () => {
+    const state = get();
+    const meta = state.attachmentsPagination;
+    if (!meta || !meta.hasMore) return;
+    if (state.attachmentsLoadingMore) return;
+
+    set({ attachmentsLoadingMore: true, error: null });
+    try {
+      const nextPage = meta.page + 1;
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/with-attachments/all?page=${nextPage}&limit=${meta.limit}`
+      );
+      if (!response.ok) {
+        set({ attachmentsLoadingMore: false });
+        const error = await response.json();
+        toast.error(error.message || "Failed to load more attachments.");
+        return;
+      }
+      const result: any = await response.json();
+      const payload = (result && result.data && result.data.pagination !== undefined && Array.isArray(result.data.data))
+        ? result.data
+        : result;
+      const items: ProductAttachments[] = Array.isArray(payload?.data) ? payload.data : [];
+      set((s) => ({
+        productAttachments: [...(s.productAttachments || []), ...items],
+        attachmentsPagination: payload?.pagination ?? s.attachmentsPagination,
+        attachmentsLoadingMore: false,
+      }));
+    } catch (error) {
+      set({ attachmentsLoadingMore: false, error: "Failed to load more attachments" });
+      toast.error("Failed to load more attachments");
     }
   },
 
