@@ -63,6 +63,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
   const defaultValues = {
     Name: "",
     ClientId: "",
+    ProjectId: "",
     ProductCategoryId: "",
     FabricTypeId: "",
     Description: "",
@@ -88,6 +89,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       return {
         Name: productById.Name ?? "",
         ClientId: productById.ClientId ?? "",
+        ProjectId: (productById as any).ProjectId ?? "",
         ProductCategoryId: productById.ProductCategoryId ?? "",
         FabricTypeId: productById.FabricTypeId ?? "",
         Description: productById.Description ?? "",

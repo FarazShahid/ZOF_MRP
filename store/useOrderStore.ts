@@ -10,6 +10,7 @@ import {
   OderStatus,
   OderStatusResponse,
   GetOrderByIdResponse,
+  OrderItem,
 } from "@/src/app/interfaces/OrderStoreInterface";
 import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
@@ -56,10 +57,7 @@ export interface OrderItemsByIdData {
   }[];
 }
 
-export interface OrderItem {
-  Id: number;
-  Name: string;
-}
+// Using OrderItem type from interfaces/OrderStoreInterface
 
 interface OrderStatusLogsData {
   message: string;

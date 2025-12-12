@@ -31,6 +31,8 @@ export interface Product {
   Name: string;
   ClientId: number;
   ClientName: string;
+  ProjectId?: number;
+  ProjectName?: string;
   ProductCategoryId: number;
   ProductCategoryName: string;
   FabricTypeId: number;
@@ -55,6 +57,8 @@ interface ProductById {
   Id: string;
   ClientId: number;
   ClientName: string;
+  ProjectId?: number;
+  ProjectName?: string;
   ProductCategoryId: number;
   FabricTypeId: number;
   FabricName: string;

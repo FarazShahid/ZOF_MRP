@@ -52,6 +52,8 @@ export interface AddClientType {
 interface ClientState {
   clients: GetClientsType[];
   clientById: GetClientsType | null;
+  projects: ProjectType[];
+  projectById: ProjectType | null;
   loading: boolean;
   error: string | null;
   isResolved: boolean;
@@ -65,11 +67,77 @@ interface ClientState {
     onSuccess: () => void
   ) => Promise<void>;
   deleteclient: (id: number, onSuccess: () => void) => Promise<void>;
+
+  // Projects
+  fetchProjects: () => Promise<void>;
+  getProjectById: (id: number) => Promise<void>;
+  addProject: (project: AddProjectType, onSuccess?: () => void) => Promise<void>;
+  updateProject: (
+    id: number,
+    project: AddProjectType,
+    onSuccess?: () => void
+  ) => Promise<void>;
+  deleteProject: (id: number, onSuccess?: () => void) => Promise<void>;
+}
+
+// Projects
+export interface AddProjectType {
+  Name: string;
+  ClientId: number;
+  Description?: string;
+}
+
+export interface ProjectType {
+  Id: number;
+  Name: string;
+  Description: string;
+  ClientId: number;
+  isArchived: boolean;
+  CreatedOn: string;
+  UpdatedOn: string;
+  CreatedBy: string;
+  UpdatedBy: string;
+  client?: {
+    Id: number;
+    Name: string;
+    Email: string;
+    Phone: string;
+    Country: string;
+    State: string;
+    City: string;
+    CompleteAddress: string;
+    ClientStatusId: string;
+    POCName: string | null;
+    POCEmail: string | null;
+    Website: string | null;
+    Linkedin: string | null;
+    Instagram: string | null;
+    CreatedOn: string | null;
+    UpdatedOn: string;
+    CreatedBy: string;
+    UpdatedBy: string;
+  };
+}
+
+interface GetProjectsResponseType {
+  data: ProjectType[];
+  statusCode: number;
+  message: string;
+  timestamp?: string;
+}
+
+interface ProjectByIdResponseType {
+  data: ProjectType;
+  statusCode: number;
+  message: string;
+  timestamp?: string;
 }
 
 const useClientStore = create<ClientState>((set, get) => ({
   clients: [],
   clientById: null,
+  projects: [],
+  projectById: null,
   loading: false,
   error: null,
   isResolved: false,
@@ -189,6 +257,128 @@ const useClientStore = create<ClientState>((set, get) => ({
     } catch (error) {
       set({ error: "Failed to delete client", loading: false });
       toast.error("Failed to delete client");
+    }
+  },
+
+  // Projects
+  fetchProjects: async () => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/projects`
+      );
+      if (!response.ok) {
+        set({ loading: false, error: "Error Fetching Data" });
+        const error = await response.json();
+        toast.error(error.message || "Fail to fetch projects");
+        return;
+      }
+      const data: GetProjectsResponseType = await response.json();
+      set({ projects: data.data, loading: false });
+    } catch (error) {
+      set({ loading: false, error: "Error Fetching Data" });
+      toast.error("Fail to fetch projects");
+    }
+  },
+
+  getProjectById: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/projects/${id}`
+      );
+      if (!response.ok) {
+        set({ loading: false, error: "Error Fetching Data" });
+        const error = await response.json();
+        toast.error(error.message || "Fail to fetch project");
+        return;
+      }
+      const data: ProjectByIdResponseType = await response.json();
+      set({ projectById: data.data, loading: false });
+    } catch (error) {
+      set({ loading: false, error: "Error Fetching Data" });
+      toast.error("Fail to fetch project");
+    }
+  },
+
+  addProject: async (project: AddProjectType, onSuccess?: () => void) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/projects`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(project),
+        }
+      );
+      const result = await response.json();
+      if (!response.ok) {
+        set({ loading: false, error: null });
+        toast.error(result?.message || "Failed to add project");
+        return;
+      }
+      set({ loading: false, error: null });
+      toast.success("Project added successfully.");
+      if (onSuccess) onSuccess();
+      await get().fetchProjects();
+    } catch (error) {
+      set({ loading: false, error: "Failed to add project" });
+      toast.error("Failed to add project");
+    }
+  },
+
+  updateProject: async (
+    id: number,
+    project: AddProjectType,
+    onSuccess?: () => void
+  ) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/projects/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(project),
+        }
+      );
+      const result = await response.json();
+      if (!response.ok) {
+        set({ loading: false, error: null });
+        toast.error(result?.message || "Failed to update project");
+        return;
+      }
+      set({ loading: false, error: null });
+      toast.success("Project updated successfully.");
+      if (onSuccess) onSuccess();
+      await get().fetchProjects();
+    } catch (error) {
+      set({ loading: false, error: "Failed to update project" });
+      toast.error("Failed to update project");
+    }
+  },
+
+  deleteProject: async (id: number, onSuccess?: () => void) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/projects/${id}`,
+        { method: "DELETE" }
+      );
+      if (!response.ok) {
+        set({ loading: false, error: null });
+        const error = await response.json();
+        toast.error(error?.message || "Failed to delete project");
+        return;
+      }
+      set({ loading: false, error: null });
+      toast.success("Project deleted successfully.");
+      if (onSuccess) onSuccess();
+      await get().fetchProjects();
+    } catch (error) {
+      set({ loading: false, error: "Failed to delete project" });
+      toast.error("Failed to delete project");
     }
   },
 }));

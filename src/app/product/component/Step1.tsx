@@ -18,7 +18,7 @@ export default function Step1({ formik }: any) {
   const { fetchCategories, productCategories } = useCategoryStore();
   const { fetchFabricType, fabricTypeData } = useFabricStore();
   const { fetchColorOptions, colorOptions } = useColorOptionsStore();
-  const { fetchClients, clients } = useClientStore();
+  const { fetchClients, clients, fetchProjects, projects } = useClientStore();
   const { selectedColors } = useColorPickerStore();
 
   const handleColorOptionChange = (
@@ -61,10 +61,20 @@ export default function Step1({ formik }: any) {
         fetchFabricType(),
         fetchColorOptions(),
         fetchClients(),
+        fetchProjects(),
       ]);
     };
     fetchData();
   }, []);
+
+  // Reset ProjectId when Client changes
+  useEffect(() => {
+    formik.setFieldValue("ProjectId", "");
+  }, [formik.values.ClientId]);
+
+  const filteredProjects = (projects || []).filter(
+    (p) => String(p.ClientId) === String(formik.values.ClientId || "")
+  );
 
   useEffect(() => {
     const colorIds = formik.values.productColors?.map((c: any) =>
@@ -85,6 +95,29 @@ export default function Step1({ formik }: any) {
         />
         <ErrorMessage
           name="Name"
+          component="div"
+          className="text-red-500 text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <Label isRequired={false} label="Project" />
+        <Field
+          as="select"
+          name="ProjectId"
+          disabled={!formik.values.ClientId}
+          className="rounded-xl dark:text-gray-400 text-gray-800 text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+        >
+          <option value={""}>
+            {formik.values.ClientId ? "Select a project" : "Select a client first"}
+          </option>
+          {filteredProjects.map((proj, index) => (
+            <option key={index} value={proj.Id}>
+              {proj.Name}
+            </option>
+          ))}
+        </Field>
+        <ErrorMessage
+          name="ProjectId"
           component="div"
           className="text-red-500 text-sm"
         />
