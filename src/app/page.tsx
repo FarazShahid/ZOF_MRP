@@ -16,6 +16,10 @@ export default function Home() {
   const [viewPassword, setViewPassword] = useState<boolean>(false);
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const recaptchaRef = useRef<ReCAPTCHA>(null);
+  
+  // Check if reCAPTCHA token is configured
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_TOKEN;
+  const isRecaptchaEnabled = !!recaptchaSiteKey;
 
   const handleViewPassword = () => {
     setViewPassword(!viewPassword);
@@ -27,11 +31,16 @@ export default function Home() {
   const { login } = authContext;
 
   const handleSubmit = async (values: { email: string; password: string; remember_me?: boolean; token?: string }) => {
-    if (!recaptchaToken) {
+    // Only validate reCAPTCHA if it's enabled
+    if (isRecaptchaEnabled && !recaptchaToken) {
       toast.error("Please complete the reCAPTCHA verification");
       return;
     }
-    await login({ email: values.email, password: values.password, token: recaptchaToken }, !!values.remember_me);
+    await login({ 
+      email: values.email, 
+      password: values.password, 
+      token: isRecaptchaEnabled ? recaptchaToken || "" : "" 
+    }, !!values.remember_me);
     // Note: reCAPTCHA will be reset on error in the login function
   };
 
@@ -39,15 +48,17 @@ export default function Home() {
     setRecaptchaToken(token);
   };
 
-  // Reset reCAPTCHA on login failure
+  // Reset reCAPTCHA on login failure (only if reCAPTCHA is enabled)
   useEffect(() => {
+    if (!isRecaptchaEnabled) return;
+    
     const handleLoginFailed = () => {
       recaptchaRef.current?.reset();
       setRecaptchaToken(null);
     };
     window.addEventListener("login-failed", handleLoginFailed);
     return () => window.removeEventListener("login-failed", handleLoginFailed);
-  }, []);
+  }, [isRecaptchaEnabled]);
 
   return (
     <>
@@ -146,18 +157,20 @@ export default function Home() {
                         </a>
                       </div>
                     </div>
-                    <div className="flex justify-center">
-                      <ReCAPTCHA
-                        ref={recaptchaRef}
-                        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_TOKEN || ""}
-                        onChange={handleRecaptchaChange}
-                        theme="dark"
-                      />
-                    </div>
+                    {isRecaptchaEnabled && (
+                      <div className="flex justify-center">
+                        <ReCAPTCHA
+                          ref={recaptchaRef}
+                          sitekey={recaptchaSiteKey}
+                          onChange={handleRecaptchaChange}
+                          theme="dark"
+                        />
+                      </div>
+                    )}
                     <div>
                       <button
                         type="submit"
-                        disabled={isSubmitting || !recaptchaToken}
+                        disabled={isSubmitting || (isRecaptchaEnabled && !recaptchaToken)}
                         className="w-full flex justify-center gap-3 bg-gradient-to-r from-indigo-500 to-blue-600  hover:bg-gradient-to-l hover:from-blue-500 hover:to-indigo-600 text-gray-100 p-4  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Sign in
