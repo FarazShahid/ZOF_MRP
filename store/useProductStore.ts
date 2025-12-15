@@ -148,6 +148,12 @@ interface AddProduct {
   UpdatedBy: string;
 }
 
+interface AttachmentFilters {
+  searchQuery?: string;
+  clientId?: number | "all";
+  productId?: number | "all";
+}
+
 interface CategoryState {
   products: Product[];
   productType: Product | null;
@@ -159,6 +165,7 @@ interface CategoryState {
   productAttachments: ProductAttachments[];
   attachmentsPagination: PaginationMeta | null;
   attachmentsLoadingMore: boolean;
+  attachmentsFilters: AttachmentFilters;
   loading: boolean;
   error: string | null;
 
@@ -171,7 +178,7 @@ interface CategoryState {
     id: number
   ) => Promise<PrintingOptionType[] | null>;
   fetchAvailableSizes: (id: number) => Promise<AvailableSizes[] | null>;
-  fetchProductAttachments: () => Promise<void>;
+  fetchProductAttachments: (filters?: AttachmentFilters) => Promise<void>;
   loadMoreProductAttachments: () => Promise<void>;
   getProductById: (id: number) => Promise<void>;
   addProduct: (
@@ -201,6 +208,7 @@ const useProductStore = create<CategoryState>((set, get) => ({
   productAttachments: [],
   attachmentsPagination: null,
   attachmentsLoadingMore: false,
+  attachmentsFilters: {},
   loading: false,
   error: null,
 
@@ -243,13 +251,41 @@ const useProductStore = create<CategoryState>((set, get) => ({
     }
   },
 
-  fetchProductAttachments: async () => {
+  fetchProductAttachments: async (filters?: AttachmentFilters) => {
     // Initial load with pagination (page=1, limit=10 by default)
     set({ loading: true, error: null });
+    
+    // Update filters state
+    if (filters !== undefined) {
+      set({ attachmentsFilters: filters });
+    }
+    
+    const currentFilters = filters !== undefined ? filters : get().attachmentsFilters;
+    
+    // Build query parameters
+    const params = new URLSearchParams();
+    params.append("page", "1");
+    params.append("limit", "10");
+    
+    // Add searchQuery if it exists and is 3+ characters
+    if (currentFilters?.searchQuery && currentFilters.searchQuery.trim().length >= 3) {
+      params.append("searchQuery", currentFilters.searchQuery.trim());
+    }
+    
+    // Add clientId if it exists and is not "all"
+    if (currentFilters?.clientId && currentFilters.clientId !== "all") {
+      params.append("clientId", currentFilters.clientId.toString());
+    }
+    
+    // Add productId if it exists and is not "all"
+    if (currentFilters?.productId && currentFilters.productId !== "all") {
+      params.append("productId", currentFilters.productId.toString());
+    }
+    
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/products/with-attachments/all?${params.toString()}`;
+    
     try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/with-attachments/all?page=1&limit=10`
-      );
+      const response = await fetchWithAuth(url);
       if (!response.ok) {
         set({ loading: false });
         const error = await response.json();
@@ -283,10 +319,28 @@ const useProductStore = create<CategoryState>((set, get) => ({
     if (state.attachmentsLoadingMore) return;
 
     set({ attachmentsLoadingMore: true, error: null });
+    
+    // Build query parameters with current filters
+    const params = new URLSearchParams();
+    params.append("page", (meta.page + 1).toString());
+    params.append("limit", meta.limit.toString());
+    
+    const filters = state.attachmentsFilters;
+    if (filters.searchQuery && filters.searchQuery.trim().length >= 3) {
+      params.append("searchQuery", filters.searchQuery.trim());
+    }
+    
+    if (filters.clientId && filters.clientId !== "all") {
+      params.append("clientId", filters.clientId.toString());
+    }
+    
+    if (filters.productId && filters.productId !== "all") {
+      params.append("productId", filters.productId.toString());
+    }
+    
     try {
-      const nextPage = meta.page + 1;
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/with-attachments/all?page=${nextPage}&limit=${meta.limit}`
+        `${process.env.NEXT_PUBLIC_API_URL}/products/with-attachments/all?${params.toString()}`
       );
       if (!response.ok) {
         set({ attachmentsLoadingMore: false });

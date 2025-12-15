@@ -10,6 +10,7 @@ const GalleryPage = () => {
   const [selectedClientId, setSelectedClientId] = useState<number | "all">("all");
   const [selectedProductId, setSelectedProductId] = useState<number | "all">("all");
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [clientMenuOpen, setClientMenuOpen] = useState(false);
   const [clientSearch, setClientSearch] = useState("");
@@ -38,9 +39,29 @@ const GalleryPage = () => {
   const loadingMore = useProductStore((s) => s.attachmentsLoadingMore);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
+  // Debounce search query - only update debouncedQuery after 3+ characters or empty
   useEffect(() => {
-    if (!Array.isArray(attachments) || attachments.length === 0) fetchProductAttachments();
-  }, [Array.isArray(attachments) ? attachments.length : 0, fetchProductAttachments]);
+    const trimmedQuery = query.trim();
+    const timer = setTimeout(() => {
+      // Only set search query if empty or >= 3 characters
+      if (trimmedQuery.length === 0 || trimmedQuery.length >= 3) {
+        setDebouncedQuery(trimmedQuery);
+      } else {
+        // Clear search if less than 3 characters
+        setDebouncedQuery("");
+      }
+    }, 500); // 500ms debounce delay
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Fetch attachments when filters change
+  useEffect(() => {
+    fetchProductAttachments({
+      searchQuery: debouncedQuery.length >= 3 ? debouncedQuery : undefined,
+      clientId: selectedClientId,
+      productId: selectedProductId,
+    });
+  }, [debouncedQuery, selectedClientId, selectedProductId, fetchProductAttachments]);
 
   // Infinite scroll observer
   useEffect(() => {
@@ -188,16 +209,8 @@ const GalleryPage = () => {
     return counts;
   }, [allImageEntries]);
 
-  const filteredImages = useMemo(() => {
-    let result = allImageEntries;
-    if (selectedClientId !== "all") result = result.filter((e) => e.clientId === selectedClientId);
-    if (selectedProductId !== "all") result = result.filter((e) => e.productId === selectedProductId);
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      result = result.filter((e) => e.productName.toLowerCase().includes(q) || e.fileName.toLowerCase().includes(q));
-    }
-    return result;
-  }, [allImageEntries, selectedClientId, selectedProductId, query]);
+  // No client-side filtering needed - server handles it
+  const filteredImages = allImageEntries;
 
   // Show skeleton only for initial load (not while fetching more pages)
   const isLoading = storeLoading && (!Array.isArray(attachments) || attachments.length === 0);
@@ -206,6 +219,7 @@ const GalleryPage = () => {
     setSelectedClientId("all");
     setSelectedProductId("all");
     setQuery("");
+    setDebouncedQuery("");
   };
 
   const masonryClassName = density === "compact"
