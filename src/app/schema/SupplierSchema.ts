@@ -23,7 +23,28 @@ export const UserSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
     Email: Yup.string().required('Email is required'),
-    Password: Yup.string().required('Password is required'),
+    Password: Yup.string()
+        .required('Password is required')
+        .test('password-length', 'Password must be at least 8 characters', (value) => {
+            if (!value) return false;
+            return value.length >= 8;
+        })
+        .test('password-uppercase', 'Password must contain at least one uppercase letter', (value) => {
+            if (!value) return false;
+            return /[A-Z]/.test(value);
+        })
+        .test('password-lowercase', 'Password must contain at least one lowercase letter', (value) => {
+            if (!value) return false;
+            return /[a-z]/.test(value);
+        })
+        .test('password-number', 'Password must contain at least one number', (value) => {
+            if (!value) return false;
+            return /[0-9]/.test(value);
+        })
+        .test('password-special', 'Password must contain at least one special character (e.g., !@#$%^&*)', (value) => {
+            if (!value) return false;
+            return /[\W_]/.test(value);
+        }),
     roleId: Yup.number().required('Role is required'),
 })
 
