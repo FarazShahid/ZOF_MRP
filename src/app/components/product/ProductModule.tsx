@@ -7,6 +7,7 @@ import { ViewMode } from "@/src/types/admin";
 import { useRouter } from "next/navigation";
 import ProductStats from "./ProductStats";
 import useProductStore, { Product } from "@/store/useProductStore";
+import useClientStore from "@/store/useClientStore";
 import { ProductStatus } from "@/src/types/product";
 import ProductSearchAndFilters from "./ProductSearchAndFilters";
 import ProductTable from "./ProductTable";
@@ -33,6 +34,7 @@ const ProductModule = () => {
   );
   const [categoryFilter, setCategoryFilter] = useState<number | "all">("all");
   const [clientFilter, setClientFilter] = useState<number | "all">("all");
+  const [projectFilter, setProjectFilter] = useState<number | "all">("all");
   const [fabricFilter, setFabricFilter] = useState<number | "all">("all");
   const [archivedFilter, setArchivedFilter] = useState<
     "all" | "active" | "archived"
@@ -54,14 +56,23 @@ const ProductModule = () => {
   const router = useRouter();
 
   const { fetchProducts, products } = useProductStore();
+  const { fetchProjects, projects } = useClientStore();
 
   const handleAddShipment = () => {
     router.push("/product/productform");
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    fetchProjects();
+  }, [fetchProjects]);
+
+  useEffect(() => {
+    if (projectFilter !== "all" && Number.isFinite(Number(projectFilter))) {
+      fetchProducts(Number(projectFilter));
+    } else {
+      fetchProducts();
+    }
+  }, [projectFilter, fetchProducts]);
 
   const filteredProducts = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -147,6 +158,7 @@ const ProductModule = () => {
     statusFilter,
     categoryFilter,
     clientFilter,
+    projectFilter,
     fabricFilter,
     archivedFilter,
     dateRange,
@@ -226,6 +238,8 @@ const ProductModule = () => {
         onCategoryChange={setCategoryFilter}
         clientFilter={clientFilter}
         onClientChange={setClientFilter}
+        projectFilter={projectFilter}
+        onProjectChange={setProjectFilter}
         fabricFilter={fabricFilter}
         onFabricChange={setFabricFilter}
         archivedFilter={archivedFilter}
@@ -233,6 +247,7 @@ const ProductModule = () => {
         dateRange={dateRange}
         onDateRangeChange={setDateRange}
         products={products || []}
+        projects={projects || []}
       />
 
       {/* Content */}

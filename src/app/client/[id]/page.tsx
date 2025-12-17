@@ -55,13 +55,13 @@ const ClientProfilePage = () => {
   // Load projects only when Projects tab is active
   useEffect(() => {
     if (activeTab === "projects") {
-      fetchProjects();
       if (Number.isFinite(clientId) && clientId > 0) {
+        fetchProjects(clientId);
         getProductByClientId(clientId);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
+  }, [activeTab, clientId]);
 
   // Use clientById from store instead of local state
   const client = clientById;

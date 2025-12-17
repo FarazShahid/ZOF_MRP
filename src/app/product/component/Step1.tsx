@@ -67,14 +67,18 @@ export default function Step1({ formik }: any) {
     fetchData();
   }, []);
 
-  // Reset ProjectId when Client changes
+  // Fetch projects when ClientId changes
   useEffect(() => {
-    formik.setFieldValue("ProjectId", "");
+    const clientId = formik.values.ClientId;
+    if (clientId && Number.isFinite(Number(clientId)) && Number(clientId) > 0) {
+      fetchProjects(Number(clientId));
+      formik.setFieldValue("ProjectId", "");
+    } else if (!clientId) {
+      formik.setFieldValue("ProjectId", "");
+    }
   }, [formik.values.ClientId]);
 
-  const filteredProjects = (projects || []).filter(
-    (p) => String(p.ClientId) === String(formik.values.ClientId || "")
-  );
+  const filteredProjects = projects || [];
 
   useEffect(() => {
     const colorIds = formik.values.productColors?.map((c: any) =>

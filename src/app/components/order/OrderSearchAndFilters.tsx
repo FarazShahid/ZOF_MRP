@@ -10,9 +10,12 @@ interface OrderSearchAndFiltersProps {
   onStatusChange: (status: OrderStatus | "all") => void;
   clientFilter: number[];
   onClientChange: (clientIds: number[]) => void;
+  projectFilter: number | "all";
+  onProjectChange: (projectId: number | "all") => void;
   dateRange: { start: string; end: string };
   onDateRangeChange: (range: { start: string; end: string }) => void;
   orders: GetOrdersType[];
+  projects?: Array<{ Id: number; Name: string; ClientId: number }>;
 }
 
 const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
@@ -22,9 +25,12 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
   onStatusChange,
   clientFilter,
   onClientChange,
+  projectFilter,
+  onProjectChange,
   dateRange,
   onDateRangeChange,
   orders,
+  projects = [],
 }) => {
   const clients = useMemo(
     () =>
@@ -110,6 +116,20 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
             <option value="Shipped">Shipped</option>
             <option value="Packing">Packing</option>
             <option value="Kept in Stock">Kept in Stock</option>
+          </select>
+        </div>
+
+        {/* Project Filter */}
+        <div className="min-w-40">
+          <select
+            value={projectFilter}
+            onChange={(e) => onProjectChange(e.target.value === "all" ? "all" : Number(e.target.value))}
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          >
+            <option value="all">All Projects</option>
+            {projects.map(p => (
+              <option key={p.Id} value={p.Id}>{p.Name}</option>
+            ))}
           </select>
         </div>
 

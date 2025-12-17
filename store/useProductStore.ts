@@ -169,7 +169,7 @@ interface CategoryState {
   loading: boolean;
   error: string | null;
 
-  fetchProducts: () => Promise<void>;
+  fetchProducts: (projectId?: number) => Promise<void>;
   getProductByClientId: (clientId: number) => Promise<void>;
   fetchProductAvailableColors: (
     id: number
@@ -212,13 +212,16 @@ const useProductStore = create<CategoryState>((set, get) => ({
   loading: false,
   error: null,
 
-  fetchProducts: async () => {
+  fetchProducts: async (projectId?: number) => {
     set({ loading: true, error: null });
 
     try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/products`
-      );
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/products`;
+      if (projectId !== undefined && projectId !== null) {
+        url += `?projectId=${projectId}`;
+      }
+      
+      const response = await fetchWithAuth(url);
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
         const error = await response.json();

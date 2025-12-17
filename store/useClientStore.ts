@@ -69,7 +69,7 @@ interface ClientState {
   deleteclient: (id: number, onSuccess: () => void) => Promise<void>;
 
   // Projects
-  fetchProjects: () => Promise<void>;
+  fetchProjects: (clientId?: number) => Promise<void>;
   getProjectById: (id: number) => Promise<void>;
   addProject: (project: AddProjectType, onSuccess?: () => void) => Promise<void>;
   updateProject: (
@@ -261,12 +261,16 @@ const useClientStore = create<ClientState>((set, get) => ({
   },
 
   // Projects
-  fetchProjects: async () => {
+  fetchProjects: async (clientId?: number) => {
     set({ loading: true, error: null });
     try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/projects`
-      );
+      // Build URL with optional clientId query parameter
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/projects`;
+      if (clientId !== undefined && clientId !== null) {
+        url += `?clientId=${clientId}`;
+      }
+      
+      const response = await fetchWithAuth(url);
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
         const error = await response.json();
