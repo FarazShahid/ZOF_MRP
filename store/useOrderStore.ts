@@ -10,6 +10,7 @@ import {
   OderStatus,
   OderStatusResponse,
   GetOrderByIdResponse,
+  OrderItem,
 } from "@/src/app/interfaces/OrderStoreInterface";
 import { fetchWithAuth } from "@/src/app/services/authservice";
 import toast from "react-hot-toast";
@@ -56,10 +57,7 @@ export interface OrderItemsByIdData {
   }[];
 }
 
-export interface OrderItem {
-  Id: number;
-  Name: string;
-}
+// Using OrderItem type from interfaces/OrderStoreInterface
 
 interface OrderStatusLogsData {
   message: string;
@@ -87,7 +85,7 @@ interface StoreState {
   error: string | null;
   isResolved: boolean;
 
-  fetchOrders: (clientId?: number) => Promise<void>;
+  fetchOrders: (clientId?: number, projectId?: number) => Promise<void>;
   getOrderEvents: (clientId: number) => Promise<void>;
   getOrderById: (id: number) => Promise<void>;
   getOrderItemsByOrderId: (ids: number[]) => Promise<void>;
@@ -173,18 +171,21 @@ const useOrderStore = create<StoreState>((set, get) => ({
   error: null,
   isResolved: false,
 
-  fetchOrders: async (clientId?: number) => {
+  fetchOrders: async (clientId?: number, projectId?: number) => {
     set({ loading: true, error: null });
-    let endpoint = "";
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/orders`;
+    
     if (clientId && clientId > 0) {
-      endpoint = `orders/${clientId}`;
-    } else {
-      endpoint = "orders";
+      url = `${process.env.NEXT_PUBLIC_API_URL}/orders/${clientId}`;
     }
+    
+    if (projectId !== undefined && projectId !== null) {
+      const separator = url.includes("?") ? "&" : "?";
+      url += `${separator}projectId=${projectId}`;
+    }
+    
     try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/${endpoint}`
-      );
+      const response = await fetchWithAuth(url);
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
         const error = await response.json();

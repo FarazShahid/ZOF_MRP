@@ -31,6 +31,8 @@ export interface Product {
   Name: string;
   ClientId: number;
   ClientName: string;
+  ProjectId?: number;
+  ProjectName?: string;
   ProductCategoryId: number;
   ProductCategoryName: string;
   FabricTypeId: number;
@@ -55,6 +57,8 @@ interface ProductById {
   Id: string;
   ClientId: number;
   ClientName: string;
+  ProjectId?: number;
+  ProjectName?: string;
   ProductCategoryId: number;
   FabricTypeId: number;
   FabricName: string;
@@ -116,9 +120,23 @@ export interface ProductAttachments {
   attachments: ProductAttachmentItem[];
 }
 
+// Pagination metadata returned by backend for attachments
+interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
 interface GetProductAttachmentsResponse {
   data: ProductAttachments[];
   message?: string;
+}
+
+interface GetProductAttachmentsPaginatedResponse {
+  data: ProductAttachments[];
+  pagination: PaginationMeta;
 }
 
 interface AddProduct {
@@ -130,6 +148,12 @@ interface AddProduct {
   UpdatedBy: string;
 }
 
+interface AttachmentFilters {
+  searchQuery?: string;
+  clientId?: number | "all";
+  productId?: number | "all";
+}
+
 interface CategoryState {
   products: Product[];
   productType: Product | null;
@@ -139,10 +163,13 @@ interface CategoryState {
   availableSizes: AvailableSizes[];
   availablePrintingOptions: PrintingOptionType[];
   productAttachments: ProductAttachments[];
+  attachmentsPagination: PaginationMeta | null;
+  attachmentsLoadingMore: boolean;
+  attachmentsFilters: AttachmentFilters;
   loading: boolean;
   error: string | null;
 
-  fetchProducts: () => Promise<void>;
+  fetchProducts: (projectId?: number) => Promise<void>;
   getProductByClientId: (clientId: number) => Promise<void>;
   fetchProductAvailableColors: (
     id: number
@@ -151,7 +178,8 @@ interface CategoryState {
     id: number
   ) => Promise<PrintingOptionType[] | null>;
   fetchAvailableSizes: (id: number) => Promise<AvailableSizes[] | null>;
-  fetchProductAttachments: () => Promise<void>;
+  fetchProductAttachments: (filters?: AttachmentFilters) => Promise<void>;
+  loadMoreProductAttachments: () => Promise<void>;
   getProductById: (id: number) => Promise<void>;
   addProduct: (
     productType: AddProduct
@@ -178,16 +206,22 @@ const useProductStore = create<CategoryState>((set, get) => ({
   availableSizes: [],
   availablePrintingOptions: [],
   productAttachments: [],
+  attachmentsPagination: null,
+  attachmentsLoadingMore: false,
+  attachmentsFilters: {},
   loading: false,
   error: null,
 
-  fetchProducts: async () => {
+  fetchProducts: async (projectId?: number) => {
     set({ loading: true, error: null });
 
     try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/products`
-      );
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/products`;
+      if (projectId !== undefined && projectId !== null) {
+        url += `?projectId=${projectId}`;
+      }
+      
+      const response = await fetchWithAuth(url);
       if (!response.ok) {
         set({ loading: false, error: "Error Fetching Data" });
         const error = await response.json();
@@ -220,23 +254,116 @@ const useProductStore = create<CategoryState>((set, get) => ({
     }
   },
 
-  fetchProductAttachments: async () => {
+  fetchProductAttachments: async (filters?: AttachmentFilters) => {
+    // Initial load with pagination (page=1, limit=10 by default)
     set({ loading: true, error: null });
+    
+    // Update filters state
+    if (filters !== undefined) {
+      set({ attachmentsFilters: filters });
+    }
+    
+    const currentFilters = filters !== undefined ? filters : get().attachmentsFilters;
+    
+    // Build query parameters
+    const params = new URLSearchParams();
+    params.append("page", "1");
+    params.append("limit", "10");
+    
+    // Add searchQuery if it exists and is 3+ characters
+    if (currentFilters?.searchQuery && currentFilters.searchQuery.trim().length >= 3) {
+      params.append("searchQuery", currentFilters.searchQuery.trim());
+    }
+    
+    // Add clientId if it exists and is not "all"
+    if (currentFilters?.clientId && currentFilters.clientId !== "all") {
+      params.append("clientId", currentFilters.clientId.toString());
+    }
+    
+    // Add productId if it exists and is not "all"
+    if (currentFilters?.productId && currentFilters.productId !== "all") {
+      params.append("productId", currentFilters.productId.toString());
+    }
+    
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/products/with-attachments/all?${params.toString()}`;
+    
     try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/with-attachments/all`
-      );
+      const response = await fetchWithAuth(url);
       if (!response.ok) {
         set({ loading: false });
         const error = await response.json();
         toast.error(error.message || "Failed to fetch product attachments.");
         return;
       }
-      const result: GetProductAttachmentsResponse = await response.json();
-      set({ productAttachments: result.data || [], loading: false });
+      const result: any = await response.json();
+      // Support both shapes:
+      // A) { data: Product[], pagination: {...} }
+      // B) { data: { data: Product[], pagination: {...} }, statusCode, message, ... }
+      const payload = (result && result.data && result.data.pagination !== undefined && Array.isArray(result.data.data))
+        ? result.data
+        : result;
+      const items: ProductAttachments[] = Array.isArray(payload?.data) ? payload.data : [];
+      const pagination: PaginationMeta | null = payload?.pagination ?? null;
+      set({
+        productAttachments: items,
+        attachmentsPagination: pagination,
+        loading: false,
+      });
     } catch (error) {
       set({ loading: false, error: "Failed to fetch product attachments" });
       toast.error("Failed to fetch product attachments");
+    }
+  },
+
+  loadMoreProductAttachments: async () => {
+    const state = get();
+    const meta = state.attachmentsPagination;
+    if (!meta || !meta.hasMore) return;
+    if (state.attachmentsLoadingMore) return;
+
+    set({ attachmentsLoadingMore: true, error: null });
+    
+    // Build query parameters with current filters
+    const params = new URLSearchParams();
+    params.append("page", (meta.page + 1).toString());
+    params.append("limit", meta.limit.toString());
+    
+    const filters = state.attachmentsFilters;
+    if (filters.searchQuery && filters.searchQuery.trim().length >= 3) {
+      params.append("searchQuery", filters.searchQuery.trim());
+    }
+    
+    if (filters.clientId && filters.clientId !== "all") {
+      params.append("clientId", filters.clientId.toString());
+    }
+    
+    if (filters.productId && filters.productId !== "all") {
+      params.append("productId", filters.productId.toString());
+    }
+    
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/with-attachments/all?${params.toString()}`
+      );
+      if (!response.ok) {
+        set({ attachmentsLoadingMore: false });
+        const error = await response.json();
+        toast.error(error.message || "Failed to load more attachments.");
+        return;
+      }
+      const result: any = await response.json();
+      const payload = (result && result.data && result.data.pagination !== undefined && Array.isArray(result.data.data))
+        ? result.data
+        : result;
+      const items: ProductAttachments[] = Array.isArray(payload?.data) ? payload.data : [];
+      set((s) => ({
+        productAttachments: [...(s.productAttachments || []), ...items],
+        attachmentsPagination: payload?.pagination ?? s.attachmentsPagination,
+        attachmentsLoadingMore: false,
+      }));
+    } catch (error) {
+      set({ attachmentsLoadingMore: false, error: "Failed to load more attachments" });
+      toast.error("Failed to load more attachments");
     }
   },
 

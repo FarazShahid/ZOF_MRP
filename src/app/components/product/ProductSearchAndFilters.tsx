@@ -16,6 +16,9 @@ interface Props {
   clientFilter: number | "all";
   onClientChange: (v: number | "all") => void;
 
+  projectFilter: number | "all";
+  onProjectChange: (v: number | "all") => void;
+
   fabricFilter: number | "all";
   onFabricChange: (v: number | "all") => void;
 
@@ -26,6 +29,7 @@ interface Props {
   onDateRangeChange: (v: { start: string; end: string }) => void;
 
   products: Product[];
+  projects?: Array<{ Id: number; Name: string; ClientId: number }>;
 }
 
 const ProductSearchAndFilters: React.FC<Props> = ({
@@ -33,10 +37,12 @@ const ProductSearchAndFilters: React.FC<Props> = ({
   statusFilter, onStatusChange,
   categoryFilter, onCategoryChange,
   clientFilter, onClientChange,
+  projectFilter, onProjectChange,
   fabricFilter, onFabricChange,
   archivedFilter, onArchivedChange,
   dateRange, onDateRangeChange,
-  products
+  products,
+  projects = []
 }) => {
 
   const categories = useMemo(
@@ -125,6 +131,20 @@ const ProductSearchAndFilters: React.FC<Props> = ({
             <option value="all">All Clients</option>
             {clients.map(c => (
               <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Project */}
+        <div className="min-w-40">
+          <select
+            value={projectFilter}
+            onChange={(e) => onProjectChange(e.target.value === "all" ? "all" : Number(e.target.value))}
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          >
+            <option value="all">All Projects</option>
+            {projects.map(p => (
+              <option key={p.Id} value={p.Id}>{p.Name}</option>
             ))}
           </select>
         </div>

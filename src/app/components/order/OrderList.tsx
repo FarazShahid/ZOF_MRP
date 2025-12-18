@@ -37,15 +37,26 @@ const OrderGrid = dynamic(() => import("./OrderGrid"), {
 
 interface OrderListProps {
   orders: GetOrdersType[];
+  projectFilter?: number | "all";
+  onProjectFilterChange?: (projectId: number | "all") => void;
+  projects?: Array<{ Id: number; Name: string; ClientId: number }>;
 }
 
-const OrderList: React.FC<OrderListProps> = ({ orders }) => {
+const OrderList: React.FC<OrderListProps> = ({ orders, projectFilter: externalProjectFilter, onProjectFilterChange, projects = [] }) => {
   const router = useRouter();
 
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
   const [clientFilter, setClientFilter] = useState<number[]>([]);
+  const [projectFilter, setProjectFilter] = useState<number | "all">(externalProjectFilter || "all");
+  
+  const handleProjectChange = (projectId: number | "all") => {
+    setProjectFilter(projectId);
+    if (onProjectFilterChange) {
+      onProjectFilterChange(projectId);
+    }
+  };
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -100,7 +111,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
   // Reset current page when filters change
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, clientFilter, dateRange]);
+  }, [searchTerm, statusFilter, clientFilter, projectFilter, dateRange]);
 
   // Clamp current page when page size or filtered length changes
   React.useEffect(() => {
@@ -171,6 +182,9 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
         onStatusChange={setStatusFilter}
         clientFilter={clientFilter}
         onClientChange={setClientFilter}
+        projectFilter={projectFilter}
+        onProjectChange={handleProjectChange}
+        projects={projects}
         dateRange={dateRange}
         onDateRangeChange={setDateRange}
         orders={orders}

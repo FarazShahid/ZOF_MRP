@@ -18,7 +18,7 @@ export default function Step1({ formik }: any) {
   const { fetchCategories, productCategories } = useCategoryStore();
   const { fetchFabricType, fabricTypeData } = useFabricStore();
   const { fetchColorOptions, colorOptions } = useColorOptionsStore();
-  const { fetchClients, clients } = useClientStore();
+  const { fetchClients, clients, fetchProjects, projects } = useClientStore();
   const { selectedColors } = useColorPickerStore();
 
   const handleColorOptionChange = (
@@ -61,10 +61,24 @@ export default function Step1({ formik }: any) {
         fetchFabricType(),
         fetchColorOptions(),
         fetchClients(),
+        fetchProjects(),
       ]);
     };
     fetchData();
   }, []);
+
+  // Fetch projects when ClientId changes
+  useEffect(() => {
+    const clientId = formik.values.ClientId;
+    if (clientId && Number.isFinite(Number(clientId)) && Number(clientId) > 0) {
+      fetchProjects(Number(clientId));
+      formik.setFieldValue("ProjectId", "");
+    } else if (!clientId) {
+      formik.setFieldValue("ProjectId", "");
+    }
+  }, [formik.values.ClientId]);
+
+  const filteredProjects = projects || [];
 
   useEffect(() => {
     const colorIds = formik.values.productColors?.map((c: any) =>
@@ -108,6 +122,29 @@ export default function Step1({ formik }: any) {
         </Field>
         <ErrorMessage
           name="ClientId"
+          component="div"
+          className="text-red-500 text-sm"
+        />
+      </div>
+        <div className="flex flex-col gap-1">
+        <Label isRequired={false} label="Project" />
+        <Field
+          as="select"
+          name="ProjectId"
+          disabled={!formik.values.ClientId}
+          className="rounded-xl dark:text-gray-400 text-gray-800 text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+        >
+          <option value={""}>
+            {formik.values.ClientId ? "Select a project" : "Select a client first"}
+          </option>
+          {filteredProjects.map((proj, index) => (
+            <option key={index} value={proj.Id}>
+              {proj.Name}
+            </option>
+          ))}
+        </Field>
+        <ErrorMessage
+          name="ProjectId"
           component="div"
           className="text-red-500 text-sm"
         />

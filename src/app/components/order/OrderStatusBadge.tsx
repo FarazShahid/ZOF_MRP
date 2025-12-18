@@ -1,5 +1,6 @@
 import React from 'react';
 import { Factory, Truck, Package, Archive } from 'lucide-react';
+import { OrderStatusEnum } from '@/src/types/admin';
 
 interface OrderStatusBadgeProps {
   status: string;
@@ -8,31 +9,31 @@ interface OrderStatusBadgeProps {
 const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({ status }) => {
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case 'Production':
+      case OrderStatusEnum.Production:
         return {
           label: 'In Production',
           className: 'bg-orange-100 text-orange-800 border-orange-200',
           icon: Factory
         };
-      case 'Shipped':
+      case OrderStatusEnum.Shipped:
         return {
           label: 'Shipped',
           className: 'bg-green-100 text-green-800 border-green-200',
           icon: Truck
         };
-      case 'Packing':
+      case OrderStatusEnum.Packing:
         return {
           label: 'Packing',
           className: 'bg-blue-100 text-blue-800 border-blue-200',
           icon: Package
         };
-      case 'Kept in Stock':
+      case OrderStatusEnum['Kept in stock']:
         return {
           label: 'Kept in Stock',
           className: 'bg-gray-100 text-gray-800 border-gray-200',
           icon: Archive
         };
-      case 'Pending':
+      case OrderStatusEnum.Pending:
         return {
           label: 'Pending',
           className: 'bg-orange-100 text-orange-800 border-orange-200',

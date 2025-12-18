@@ -34,6 +34,7 @@ export interface GetOrderByIdResponse{
 
 export interface OrderItem {
     Id: number;
+    Name?:string;
     ProductId: number;
     ProductCategoryId: number;
     ProductCategoryName: string;

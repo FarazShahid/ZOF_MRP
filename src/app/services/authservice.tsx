@@ -8,7 +8,7 @@ import usePermissionStore from "@/store/usePermissionStore";
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (
-    credentials: { email: string; password: string },
+    credentials: { email: string; password: string; token?: string },
     rememberMe?: boolean
   ) => Promise<void>;
   logout: () => void;
@@ -232,7 +232,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
   const { fetchPermissionsByRole } = usePermissionStore();
 
   const login = async (
-    credentials: { email: string; password: string },
+    credentials: { email: string; password: string; token?: string },
     rememberMe: boolean = true
   ) => {
     try {
@@ -243,7 +243,11 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(credentials),
+          body: JSON.stringify({
+            email: credentials.email,
+            password: credentials.password,
+            token: credentials.token || "test-token", // Fallback for development
+          }),
         }
       );
 
@@ -267,6 +271,8 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
       } else {
         const error = await response.json();
         toast.error(error.message || "Login failed");
+        // Reset reCAPTCHA on login failure - trigger custom event
+        window.dispatchEvent(new CustomEvent("login-failed"));
       }
     } catch (error) {
       console.error("Error during login:", error);
