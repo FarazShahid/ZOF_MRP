@@ -186,7 +186,12 @@ const ProductForm = ({ productId }: { productId?: string }) => {
     const files = uploadedFilesByIndex[1] || [];
     const payload = { ...values };
 
-    // + NEW: attach qaChecklist if user added anything
+    // Remove ProjectId from payload if it is not selected
+    if (!payload.ProjectId) {
+      delete payload.ProjectId;
+    }
+
+    // Attach qaChecklist if user added anything
     const qaChecklist = qaItems.map((i) => ({ name: i.title }));
     if (qaChecklist.length > 0) {
       payload.qaChecklist = qaChecklist;

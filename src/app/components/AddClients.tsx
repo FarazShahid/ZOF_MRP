@@ -57,7 +57,8 @@ const AddClients: React.FC<AddClientComponentProps> = ({
   };
 
   useEffect(() => {
-    if (clientId) {
+    
+    if (clientId && isEdit) {
       getClientById(clientId);
     }
   }, [isEdit, clientId]);
@@ -108,12 +109,12 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                               <Label
                                 label="Business Email"
                                 labelForm="Business Email"
-                                isRequired={false}
+                                isRequired={true}
                               />
                               <Field
                                 type="text"
                                 name="Email"
-                                maxLength="100"
+                                maxLength="50"
                                 placeholder="Enter Business Email"
                                 className="formInputdefault border-1"
                               />
@@ -176,6 +177,11 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                                 maxLength="100"
                                 placeholder="Enter Email"
                                 className="formInputdefault border-1"
+                              />
+                              <ErrorMessage
+                                name="POCEmail"
+                                component="div"
+                                className="text-red-400 text-sm"
                               />
                             </div>
                           </div>
@@ -241,7 +247,7 @@ const AddClients: React.FC<AddClientComponentProps> = ({
                       color="primary"
                       type="submit"
                     >
-                      {isEdit ? "Edit" : "Add"} Client
+                      {isEdit ? "Update" : "Add"} Client
                     </Button>
                   </ModalFooter>
                 </Form>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Field, ErrorMessage } from "formik";
 import useCategoryStore from "@/store/useCategoryStore";
 import useFabricStore from "@/store/useFabricStore";
@@ -14,6 +14,7 @@ export default function Step1({ formik }: any) {
   const [selectedColorOptions, setSelectedColorOptions] = useState<string[]>(
     []
   );
+  const prevClientIdRef = useRef<string | number | undefined>(undefined);
 
   const { fetchCategories, productCategories } = useCategoryStore();
   const { fetchFabricType, fabricTypeData } = useFabricStore();
@@ -70,12 +71,23 @@ export default function Step1({ formik }: any) {
   // Fetch projects when ClientId changes
   useEffect(() => {
     const clientId = formik.values.ClientId;
+    const prevClientId = prevClientIdRef.current;
+    
+    // Only reset ProjectId if ClientId actually changed (not on initial load)
+    const clientIdChanged = prevClientId !== undefined && prevClientId !== clientId;
+    
     if (clientId && Number.isFinite(Number(clientId)) && Number(clientId) > 0) {
       fetchProjects(Number(clientId));
-      formik.setFieldValue("ProjectId", "");
+      // Only reset ProjectId if ClientId changed to a different value
+      if (clientIdChanged) {
+        formik.setFieldValue("ProjectId", "");
+      }
     } else if (!clientId) {
       formik.setFieldValue("ProjectId", "");
     }
+    
+    // Update the ref with the current ClientId
+    prevClientIdRef.current = clientId;
   }, [formik.values.ClientId]);
 
   const filteredProjects = projects || [];
