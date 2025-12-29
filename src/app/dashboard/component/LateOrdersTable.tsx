@@ -26,6 +26,7 @@ const LateOrdersTable: React.FC = () => {
     return sorted?.slice(0, 5)?.map((o) => ({
       id: o.orderId,
       orderNo: o.orderNumber,
+      orderName: o.orderName,
       client: o.clientName,
       dueDate: (() => {
         try {
@@ -73,7 +74,7 @@ const LateOrdersTable: React.FC = () => {
             ) : (
               rows?.map((r) => (
                 <tr key={r.id} className="border-t border-gray-100 dark:border-[#1d2939] hover:bg-gray-50/60 dark:hover:bg-white/[0.03]">
-                  <td className="p-2 dark:text-white text-gray-900 font-medium text-center">{r.orderNo}</td>
+                  <td className="p-2 dark:text-white text-gray-900 font-medium text-center">{r.orderName}</td>
                   <td className="p-2 text-gray-500 text-center">{r.client}</td>
                   <td className="p-2 text-gray-500 text-center">{r.dueDate}</td>
                   <td className="p-2 text-center">
