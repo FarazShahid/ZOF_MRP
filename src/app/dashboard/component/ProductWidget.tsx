@@ -4,8 +4,11 @@ import { FiShoppingCart } from "react-icons/fi";
 import ProductSkeleton from "./ProductSkeleton";
 import ViewMoreButton from "./ViewMoreButton";
 import useDashboardReportsStore from "@/store/useDashboardReportsStore";
+import { useRouter } from "next/navigation";
 
 const ProductWidget = () => {
+  const router = useRouter();
+
   const topProducts = useDashboardReportsStore((s) => s.topProducts);
   const storeLoading = useDashboardReportsStore((s) => s.loading);
   const fetchTopProducts = useDashboardReportsStore((s) => s.fetchTopProducts);
@@ -60,8 +63,9 @@ const ProductWidget = () => {
           topFive.map((item, idx) => {
             return (
               <div
-                className=" bg-gray-100 dark:bg-[#353535] w-full rounded-2xl p-3 flex items-center gap-4 ring-1 ring-gray-200/60 dark:ring-white/10 transition-all hover:shadow-md hover:-translate-y-0.5"
+                className=" bg-gray-100 dark:bg-[#353535] w-full rounded-2xl p-3 flex items-center gap-4 ring-1 ring-gray-200/60 dark:ring-white/10 transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
                 key={item.id}
+                onClick={() => router.push(`/product/${item.id}`)}
               >
                 <div
                   className="w-14 h-14 rounded-xl flex items-center justify-center ring-1 ring-gray-200/60 dark:ring-white/10 text-gray-800 dark:text-white text-lg font-semibold shrink-0"

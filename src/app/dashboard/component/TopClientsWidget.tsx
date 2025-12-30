@@ -4,13 +4,16 @@ import React, { useEffect, useMemo, useRef } from "react";
 import ViewMoreButton from "./ViewMoreButton";
 import useDashboardReportsStore from "@/store/useDashboardReportsStore";
 import { FiShoppingCart, FiClock, FiCheckCircle, FiUser } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
 const TopClientsWidget: React.FC = () => {
   const topClients = useDashboardReportsStore((s) => s.topClients);
   const loading = useDashboardReportsStore((s) => s.loading);
   const fetchTopClients = useDashboardReportsStore((s) => s.fetchTopClients);
-
+  
+  const router = useRouter();
   const hasRequested = useRef(false);
+  
   useEffect(() => {
     if (!hasRequested.current && (!topClients || topClients?.length === 0) && !loading) {
       hasRequested.current = true;
@@ -51,7 +54,8 @@ const TopClientsWidget: React.FC = () => {
           clients?.map((c) => (
             <div
               key={c.id}
-              className="rounded-2xl bg-gray-100 p-3 ring-1 ring-gray-200/60 dark:bg-white/[0.06] dark:ring-white/10 transition-all hover:shadow-md hover:-translate-y-0.5"
+              onClick={() => router.push(`/client/${c.id}`)}
+              className="rounded-2xl bg-gray-100 p-3 ring-1 ring-gray-200/60 dark:bg-white/[0.06] dark:ring-white/10 transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
             >
               <div className="flex items-center gap-2">
                 <span className="p-2 rounded-lg bg-gray-200/80 dark:bg-white/10 text-gray-900">

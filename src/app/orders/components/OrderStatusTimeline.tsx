@@ -6,7 +6,7 @@ import { OrderStatusLogsType } from "@/store/useOrderStore";
 const OrderStatusTimeline = ({OrderStatusLogs}:{OrderStatusLogs:OrderStatusLogsType[]}) => {
   return (
     <div className="OrderStatusTimeLineWrapper">
-      <div className="space-y-6 border-l-2 border-dashed dark:border-gray-800 border-gray-300">
+      <div className="space-y-6 border-l-2 border-dashed">
         {OrderStatusLogs.map((log, index) => {
           return (
             <div className="relative w-full" key={index}>
