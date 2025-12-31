@@ -62,7 +62,6 @@ export default function Step1({ formik }: any) {
         fetchFabricType(),
         fetchColorOptions(),
         fetchClients(),
-        fetchProjects(),
       ]);
     };
     fetchData();
@@ -76,9 +75,9 @@ export default function Step1({ formik }: any) {
     // Only reset ProjectId if ClientId actually changed (not on initial load)
     const clientIdChanged = prevClientId !== undefined && prevClientId !== clientId;
     
-    if (clientId && Number.isFinite(Number(clientId)) && Number(clientId) > 0) {
+    if (clientId && Number(clientId) > 0) {
       fetchProjects(Number(clientId));
-      // Only reset ProjectId if ClientId changed to a different value
+    
       if (clientIdChanged) {
         formik.setFieldValue("ProjectId", "");
       }
@@ -86,7 +85,6 @@ export default function Step1({ formik }: any) {
       formik.setFieldValue("ProjectId", "");
     }
     
-    // Update the ref with the current ClientId
     prevClientIdRef.current = clientId;
   }, [formik.values.ClientId]);
 

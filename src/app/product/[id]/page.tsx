@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import AdminDashboardLayout from "@/src/app/components/common/AdminDashboardLayout";
 import PermissionGuard from "@/src/app/components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
@@ -23,6 +23,7 @@ const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
 const ProductDetailPage = () => {
   const params = useParams<{ id: string }>();
   const productId = Number(params?.id);
+  const router = useRouter();
 
   const { getProductById, productById, loading } = useProductStore();
   const { fetchDocuments, documentsByReferenceId } = useDocumentCenterStore();
@@ -98,11 +99,14 @@ const ProductDetailPage = () => {
   const formatDate = (iso?: string) =>
     iso
       ? new Date(iso).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
       : "—";
+
+
+  const handleEdit = (id: number) => router.push(`/product/editproduct/${id}`);
 
   return (
     <AdminDashboardLayout>
@@ -317,9 +321,8 @@ const ProductDetailPage = () => {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Link href={`/product/editproduct/${productId}`}>
-                          <Button color="primary">Edit</Button>
-                        </Link>
+                        <Button color="primary" onPress={() => handleEdit(Number(productById?.Id))}>Edit</Button>
+
                         <Link href="/product">
                           <Button variant="flat" color="primary">Back</Button>
                         </Link>
@@ -417,7 +420,7 @@ const ProductDetailPage = () => {
                           <div>
                             <div className="flex items-center justify-between mb-2">
                               <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">Cut Options</div>
-                          
+
                             </div>
                             <div className="flex flex-wrap gap-2">
                               {selectedCutOptions.map((c, i) => (
@@ -430,7 +433,7 @@ const ProductDetailPage = () => {
                           <div>
                             <div className="flex items-center justify-between mb-2">
                               <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">Sleeve Type</div>
-                             
+
                             </div>
                             <div className="flex flex-wrap gap-2">
                               {selectedSleeveTypes.map((s, i) => (

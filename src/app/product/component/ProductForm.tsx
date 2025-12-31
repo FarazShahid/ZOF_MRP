@@ -89,7 +89,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
       return {
         Name: productById.Name ?? "",
         ClientId: productById.ClientId ?? "",
-        ProjectId: (productById as any).ProjectId ?? "",
+        ProjectId: productById.ProjectId ? String(productById.ProjectId) : "",
         ProductCategoryId: productById.ProductCategoryId ?? "",
         FabricTypeId: productById.FabricTypeId ?? "",
         Description: productById.Description ?? "",
