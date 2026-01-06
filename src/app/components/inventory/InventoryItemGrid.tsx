@@ -1,7 +1,18 @@
 "use client";
 
 import React from "react";
-import { Package, Layers, Tag, Ruler, Warehouse, CalendarClock, Eye, Edit, Trash2, RefreshCwIcon } from "lucide-react";
+import {
+  Package,
+  Layers,
+  Tag,
+  Ruler,
+  Warehouse,
+  CalendarClock,
+  Eye,
+  Edit,
+  Trash2,
+  RefreshCwIcon,
+} from "lucide-react";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import { InventoryItemResponse } from "@/store/useInventoryItemsStore";
@@ -13,14 +24,19 @@ interface Props {
   onDelete?: (id: number) => void;
 }
 
-const InventoryItemGrid: React.FC<Props> = ({ items, onView, onEdit, onDelete }) => {
+const InventoryItemGrid: React.FC<Props> = ({
+  items,
+  onView,
+  onEdit,
+  onDelete,
+}) => {
   const formatDate = (iso?: string) =>
     iso
       ? new Date(iso).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
       : "-";
 
   return (
@@ -40,7 +56,13 @@ const InventoryItemGrid: React.FC<Props> = ({ items, onView, onEdit, onDelete })
                   <p className="text-sm text-gray-600">{it.ItemCode}</p>
                 </div>
               </div>
-              <div className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">
+              <div
+                className={`text-xs px-2 py-1 rounded ${
+                  Number(it.Stock) <= Number(it.ReorderLevel)
+                    ? "bg-red-100 text-red-700"
+                    : "bg-gray-100 text-gray-700"
+                }`}
+              >
                 Stock: {it.Stock}
               </div>
             </div>
@@ -132,5 +154,3 @@ const InventoryItemGrid: React.FC<Props> = ({ items, onView, onEdit, onDelete })
 };
 
 export default InventoryItemGrid;
-
-

@@ -5,6 +5,7 @@ import {
   GetPrintingOptionsResponse,
   PrintingOptionType,
 } from "./usePrintingOptionsStore";
+import { withMediaPrefix } from "@/src/utils/publicMedai";
 
 interface ProductColorMap {
   [productId: number]: ProductAvailableColors[];
@@ -296,16 +297,26 @@ const useProductStore = create<CategoryState>((set, get) => ({
         return;
       }
       const result: any = await response.json();
-      // Support both shapes:
-      // A) { data: Product[], pagination: {...} }
-      // B) { data: { data: Product[], pagination: {...} }, statusCode, message, ... }
+      
       const payload = (result && result.data && result.data.pagination !== undefined && Array.isArray(result.data.data))
         ? result.data
         : result;
       const items: ProductAttachments[] = Array.isArray(payload?.data) ? payload.data : [];
+      
+      // add public media url prefix
+
+      const normalized = items.map(p => ({
+        ...p,
+        attachments:(p.attachments || []).map(a => ({
+          ...a,
+          fileUrl: withMediaPrefix(a.fileUrl),
+        })),
+      }));
+
+
       const pagination: PaginationMeta | null = payload?.pagination ?? null;
       set({
-        productAttachments: items,
+        productAttachments: normalized,
         attachmentsPagination: pagination,
         loading: false,
       });
@@ -355,9 +366,20 @@ const useProductStore = create<CategoryState>((set, get) => ({
       const payload = (result && result.data && result.data.pagination !== undefined && Array.isArray(result.data.data))
         ? result.data
         : result;
+
       const items: ProductAttachments[] = Array.isArray(payload?.data) ? payload.data : [];
+
+       // add public media url prefix
+       const normalized = items.map(p =>({
+        ...p,
+        attachments:(p.attachments || []).map(a => ({
+          ...a,
+          fileUrl: withMediaPrefix(a.fileUrl),
+        })),
+       }));
+
       set((s) => ({
-        productAttachments: [...(s.productAttachments || []), ...items],
+        productAttachments: [...(s.productAttachments || []), ...normalized],
         attachmentsPagination: payload?.pagination ?? s.attachmentsPagination,
         attachmentsLoadingMore: false,
       }));
