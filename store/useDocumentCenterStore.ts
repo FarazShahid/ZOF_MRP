@@ -2,6 +2,7 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import { FileTypesEnum } from "@/src/types/order"; 
 import { fetchWithAuth } from "@/src/app/services/authservice";
+import { withMediaPrefix } from "@/src/utils/publicMedai";
 
 interface TypeCoverage {
   perTypeCount: Record<number, number>;
@@ -138,7 +139,11 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
         return;
       }
 
-       const docs = result.data ?? [];
+      const docs: Document[] = (result.data ?? []).map((d) => ({
+        ...d,
+        fileUrl: withMediaPrefix(d.fileUrl),
+      }));
+       
 
       const perTypeCount: Record<number, number> = {};
       for (const t of FileTypesEnum) perTypeCount[t.id] = 0;
@@ -158,10 +163,10 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
 
 
       set((state) => ({
-        documents: result.data,
+        documents: docs,
         documentsByReferenceId: {
           ...state.documentsByReferenceId,
-          [referenceId]: result.data,
+          [referenceId]: docs,
         },
         typeCoverageByReferenceId: {
           ...state.typeCoverageByReferenceId,
@@ -182,11 +187,4 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
       set({ loadingDoc: false, error: "Failed to fetch documents" });
     }
   },
-  // setTypeCoverage: (referenceId, coverage) =>
-  //   set((state) => ({
-  //     typeCoverageByReferenceId: {
-  //       ...state.typeCoverageByReferenceId,
-  //       [referenceId]: coverage,
-  //     },
-  //   })),
 }));

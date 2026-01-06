@@ -1,11 +1,12 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Button, Tab, Tabs } from "@heroui/react";
-import { IoReturnDownBack } from "react-icons/io5";
+import { IoMdArrowBack } from "react-icons/io";
 
 import useOrderStore from "@/store/useOrderStore";
 import { PdfVariant } from "@/src/types/OrderPDfType";
-import {OrderItemShipmentEnum } from "@/interface";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import usePermission from "@/src/hooks/usePermission";
 
 import OrderStatus from "./OrderStatus";
 import DownloadPdfMenu from "../../components/order/DownloadPdfMenu";
@@ -15,8 +16,6 @@ import ShipmentAttachments from "../../components/order/view order/ShipmentAttac
 import OrderItemsCard from "../../components/order/view order/OrderItemsCard";
 import { OrderInfoSkeleton } from "../../components/order/view order/OrderInfoSkeleton";
 import PermissionGuard from "../../components/auth/PermissionGaurd";
-import { PERMISSIONS_ENUM } from "@/src/types/rightids";
-import usePermission from "@/src/hooks/usePermission";
 import FeedbackTab from "../../components/order/view order/FeedbackTab";
 
 
@@ -79,7 +78,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             href={"/orders"}
             className="p-1 border-1 border-gray-700 rounded"
           >
-            <IoReturnDownBack />
+            <IoMdArrowBack />
           </Link>
           <h2 className="text-2xl font-semibold dark:text-gray-600 text-gray-800">
             {loading && !OrderById ? (
@@ -95,8 +94,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             OrderById={OrderById.Id}
             handleDownloadPdf={(v) => handleDownloadPdf(v)}
           />
-          <PermissionGuard required={PERMISSIONS_ENUM.ORDER.UPDATE}>   
-          {OrderById.OrderShipmentStatus !== OrderItemShipmentEnum.SHIPPED && (
+          <PermissionGuard required={PERMISSIONS_ENUM.ORDER.UPDATE}>  
             <Button
               type="button"
               onPress={() => setOpenUpdateStatusModal(true)}
@@ -104,7 +102,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             >
               Change Status
             </Button>
-          )}
+         
           </PermissionGuard>
         </div>
       </div>
@@ -115,6 +113,7 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
         color="primary"
         radius="full"
         variant="bordered"
+        size="lg"
       >
         <Tab key="info" title="Order Info">
           {

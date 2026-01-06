@@ -222,6 +222,7 @@ const GalleryPage = () => {
     setDebouncedQuery("");
   };
 
+
   const masonryClassName = density === "compact"
     ? "columns-2 md:columns-3 xl:columns-5 gap-3 [column-fill:_balance]"
     : "columns-2 md:columns-3 xl:columns-4 gap-4 [column-fill:_balance]";

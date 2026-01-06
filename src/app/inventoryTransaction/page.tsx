@@ -46,6 +46,7 @@ const InventoryTransaction = () => {
     "TransactionDate",
   ]);
 
+  
   const total = filtered?.length ?? 0;
   const rawPages = Math.ceil(total / ROWS_PER_PAGE);
   const pages = Math.max(1, rawPages);
