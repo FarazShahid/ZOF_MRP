@@ -113,16 +113,6 @@ const CustomersModule: React.FC = () => {
         onClose={closeDeleteModal}
         clientId={selectedClientId}
       />
-
-      {/* Customer Detail Sidebar */}
-      {/* <CustomerDetailSidebar
-        customer={selectedCustomer}
-        isOpen={sidebarOpen}
-        onClose={() => {
-          setSidebarOpen(false);
-          setSelectedCustomer(null);
-        }}
-      /> */}
     </div>
   );
 };
