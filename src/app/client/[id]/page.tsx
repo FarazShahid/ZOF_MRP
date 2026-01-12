@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import AdminDashboardLayout from "@/src/app/components/common/AdminDashboardLayout";
 import useClientStore from "@/store/useClientStore";
@@ -8,20 +8,19 @@ import useOrderStore from "@/store/useOrderStore";
 import useProductStore from "@/store/useProductStore";
 import ClientHeader from "@/src/app/components/admin/customers/ClientHeader";
 import ClientInfoCard from "@/src/app/components/admin/customers/ClientInfoCard";
-import TabsNav, { TabType } from "@/src/app/components/admin/customers/TabsNav";
+import TabsNav, { TabType, TabActionButton } from "@/src/app/components/admin/customers/TabsNav";
 import OverviewTab from "@/src/app/components/admin/customers/OverviewTab";
 import OrdersTab from "@/src/app/components/admin/customers/OrdersTab";
 import ProjectsTab from "@/src/app/components/admin/customers/ProjectsTab";
 import ProductsTab from "@/src/app/components/admin/customers/ProductsTab";
 import { OrderStatusEnum } from "@/src/types/admin";
-import { Plus, ClipboardList, PackageOpen, ShoppingCart } from "lucide-react";
-import AddProjectModal from "@/src/app/components/admin/customers/AddProjectModal";
+import { Plus, PackageOpen, ShoppingCart } from "lucide-react";
 
 const ClientProfilePage = () => {
   const params = useParams<{ id: string }>();
   const clientId = Number(params?.id);
   const [activeTab, setActiveTab] = useState<TabType>("overview");
-  const [isProjectModalOpen, setIsProjectModalOpen] = useState<boolean>(false);
+  const [projectsActionButton, setProjectsActionButton] = useState<React.ReactNode>(null);
   const router = useRouter();
 
   const { clientById, getClientById, loading: clientLoading, projects, fetchProjects } = useClientStore();
@@ -38,9 +37,15 @@ const ClientProfilePage = () => {
     () => products.filter((p) => p.productStatus === "Approved").length,
     [products]
   );
+
   const completedOrdersCount = useMemo(
     () => Orders.filter((o) => o.StatusName.includes(OrderStatusEnum.Shipped)).length,
     [Orders]
+  );
+
+  const projectsCount = useMemo(
+    () => projects.filter((p) => p.ClientId === clientId).length,
+    [projects, clientId]
   );
 
   useEffect(() => {
@@ -48,25 +53,42 @@ const ClientProfilePage = () => {
       getClientById(clientId);
       getProductByClientId(clientId);
       fetchOrders(clientId);
+      fetchProjects(clientId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId]);
 
-  // Load projects only when Projects tab is active
-  useEffect(() => {
-    if (activeTab === "projects") {
-      if (Number.isFinite(clientId) && clientId > 0) {
-        fetchProjects(clientId);
-        getProductByClientId(clientId);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, clientId]);
-
-  // Use clientById from store instead of local state
   const client = clientById;
 
-  if (clientLoading || !client) {
+  // Get action button for current tab
+  const getActionButton = useCallback((): React.ReactNode => {
+    switch (activeTab) {
+      case "projects":
+        return projectsActionButton;
+      case "orders":
+        return (
+          <TabActionButton
+            icon={ShoppingCart}
+            label="Create New Order"
+            onClick={() => router.push("/orders/addorder")}
+          />
+        );
+      case "products":
+        return (
+          <TabActionButton
+            icon={PackageOpen}
+            label="Create New Product"
+            onClick={() => router.push("/product/productform")}
+          />
+        );
+      default:
+        return null;
+    }
+  }, [activeTab, router, projectsActionButton]);
+
+  // Only show loading on initial load when we don't have a client yet
+  // Don't show loading for project operations (getProjectById sets loading too)
+  if (!client && clientLoading && Number.isFinite(clientId) && clientId > 0) {
     return (
       <AdminDashboardLayout>
         <div className="flex items-center justify-center min-h-[400px]">
@@ -79,37 +101,23 @@ const ClientProfilePage = () => {
     );
   }
 
+  // If no client after loading, show error or return early
+  if (!client) {
+    return (
+      <AdminDashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Client not found</p>
+          </div>
+        </div>
+      </AdminDashboardLayout>
+    );
+  }
+
   return (
     <AdminDashboardLayout>
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-start justify-between gap-4">
-          <ClientHeader name={client.Name} />
-          {/* Dynamic header action button */}
-          {activeTab === "projects" && (
-            <button
-              className="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg text-sm h-[36px] shadow-sm hover:bg-blue-700 transition-colors"
-              onClick={() => setIsProjectModalOpen(true)}
-            >
-              <Plus className="w-4 h-4" /> Create New Project
-            </button>
-          )}
-          {activeTab === "orders" && (
-            <button
-              className="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg text-sm h-[36px] shadow-sm hover:bg-blue-700 transition-colors"
-              onClick={() => router.push("/orders/addorder")}
-            >
-              <ShoppingCart className="w-4 h-4" /> Create New Order
-            </button>
-          )}
-          {activeTab === "products" && (
-            <button
-              className="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg text-sm h-[36px] shadow-sm hover:bg-blue-700 transition-colors"
-              onClick={() => router.push("/product/productform")}
-            >
-              <PackageOpen className="w-4 h-4" /> Create New Product
-            </button>
-          )}
-        </div>
+        {/* <ClientHeader name={client.Name} /> */}
 
         <ClientInfoCard client={client} />
 
@@ -120,7 +128,8 @@ const ClientProfilePage = () => {
             setActiveTab={setActiveTab}
             ordersCount={Orders.length}
             productsCount={products.length}
-            projectsCount={projects.filter((p) => p.ClientId === clientId).length}
+            projectsCount={projectsCount}
+            actionButton={getActionButton()}
           />
 
           {/* Tab Content */}
@@ -143,17 +152,14 @@ const ClientProfilePage = () => {
             )}
 
             {activeTab === "projects" && (
-              <ProjectsTab clientId={clientId} products={products} orders={Orders} />
+              <ProjectsTab 
+                clientId={clientId} 
+                projects={projects}
+                onActionButtonReady={setProjectsActionButton}
+              />
             )}
           </div>
         </div>
-
-        {/* Project Modal (opened from header button) */}
-        <AddProjectModal
-          isOpen={isProjectModalOpen}
-          onClose={() => setIsProjectModalOpen(false)}
-          clientId={clientId}
-        />
       </div>
     </AdminDashboardLayout>
   );

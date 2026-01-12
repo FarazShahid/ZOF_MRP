@@ -1,14 +1,19 @@
 "use client";
 
 import React from "react";
-import { Mail, Phone, MapPin, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Globe, ArrowLeft, ArrowBigLeft } from "lucide-react";
 import { GetClientsType } from "@/store/useClientStore";
 import { getStatusColor } from "./clientHelpers";
+import Link from "next/link";
 
 const ClientInfoCard: React.FC<{ client: GetClientsType }> = ({ client }) => {
 	return (
 		<div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
+
 			<div className="flex items-start gap-6">
+				<Link href="/client">
+					<ArrowLeft className="w-6 h-6" />
+				</Link>
 				<div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-xl md:text-2xl font-bold shadow-sm">
 					{client.Name.charAt(0)}
 				</div>
