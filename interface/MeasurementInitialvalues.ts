@@ -73,6 +73,17 @@ export const defaultMeasurementValues = {
   b_TopLeft: "",
   b_BottomRight: "",
   b_BottomLeft: "",
+
+  // Bag Unit
+  Bag_Height: "",
+  Bag_Length: "",
+  Bag_Depth: "",
+  Bag_HandleGrip: "",
+  Bag_ShoulderStrap_Full_Length: "",
+  Bag_FrontPocketLength: "",
+  Bag_FrontPocketHeight: "",
+  Bag_SidePocketLength: "",
+  Bag_SidePocketHeight: "",
 };
 
 export enum UnitType {
@@ -81,4 +92,5 @@ export enum UnitType {
   Bottom = 2,
   Logo = 3,
   Hat = 4,
+  Bag = 5,
 }

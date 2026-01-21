@@ -16,6 +16,7 @@ import { OrderValidationSchemas } from "../../schema";
 import { useFileUploadStore } from "@/store/useFileUploadStore";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { FormValues, steps } from "@/src/types/order";
+import * as Yup from "yup";
 
 // lazy load
 const Step1 = dynamic(() => import("./Step1"), {loading: () => null});
@@ -53,6 +54,28 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
 
   const router = useRouter();
+
+  // Get validation schema based on step and edit mode
+  const getValidationSchema = (step: number, isEdit: boolean) => {
+    if (step === 0) {
+      // Step 1 validation
+      const step1Schema: any = {
+        OrderName: Yup.string().required("Order Name is required"),
+        ClientId: Yup.string().required("Client is required"),
+        Deadline: Yup.string().required("Deadline is required"),
+      };
+      
+      // Only add OrderNumber validation for edit case
+      if (isEdit) {
+        step1Schema.OrderNumber = Yup.string().required("Order Number is required");
+      }
+      
+      return Yup.object(step1Schema);
+    }
+    
+    // Return other step schemas as is
+    return OrderValidationSchemas[step];
+  };
 
   // Fetch existing order when editing
   useEffect(() => {
@@ -96,7 +119,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   const renderStep = (formikProps: any) => {
     switch (currentStep) {
       case 1:
-        return <Step1 formik={formikProps} />;
+        return <Step1 formik={formikProps} isEdit={!!orderId} />;
       case 2:
         return (
           <Step2
@@ -128,7 +151,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   ) => {
     const errors = await validateForm();
 
-    const currentSchema = OrderValidationSchemas[currentStep - 1];
+    const currentSchema = getValidationSchema(currentStep - 1, !!orderId);
 
     if (!currentSchema) {
       setCurrentStep((prev) => prev + 1);
@@ -161,7 +184,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   
     if (!values.OrderEventId) delete values.OrderEventId;
 
-    // Normalize payload and omit falsy MeasurementId (backend defaults to latest)
+    // Normalize payload and remove MeasurementId
     const finalPayload = {
       ...values,
       items: (values.items || []).map((item: any) => ({
@@ -170,11 +193,8 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
           const normalized: any = {
             ...d,
           };
-          if (!normalized?.MeasurementId) {
-            delete normalized.MeasurementId;
-          } else {
-            normalized.MeasurementId = Number(normalized.MeasurementId);
-          }
+          // Remove MeasurementId from payload
+          delete normalized.MeasurementId;
           return normalized;
         }),
       })),
@@ -258,7 +278,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
           </h2>
           <div className="flex flex-col dark:bg-slate-900 bg-gray-300 rounded-xl p-10">
             <Formik
-              validationSchema={OrderValidationSchemas[currentStep - 1]}
+              validationSchema={getValidationSchema(currentStep - 1, !!orderId)}
               initialValues={initialValues}
               enableReinitialize
               onSubmit={handleSubmit}

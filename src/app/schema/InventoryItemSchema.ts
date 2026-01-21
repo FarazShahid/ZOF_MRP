@@ -15,6 +15,7 @@ export const InventoryTransactionSchema = Yup.object().shape({
   InventoryItemId: Yup.string().required("Inventory Item is required"),
   Quantity: Yup.string().required("Quantity is required"),
   TransactionType: Yup.string().required("Transaction Type is required"),
+  TransactionDate: Yup.string().required("Transaction Date is required"),
 });
 
 

@@ -9,6 +9,8 @@ export interface ProductCategoryLike {
   IsTopUnit?: boolean;
   IsBottomUnit?: boolean;
   SupportsLogo?: boolean;
+  IsHat?: boolean;
+  IsBag?: boolean;
 }
 
 export interface SizeMeasurementLike {
@@ -82,6 +84,38 @@ export interface SizeMeasurementLike {
   b_TopLeft: string;
   b_BottomRight: string;
   b_BottomLeft: string;
+
+
+  // Hat Unit
+  Cap_BrimLength: string;
+  Cap_BrimWidth: string;
+  Cap_Height: string;
+  H_VisorLength: string;
+  H_VisorWidth: string;
+  H_CrownCircumference: string;
+  Cap_Crown_Width: string;
+  cap_cuff_height: string;
+  H_FrontSeamLength: string;
+  H_BackSeamLength: string;
+  H_RightCenterSeamLength: string;
+  H_LeftCenterSeamLength: string;
+  H_StrapWidth: string;
+  H_StrapbackLength: string;
+  H_SweatBandWidth: string;
+  H_FusionInside: string;
+  H_PatchSize: string;
+  H_PatchPlacement: string;
+
+  // Bag Unit
+  Bag_Height: string;
+  Bag_Length: string;
+  Bag_Depth: string;
+  Bag_HandleGrip: string;
+  Bag_ShoulderStrap_Full_Length: string;
+  Bag_FrontPocketLength: string;
+  Bag_FrontPocketHeight: string;
+  Bag_SidePocketLength: string;
+  Bag_SidePocketHeight: string;
 }
 
 // Utility: builds a [label, value] list from an object and a field mapping
@@ -96,6 +130,8 @@ const pickFields = (
       if (v === null || v === undefined || v === "") return null;
       const n = Number(v);
       if (Number.isNaN(n)) return null;
+      // Filter out zero values (0 or 0.00)
+      if (n === 0) return null;
       return [label, formatNumber(n)] as [string, string];
     })
     .filter(Boolean) as Array<[string, string]>;
@@ -202,6 +238,47 @@ const MeasurementTables: React.FC<MeasurementTablesProps> = ({
     [measurement]
   );
 
+  const hatRows = useMemo(
+    () =>
+      pickFields(measurement || {}, [
+        ["Brim Length", "Cap_BrimLength"],
+        ["Brim Width", "Cap_BrimWidth"],
+        ["Height", "Cap_Height"],
+        ["Visor Length", "H_VisorLength"],
+        ["Visor Width", "H_VisorWidth"],
+        ["Crown Circumference", "H_CrownCircumference"],
+        ["Crown Width", "Cap_Crown_Width"],
+        ["Cuff height", "cap_cuff_height"],
+        ["Front Seam Length", "H_FrontSeamLength"],
+        ["Back Seam Length", "H_BackSeamLength"],
+        ["Right Center Seam Length", "H_RightCenterSeamLength"],
+        ["Left Center Seam Length", "H_LeftCenterSeamLength"],
+        ["Strap Width", "H_StrapWidth"],
+        ["Strapback Length", "H_StrapbackLength"],
+        ["Sweat Band Width", "H_SweatBandWidth"],
+        ["Fusion Inside", "H_FusionInside"],
+        ["Patch Size", "H_PatchSize"],
+        ["Patch Placement", "H_PatchPlacement"],
+      ]),
+    [measurement]
+  );
+
+  const bagRows = useMemo(
+    () =>
+      pickFields(measurement || {}, [
+        ["Height", "Bag_Height"],
+        ["Length", "Bag_Length"],
+        ["Depth", "Bag_Depth"],
+        ["Handle Grip", "Bag_HandleGrip"],
+        ["Shoulder Strap Full Length", "Bag_ShoulderStrap_Full_Length"],
+        ["Front Pocket Length", "Bag_FrontPocketLength"],
+        ["Front Pocket Height", "Bag_FrontPocketHeight"],
+        ["Side Pocket Length", "Bag_SidePocketLength"],
+        ["Side Pocket Height", "Bag_SidePocketHeight"],
+      ]),
+    [measurement]
+  );
+
   const sections = useMemo(() => {
     const s: Array<{
       key: string;
@@ -218,8 +295,12 @@ const MeasurementTables: React.FC<MeasurementTablesProps> = ({
       });
     if (productCategory?.SupportsLogo)
       s.push({ key: "logo", title: "Logo", rows: logoRows });
+    if (productCategory?.IsHat)
+      s.push({ key: "hat", title: "Hat Unit", rows: hatRows });
+    if (productCategory?.IsBag)
+      s.push({ key: "bag", title: "Bag Unit", rows: bagRows });
     return s.filter((sec) => sec.rows.length > 0);
-  }, [productCategory, topRows, bottomRows, logoRows]);
+  }, [productCategory, topRows, bottomRows, logoRows, hatRows, bagRows]);
 
   const multiple = sections.length > 1;
   const [activeKey, setActiveKey] = useState<string>(sections[0]?.key || "");
