@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { ShoppingCart, Calendar, Hash, Tag, Flag, ChevronDown, ChevronRight, ArrowRight } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { ShoppingCart, Calendar, Hash, Tag, Flag, ChevronDown, ChevronRight, ArrowRight, Search, X } from "lucide-react";
 import { GetOrdersType } from "@/src/app/interfaces/OrderStoreInterface";
 import { formatDate, formatDateTime, getStatusColor } from "./clientHelpers";
 import Link from "next/link";
@@ -11,6 +11,47 @@ const OrdersTab: React.FC<{
   loading: boolean;
 }> = ({ orders, loading }) => {
   const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  // Extract unique values for filters
+  const statuses = useMemo(() => {
+    const unique = Array.from(
+      new Set(orders.map((o) => o.StatusName))
+    ).sort();
+    return unique;
+  }, [orders]);
+
+  // Filter orders
+  const filteredOrders = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+
+    return orders.filter((order) => {
+      // Search filter
+      const matchesSearch =
+        term === "" ||
+        order.OrderName.toLowerCase().includes(term) ||
+        order.OrderNumber.toLowerCase().includes(term) ||
+        (order.Description || "").toLowerCase().includes(term) ||
+        (order.ExternalOrderId || "").toLowerCase().includes(term) ||
+        (order.EventName || "").toLowerCase().includes(term);
+
+      // Status filter
+      const matchesStatus =
+        statusFilter === "all" || order.StatusName === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [orders, searchTerm, statusFilter]);
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("all");
+  };
+
+  const hasActiveFilters =
+    searchTerm !== "" ||
+    statusFilter !== "all";
 
   if (loading) {
     return (
@@ -32,7 +73,81 @@ const OrdersTab: React.FC<{
 
   return (
     <div className="space-y-4">
-      {orders.map((order) => {
+      {/* Search and Filters */}
+      <div className=" rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+        <div className="flex flex-wrap gap-3">
+          {/* Search */}
+          <div className="flex-1 min-w-[250px]">
+            <div className="relative">
+              <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search orders by name, number, description, or event..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* Status Filter */}
+          <div className="min-w-[150px]">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            >
+              <option value="all">All Status</option>
+              {statuses.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Clear Filters Button */}
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
+            >
+              <X className="w-4 h-4" />
+              Clear
+            </button>
+          )}
+        </div>
+
+        {/* Results Count */}
+        <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+          Showing {filteredOrders.length} of {orders.length} orders
+          {hasActiveFilters && (
+            <span className="ml-2 text-blue-600 dark:text-blue-400">
+              (filtered)
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Orders List */}
+      {filteredOrders.length === 0 ? (
+        <div className="text-center py-12">
+          <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400">
+            No orders match your filters.
+          </p>
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="mt-4 text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              Clear all filters
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredOrders.map((order) => {
         const isExpanded = expandedOrderId === order.Id;
         return (
           <div
@@ -122,6 +237,8 @@ const OrdersTab: React.FC<{
           </div>
         );
       })}
+        </div>
+      )}
     </div>
   );
 };

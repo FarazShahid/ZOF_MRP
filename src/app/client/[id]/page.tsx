@@ -122,7 +122,7 @@ const ClientProfilePage = () => {
         <ClientInfoCard client={client} />
 
         {/* Tabs */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-slate-900 shadow-sm border border-gray-200 dark:border-gray-700 p-3">
           <TabsNav
             activeTab={activeTab}
             setActiveTab={setActiveTab}
@@ -140,6 +140,7 @@ const ClientProfilePage = () => {
                 ordersCount={Orders.length}
                 activeProductsCount={activeProductsCount}
                 completedOrdersCount={completedOrdersCount}
+                onTabChange={(tab) => setActiveTab(tab)}
               />
             )}
 
