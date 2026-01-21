@@ -10,6 +10,7 @@ interface Props {
   ordersCount: number;
   activeProductsCount: number;
   completedOrdersCount: number;
+  onTabChange?: (tab: "orders" | "products") => void;
 }
 
 const OverviewTab: React.FC<Props> = ({
@@ -17,11 +18,15 @@ const OverviewTab: React.FC<Props> = ({
   ordersCount,
   activeProductsCount,
   completedOrdersCount,
+  onTabChange,
 }) => {
 	return (
 		<div className="space-y-6">
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-				<div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800 shadow-sm">
+				<div 
+					onClick={() => onTabChange?.("orders")}
+					className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800 shadow-sm cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105"
+				>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Total Orders</p>
@@ -30,7 +35,10 @@ const OverviewTab: React.FC<Props> = ({
             <ShoppingCart className="w-10 h-10 text-blue-600 dark:text-blue-400" />
           </div>
         </div>
-				<div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-5 border border-green-200 dark:border-green-800 shadow-sm">
+				<div 
+					onClick={() => onTabChange?.("products")}
+					className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-5 border border-green-200 dark:border-green-800 shadow-sm cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105"
+				>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Active Products</p>

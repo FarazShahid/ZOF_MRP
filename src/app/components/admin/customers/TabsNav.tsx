@@ -26,8 +26,9 @@ const TabsNav: React.FC<Props> = ({
   const tabs = useMemo(() => ([
     { id: "overview", label: "Overview", icon: Building2 },
     { id: "projects", label: `Projects (${projectsCount})`, icon: FolderKanban },
-    { id: "orders", label: `Orders (${ordersCount})`, icon: ShoppingCart },
     { id: "products", label: `Products (${productsCount})`, icon: Package },
+    { id: "orders", label: `Orders (${ordersCount})`, icon: ShoppingCart },
+    
   ]), [ordersCount, productsCount, projectsCount]);
 
 	return (
