@@ -8,6 +8,7 @@ interface Props {
     IsBottomUnit: boolean;
     SupportsLogo: boolean;
     IsHat: boolean;
+    IsBag: boolean;
   };
 }
 
@@ -74,6 +75,20 @@ const UnitTypeToggle: React.FC<Props> = ({
           } px-2 py-1 rounded`}
         >
           Logo
+        </button>
+      )}
+
+      {measurementManagement.IsBag && (
+        <button
+          type="button"
+          onClick={() => setSelectedUnitType(5)}
+          className={`${
+            selectedUnitType === 5
+              ? "bg-green-800 text-white"
+              : "bg-gray-300 text-gray-800"
+          } px-2 py-1 rounded`}
+        >
+          Bag
         </button>
       )}
      

@@ -5,7 +5,7 @@ import useEventsStore from "@/store/useEventsStore";
 import { ORDER_TYPE_ENUM_WITHOUT_RE_ORDER, PRIORITY_ENUM, ORDER_TYPE } from "@/interface/GetFileType";
 import Label from "../../components/common/Label";
 
-const Step1 = ({ formik }: { formik: any }) => {
+const Step1 = ({ formik, isEdit }: { formik: any; isEdit?: boolean }) => {
   const { fetchClients, clients } = useClientStore();
   const { fetchEvents, Events } = useEventsStore();
 
@@ -37,15 +37,17 @@ const Step1 = ({ formik }: { formik: any }) => {
           className="text-red-500 text-sm"
         />
       </div>
-      <div className="flex flex-col gap-1">
-        <Label isRequired={true} label="Order Number" />
-        <Field type="text" name="OrderNumber" maxLength="150" className={fieldStyle} />
-        <ErrorMessage
-          name="OrderNumber"
-          component="div"
-          className="text-red-500 text-sm"
-        />
-      </div>
+      {isEdit && (
+        <div className="flex flex-col gap-1">
+          <Label isRequired={true} label="Order Number" />
+          <Field type="text" name="OrderNumber" maxLength="150" className={fieldStyle} />
+          <ErrorMessage
+            name="OrderNumber"
+            component="div"
+            className="text-red-500 text-sm"
+          />
+        </div>
+      )}
       <div className="flex flex-col gap-1">
         <Label isRequired={true} label="Client" />
         <Field as="select" name="ClientId" className={fieldStyle}>

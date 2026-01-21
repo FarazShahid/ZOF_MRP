@@ -127,6 +127,11 @@ export interface SizeMeasurements {
   b_BottomLeft: string;
 
   // Hat Unit Measurements
+  Cap_BrimLength: string;
+  Cap_BrimWidth: string;
+  Cap_Height: string;
+  Cap_Crown_Width: string;
+  cap_cuff_height: string;
   H_VisorLength: string;
   H_VisorWidth: string;
   H_CrownCircumference: string;
@@ -141,6 +146,17 @@ export interface SizeMeasurements {
   H_FusionInside: string;
   H_PatchSize: string;
   H_PatchPlacement: string;
+
+  // Bag Unit Measurements
+  Bag_Height: string;
+  Bag_Length: string;
+  Bag_Depth: string;
+  Bag_HandleGrip: string;
+  Bag_ShoulderStrap_Full_Length: string;
+  Bag_FrontPocketLength: string;
+  Bag_FrontPocketHeight: string;
+  Bag_SidePocketLength: string;
+  Bag_SidePocketHeight: string;
   hasVersions: boolean;
   CreatedOn: string;
   CreatedBy: string;

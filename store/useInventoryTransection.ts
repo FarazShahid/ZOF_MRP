@@ -50,6 +50,7 @@ export interface AddInventoryTransactionType {
   InventoryItemId: number;
   Quantity: number;
   TransactionType: string;
+  TransactionDate: string;
 }
 
 interface StoreState {

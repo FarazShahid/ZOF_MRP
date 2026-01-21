@@ -9,9 +9,6 @@ import {
   Spinner,
 } from "@heroui/react";
 import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
-import { CiRuler } from "react-icons/ci";
-import { formatNumber } from "@/interface";
-import ShirtAndShortsModal from "@/public/svgs/ShirtAndShortsModal";
 import Image from "next/image";
 import MeasurementChart from "@/public/MeasurementChart.png";
 import useCategoryStore from "@/store/useCategoryStore";

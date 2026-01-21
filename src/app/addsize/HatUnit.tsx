@@ -6,6 +6,30 @@ const HatUnit = () => {
   return (
     <div className="grid grid-cols-4 gap-2 border-1 dark:border-gray-300 shadow-lg rounded-lg p-3">
       <div className="flex flex-col gap-1 w-full">
+        <Label isRequired={false} label="Brim Length" />
+        <Field
+          name="Cap_BrimLength"
+          type="number"
+          className="formInputdefault border-1"
+        />
+      </div>
+      <div className="flex flex-col gap-1 w-full">
+        <Label isRequired={false} label="Brim Width" />
+        <Field
+          name="Cap_BrimWidth"
+          type="number"
+          className="formInputdefault border-1"
+        />
+      </div>
+      <div className="flex flex-col gap-1 w-full">
+        <Label isRequired={false} label="Height" />
+        <Field
+          name="Cap_Height"
+          type="number"
+          className="formInputdefault border-1"
+        />
+      </div>
+      <div className="flex flex-col gap-1 w-full">
         <Label isRequired={false} label="Visor Length" />
         <Field
           name="H_VisorLength"
@@ -25,6 +49,22 @@ const HatUnit = () => {
         <Label isRequired={false} label="Crown Circumference" />
         <Field
           name="H_CrownCircumference"
+          type="number"
+          className="formInputdefault border-1"
+        />
+      </div>
+      <div className="flex flex-col gap-1 w-full">
+        <Label isRequired={false} label="Crown Width" />
+        <Field
+          name="Cap_Crown_Width"
+          type="number"
+          className="formInputdefault border-1"
+        />
+      </div>
+      <div className="flex flex-col gap-1 w-full">
+        <Label isRequired={false} label="Cuff height" />
+        <Field
+          name="cap_cuff_height"
           type="number"
           className="formInputdefault border-1"
         />

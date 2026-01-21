@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import {
   Button,
   Modal,
@@ -58,31 +58,43 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
     fetchClients();
   }, []);
 
-  const InitialValues = {
-    ClientId:
-      isEdit && inventoryTransactionById
-        ? inventoryTransactionById?.ClientId
-        : 0,
-    OrderId:
-      isEdit && inventoryTransactionById
-        ? inventoryTransactionById?.OrderId
-        : 0,
-    SupplierId: isEdit && inventoryTransactionById
-        ? inventoryTransactionById?.SupplierId
-        : 0,
-    InventoryItemId:
-      isEdit && inventoryTransactionById
-        ? inventoryTransactionById?.InventoryItemId
-        : 0,
-    Quantity:
-      isEdit && inventoryTransactionById
-        ? Number(inventoryTransactionById?.Quantity)
-        : 0,
-    TransactionType:
-      isEdit && inventoryTransactionById
-        ? inventoryTransactionById?.TransactionType
-        : "",
-  };
+  // Fetch orders when editing and client is available
+  useEffect(() => {
+    if (isEdit && inventoryTransactionById?.ClientId) {
+      fetchOrders(inventoryTransactionById.ClientId);
+    }
+  }, [isEdit, inventoryTransactionById?.ClientId]);
+
+  const InitialValues = useMemo(() => {
+    if (isEdit && inventoryTransactionById) {
+      // Convert ISO date to YYYY-MM-DD format for date input
+      const formatDateForInput = (dateString: string) => {
+        if (!dateString) return new Date().toISOString().split('T')[0];
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0];
+      };
+
+      return {
+        ClientId: inventoryTransactionById.ClientId ?? 0,
+        OrderId: inventoryTransactionById.OrderId ?? 0,
+        SupplierId: inventoryTransactionById.SupplierId ?? 0,
+        InventoryItemId: inventoryTransactionById.InventoryItemId ?? 0,
+        Quantity: Number(inventoryTransactionById.Quantity) || 0,
+        TransactionType: inventoryTransactionById.TransactionType || "",
+        TransactionDate: formatDateForInput(inventoryTransactionById.TransactionDate),
+      };
+    }
+
+    return {
+      ClientId: 0,
+      OrderId: 0,
+      SupplierId: 0,
+      InventoryItemId: 0,
+      Quantity: 0,
+      TransactionType: "",
+      TransactionDate: new Date().toISOString().split('T')[0],
+    };
+  }, [isEdit, inventoryTransactionById]);
 
   const handleAdd = async (values: AddInventoryTransactionType) => {
     isEdit
@@ -211,13 +223,27 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
                             />
                           </div>
                           <div className="flex flex-col gap-1 w-full">
+                            <Label isRequired={true} label="Transaction Date" />
+                            <Field
+                              name="TransactionDate"
+                              type="date"
+                              className="formInputdefault border-1"
+                            />
+                            <ErrorMessage
+                              name="TransactionDate"
+                              component="div"
+                              className="text-red-400 text-sm"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-1 w-full">
                             <Label isRequired={true} label="Transaction Type" />
                             <Field
                               name="TransactionType"
                               as="select"
                               className="formInputdefault border-1"
                             >
-                              <option value={0}>Select Transaction Type</option>
+                              <option value="">Select Transaction Type</option>
                               {TRANSACTION_TYPES?.map((type, index) => {
                                 return (
                                   <option value={type?.value} key={index}>
@@ -232,7 +258,6 @@ const AddInventoryTransaction: React.FC<AddComponentProps> = ({
                               className="text-red-400 text-sm"
                             />
                           </div>
-                        </div>
                       </>
                     )}
                   </ModalBody>

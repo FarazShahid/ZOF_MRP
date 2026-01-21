@@ -29,6 +29,7 @@ import {
 import RenderPinComponent from "../components/RenderPinComponent";
 import UnitTypeToggle from "./UnitTypeToggle";
 import HatUnit from "./HatUnit";
+import BagUnit from "./BagUnit";
 
 const SizeMeasurementForm = ({
   isEdit,
@@ -44,11 +45,13 @@ const SizeMeasurementForm = ({
     IsBottomUnit: boolean;
     SupportsLogo: boolean;
     IsHat: boolean;
+    IsBag: boolean;
   }>({
     IsTopUnit: false,
     IsBottomUnit: false,
     SupportsLogo: false,
     IsHat: false,
+    IsBag: false,
   });
 
   const router = useRouter();
@@ -87,6 +90,7 @@ const SizeMeasurementForm = ({
           IsBottomUnit: matchedCategory.IsBottomUnit,
           SupportsLogo: matchedCategory.SupportsLogo,
           IsHat: matchedCategory.IsHat,
+          IsBag: matchedCategory.IsBag,
         });
 
         setShowMeasurementPin(true);
@@ -99,6 +103,8 @@ const SizeMeasurementForm = ({
           setSelectedUnitType(UnitType.Logo);
         } else if (matchedCategory.IsHat) {
           setSelectedUnitType(UnitType.Hat);
+        } else if (matchedCategory.IsBag) {
+          setSelectedUnitType(UnitType.Bag);
         }
       }
     }
@@ -200,6 +206,7 @@ const SizeMeasurementForm = ({
                                 IsBottomUnit: matchedCategory.IsBottomUnit,
                                 SupportsLogo: matchedCategory.SupportsLogo,
                                 IsHat: matchedCategory.IsHat,
+                                IsBag: matchedCategory.IsBag,
                               });
 
                               setShowMeasurementPin(true);
@@ -212,6 +219,8 @@ const SizeMeasurementForm = ({
                                 setSelectedUnitType(UnitType.Logo);
                               } else if (matchedCategory.IsHat) {
                                 setSelectedUnitType(UnitType.Hat);
+                              } else if (matchedCategory.IsBag) {
+                                setSelectedUnitType(UnitType.Bag);
                               }
                             } else {
                               setShowMeasurementPin(false);
@@ -303,6 +312,7 @@ const SizeMeasurementForm = ({
                   />
                 )}
                 {selectedUnitType === 4 && <HatUnit />}
+                {selectedUnitType === 5 && <BagUnit />}
 
                 {/* Submit Button */}
                 <div className="flex justify-end w-full">
