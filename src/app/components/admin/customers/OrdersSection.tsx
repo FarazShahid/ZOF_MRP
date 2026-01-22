@@ -63,7 +63,7 @@ const OrdersSection: React.FC<{ orders: GetOrdersType[]; loading: boolean }> = (
                 </div>
 
                 <Link
-                  href={`/orders/${o.Id}`} // adjust to your actual route
+                  href={`/orders/vieworder/${o.Id}`} // adjust to your actual route
                   className="shrink-0 text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800"
                 >
                   Details
