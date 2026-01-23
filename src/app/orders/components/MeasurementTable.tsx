@@ -105,6 +105,7 @@ export interface SizeMeasurementLike {
   H_FusionInside: string;
   H_PatchSize: string;
   H_PatchPlacement: string;
+  H_ClosureHeightIncludingStrapWidth:string;
 
   // Bag Unit
   Bag_Height: string;
@@ -128,6 +129,10 @@ const pickFields = (
     .map(([label, key]) => {
       const v = obj[key];
       if (v === null || v === undefined || v === "") return null;
+       // handle booleans or Yes/No strings
+      if (typeof v === "string" && isNaN(Number(v))) {
+        return [label, v] as [string, string];
+      }
       const n = Number(v);
       if (Number.isNaN(n)) return null;
       // Filter out zero values (0 or 0.00)
@@ -259,6 +264,7 @@ const MeasurementTables: React.FC<MeasurementTablesProps> = ({
         ["Fusion Inside", "H_FusionInside"],
         ["Patch Size", "H_PatchSize"],
         ["Patch Placement", "H_PatchPlacement"],
+        ["Closure Height Including Strap Width","H_ClosureHeightIncludingStrapWidth"]
       ]),
     [measurement]
   );
