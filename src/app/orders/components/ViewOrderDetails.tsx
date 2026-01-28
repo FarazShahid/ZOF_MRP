@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Button, Tab, Tabs } from "@heroui/react";
 import { IoMdArrowBack } from "react-icons/io";
+import { useRouter } from "next/navigation";
 
 import useOrderStore from "@/store/useOrderStore";
 import { PdfVariant } from "@/src/types/OrderPDfType";
@@ -25,8 +26,7 @@ interface ViewOrderProps {
 }
 
 const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
- 
- 
+  const router = useRouter();
   const [refetchData, setRefetchData] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
   const [openUpdateStatusModal, setOpenUpdateStatusModal] =
@@ -74,12 +74,13 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
     <div className="space-y-5 p-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link
-            href={"/orders"}
+          <button
+            type="button"
+            onClick={() => router.back()}
             className="p-1 border-1 border-gray-700 rounded"
           >
             <IoMdArrowBack />
-          </Link>
+          </button>
           <h2 className="text-2xl font-semibold dark:text-gray-600 text-gray-800">
             {loading && !OrderById ? (
               <span className="animate-pulse">Loading…</span>
