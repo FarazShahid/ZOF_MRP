@@ -14,7 +14,7 @@ import OrdersTab from "@/src/app/components/admin/customers/OrdersTab";
 import ProjectsTab from "@/src/app/components/admin/customers/ProjectsTab";
 import ProductsTab from "@/src/app/components/admin/customers/ProductsTab";
 import { OrderStatusEnum } from "@/src/types/admin";
-import { Plus, PackageOpen, ShoppingCart } from "lucide-react";
+import { PackageOpen, ShoppingCart } from "lucide-react";
 
 const ClientProfilePage = () => {
   const params = useParams<{ id: string }>();
@@ -70,7 +70,7 @@ const ClientProfilePage = () => {
           <TabActionButton
             icon={ShoppingCart}
             label="Create New Order"
-            onClick={() => router.push("/orders/addorder")}
+            onClick={() => router.push(`/orders/addorder?clientId=${clientId}`)}
           />
         );
       case "products":
@@ -78,7 +78,9 @@ const ClientProfilePage = () => {
           <TabActionButton
             icon={PackageOpen}
             label="Create New Product"
-            onClick={() => router.push("/product/productform")}
+            onClick={() =>
+              router.push(`/product/productform?clientId=${clientId}`)
+            }
           />
         );
       default:
@@ -116,13 +118,11 @@ const ClientProfilePage = () => {
 
   return (
     <AdminDashboardLayout>
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* <ClientHeader name={client.Name} /> */}
-
+      <div className="max-w-7xl mx-auto space-y-5">
         <ClientInfoCard client={client} />
 
         {/* Tabs */}
-        <div className="bg-white dark:bg-slate-900 shadow-sm border border-gray-200 dark:border-gray-700 p-3">
+        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
           <TabsNav
             activeTab={activeTab}
             setActiveTab={setActiveTab}
@@ -133,7 +133,7 @@ const ClientProfilePage = () => {
           />
 
           {/* Tab Content */}
-          <div className="p-6">
+          <div className="p-6 bg-gray-50/60 dark:bg-slate-950/40">
             {activeTab === "overview" && (
               <OverviewTab
                 client={client}

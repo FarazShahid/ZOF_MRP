@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { Link } from "@heroui/react";
 import { Form, Formik } from "formik";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import { FaRuler } from "react-icons/fa";
@@ -47,7 +47,19 @@ const defaultValues: FormValues = {
 const OrderForm = ({ orderId }: { orderId?: string }) => {
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
   const [currentStep, setCurrentStep] = useState(1);
-  const [initialValues, setInitialValues] = useState<FormValues>(defaultValues);
+  const searchParams = useSearchParams();
+  const clientIdFromQuery = searchParams.get("clientId");
+
+  const [initialValues, setInitialValues] = useState<FormValues>(() => {
+    // Preselect client when coming from client profile
+    if (clientIdFromQuery) {
+      return {
+        ...defaultValues,
+        ClientId: clientIdFromQuery,
+      };
+    }
+    return defaultValues;
+  });
 
   const { addOrder, getOrderById, updateOrder, OrderById } = useOrderStore();
   const { uploadDocument } = useDocumentCenterStore();
@@ -177,7 +189,8 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   };
 
   const handleBoBack = () => {
-    router.push("/orders");
+    // Always go back to the previous route (client profile, orders list, etc.)
+    router.back();
   };
 
   const handleSubmit = async (values: any) => {
@@ -230,12 +243,14 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
       <div className="flex">
         <aside className="w-1/4 p-6">
           <div className="flex items-center mb-10">
-            <Link
-              href={"/orders"}
+            <button
+              type="button"
+              onClick={() => router.back()}
               className="flex items-center gap-1 dark:text-gray-400 text-gray-800"
             >
-              <IoCaretBackSharp /> <span>Back to listing</span>
-            </Link>
+              <IoCaretBackSharp />
+              <span>Back</span>
+            </button>
           </div>
           <ul>
             {formSteps.map((label, index) => (
