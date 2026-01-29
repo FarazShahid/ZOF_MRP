@@ -1,12 +1,16 @@
-import React from 'react'
-import ProductForm from '../component/ProductForm'
+import React, { Suspense } from "react";
+import ProductFormWithParams from "../component/ProductFormWithParams";
 
-const page = () => {
+export default function Page() {
   return (
-    <>
-        <ProductForm />
-    </>
-  )
+    <Suspense
+      fallback={
+        <div className="flex min-h-[400px] items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
+      <ProductFormWithParams />
+    </Suspense>
+  );
 }
-
-export default page
