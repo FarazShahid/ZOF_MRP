@@ -13,7 +13,7 @@ import Step3 from "./Step3";
 import { ProductValidationSchemas } from "../../schema";
 import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
 import useProductStore from "@/store/useProductStore";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Spinner } from "@heroui/react";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { useFileUploadStore } from "@/store/useFileUploadStore";
@@ -31,7 +31,13 @@ const formSteps = [
   { id: 4, name: "QA Checklist", icon: <GrDocumentImage size={20} /> },
 ];
 
-const ProductForm = ({ productId }: { productId?: string }) => {
+const ProductForm = ({
+  productId,
+  clientIdFromQuery,
+}: {
+  productId?: string;
+  clientIdFromQuery?: string | null;
+}) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
   const [qaItems, setQaItems] = useState<QAItem[]>([]);
@@ -42,8 +48,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
   const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const clientIdFromQuery = searchParams.get("clientId");
+  const clientId = clientIdFromQuery ?? null;
   const isEdit = !!productId;
 
     // Build initial QA items from productById.qaChecklist
@@ -64,7 +69,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
 
   const defaultValues = {
     Name: "",
-    ClientId: clientIdFromQuery ?? "",
+    ClientId: clientId ?? "",
     ProjectId: "",
     ProductCategoryId: "",
     FabricTypeId: "",
@@ -181,8 +186,8 @@ const ProductForm = ({ productId }: { productId?: string }) => {
   };
 
   const handleBoBack = () => {
-    if (clientIdFromQuery) {
-      router.push(`/client/${clientIdFromQuery}`);
+    if (clientId) {
+      router.push(`/client/${clientId}`);
     } else {
       router.push("/product");
     }
@@ -290,11 +295,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         <aside className="w-1/4 p-6">
           <div className="flex items-center mb-10">
             <Link
-              href={clientIdFromQuery ? `/client/${clientIdFromQuery}` : "/product"}
+              href={clientId ? `/client/${clientId}` : "/product"}
               className="flex items-center gap-1 dark:text-gray-400 text-gray-800"
             >
               <IoCaretBackSharp />{" "}
-              <span>{clientIdFromQuery ? "Back to client" : "Back to listing"}</span>
+              <span>{clientId ? "Back to client" : "Back to listing"}</span>
             </Link>
           </div>
           <ul>
