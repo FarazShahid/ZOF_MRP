@@ -13,7 +13,8 @@ import PermissionGuard from "../../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const CustomersModule: React.FC = () => {
-  const [viewMode, setViewMode] = useState<ViewMode>("table");
+  // Default to card (grid) view for a more visual client overview
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] =
     useState<GetClientsType | null>(null);

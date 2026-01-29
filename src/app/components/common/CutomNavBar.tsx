@@ -30,20 +30,6 @@ const CutomNavBar = () => {
       isNested: false,
     },
     {
-      id: 2,
-      label: "Order",
-      icon: <FaClipboardList size={14} />,
-      route: "/orders",
-      isNested: false,
-    },
-    {
-      id: 3,
-      label: "Product",
-      icon: <AiOutlineProduct size={14} />,
-      route: "/product",
-      isNested: false,
-    },
-    {
       id: 6,
       label: "Gallery",
       icon: <TfiGallery   size={16} />,

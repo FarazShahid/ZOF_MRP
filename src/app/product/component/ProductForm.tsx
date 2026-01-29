@@ -13,7 +13,7 @@ import Step3 from "./Step3";
 import { ProductValidationSchemas } from "../../schema";
 import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
 import useProductStore from "@/store/useProductStore";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Spinner } from "@heroui/react";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { useFileUploadStore } from "@/store/useFileUploadStore";
@@ -42,6 +42,8 @@ const ProductForm = ({ productId }: { productId?: string }) => {
   const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const clientIdFromQuery = searchParams.get("clientId");
   const isEdit = !!productId;
 
     // Build initial QA items from productById.qaChecklist
@@ -62,7 +64,7 @@ const ProductForm = ({ productId }: { productId?: string }) => {
 
   const defaultValues = {
     Name: "",
-    ClientId: "",
+    ClientId: clientIdFromQuery ?? "",
     ProjectId: "",
     ProductCategoryId: "",
     FabricTypeId: "",
@@ -179,7 +181,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
   };
 
   const handleBoBack = () => {
-    router.push("/product");
+    if (clientIdFromQuery) {
+      router.push(`/client/${clientIdFromQuery}`);
+    } else {
+      router.push("/product");
+    }
   };
 
   const handleSubmit = async (values: any) => {
@@ -284,10 +290,11 @@ const ProductForm = ({ productId }: { productId?: string }) => {
         <aside className="w-1/4 p-6">
           <div className="flex items-center mb-10">
             <Link
-              href={"/product"}
+              href={clientIdFromQuery ? `/client/${clientIdFromQuery}` : "/product"}
               className="flex items-center gap-1 dark:text-gray-400 text-gray-800"
             >
-              <IoCaretBackSharp /> <span>Back to listing</span>
+              <IoCaretBackSharp />{" "}
+              <span>{clientIdFromQuery ? "Back to client" : "Back to listing"}</span>
             </Link>
           </div>
           <ul>
