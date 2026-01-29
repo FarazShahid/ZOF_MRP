@@ -3,10 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { RiDashboard2Line, RiMenu3Line, RiCloseLine } from "react-icons/ri";
-import { FaClipboardList } from "react-icons/fa";
-import { AiOutlineProduct } from "react-icons/ai";
 import { IoStorefrontOutline } from "react-icons/io5";
-import { MdPhotoLibrary } from "react-icons/md";
 import { GiCargoShip } from "react-icons/gi";
 import { IoIosArrowDown } from "react-icons/io";
 import UserDropdown from "../header/UserDropdown";
