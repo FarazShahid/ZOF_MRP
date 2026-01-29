@@ -7,6 +7,7 @@ import AuthContext, { fetchLoginEmail } from "../../services/authservice";
 import Link from "next/link";
 import { AiOutlineAudit } from "react-icons/ai";
 import { CiSettings } from "react-icons/ci";
+import { IoDocumentTextOutline } from "react-icons/io5";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
@@ -84,6 +85,13 @@ export default function UserDropdown() {
           <Link href={"/auditlog"}>
             <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
               <AiOutlineAudit size={19} /> Audit Log
+            </div>
+          </Link>
+        </PermissionGuard>
+        <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW}>
+          <Link href={"/product/productdefination"}>
+            <div className="text-center text-theme-sm  dark:text-white text-gray-900 flex items-center gap-3 mt-3 bg-gray-25 hover:bg-gray-100 cursor-pointer px-3 py-1 rounded-lg">
+              <IoDocumentTextOutline size={19} /> Product Definition
             </div>
           </Link>
         </PermissionGuard>

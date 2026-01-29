@@ -44,7 +44,7 @@ const TabsNav: React.FC<Props> = ({
                 className={`relative flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-all ${
                   isActive
                     ? "bg-blue-600 text-white shadow-sm"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-slate-800/80"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-slate-700"
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
