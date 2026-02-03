@@ -159,7 +159,7 @@ function IconButton({
         "inline-flex items-center justify-center w-9 h-9 rounded-xl border transition-colors",
         danger
           ? "border-red-200/70 dark:border-red-800/60 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/30"
-          : "border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800",
+          : "border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 text-gray-700 hover:bg-gray-50 dark:hover:bg-slate-800",
       ].join(" ")}
     >
       {children}

@@ -26,7 +26,7 @@ const ClientInfoCard: React.FC<{ client: GetClientsType }> = ({ client }) => {
           <div className="flex items-start gap-4">
             <Link
               href="/client"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/70 dark:bg-slate-800/80 border border-gray-200/70 dark:border-slate-700/80 text-gray-700 dark:text-gray-200 hover:bg-white dark:hover:bg-slate-700 transition-colors"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/70 dark:bg-slate-800/80 border border-gray-600 dark:border-slate-700/80 text-gray-700 hover:bg-white dark:hover:bg-slate-700 transition-colors"
               aria-label="Back to Clients"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -38,7 +38,7 @@ const ClientInfoCard: React.FC<{ client: GetClientsType }> = ({ client }) => {
               </div>
 
               <div className="space-y-1">
-                <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <p className="text-xs uppercase tracking-wide text-gray-500">
                   Client Profile
                 </p>
                 <h1 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white leading-snug">
@@ -70,10 +70,10 @@ const ClientInfoCard: React.FC<{ client: GetClientsType }> = ({ client }) => {
               <Mail className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </span>
             <div>
-              <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <p className="text-xs uppercase tracking-wide text-gray-500">
                 Business Email
               </p>
-              <p className="font-medium text-gray-900 dark:text-gray-100 truncate">
+              <p className="font-medium text-gray-900 truncate">
                 {client.Email || "-"}
               </p>
             </div>
@@ -84,10 +84,10 @@ const ClientInfoCard: React.FC<{ client: GetClientsType }> = ({ client }) => {
               <Phone className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </span>
             <div>
-              <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <p className="text-xs uppercase tracking-wide text-gray-500">
                 Primary Phone
               </p>
-              <p className="font-medium text-gray-900 dark:text-gray-100 truncate">
+              <p className="font-medium text-gray-900 truncate">
                 {client.Phone || "-"}
               </p>
             </div>

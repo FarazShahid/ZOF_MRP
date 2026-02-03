@@ -116,7 +116,7 @@ const OrdersTab: React.FC<{
     return (
       <div className="text-center py-12">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-4 text-gray-600 dark:text-gray-400">Loading orders...</p>
+        <p className="mt-4 text-gray-600">Loading orders...</p>
       </div>
     );
   }
@@ -125,7 +125,7 @@ const OrdersTab: React.FC<{
     return (
       <div className="text-center py-12">
         <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-        <p className="text-gray-600 dark:text-gray-400">No orders found for this client.</p>
+        <p className="text-gray-600">No orders found for this client.</p>
       </div>
     );
   }
@@ -188,7 +188,7 @@ const OrdersTab: React.FC<{
             )}
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+            <span className="text-xs text-gray-500">
               Rows per page
             </span>
             <select
@@ -213,7 +213,7 @@ const OrdersTab: React.FC<{
       {filteredOrders.length === 0 ? (
         <div className="text-center py-12">
           <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             No orders match your filters.
           </p>
           {hasActiveFilters && (
@@ -243,7 +243,7 @@ const OrdersTab: React.FC<{
                 <div className="relative flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
+                      <h3 className="text-lg font-semibold text-gray-900 truncate">
                         {order.OrderName}
                       </h3>
                       <span
@@ -264,7 +264,7 @@ const OrdersTab: React.FC<{
                       )}
                     </div>
                     {order.Description && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">
+                      <p className="text-sm text-gray-600 mt-2 line-clamp-2">
                         {order.Description}
                       </p>
                     )}
@@ -292,25 +292,25 @@ const OrdersTab: React.FC<{
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
                   <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                     <Hash className="w-4 h-4 text-gray-500" />
-                    <span className="text-gray-500 dark:text-gray-400">
+                    <span className="text-gray-500">
                       Order #
                     </span>
-                    <span className="ml-1 font-mono text-gray-900 dark:text-white">
+                    <span className="ml-1 font-mono text-gray-900">
                       {order.OrderNumber}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                     <Tag className="w-4 h-4 text-gray-500" />
-                    <span className="text-gray-500 dark:text-gray-400">
+                    <span className="text-gray-500">
                       Event
                     </span>
-                    <span className="ml-1 text-gray-900 dark:text-white truncate">
+                    <span className="ml-1 text-gray-900 truncate">
                       {order.EventName}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                     <Calendar className="w-4 h-4 text-gray-500" />
-                    <span className="text-gray-500 dark:text-gray-400">
+                    <span className="text-gray-500">
                       Deadline
                     </span>
                     <div
@@ -329,7 +329,7 @@ const OrdersTab: React.FC<{
                     <span className="text-gray-500 dark:text-gray-400">
                       Priority
                     </span>
-                    <span className="ml-1 text-gray-900 dark:text-white">
+                    <span className="ml-1 text-gray-900">
                       Level {order.OrderPriority}
                     </span>
                   </div>
@@ -337,7 +337,7 @@ const OrdersTab: React.FC<{
 
                 {/* Action row */}
                 <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between text-xs">
-                  <span className="text-gray-500 dark:text-gray-400">
+                  <span className="text-gray-500">
                     Last updated {formatDateTime(order.UpdatedOn)}
                   </span>
                   <div className="flex items-center gap-1.5">

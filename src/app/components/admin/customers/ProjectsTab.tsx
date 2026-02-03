@@ -160,7 +160,7 @@ const ProjectsTab: React.FC<Props> = ({ clientId, projects, onActionButtonReady 
       <>
         <div className="flex items-center justify-center min-h-[220px] border border-dashed rounded-2xl dark:border-gray-700 border-gray-200 bg-white dark:bg-slate-900">
           <div className="text-center px-6 py-10">
-            <div className="text-gray-700 dark:text-gray-300 font-semibold">No projects yet</div>
+            <div className="text-gray-700 font-semibold">No projects yet</div>
             <div className="text-sm text-gray-500 dark:text-gray-500 mt-1">
               Create a project to link products and track orders.
             </div>

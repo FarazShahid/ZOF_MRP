@@ -29,7 +29,7 @@ const OverviewTab: React.FC<Props> = ({
 				>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Orders</p>
+              <p className="text-sm text-gray-600">Total Orders</p>
               <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{ordersCount}</p>
             </div>
             <ShoppingCart className="w-10 h-10 text-blue-600 dark:text-blue-400" />
@@ -41,7 +41,7 @@ const OverviewTab: React.FC<Props> = ({
 				>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Active Products</p>
+              <p className="text-sm text-gray-600">Active Products</p>
               <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
                 {activeProductsCount}
               </p>
@@ -52,7 +52,7 @@ const OverviewTab: React.FC<Props> = ({
 				<div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-5 border border-purple-200 dark:border-purple-800 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Shipped Orders</p>
+              <p className="text-sm text-gray-600">Shipped Orders</p>
               <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
                 {completedOrdersCount}
               </p>
