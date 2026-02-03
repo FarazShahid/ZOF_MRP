@@ -109,7 +109,7 @@ const ClientProfilePage = () => {
       <AdminDashboardLayout>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
-            <p className="mt-4 text-gray-600 dark:text-gray-400">Client not found</p>
+            <p className="mt-4 text-gray-600">Client not found</p>
           </div>
         </div>
       </AdminDashboardLayout>

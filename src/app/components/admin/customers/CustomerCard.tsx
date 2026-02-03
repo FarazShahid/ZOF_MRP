@@ -49,30 +49,29 @@ const CustomerCard: React.FC<CardProps> = ({
       {/* Body */}
       <div className="px-4 py-3 grid grid-cols-1 gap-2 text-xs text-gray-700 dark:text-gray-300">
         <div className="flex items-center gap-2">
-          <Phone className="w-3.5 h-3.5 text-gray-400" />
-          <span className="truncate">{customer.Phone || "-"}</span>
+          <Phone className="w-3.5 h-3.5 text-gray-600" />
+          <span className="truncate text-gray-600">{customer.Phone || "-"}</span>
         </div>
         <div className="flex items-center gap-2">
-          <Mail className="w-3.5 h-3.5 text-gray-400" />
-          <span className="truncate">{customer.Email || "-"}</span>
+          <Mail className="w-3.5 h-3.5 text-gray-600" />
+          <span className="truncate text-gray-600">{customer.Email || "-"}</span>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="px-4 pb-3 pt-2 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between gap-2">
+      <div className="px-4 pb-3 pt-2 border-t border-gray-100 dark:border-slate-800 flex items-center justify-center gap-2">
         <Link
           href={`/client/${customer.Id}`}
-          className="inline-flex flex-1 items-center justify-center gap-1 rounded-md bg-blue-600 text-white text-xs py-1.5 hover:bg-blue-700 transition-colors"
-        >
+          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-600 dark:border-slate-700 text-gray-600 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+     >
           <Eye className="w-3.5 h-3.5" />
-          <span>View profile</span>
         </Link>
 
         <PermissionGuard required={PERMISSIONS_ENUM.CLIENTS.UPDATE}>
           <button
             type="button"
             onClick={() => onEdit(customer.Id)}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 dark:border-slate-700 text-gray-600 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
           >
             <Edit className="w-3.5 h-3.5" />
           </button>
