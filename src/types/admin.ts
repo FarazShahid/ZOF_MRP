@@ -51,24 +51,26 @@ export type ActiveModule = 'users' | 'events' | 'carriers' | 'roles';
 
 export type ShipmentStatus = 'In Transit' | 'Damaged' | 'Delivered' | 'Cancelled';
 
-export type OrderStatus = 'Production' | 'Shipped' | 'Packing' | 'Kept in stock';
+export type OrderStatus = 'Production' | 'Shipped' | 'Packing' | 'Kept in Stock';
 
 export const OrderStatusEnum = {
-  Production: 'Production',
-  Shipped: 'Shipped',
-  Packing: 'Packing',
   Pending: 'Pending',
-  'Kept in stock': 'Kept in stock',
+  Cancelled: 'Cancelled',
+  Production: 'Production',
+  Packing: 'Packing',
+  Shipped: 'Shipped',
+  OrderPlaced: 'Order Placed',
+  KeptInStock: 'Kept in Stock',
 } as const;
 
 
 export const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
 
 export const MAX_CLIENT_CHIPS = 4;
 
