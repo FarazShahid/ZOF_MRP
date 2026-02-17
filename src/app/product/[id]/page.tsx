@@ -17,7 +17,6 @@ import Lightbox from "@/src/app/components/gallery/Lightbox";
 import Image from "next/image";
 import Link from "next/link";
 import { downloadAtIndex } from "@/src/types/admin";
-import { shouldUseUnoptimizedImage } from "@/src/utils/publicMedai";
 
 const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
 
@@ -152,7 +151,6 @@ const ProductDetailPage = () => {
                                   alt={thumb.fileName || "Thumbnail"}
                                   fill
                                   className="object-cover"
-                                  unoptimized={shouldUseUnoptimizedImage(thumb.fileUrl)}
                                 />
                               </button>
                             );
@@ -181,7 +179,6 @@ const ProductDetailPage = () => {
                                 className="object-contain transition-transform duration-300 group-hover:scale-[1.15]"
                                 style={{ transformOrigin: `${zoomOrigin.x} ${zoomOrigin.y}` }}
                                 sizes="100vw"
-                                unoptimized={shouldUseUnoptimizedImage(currentImage.fileUrl)}
                               />
                               <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
                               <div className="absolute left-3 bottom-3 text-xs text-white/90 bg-black/40 backdrop-blur px-2 py-1 rounded">
