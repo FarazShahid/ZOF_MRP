@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
-import { shouldUseUnoptimizedImage } from "@/src/utils/publicMedai";
 
 interface LightboxItem {
   src: string;
@@ -75,7 +74,7 @@ const Lightbox = ({ open, items, index, onClose, onPrev, onNext }: LightboxProps
           </button>
           <div className="absolute inset-0 flex items-center justify-center p-6">
             <div className="relative w-full h-full">
-              <Image src={current?.src || ""} alt={current?.title || ""} fill className="object-contain" sizes="100vw" unoptimized={shouldUseUnoptimizedImage(current?.src || "")} />
+              <Image src={current?.src || ""} alt={current?.title || ""} fill className="object-contain" sizes="100vw" />
             </div>
           </div>
           <button
