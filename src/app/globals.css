@@ -1225,8 +1225,10 @@ span.flatpickr-weekday,
   padding-left: 30px;
 }
 
-
-
+.sidebar-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.3) transparent;
+}
 
 /* Print Css */
 

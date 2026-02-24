@@ -49,16 +49,13 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const searchParams = useSearchParams();
   const clientIdFromQuery = searchParams.get("clientId");
+  const eventIdFromQuery = searchParams.get("eventId");
 
   const [initialValues, setInitialValues] = useState<FormValues>(() => {
-    // Preselect client when coming from client profile
-    if (clientIdFromQuery) {
-      return {
-        ...defaultValues,
-        ClientId: clientIdFromQuery,
-      };
-    }
-    return defaultValues;
+    const base = { ...defaultValues };
+    if (clientIdFromQuery) base.ClientId = clientIdFromQuery;
+    if (eventIdFromQuery) base.OrderEventId = eventIdFromQuery;
+    return base;
   });
 
   const { addOrder, getOrderById, updateOrder, OrderById } = useOrderStore();
