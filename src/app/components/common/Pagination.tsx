@@ -10,6 +10,7 @@ interface PaginationProps {
   pageSizeOptions?: number[];
   totalItems?: number;
   startIndex?: number;
+  itemLabel?: string;
 }
 
 const getPaginationItems = (
@@ -66,6 +67,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   pageSizeOptions,
   totalItems,
   startIndex = 0,
+  itemLabel = "items",
 }) => {
   // Clamp current page when totalPages changes or becomes smaller than current
   useEffect(() => {
@@ -89,7 +91,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   const effectivePageSize = pageSize ?? sizeOptions[0];
   const showingText =
     totalItems != null && startIndex != null
-      ? `Showing ${startIndex + 1} to ${Math.min(startIndex + effectivePageSize, totalItems)} of ${totalItems} products`
+      ? `Showing ${startIndex + 1} to ${Math.min(startIndex + effectivePageSize, totalItems)} of ${totalItems} ${itemLabel}`
       : null;
 
   return (
@@ -130,7 +132,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               onClick={() => onPageChange(pageNum)}
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 currentPage === pageNum
-                  ? "bg-purple-600 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-slate-800 text-slate-300 hover:bg-slate-700"
               }`}
             >

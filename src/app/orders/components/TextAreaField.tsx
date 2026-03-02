@@ -3,18 +3,17 @@ import Label from '../../components/common/Label';
 import { ErrorMessage, Field } from 'formik';
 
 const TextAreaField = ({ label, name }: { label: string; name: string }) => (
-  
-    <div className="flex flex-col gap-1 mb-3">
+  <div className="flex flex-col gap-2 mb-3">
     <Label isRequired={false} label={label} />
     <Field
       as="textarea"
       name={name}
       maxLength={200}
-      className="rounded-xl dark:text-gray-400 text-black text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+      className="w-full bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500 resize-none"
     />
     <ErrorMessage name={name} component="div" className="text-red-500 text-sm" />
   </div>
-  )
+);
 
 
 export default TextAreaField
