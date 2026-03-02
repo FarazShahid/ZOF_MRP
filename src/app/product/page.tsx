@@ -6,14 +6,14 @@ import ProductTabs from "../components/product/ProductTabs";
 
 const page = () => {
   return (
-    <AdminDashboardLayout>
+    // <AdminDashboardLayout>
       <PermissionGuard required={PERMISSIONS_ENUM.PRODUCTS.VIEW}>
         <div className="flex flex-col gap-4">
           {/* <ProductTabs /> */}
           <ProductModule />
         </div>
       </PermissionGuard>
-    </AdminDashboardLayout>
+    // </AdminDashboardLayout>
   );
 };
 

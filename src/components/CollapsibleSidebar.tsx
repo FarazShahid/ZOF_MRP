@@ -49,7 +49,7 @@ export default function CollapsibleSidebar() {
     { icon: 'ri-dashboard-line', label: 'Dashboard', path: '/dashboard', required: PERMISSIONS_ENUM.DASHBOARD.VIEW },
   //  { icon: 'ri-line-chart-line', label: 'Executive Cockpit', path: '/executive-cockpit', required: PERMISSIONS_ENUM.DASHBOARD.VIEW },
     { icon: 'ri-shopping-cart-2-line', label: 'Procurement', path: '/procurement', required: PERMISSIONS_ENUM.CLIENTS.VIEW },
-    { icon: 'ri-box-3-line', label: 'Products', path: '/products', aliasPaths: ['/product'], required: PERMISSIONS_ENUM.PRODUCTS.VIEW },
+    { icon: 'ri-box-3-line', label: 'Products', path: '/product', aliasPaths: ['/product'], required: PERMISSIONS_ENUM.PRODUCTS.VIEW },
     { icon: 'ri-file-list-3-line', label: 'BOM', path: '/bom', required: PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW },
     { icon: 'ri-task-line', label: 'Work Orders', path: '/work-orders', required: PERMISSIONS_ENUM.ORDER.VIEW },
     { icon: 'ri-kanban-view-2', label: 'Production', path: '/production-planning', required: PERMISSIONS_ENUM.ORDER.VIEW },
