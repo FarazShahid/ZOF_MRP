@@ -2,8 +2,8 @@
 
 import { useState, useCallback } from "react";
 import JSZip from "jszip";
-import * as XLSX from "xlsx";
 import { useDropzone } from "react-dropzone";
+import readXlsxFile from "read-excel-file";
 import { MdCancel } from "react-icons/md";
 import { FaRegEye } from "react-icons/fa";
 import FilePreviewModal from "../../product/component/FilePreviewModal";
@@ -49,6 +49,7 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
           previewUrl = URL.createObjectURL(file);
         }
 
+        // Excel preview (safe reader, coerced to string matrix)
         if (
           file.name.endsWith(".xlsx") ||
           file.name.endsWith(".xls") ||
@@ -57,14 +58,12 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
           type === "application/vnd.ms-excel"
         ) {
           try {
-            const data = await file.arrayBuffer();
-            const workbook = XLSX.read(data, { type: "array" });
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            const json = XLSX.utils.sheet_to_json(sheet, {
-              header: 1,
-            }) as string[][];
-            excelPreview = json.slice(0, 10);
+            const rows = await readXlsxFile(file);
+            excelPreview = rows.slice(0, 10).map((row) =>
+              row.map((cell) =>
+                cell === null || cell === undefined ? "" : String(cell)
+              )
+            );
           } catch (error) {
             console.error("Error reading Excel file:", error);
           }
