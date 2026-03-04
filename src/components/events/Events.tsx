@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import useEventsStore, { Events } from "@/store/useEventsStore";
+import useEventsStore, { type Events } from "@/store/useEventsStore";
 import useClientStore from "@/store/useClientStore";
 import useOrderStore from "@/store/useOrderStore";
 import EventKPITiles from "./EventKPITiles";
