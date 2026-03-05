@@ -141,7 +141,7 @@ export default function Step1({ formik }: any) {
             required
             className={selectStyle}
           >
-            <option value={""}>select a client</option>
+            <option value={""}>Select a client</option>
             {clients?.map((client, index) => {
               return (
                 <option value={client?.Id} key={index}>
