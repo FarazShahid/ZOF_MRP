@@ -11,6 +11,11 @@ import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import Label from "../../components/common/Label";
 import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
 
+// Match order form field/dropdown style (Target Delivery Date, etc.)
+const fieldStyle =
+  "w-full bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500";
+const selectStyle = fieldStyle + " cursor-pointer";
+
 export default function Step2({ formik }: any) {
   const [selectedSizeIds, setSelectedSizeIds] = useState<string[]>([]);
   const [selectedPrintingIds, setSelectedPrintingIds] = useState<string[]>([]);
@@ -101,9 +106,16 @@ export default function Step2({ formik }: any) {
         <div className="flex flex-col gap-1">
           <Label isRequired={false} label="Size Options" />
           <Select
-            className="rounded-xl text-white text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
+            className="w-full"
             classNames={{
-              helperWrapper: "!dark:bg-slate-800 !bg-gray-100",
+              trigger:
+                "bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 data-[hover=true]:bg-slate-700",
+              value: "text-white !text-white",
+              innerWrapper:
+                "text-white [&_*]:!text-white [&_.text-default-500]:!text-white",
+              label: "text-slate-400",
+              popoverContent: "bg-slate-900 text-slate-100",
+              helperWrapper: "!dark:bg-slate-800 !bg-slate-800",
             }}
             name="SizeOptions"
             placeholder="Select Size Options"
@@ -124,7 +136,16 @@ export default function Step2({ formik }: any) {
         <div className="flex flex-col gap-1">
           <Label isRequired={false} label="Printing Option" />
           <Select
-            className="rounded-xl text-white text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
+            className="w-full"
+            classNames={{
+              trigger:
+                "bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 data-[hover=true]:bg-slate-700",
+              value: "text-white !text-white",
+              innerWrapper:
+                "text-white [&_*]:!text-white [&_.text-default-500]:!text-white",
+              label: "text-slate-400",
+              popoverContent: "bg-slate-900 text-slate-100",
+            }}
             name="PrintingOptions"
             placeholder="Select Printing Options"
             variant="bordered"
@@ -161,7 +182,7 @@ export default function Step2({ formik }: any) {
                         as="select"
                         required
                         name={`productDetails[${index}].ProductCutOptionId`}
-                        className="rounded-xl text-white text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+                        className={selectStyle}
                       >
                         <option value={""}>Select an option</option>
                         {cutOptions?.map((cutOption, i) => (
@@ -181,7 +202,7 @@ export default function Step2({ formik }: any) {
                       <Field
                         as="select"
                         name={`productDetails[${index}].SleeveTypeId`}
-                        className="rounded-xl text-white text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+                        className={selectStyle}
                       >
                         <option value={""}>Select an option</option>
                         {sleeveTypeData?.map((sleeve, sleeveIdx) => (
@@ -236,7 +257,7 @@ export default function Step2({ formik }: any) {
         <Field
           as="select"
           name="productStatus"
-          className="rounded-xl text-white text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+          className={selectStyle}
         >
           <option value={""}>Select an option</option>
           {PRODUCT_STATUS_ENUM?.map((status, index) => (

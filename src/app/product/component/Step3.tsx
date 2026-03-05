@@ -5,6 +5,10 @@ import DropZoneMultiple from "../../components/DropZone/DropZoneMultiple";
 import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import { FileUp, FileText } from "lucide-react";
 
+// Same base input style as order form (Target Delivery Date)
+const fieldStyle =
+  "w-full bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500";
+
 export default function Step3({ formik, handleFileSelect, productId }: any) {
   return (
     <div className="space-y-6 w-full max-w-2xl">
@@ -48,7 +52,7 @@ export default function Step3({ formik, handleFileSelect, productId }: any) {
             as="textarea"
             name="Description"
             placeholder="Product Description..."
-            className="rounded-xl text-white min-h-[105px] h-full text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 placeholder:text-slate-400"
+            className={`min-h-[105px] h-full ${fieldStyle}`}
           />
         </div>
       </div>

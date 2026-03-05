@@ -6,6 +6,10 @@ import { ClipboardList } from "lucide-react";
 
 const uid = () => crypto.randomUUID?.() ?? Math.random().toString(36).slice(2);
 
+// Match order/product form field style (e.g., Target Delivery Date)
+const qaInputStyle =
+  "w-full bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500";
+
 const QAChecklistClickUp: React.FC<QAChecklistClickUpProps> = ({
   initialItems = [],
   onChange,
@@ -110,7 +114,7 @@ const QAChecklistClickUp: React.FC<QAChecklistClickUpProps> = ({
                 }
               }}
               placeholder="Checklist item (press Enter to add)"
-              className="flex-1 min-w-[200px] px-3 py-2 rounded-xl text-white text-sm border border-slate-700 dark:bg-slate-800 bg-gray-100 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+              className={`flex-1 min-w-[200px] ${qaInputStyle}`}
             />
             <button
               type="button"

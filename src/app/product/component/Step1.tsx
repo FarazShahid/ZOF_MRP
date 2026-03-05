@@ -11,6 +11,11 @@ import { useColorPickerStore } from "@/store/useColorPickerStore";
 import useClientStore from "@/store/useClientStore";
 import { FileText } from "lucide-react";
 
+// Reuse the same base field/dropdown style as order form (Target Delivery Date)
+const fieldStyle =
+  "w-full bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500";
+const selectStyle = fieldStyle + " cursor-pointer";
+
 export default function Step1({ formik }: any) {
   const [selectedColorOptions, setSelectedColorOptions] = useState<string[]>(
     []
@@ -118,7 +123,7 @@ export default function Step1({ formik }: any) {
           type="text"
           name="Name"
           required
-          className="rounded-xl text-white text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 placeholder:text-slate-400"
+          className={fieldStyle}
         />
         <ErrorMessage
           name="Name"
@@ -134,7 +139,7 @@ export default function Step1({ formik }: any) {
             as="select"
             name="ClientId"
             required
-            className="rounded-xl text-white text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+            className={selectStyle}
           >
             <option value={""}>select a client</option>
             {clients?.map((client, index) => {
@@ -157,7 +162,7 @@ export default function Step1({ formik }: any) {
             as="select"
             name="ProjectId"
             disabled={!formik.values.ClientId}
-            className="rounded-xl text-white text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+            className={selectStyle}
           >
             <option value={""}>
               {formik.values.ClientId ? "Select a project" : "Select a client first"}
@@ -183,7 +188,7 @@ export default function Step1({ formik }: any) {
             as="select"
             name="ProductCategoryId"
             required
-            className="rounded-xl text-white text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
+            className={selectStyle}
           >
             <option value={""}>Select a type</option>
             {productCategories?.map((category, index) => {
@@ -206,7 +211,7 @@ export default function Step1({ formik }: any) {
             as="select"
             name="FabricTypeId"
             required
-            className="rounded-xl text-white dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+            className={selectStyle}
           >
             <option value={""}>Select an option</option>
             {fabricTypeData?.map((category, index) => {
@@ -227,7 +232,17 @@ export default function Step1({ formik }: any) {
       <div className="flex flex-col gap-1">
         <Label isRequired={false} label="Available Colors" />
         <Select
-          className="rounded-xl text-white text-sm w-full outline-none dark:bg-slate-800 bg-gray-100 [&_.text-default-500]:text-slate-400"
+          className="w-full"
+          classNames={{
+            trigger:
+              "bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 data-[hover=true]:bg-slate-700",
+            value:
+              "text-white !text-white",
+            innerWrapper:
+              "text-white [&_*]:!text-white [&_.text-default-500]:!text-white",
+            label: "text-slate-400",
+            popoverContent: "bg-slate-900 text-slate-100",
+          }}
           name="ColorName"
           placeholder="Select Color Options"
           variant="bordered"
