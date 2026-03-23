@@ -8,7 +8,7 @@ const ViewMoreButton = ({ path }: { path: string }) => {
       href={path}
       className="dark:text-green-400 text-green-900 flex items-center gap-1 text-xs"
     >
-      View More <FaCaretRight />
+      View All <FaCaretRight />
     </Link>
   );
 };
