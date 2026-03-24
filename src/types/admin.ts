@@ -74,20 +74,32 @@ export const formatDate = (date: string) => {
 
 export const MAX_CLIENT_CHIPS = 4;
 
-export const downloadAtIndex = (
+export const downloadAtIndex = async (
   documents: { fileUrl: string; fileName?: string }[],
   index: number
 ) => {
   const att = documents?.[index] as { fileUrl: string; fileName?: string } | undefined;
   if (!att?.fileUrl) return;
-  const link = document.createElement("a");
-  link.href = att.fileUrl;
-  link.download = att.fileName || "download";
-  link.target = "_blank";
-  link.rel = "noreferrer";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  try {
+    const response = await fetch(att.fileUrl);
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = att.fileName || "download";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(blobUrl);
+  } catch {
+    // Fallback: direct download without blob
+    const link = document.createElement("a");
+    link.href = att.fileUrl;
+    link.download = att.fileName || "download";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 };
 
 export const ROWS_PER_PAGE = 10;

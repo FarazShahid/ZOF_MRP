@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import AdminDashboardLayout from "@/src/app/components/common/AdminDashboardLayout";
 import PermissionGuard from "@/src/app/components/auth/PermissionGaurd";
@@ -14,6 +14,7 @@ import { CgAttachment } from "react-icons/cg";
 import { Edit } from "lucide-react";
 import Link from "next/link";
 import { downloadAtIndex } from "@/src/types/admin";
+import DeleteConfirmationModal from "@/src/components/common/DeleteConfirmationModal";
 
 const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
 
@@ -33,9 +34,11 @@ const ProductDetailPage = () => {
   const productId = Number(params?.id);
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>("overview");
+  const [deleteDocId, setDeleteDocId] = useState<number | null>(null);
 
   const { getProductById, productById, loading } = useProductStore();
-  const { fetchDocuments, documentsByReferenceId } = useDocumentCenterStore();
+  const { fetchDocuments, documentsByReferenceId, uploadDocument, loadingDoc, deleteDocument } = useDocumentCenterStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (Number.isFinite(productId) && productId > 0) {
@@ -84,6 +87,26 @@ const ProductDetailPage = () => {
       : "—";
 
   const handleEdit = (id: number) => router.push(`/product/editproduct/${id}`);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !productId) return;
+    const result = await uploadDocument(file, DOCUMENT_REFERENCE_TYPE.PRODUCT, productId);
+    if (result) {
+      fetchDocuments(DOCUMENT_REFERENCE_TYPE.PRODUCT, productId);
+    }
+    // Reset input so the same file can be re-selected
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deleteDocId === null) return;
+    const success = await deleteDocument(deleteDocId);
+    setDeleteDocId(null);
+    if (success) {
+      fetchDocuments(DOCUMENT_REFERENCE_TYPE.PRODUCT, productId);
+    }
+  };
 
   const qaList = (productById as any)?.qaChecklist || [];
   const qaProgress = qaList.length > 0 ? 0 : 0; // ZOF qaChecklist has no checked field; could be extended
@@ -302,12 +325,20 @@ const ProductDetailPage = () => {
                       <h2 className="text-xl font-bold text-white">Design Files</h2>
                       <p className="text-sm text-slate-400 mt-1">Versioned design files and documentation</p>
                     </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      className="hidden"
+                      onChange={handleFileUpload}
+                    />
                     <button
                       type="button"
-                      className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
+                      disabled={loadingDoc}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
                     >
                       <i className="ri-upload-line mr-2 w-4 h-4 inline-flex items-center justify-center" />
-                      Upload New Version
+                      {loadingDoc ? "Uploading..." : "Upload New Version"}
                     </button>
                   </div>
                   {documents.length === 0 ? (
@@ -373,7 +404,9 @@ const ProductDetailPage = () => {
                                     </button>
                                     <button
                                       type="button"
-                                      className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer"
+                                      disabled={loadingDoc}
+                                      onClick={() => setDeleteDocId(file.id)}
+                                      className="p-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white rounded-lg transition-colors cursor-pointer"
                                       title="Delete"
                                     >
                                       <i className="ri-delete-bin-line w-4 h-4 flex items-center justify-center" />
@@ -567,6 +600,15 @@ const ProductDetailPage = () => {
             </div>
           </div>
         </div>
+
+        <DeleteConfirmationModal
+          isOpen={deleteDocId !== null}
+          onClose={() => setDeleteDocId(null)}
+          onConfirm={handleDeleteConfirm}
+          entityTitle="File"
+          message="Are you sure you want to delete this file? This action cannot be undone."
+          isLoading={loadingDoc}
+        />
       </PermissionGuard>
   );
 };
