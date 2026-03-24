@@ -8,7 +8,6 @@
       "start": "next start",
       "lint": "next lint"
    },
-
    "dependencies": {
       "@heroui/react": "2.6.14",
       "@hookform/resolvers": "^3.9.1",
@@ -31,10 +30,10 @@
       "react-google-recaptcha": "^3.1.0",
       "react-hot-toast": "^2.5.2",
       "react-icons": "^5.4.0",
+      "read-excel-file": "^6.0.3",
       "three": "^0.177.0",
       "yup": "^1.6.1",
-      "zustand": "^5.0.3",
-      "read-excel-file": "^6.0.3"
+      "zustand": "^5.0.3"
    },
    "devDependencies": {
       "@svgr/webpack": "^8.1.0",

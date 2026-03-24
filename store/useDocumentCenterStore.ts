@@ -62,7 +62,8 @@ interface DocumentCenterStore {
   ) => Promise<UploadResponse | null>;
 
   fetchDocuments: (referenceType: string, referenceId: number, typeId?: number) => Promise<void>;
-  //setTypeCoverage: (referenceId: number, coverage: TypeCoverage) => void;
+
+  deleteDocument: (documentId: number) => Promise<boolean>;
 }
 
 export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
@@ -117,6 +118,30 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
       console.error("Upload failed", err);
       toast.error("Upload failed");
       return null;
+    }
+  },
+
+  deleteDocument: async (documentId: number) => {
+    try {
+      set({ loadingDoc: true, error: null });
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/media-handler/documents/${documentId}`,
+        { method: "DELETE" }
+      );
+      const result = await response.json();
+      if (!response.ok) {
+        set({ loadingDoc: false });
+        toast.error(result.message || "Failed to delete document");
+        return false;
+      }
+      set({ loadingDoc: false });
+      toast.success("Document deleted");
+      return true;
+    } catch (err) {
+      console.error("Delete failed", err);
+      toast.error("Failed to delete document");
+      set({ loadingDoc: false });
+      return false;
     }
   },
 
