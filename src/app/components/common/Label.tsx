@@ -4,14 +4,13 @@ interface LabelProps {
     labelForm?: string;
     label: string;
     isRequired: boolean;
-    className?: string;
 }
 
-const Label: React.FC<LabelProps> = ({ labelForm, label, isRequired, className = "" }) => {
+const Label: React.FC<LabelProps> = ({ labelForm, label, isRequired }) => {
     return (
-        <label form={labelForm} className={`block text-sm text-slate-400 mb-2 ${className}`}>
+        <label form={labelForm} className="text-sm dark:text-gray-400 text-gray-600 font-sans font-bold">
             {label}
-            {isRequired ? <span className="text-red-500 ml-0.5">*</span> : null}
+            {isRequired ? <span className="text-red-500 text-sm">*</span> : <></>}
         </label>
     );
 };

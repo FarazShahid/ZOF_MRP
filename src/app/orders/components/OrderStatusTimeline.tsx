@@ -2,88 +2,38 @@ import React from "react";
 import { formatDateToReadableDate } from "@/interface";
 import { OrderStatusLogsType } from "@/store/useOrderStore";
 
-const DEFAULT_ICON = "ri-checkbox-circle-line";
 
-const OrderStatusTimeline = ({
-  OrderStatusLogs,
-}: {
-  OrderStatusLogs: OrderStatusLogsType[];
-}) => {
-  if (!OrderStatusLogs || OrderStatusLogs.length === 0) {
-    return (
-      <div className="py-6 text-center">
-        <p className="text-sm text-slate-500">No status history yet</p>
-      </div>
-    );
-  }
-
-  const getTimelineStepStyle = (isActive: boolean, isCompleted: boolean) => {
-    if (isCompleted)
-      return {
-        dot: "bg-green-500 border-green-400",
-        line: "bg-green-500",
-        text: "text-green-400",
-      };
-    if (isActive)
-      return {
-        dot: "bg-amber-500 border-amber-400 animate-pulse",
-        line: "bg-slate-700",
-        text: "text-amber-400",
-      };
-    return {
-      dot: "bg-slate-700 border-slate-600",
-      line: "bg-slate-700",
-      text: "text-slate-500",
-    };
-  };
-
+const OrderStatusTimeline = ({OrderStatusLogs}:{OrderStatusLogs:OrderStatusLogsType[]}) => {
   return (
-    <div className="flex items-start justify-start flex-wrap gap-x-4 gap-y-6">
-      {OrderStatusLogs.map((log, idx) => {
-        const isLast = idx === OrderStatusLogs.length - 1;
-        const isCompleted = !isLast;
-        const isActive = isLast;
-        const style = getTimelineStepStyle(isActive, isCompleted);
-
-        return (
-          <React.Fragment key={log.StatusId ?? idx}>
-            <div className="flex flex-col items-center shrink-0">
-              {/* Dot */}
-              <div
-                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${style.dot}`}
+    <div className="OrderStatusTimeLineWrapper">
+      <div className="space-y-6 border-l-2 border-dashed">
+        {OrderStatusLogs.map((log, index) => {
+          return (
+            <div className="relative w-full" key={index}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="absolute -top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full text-green-500"
               >
-                {isCompleted && (
-                  <i className="ri-check-line text-white text-sm w-4 h-4 flex items-center justify-center" />
-                )}
-                {isActive && (
-                  <i
-                    className={`${DEFAULT_ICON} text-white text-sm w-4 h-4 flex items-center justify-center`}
-                  />
-                )}
-              </div>
-              <span
-                className={`text-xs font-medium mt-2 text-center max-w-[80px] truncate ${style.text}`}
-                title={log.StatusName}
-              >
-                {log.StatusName}
-              </span>
-              {log.Timestamp && (
-                <span className="text-xs text-slate-500 mt-0.5 text-center max-w-[90px]">
+                <path
+                  fillRule="evenodd"
+                  d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <div className="ml-6 dark:text-foreground text-gray-700">
+                <h6 className="font-bold text-sm">
+                  {log.StatusName}
+                </h6>
+                <span className="mt-1 block text-xs font-semibold">
                   {formatDateToReadableDate(log.Timestamp)}
                 </span>
-              )}
+              </div>
             </div>
-            {/* Connector line to next step */}
-            {!isLast && (
-              <div
-                className={`w-8 sm:w-12 h-0.5 shrink-0 self-center mt-4 ${
-                  isCompleted ? "bg-green-500" : "bg-slate-700"
-                }`}
-              />
-            )}
-          </React.Fragment>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };

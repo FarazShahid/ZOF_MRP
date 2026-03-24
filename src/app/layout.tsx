@@ -6,7 +6,6 @@ import { AuthContextProvider } from "./services/authservice";
 import NextUICompProvider from "./providers/NextUiProvider";
 import { ThemeProvider } from "./context/ThemeContext";
 import { SidebarProvider } from "./context/SidebarContext";
-import AppShell from "../components/AppShell";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -24,24 +23,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link
-          href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css"
-          rel="stylesheet"
-        />
-      </head>
-      <body className={`${outfit.className}`}>
-        <AuthContextProvider>
+      <AuthContextProvider>
+        <body className={`${outfit.className}`}>
           <NextUICompProvider>
             <ThemeProvider>
               <Toaster position="top-right" reverseOrder={false} />
-              <SidebarProvider>
-                <AppShell>{children}</AppShell>
-              </SidebarProvider>
+              <SidebarProvider>{children}</SidebarProvider>
             </ThemeProvider>
           </NextUICompProvider>
-        </AuthContextProvider>
-      </body>
+        </body>
+      </AuthContextProvider>
     </html>
   );
 }

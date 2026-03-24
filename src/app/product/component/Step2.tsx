@@ -3,18 +3,11 @@ import { Select, SelectItem } from "@heroui/react";
 import { Field, ErrorMessage, FieldArray } from "formik";
 import { MdDelete } from "react-icons/md";
 import { FaCirclePlus } from "react-icons/fa6";
-import { Settings2 } from "lucide-react";
-import { PRODUCT_STATUS_ENUM } from "@/interface";
 import useSleeveType from "@/store/useSleeveType";
 import useCutOptionsStore from "@/store/useCutOptionsStore";
 import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import Label from "../../components/common/Label";
 import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
-
-// Match order form field/dropdown style (Target Delivery Date, etc.)
-const fieldStyle =
-  "w-full bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500";
-const selectStyle = fieldStyle + " cursor-pointer";
 
 export default function Step2({ formik }: any) {
   const [selectedSizeIds, setSelectedSizeIds] = useState<string[]>([]);
@@ -89,100 +82,67 @@ export default function Step2({ formik }: any) {
   }, [formik.values.productSizes, formik.values.printingOptions]);
 
   return (
-    <div className="space-y-6 w-full max-w-2xl">
-      <div className="flex items-center gap-3 mb-2">
-        <div className="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center shrink-0">
-          <Settings2 className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <h2 className="text-lg font-semibold text-white">Product Specifications</h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Define sizes, printing options, cut and sleeve combinations
-          </p>
-        </div>
+    <div className="space-y-6 w-[500px]">
+      <div className="flex flex-col gap-1">
+        <Label isRequired={false} label="Size Options" />
+        <Select
+          className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
+          classNames={{
+            helperWrapper: "!dark:bg-slate-800 !bg-gray-100",
+          }}
+          name="SizeOptions"
+          placeholder="Select Size Options"
+          variant="bordered"
+          isRequired
+          selectionMode="multiple"
+          aria-label="Size Options"
+          selectedKeys={new Set(selectedSizeIds)}
+          onSelectionChange={(keys) => handleSizeChange(keys)}
+        >
+          {sizeOptions?.map((sizeOption) => (
+            <SelectItem key={sizeOption?.Id}>
+              {sizeOption.OptionSizeOptions}
+            </SelectItem>
+          ))}
+        </Select>
       </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1">
-          <Label isRequired={false} label="Size Options" />
-          <Select
-            className="w-full"
-            classNames={{
-              trigger:
-                "bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 data-[hover=true]:bg-slate-700",
-              value: "text-white !text-white",
-              innerWrapper:
-                "text-white [&_*]:!text-white [&_.text-default-500]:!text-white",
-              label: "text-slate-400",
-              popoverContent: "bg-slate-900 text-slate-100",
-              helperWrapper: "!dark:bg-slate-800 !bg-slate-800",
-            }}
-            name="SizeOptions"
-            placeholder="Select Size Options"
-            variant="bordered"
-            isRequired
-            selectionMode="multiple"
-            aria-label="Size Options"
-            selectedKeys={new Set(selectedSizeIds)}
-            onSelectionChange={(keys) => handleSizeChange(keys)}
-          >
-            {sizeOptions?.map((sizeOption) => (
-              <SelectItem key={sizeOption?.Id}>
-                {sizeOption.OptionSizeOptions}
-              </SelectItem>
-            ))}
-          </Select>
-        </div>
-        <div className="flex flex-col gap-1">
-          <Label isRequired={false} label="Printing Option" />
-          <Select
-            className="w-full"
-            classNames={{
-              trigger:
-                "bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 data-[hover=true]:bg-slate-700",
-              value: "text-white !text-white",
-              innerWrapper:
-                "text-white [&_*]:!text-white [&_.text-default-500]:!text-white",
-              label: "text-slate-400",
-              popoverContent: "bg-slate-900 text-slate-100",
-            }}
-            name="PrintingOptions"
-            placeholder="Select Printing Options"
-            variant="bordered"
-            selectionMode="multiple"
-            aria-label="Printing Options"
-            selectedKeys={new Set(selectedPrintingIds)}
-            onSelectionChange={(keys) => handlePrintingOptionChange(keys)}
-          >
-            {printingOptions?.map((printingOption) => (
-              <SelectItem key={printingOption?.Id}>
-                {printingOption?.Type}
-              </SelectItem>
-            ))}
-          </Select>
-        </div>
+      <div className="flex flex-col gap-1">
+        <Label isRequired={false} label="Printing Option" />
+        <Select
+          className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
+          name="PrintingOptions"
+          placeholder="Select Printing Options"
+          variant="bordered"
+          selectionMode="multiple"
+          aria-label="Printing Options"
+          selectedKeys={new Set(selectedPrintingIds)}
+          onSelectionChange={(keys) => handlePrintingOptionChange(keys)}
+        >
+          {printingOptions?.map((printingOption) => (
+            <SelectItem key={printingOption?.Id}>
+              {printingOption?.Type}
+            </SelectItem>
+          ))}
+        </Select>
       </div>
-
       <FieldArray name="productDetails">
-        {({ push, remove, form }) => {
-          const details = form?.values?.productDetails ?? [];
-          const canRemove = details.length > 1;
-          return (
-            <>
-              {details.map((_: any, index: number) => (
+        {({ push, remove, form }) => (
+          <>
+            {form?.values?.productDetails?.map((_: any, index: number) => {
+              return (
                 <div
                   key={index}
-                  className="flex items-end gap-4 flex-wrap"
+                  className="border-1 dark:border-gray-800 border-gray-400 space-y-6 rounded-lg p-4"
                   id="productDetails"
                 >
-                  <div className="grid grid-cols-2 gap-4 flex-1 min-w-0">
+                  <div className="grid grid-cols-2 gap-2">
                     <div className="flex flex-col gap-1">
                       <Label isRequired={false} label="Cut Options" />
                       <Field
                         as="select"
                         required
                         name={`productDetails[${index}].ProductCutOptionId`}
-                        className={selectStyle}
+                        className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                       >
                         <option value={""}>Select an option</option>
                         {cutOptions?.map((cutOption, i) => (
@@ -198,15 +158,15 @@ export default function Step2({ formik }: any) {
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <Label isRequired={false} label="Sleeve Type" />
+                      <Label isRequired={false} label=" Sleeve Type" />
                       <Field
                         as="select"
                         name={`productDetails[${index}].SleeveTypeId`}
-                        className={selectStyle}
+                        className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                       >
                         <option value={""}>Select an option</option>
-                        {sleeveTypeData?.map((sleeve, sleeveIdx) => (
-                          <option key={sleeveIdx} value={sleeve?.id}>
+                        {sleeveTypeData?.map((sleeve, index) => (
+                          <option key={index} value={sleeve?.id}>
                             {sleeve?.sleeveTypeName}
                           </option>
                         ))}
@@ -218,60 +178,32 @@ export default function Step2({ formik }: any) {
                       />
                     </div>
                   </div>
-                </div>
-              ))}
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() =>
-                    push({
-                      ProductCutOptionId: "",
-                      ClientId: "",
-                      ProductSizeMeasurementId: "",
-                    })
-                  }
-                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-green-600 dark:text-green-400 hover:bg-green-500/10 rounded-lg transition-colors border border-green-500/30"
-                  title="Add another cut / sleeve combination"
-                >
-                  <FaCirclePlus className="w-4 h-4 shrink-0" />
-                  Add
-                </button>
-                <button
-                  type="button"
-                  onClick={() => remove(details.length - 1)}
-                  disabled={!canRemove}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors border border-red-500/30 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                  title="Remove last combination"
-                >
-                  <MdDelete className="w-4 h-4 shrink-0" />
-                  Remove
-                </button>
-              </div>
-            </>
-          );
-        }}
-      </FieldArray>
 
-      <div className="flex flex-col gap-1">
-        <Label isRequired={false} label="Product Status" />
-        <Field
-          as="select"
-          name="productStatus"
-          className={selectStyle}
-        >
-          <option value={""}>Select an option</option>
-          {PRODUCT_STATUS_ENUM?.map((status, index) => (
-            <option key={index} value={status?.name}>
-              {status?.name}
-            </option>
-          ))}
-        </Field>
-        <ErrorMessage
-          name="productStatus"
-          component="div"
-          className="text-red-500 text-sm"
-        />
-      </div>
+                  <div className="flex justify-end items-center gap-2 mt-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        push({
+                          ProductCutOptionId: "",
+                          ClientId: "",
+                          ProductSizeMeasurementId: "",
+                        })
+                      }
+                    >
+                      <FaCirclePlus className="text-green-500 text-lg" />
+                    </button>
+                    {form.values.productDetails.length > 1 && (
+                      <button type="button" onClick={() => remove(index)}>
+                        <MdDelete className="text-red-500 text-lg" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        )}
+      </FieldArray>
     </div>
   );
 }

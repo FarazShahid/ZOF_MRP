@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { useState, useMemo } from "react";
 
+import { Plus } from "lucide-react";
 import { OrderStatus } from "@/src/types/admin";
 
 import DeleteModal from "../DeleteModal";
@@ -144,54 +145,36 @@ const OrderList: React.FC<OrderListProps> = ({ orders, projectFilter: externalPr
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
   const closeReorderModal = () => setOpenReorderModal(false);
 
-  const hasActiveFilters = Boolean(
-    searchTerm ||
-    statusFilter !== "all" ||
-    clientFilter.length > 0 ||
-    projectFilter !== "all" ||
-    dateRange.start ||
-    dateRange.end
-  );
-
-  const clearFilters = () => {
-    setSearchTerm("");
-    setStatusFilter("all");
-    setClientFilter([]);
-    handleProjectChange("all");
-    setDateRange({ start: "", end: "" });
-    setCurrentPage(1);
-  };
-
   return (
-    <div className="p-8">
-      {/* Header - same as reference */}
-      <div className="flex items-center justify-between mb-8">
+    <div className="flex flex-col flex-1">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Orders</h1>
-          <p className="text-slate-400 text-sm">Track and manage all production orders</p>
+          <h2 className="text-2xl font-bold text-gray-900">Orders</h2>
+          <p className="text-gray-600 mt-1">Monitor and manage all orders</p>
         </div>
         <div className="flex items-center gap-4">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+
           <PermissionGuard required={PERMISSIONS_ENUM.ORDER.ADD}>
             <Link
-              href="/orders/addorder"
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
+              href={"/orders/addorder"}
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              <i className="ri-add-line mr-2 w-4 h-4 inline-flex items-center justify-center" />
-              Create Order
+              <Plus className="w-4 h-4" />
+              Add New Order
             </Link>
           </PermissionGuard>
         </div>
       </div>
 
-      {/* KPI Tiles */}
+      {/* Dashboard Stats */}
       <OrderDashboard
         orders={orders}
         statusFilter={statusFilter}
         onStatusChange={setStatusFilter}
       />
 
-      {/* Filters - same structure as reference */}
       <OrderSearchAndFilters
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -205,52 +188,42 @@ const OrderList: React.FC<OrderListProps> = ({ orders, projectFilter: externalPr
         dateRange={dateRange}
         onDateRangeChange={setDateRange}
         orders={orders}
-        hasActiveFilters={hasActiveFilters}
-        onClearFilters={clearFilters}
       />
 
-      {/* Table - wrapped in reference card */}
-      <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
-        <div className="overflow-x-auto">
-          {viewMode === "table" ? (
-            <OrderTable
-              orders={paginatedOrders}
-              onViewOrder={handleViewOrder}
-              onEditOrder={handleEditOrder}
-              onDeleteOrder={handleDeleteOrder}
-              onReorderOrder={handleReorderOrder}
-            />
-          ) : (
-            <div className="p-6">
-              <OrderGrid
-                orders={paginatedOrders}
-                onViewOrder={handleViewOrder}
-                onEditOrder={handleEditOrder}
-                onDeleteOrder={handleDeleteOrder}
-                onReorderOrder={handleReorderOrder}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Pagination - inside table card, same as reference */}
-        {totalPages > 1 && filteredOrders.length > 0 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            pageSize={itemsPerPage}
-            onPageSizeChange={(size) => {
-              setItemsPerPage(size);
-              setCurrentPage(1);
-            }}
-            pageSizeOptions={[5, 10, 20, 50, 100]}
-            totalItems={filteredOrders.length}
-            startIndex={startIndex}
-            itemLabel="orders"
+      {/* Content */}
+      <div className="flex-1 overflow-auto mt-4 mb-4">
+        {viewMode === "table" ? (
+          <OrderTable
+            orders={paginatedOrders}
+            onViewOrder={handleViewOrder}
+            onEditOrder={handleEditOrder}
+            onDeleteOrder={handleDeleteOrder}
+            onReorderOrder={handleReorderOrder}
+          />
+        ) : (
+          <OrderGrid
+            orders={paginatedOrders}
+            onViewOrder={handleViewOrder}
+            onEditOrder={handleEditOrder}
+            onDeleteOrder={handleDeleteOrder}
+            onReorderOrder={handleReorderOrder}
           />
         )}
       </div>
+
+      {/* Pagination */}
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          pageSize={itemsPerPage}
+          onPageSizeChange={(size) => {
+            setItemsPerPage(size);
+            setCurrentPage(1);
+          }}
+          pageSizeOptions={[5, 10, 20, 50, 100]}
+        />
 
 
       {isOpenDeleteModal && (

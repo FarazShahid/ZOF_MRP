@@ -42,19 +42,19 @@ const OrderItem: React.FC<OrderItemProps> = ({
   }, []);
 
   return (
-    <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-800/50 p-5 relative">
+    <div className="space-y-3 border-1 dark:border-gray-800 border-gray-400 p-4 rounded relative">
       {item && (
         <>
           <button
             type="button"
             onClick={removeItem}
-            className="absolute top-3 right-3 p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+            className="absolute top-2 right-2 bg-red-400 rounded-lg px-2 font-bold hover:bg-red-700"
             aria-label={`Remove item ${index + 1}`}
           >
-            <i className="ri-delete-bin-line w-4 h-4 flex items-center justify-center" />
+            &minus;
           </button>
 
-          <h4 className="font-semibold text-white mb-4 pr-10">{productName}</h4>
+          <h4 className="font-semibold mb-3">{productName}</h4>
 
           <OrderItemDetailsFieldArray
             index={index}
@@ -64,7 +64,7 @@ const OrderItem: React.FC<OrderItemProps> = ({
             productAvailableColors={currentProductColors}
             setFieldValue={setFieldValue}
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-2">
             <PrintingOptionsMultiSelect
               index={index}
               item={item}

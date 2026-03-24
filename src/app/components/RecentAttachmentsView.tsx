@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
+import { IoDocumentAttach } from "react-icons/io5";
 import DocumentCard from "../orders/components/DocumentCard";
 import AttachmentPreviewModal, {
   AttachmentItem,
@@ -49,14 +50,13 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
     documents &&
     documents.length > 0 && (
       <div
-        className="rounded-xl border border-slate-700 bg-slate-800/50 p-4"
+        className="dark:dark:bg-[#161616] bg-gray-100 rounded-2xl border-1 dark:border-slate-700 border-slate-300 p-3"
         key={referenceId}
       >
-        <h6 className="flex items-center gap-2 text-slate-400 text-sm font-medium mb-3">
-          <i className="ri-file-list-line w-4 h-4 flex items-center justify-center" />
-          {label}
+        <h6 className="flex items-center gap-3 text-gray-700">
+          <IoDocumentAttach size={25} /> {label}
         </h6>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mt-5">
           {documents?.map((doc, index) => {
             return (
               <DocumentCard

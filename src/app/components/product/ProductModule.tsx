@@ -15,12 +15,12 @@ import ProductGrid from "./ProductGrid";
 import Pagination from "../common/Pagination";
 import DeleteProduct from "../../products/DeleteProduct";
 import ChangeProductStatus from "../../product/component/ChangeProductStatus";
-import NoData from "../common/NoData";
+import { Tooltip } from "@heroui/react";
 import Link from "next/link";
 import { FiSettings } from "react-icons/fi";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
-import { Tooltip } from "@heroui/react";
+import NoData from "../common/NoData";
 
 const ProductModule = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("table");
@@ -54,10 +54,11 @@ const ProductModule = () => {
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const router = useRouter();
+
   const { fetchProducts, products } = useProductStore();
   const { fetchProjects, projects } = useClientStore();
 
-  const handleAddProduct = () => {
+  const handleAddShipment = () => {
     router.push("/product/productform");
   };
 
@@ -184,24 +185,23 @@ const ProductModule = () => {
   const closeChangeStatusModal = () => setIsStatusChangeOpen(false);
 
   return (
-    <div className="p-8">
-      {/* Page Header */}
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-6 bg-white dark:bg-slate-800 rounded">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Products</h1>
-          <p className="text-slate-400 text-sm">Monitor and manage all products</p>
+          <h2 className="text-2xl font-bold text-gray-900">Product</h2>
+          <p className="text-gray-600 mt-1">Monitor and manage all products</p>
         </div>
-
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
 
           <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW}>
             <Tooltip content="Product Definition">
               <Link
-                href="/product/productdefination"
-                className="p-2.5 bg-slate-800 text-slate-400 hover:text-white rounded-lg border border-slate-700 transition-colors inline-flex items-center justify-center"
+                href={"/product/productdefination"}
+                className="dark:bg-slate-500 bg-slate-300 dark:text-white text-gray-800 rounded-lg p-2"
               >
-                <FiSettings className="w-5 h-5" />
+                <FiSettings size={23} />
               </Link>
             </Tooltip>
           </PermissionGuard>
@@ -209,8 +209,8 @@ const ProductModule = () => {
           <PermissionGuard required={PERMISSIONS_ENUM.PRODUCTS.ADD}>
             <button
               type="button"
-              onClick={handleAddProduct}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors whitespace-nowrap flex items-center gap-2"
+              onClick={handleAddShipment}
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
               <Plus className="w-4 h-4" />
               Add Product
@@ -252,55 +252,39 @@ const ProductModule = () => {
 
       {/* Content */}
       {filteredProducts.length === 0 ? (
-        <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden mt-6 p-10">
+        <div className="rounded-lg border border-gray-200 overflow-hidden mt-6 p-10 bg-white dark:bg-slate-800">
           <NoData title="No products found" message="Try adjusting filters or create a new product." />
         </div>
       ) : (
         <>
           {viewMode === "table" ? (
-            <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden mt-4">
+            <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
               <ProductTable
                 products={paginatedProducts}
                 onChangeStatus={handleChangeStatus}
                 onDelete={openDeleteModal}
               />
-              {/* Pagination */}
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-                pageSize={itemsPerPage}
-                onPageSizeChange={(size) => {
-                  setItemsPerPage(size);
-                  setCurrentPage(1);
-                }}
-                pageSizeOptions={[5, 10, 20, 50, 100]}
-                totalItems={filteredProducts.length}
-                startIndex={startIndex}
-              />
             </div>
           ) : (
-            <>
-              <ProductGrid
-                products={paginatedProducts}
-                onChangeStatus={handleChangeStatus}
-                onDelete={openDeleteModal}
-              />
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-                pageSize={itemsPerPage}
-                onPageSizeChange={(size) => {
-                  setItemsPerPage(size);
-                  setCurrentPage(1);
-                }}
-                pageSizeOptions={[5, 10, 20, 50, 100]}
-                totalItems={filteredProducts.length}
-                startIndex={startIndex}
-              />
-            </>
+            <ProductGrid
+              products={paginatedProducts}
+              onChangeStatus={handleChangeStatus}
+              onDelete={openDeleteModal}
+            />
           )}
+
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            pageSize={itemsPerPage}
+            onPageSizeChange={(size) => {
+              setItemsPerPage(size);
+              setCurrentPage(1);
+            }}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
+          />
         </>
       )}
 

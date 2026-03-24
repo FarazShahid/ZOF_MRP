@@ -12,16 +12,6 @@ const nextConfig: NextConfig = {
         hostname: 'genxstorage.blob.core.windows.net',
         pathname: '/**',
       },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'localhost',
-        pathname: '/**',
-      },
     ],
   },
   webpack(config: Configuration) {

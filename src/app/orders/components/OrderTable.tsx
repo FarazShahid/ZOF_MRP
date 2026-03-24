@@ -23,12 +23,9 @@ const OrderTable = () => {
   }, [projectFilter, fetchOrders]);
 
   return (
-    <OrderList
-      orders={Orders}
-      projectFilter={projectFilter}
-      onProjectFilterChange={setProjectFilter}
-      projects={projects || []}
-    />
+    <div className="p-6 bg-white dark:bg-slate-800 rounded">
+      <OrderList orders={Orders} projectFilter={projectFilter} onProjectFilterChange={setProjectFilter} projects={projects || []} />
+    </div>
   );
 };
 

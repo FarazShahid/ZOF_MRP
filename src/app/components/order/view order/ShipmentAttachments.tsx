@@ -4,36 +4,24 @@ import React, { useEffect, useMemo, useState } from "react";
 import useShipmentStore from "@/store/useShipmentStore";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
+import { Button, Card } from "@heroui/react";
+import { RiAttachment2 } from "react-icons/ri";
+import { FaFileInvoice } from "react-icons/fa6";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { HiDownload } from "react-icons/hi";
 import AttachmentPreviewModal, { AttachmentItem } from "../../AttachmentPreviewModal";
 import { FileTypesEnum } from "@/src/types/order";
 import { downloadAtIndex } from "@/src/types/admin";
 
-const getFileIcon = (name: string) => {
-  if (!name) return "ri-file-line text-slate-400";
-  const n = name.toLowerCase();
-  if (n.endsWith(".pdf")) return "ri-file-pdf-2-line text-red-400";
-  if (n.endsWith(".png") || n.endsWith(".jpg")) return "ri-image-line text-purple-400";
-  return "ri-file-line text-slate-400";
-};
-
-interface ShipmentCardProps {
-  shipmentId: number;
-  shipmentCode?: string;
-  shipmentDate?: string;
+interface ShipmentAttachmentsProps {
+  orderId: number;
 }
 
-const ShipmentCard: React.FC<ShipmentCardProps> = ({
-  shipmentId,
-  shipmentCode,
-  shipmentDate,
-}) => {
+const ShipmentCard: React.FC<{ shipmentId: number; shipmentCode?: string; shipmentDate?: string; }> = ({ shipmentId, shipmentCode, shipmentDate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
 
-  const { fetchDocuments, documentsByReferenceId, typeCoverageByReferenceId } =
-    useDocumentCenterStore();
+  const { fetchDocuments, documentsByReferenceId, typeCoverageByReferenceId } = useDocumentCenterStore();
 
   const documents = documentsByReferenceId[shipmentId] || [];
   const coverage = typeCoverageByReferenceId[shipmentId];
@@ -43,12 +31,11 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({
   }, [shipmentId]);
 
   const items: AttachmentItem[] = useMemo(
-    () =>
-      (documents || []).map((d: any) => ({
-        fileName: d.fileName,
-        fileType: d.fileType,
-        fileUrl: d.fileUrl,
-      })),
+    () => (documents || []).map((d: any) => ({
+      fileName: d.fileName,
+      fileType: d.fileType,
+      fileUrl: d.fileUrl,
+    })),
     [documents]
   );
 
@@ -63,75 +50,73 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({
     : `0/${FileTypesEnum.length}`;
 
   return (
-    <div className="bg-slate-900 rounded-2xl border border-slate-800 p-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-            <i className="ri-truck-line text-white w-4 h-4 flex items-center justify-center" />
+    <Card className="bg-white dark:bg-slate-700 border-0 shadow-xl">
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-5 rounded-xl flex items-center justify-center">
+              <RiAttachment2 />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                Shipment Attachments
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-slate-300">
+                {documents?.length} files attached
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-lg font-bold text-white">Shipment Attachments</h2>
-            <p className="text-xs text-slate-400">
-              {documents.length} file{documents.length !== 1 ? "s" : ""} attached
-              {shipmentCode ? ` · ${shipmentCode}` : ` · #${shipmentId}`}
-            </p>
+          <div className="text-right text-xs text-gray-600 dark:text-slate-300">
+            <div>{shipmentCode ? `Code: ${shipmentCode}` : `#${shipmentId}`}</div>
+            {shipmentDate && (
+              <div>{new Date(shipmentDate).toLocaleDateString()}</div>
+            )}
           </div>
         </div>
-        <div className="text-right text-xs text-slate-500">
-          {shipmentDate && (
-            <div>Ship date: {new Date(shipmentDate).toLocaleDateString()}</div>
-          )}
-          <div>Types: {matchedOverTotal} ({percent}%)</div>
-        </div>
-      </div>
 
-      {documents.length === 0 ? (
-        <div className="py-8 text-center border border-dashed border-slate-700 rounded-xl">
-          <i className="ri-folder-open-line text-3xl text-slate-600 w-10 h-10 mx-auto flex items-center justify-center mb-2" />
-          <p className="text-sm text-slate-500">No attachments for this shipment</p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {documents.map((attachment: any, index: number) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
+          {documents?.map((attachment: any, index: number) => (
             <div
               key={index}
-              className="flex items-center justify-between px-4 py-3 bg-slate-800/50 rounded-xl border border-slate-700"
+              className="group p-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg transition-all duration-200 bg-gradient-to-br from-gray-50 to-white dark:from-slate-700 dark:to-slate-800"
             >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center shrink-0">
-                  <i
-                    className={`${getFileIcon(attachment?.fileName)} text-xl w-5 h-5 flex items-center justify-center`}
-                  />
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-5 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                  <FaFileInvoice />
                 </div>
-                <div className="min-w-0">
-                  <div className="text-sm font-medium text-white truncate">
-                    {attachment?.fileName ?? "—"}
-                  </div>
-                  <div className="text-xs text-slate-500">{attachment?.fileType ?? "—"}</div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 truncate">
+                    {attachment?.fileName}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-slate-400">
+                    {attachment?.fileType}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => openAt(index)}
-                  className="p-2 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors"
-                  title="View"
+              <div className="flex items-center gap-2 mt-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onPress={() => openAt(index)}
+                  className="flex-1 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400"
                 >
-                  <MdOutlineRemoveRedEye className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => downloadAtIndex(documents, index)}
-                  className="p-2 text-green-400 hover:bg-green-500/10 rounded-lg transition-colors"
-                  title="Download"
+                  <MdOutlineRemoveRedEye />
+                  View
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onPress={() => downloadAtIndex(documents as any, index)}
+                  className="flex-1 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400"
                 >
-                  <HiDownload className="w-4 h-4" />
-                </button>
+                  <HiDownload />
+                  Download
+                </Button>
               </div>
             </div>
           ))}
         </div>
-      )}
+      </div>
 
       <AttachmentPreviewModal
         isOpen={isOpen}
@@ -139,13 +124,9 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({
         items={items}
         startIndex={startIndex}
       />
-    </div>
+    </Card>
   );
 };
-
-interface ShipmentAttachmentsProps {
-  orderId: number;
-}
 
 const ShipmentAttachments: React.FC<ShipmentAttachmentsProps> = ({ orderId }) => {
   const { Shipments, fetchShipments, loading } = useShipmentStore();
@@ -157,54 +138,28 @@ const ShipmentAttachments: React.FC<ShipmentAttachmentsProps> = ({ orderId }) =>
   }, []);
 
   const shipmentsForOrder = useMemo(
-    () =>
-      (Shipments || []).filter((s) =>
-        (s?.Orders || []).some((o) => o.Id === orderId)
-      ),
+    () => (Shipments || []).filter((s) => (s?.Orders || []).some((o) => o.Id === orderId)),
     [Shipments, orderId]
   );
 
   if (loading && shipmentsForOrder.length === 0) {
-    return (
-      <div className="bg-slate-900 rounded-2xl border border-slate-800 p-8 text-center">
-        <p className="text-sm text-slate-500">Loading shipments…</p>
-      </div>
-    );
+    return <div className="text-sm text-slate-500">Loading shipments…</div>;
   }
 
   if (!shipmentsForOrder || shipmentsForOrder.length === 0) {
-    return (
-      <div className="bg-slate-900 rounded-2xl border border-slate-800 p-8 text-center">
-        <i className="ri-truck-line text-4xl text-slate-600 w-10 h-10 mx-auto flex items-center justify-center mb-3" />
-        <p className="text-sm text-slate-500">No shipments found for this order.</p>
-      </div>
-    );
+    return <div className="text-sm text-slate-500">No shipments found for this order.</div>;
   }
 
   return (
-    <div className="space-y-6">
-      {/* Summary - reference style */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
-          <div className="text-xs text-slate-400 mb-1">Total Shipments</div>
-          <div className="text-xl font-bold text-white">
-            {shipmentsForOrder.length}
-          </div>
-        </div>
-        <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
-          <div className="text-xs text-slate-400 mb-1">Order</div>
-          <div className="text-xl font-bold text-white">#{orderId}</div>
-        </div>
-      </div>
-
+    <div className="flex flex-col gap-4">
       {shipmentsForOrder.map((ship) => (
         <ShipmentCard
           key={ship.Id}
           shipmentId={ship.Id}
           shipmentCode={ship.ShipmentCode}
           shipmentDate={ship.ShipmentDate}
-        />
-      ))}
+        />)
+      )}
     </div>
   );
 };

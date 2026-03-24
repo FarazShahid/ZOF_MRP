@@ -75,88 +75,133 @@ const ProductSearchAndFilters: React.FC<Props> = ({
     [products]
   );
 
-  const selectClass = "bg-slate-800 text-slate-300 text-sm px-4 py-2.5 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 cursor-pointer";
-
   return (
-    <div className="bg-slate-900 rounded-2xl p-6 mb-6 border border-slate-800">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <div className="relative">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className={`w-full ${selectClass} pl-10`}
-          />
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-4">
+        {/* Search */}
+        <div className="flex-1 min-w-64">
+          <div className="relative">
+            <Search className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search by name, category, client, or fabric..."
+              value={searchTerm}
+              onChange={(e) => onSearchChange(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            />
+          </div>
         </div>
 
-        <select
-          value={statusFilter}
-          onChange={(e) => onStatusChange(e.target.value as ProductStatus | "all")}
-          className={selectClass}
-        >
-          <option value="all">All Status</option>
-          <option value="Approved">Approved</option>
-          <option value="Sample">Sample</option>
-          <option value="Rejected">Rejected</option>
-          <option value="">Pending</option>
-        </select>
+        {/* Status */}
+        <div className="min-w-40">
+          <select
+            value={statusFilter}
+            onChange={(e) => onStatusChange(e.target.value as ProductStatus | "all")}
+            className="w-full px-3 py-2 border-1 border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          >
+            <option value="all">All Status</option>
+            <option value="Approved">Approved</option>
+            <option value="Sample">Sample</option>
+            <option value="Rejected">Rejected</option>
+            <option value="">Pending</option>
+          </select>
+        </div>
 
-        <select
-          value={categoryFilter}
-          onChange={(e) => onCategoryChange(e.target.value === "all" ? "all" : Number(e.target.value))}
-          className={selectClass}
-        >
-          <option value="all">All Categories</option>
-          {categories.map(c => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
+        {/* Category */}
+        <div className="min-w-40">
+          <select
+            value={categoryFilter}
+            onChange={(e) => onCategoryChange(e.target.value === "all" ? "all" : Number(e.target.value))}
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          >
+            <option value="all">All Categories</option>
+            {categories.map(c => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          value={clientFilter}
-          onChange={(e) => onClientChange(e.target.value === "all" ? "all" : Number(e.target.value))}
-          className={selectClass}
-        >
-          <option value="all">All Clients</option>
-          {clients.map(c => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
+        {/* Client */}
+        <div className="min-w-40">
+          <select
+            value={clientFilter}
+            onChange={(e) => onClientChange(e.target.value === "all" ? "all" : Number(e.target.value))}
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          >
+            <option value="all">All Clients</option>
+            {clients.map(c => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          value={projectFilter}
-          onChange={(e) => onProjectChange(e.target.value === "all" ? "all" : Number(e.target.value))}
-          className={selectClass}
-        >
-          <option value="all">All Projects</option>
-          {projects.map(p => (
-            <option key={p.Id} value={p.Id}>{p.Name}</option>
-          ))}
-        </select>
+        {/* Project */}
+        <div className="min-w-40">
+          <select
+            value={projectFilter}
+            onChange={(e) => onProjectChange(e.target.value === "all" ? "all" : Number(e.target.value))}
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          >
+            <option value="all">All Projects</option>
+            {projects.map(p => (
+              <option key={p.Id} value={p.Id}>{p.Name}</option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          value={fabricFilter}
-          onChange={(e) => onFabricChange(e.target.value === "all" ? "all" : Number(e.target.value))}
-          className={selectClass}
-        >
-          <option value="all">All Fabrics</option>
-          {fabrics.map(f => (
-            <option key={f.id} value={f.id}>{f.name}</option>
-          ))}
-        </select>
+        {/* Fabric */}
+        <div className="min-w-40">
+          <select
+            value={fabricFilter}
+            onChange={(e) => onFabricChange(e.target.value === "all" ? "all" : Number(e.target.value))}
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          >
+            <option value="all">All Fabrics</option>
+            {fabrics.map(f => (
+              <option key={f.id} value={f.id}>{f.name}</option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          value={archivedFilter}
-          onChange={(e) => onArchivedChange(e.target.value as "all" | "active" | "archived")}
-          className={selectClass}
-        >
-          <option value="all">All (Active + Archived)</option>
-          <option value="active">Active Only</option>
-          <option value="archived">Archived Only</option>
-        </select>
+        {/* Archived */}
+        <div className="min-w-36">
+          <select
+            value={archivedFilter}
+            onChange={(e) => onArchivedChange(e.target.value as "all" | "active" | "archived")}
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          >
+            <option value="all">All (Active + Archived)</option>
+            <option value="active">Active Only</option>
+            <option value="archived">Archived Only</option>
+          </select>
+        </div>
       </div>
+
+      {/* Date Range (Created On) */}
+      {/* <div className="flex items-center gap-2">
+        <span className="text-sm text-slate-600">Created between:</span>
+        <input
+          type="date"
+          value={dateRange.start}
+          onChange={(e) => onDateRangeChange({ ...dateRange, start: e.target.value })}
+          className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
+        />
+        <span className="text-slate-400">to</span>
+        <input
+          type="date"
+          value={dateRange.end}
+          onChange={(e) => onDateRangeChange({ ...dateRange, end: e.target.value })}
+          className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
+        />
+        {(dateRange.start || dateRange.end) && (
+          <button
+            onClick={() => onDateRangeChange({ start: "", end: "" })}
+            className="text-slate-500 hover:text-slate-700 text-sm underline"
+          >
+            Clear
+          </button>
+        )}
+      </div> */}
     </div>
   );
 };

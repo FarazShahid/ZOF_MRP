@@ -12,7 +12,7 @@ const SelectField = ({
   options: { id: number; label: string }[];
 }) => {
   return (
-    <div className="flex flex-col gap-2 mb-3">
+    <div className="flex flex-col gap-1 mb-3">
       <Label isRequired label={label} />
       <Field
         as="select"

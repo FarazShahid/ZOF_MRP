@@ -9,13 +9,13 @@ interface ViewToggleProps {
 
 export const ViewToggle: React.FC<ViewToggleProps> = ({ viewMode, onViewModeChange }) => {
   return (
-    <div className="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700">
+    <div className="flex items-center bg-gray-100 rounded-lg p-1">
       <button
         onClick={() => onViewModeChange('table')}
-        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap ${
+        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
           viewMode === 'table'
-            ? 'bg-slate-700 text-white'
-            : 'text-slate-400 hover:text-white'
+            ? 'bg-white dark:bg-slate-700 text-gray-900 shadow-sm'
+            : 'text-gray-600 hover:text-gray-900'
         }`}
       >
         <Table className="w-4 h-4" />
@@ -23,10 +23,10 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({ viewMode, onViewModeChan
       </button>
       <button
         onClick={() => onViewModeChange('grid')}
-        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap ${
+        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
           viewMode === 'grid'
-            ? 'bg-slate-700 text-white'
-            : 'text-slate-400 hover:text-white'
+            ? 'bg-white dark:bg-slate-700 text-gray-900 shadow-sm'
+            : 'text-gray-600 hover:text-gray-900'
         }`}
       >
         <Grid3X3 className="w-4 h-4" />

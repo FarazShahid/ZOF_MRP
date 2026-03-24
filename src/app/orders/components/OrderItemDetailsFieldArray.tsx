@@ -65,24 +65,20 @@ const OrderItemDetailsFieldArray = ({
 
  
 
-  const fieldStyle =
-    "w-full bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition-colors";
-  const selectStyle = fieldStyle + " cursor-pointer";
-
   return (
     <FieldArray name={`items[${index}].orderItemDetails`}>
       {(detailsHelpers) => (
         <div className="mb-4">
           {item.orderItemDetails && item.orderItemDetails.length > 0 ? (
             item.orderItemDetails.map((detail: any, detailIndex: number) => (
-              <div key={detailIndex} className="mb-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="flex flex-col gap-2">
+              <div className="" key={detailIndex}>
+                <div className="grid grid-cols-3 gap-2 mb-2">
+                  <div>
                     <Label isRequired label="Quantity" />
                     <Field
                       type="number"
                       name={`items[${index}].orderItemDetails[${detailIndex}].Quantity`}
-                      className={fieldStyle}
+                      className="rounded-xl dark:text-gray-400 text-black text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
                       min={1}
                       step="1"
                       onKeyDown={(e: {
@@ -100,12 +96,12 @@ const OrderItemDetailsFieldArray = ({
                       }}
                     />
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div>
                     <Label isRequired={false} label="Priority" />
                     <Field
                       as="select"
                       name={`items[${index}].orderItemDetails[${detailIndex}].Priority`}
-                      className={selectStyle}
+                      className="rounded-xl dark:text-gray-400 text-black text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
                     >
                       <option value="">Select Priority</option>
                       {PRIORITY_ENUM.map((p) => (
@@ -115,12 +111,12 @@ const OrderItemDetailsFieldArray = ({
                       ))}
                     </Field>
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div>
                     <Label isRequired={false} label="Size Options" />
                     <Field
                       as="select"
                       name={`items[${index}].orderItemDetails[${detailIndex}].SizeOption`}
-                      className={selectStyle}
+                      className="rounded-xl dark:text-gray-400 text-black text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleSizeChange(e, detailIndex)}
                     >
                       <option value="">Select a size option</option>
@@ -133,15 +129,15 @@ const OrderItemDetailsFieldArray = ({
  
                   </div>
                 </div>
-                <div className="flex items-center justify-end w-full gap-2 mt-2">
+                <div className="flex items-center justify-end w-full space-x-2">
                   {item.orderItemDetails.length > 1 && (
                     <button
                       type="button"
                       onClick={() => detailsHelpers.remove(detailIndex)}
-                      className="px-3 py-1.5 text-red-400 hover:bg-red-500/10 rounded-lg text-sm font-medium transition-colors"
+                      className="bg-red-500 hover:bg-red-700 text-white rounded-lg px-2 font-bold"
                       aria-label="Remove order item detail"
                     >
-                      <i className="ri-subtract-line w-4 h-4 inline-flex" /> Remove
+                      &minus;
                     </button>
                   )}
                   {detailIndex === item.orderItemDetails.length - 1 && (
@@ -154,10 +150,10 @@ const OrderItemDetailsFieldArray = ({
                           Priority: 0,
                         })
                       }
-                      className="px-3 py-1.5 text-green-400 hover:bg-green-500/10 rounded-lg text-sm font-medium transition-colors"
+                      className="bg-green-600 hover:bg-green-800 text-white rounded-lg px-2 font-bold"
                       aria-label="Add order item detail"
                     >
-                      <i className="ri-add-line w-4 h-4 inline-flex" /> Add
+                      +
                     </button>
                   )}
                 </div>

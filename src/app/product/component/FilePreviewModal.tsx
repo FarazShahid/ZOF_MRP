@@ -43,7 +43,7 @@ const FilePreviewModal: React.FC<ComponentProps> = ({
                   ))}
                 </ul>
               )}
-              {/* Excel Preview */}
+              {/* 📊 Excel Preview */}
               {file?.excelPreview && (
                 <div className="overflow-auto max-h-[60vh]">
                   <p className="text-sm font-semibold mb-2">Excel Preview:</p>
@@ -53,7 +53,7 @@ const FilePreviewModal: React.FC<ComponentProps> = ({
                         <tr key={i}>
                           {row.map((cell, j) => (
                             <td key={j} className="border px-2 py-1">
-                              {cell !== null && cell !== undefined ? String(cell) : ""}
+                              {cell}
                             </td>
                           ))}
                         </tr>
