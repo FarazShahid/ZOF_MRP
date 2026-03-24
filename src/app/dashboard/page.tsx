@@ -11,11 +11,11 @@ import TopClientsWidget from "./component/TopClientsWidget";
 const page = () => {
  
   return (
-    <AdminDashboardLayout>
+    // <AdminDashboardLayout>
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <h6 className="dark:text-white text-gray-800 text-xl font-semibold">Dashboard</h6>
-        </div>
+        </div> */}
         <KpiTiles />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3">
           <div className="col-span-1 md:col-span-2 lg:col-span-8">
@@ -45,7 +45,7 @@ const page = () => {
           </div>
         </div>
       </div>
-    </AdminDashboardLayout>
+    // </AdminDashboardLayout>
   );
 };
 

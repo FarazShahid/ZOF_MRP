@@ -1,9 +1,7 @@
 import { GetOrderByIdType } from "@/src/app/interfaces/OrderStoreInterface";
 import React, { useEffect, useMemo, useState } from "react";
-import { IoBag } from "react-icons/io5";
 import QASheetGenerator from "./QASheetGenerator";
 import ItemCard from "./ItemCard";
-import { FaArrowLeft, FaFolder } from "react-icons/fa";
 
 interface CardProps {
   OrderById: GetOrderByIdType;
@@ -13,13 +11,6 @@ const OrderItemsCard: React.FC<CardProps> = ({ OrderById }) => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<string>("All");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-
-  const categoryOptions = useMemo(() => {
-    const names = Array.from(
-      new Set((OrderById?.items || []).map((i) => i.ProductCategoryName).filter(Boolean))
-    );
-    return ["All", ...names];
-  }, [OrderById?.items]);
 
   const categoryFolders = useMemo(() => {
     const counts = new Map<string, number>();
@@ -47,6 +38,20 @@ const OrderItemsCard: React.FC<CardProps> = ({ OrderById }) => {
     [visibleItemIds, selectedVisibleCount]
   );
 
+  const totalUnits = useMemo(
+    () =>
+      (OrderById?.items ?? []).reduce(
+        (sum, item) =>
+          sum +
+          (item.orderItemDetails ?? []).reduce(
+            (s, d) => s + (Number(d.Quantity) || 0),
+            0
+          ),
+        0
+      ),
+    [OrderById?.items]
+  );
+
   const handleSelectAll = () => {
     if (areAllVisibleSelected) {
       setSelectedItems((prev) => prev.filter((id) => !visibleItemIds.includes(id)));
@@ -55,10 +60,10 @@ const OrderItemsCard: React.FC<CardProps> = ({ OrderById }) => {
     setSelectedItems((prev) => Array.from(new Set([...prev, ...visibleItemIds])));
   };
 
-const handleSelectItem = (itemId: number) => {
-    setSelectedItems(prev => 
-      prev.includes(itemId) 
-        ? prev.filter(id => id !== itemId)
+  const handleSelectItem = (itemId: number) => {
+    setSelectedItems((prev) =>
+      prev.includes(itemId)
+        ? prev.filter((id) => id !== itemId)
         : [...prev, itemId]
     );
   };
@@ -67,70 +72,96 @@ const handleSelectItem = (itemId: number) => {
     setSelectedItems((prev) => prev.filter((id) => visibleItemIds.includes(id)));
   }, [categoryFilter, visibleItemIds]);
 
+  const lineItemsCount = OrderById?.items?.length ?? 0;
+
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-5 rounded-xl flex items-center justify-center">
-            <IoBag size={23} />
-          </div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-bold text-gray-900">
-              Order Items 
-            </h2>
-            <span className="bg-green-500 text-white rounded-full px-2 py-1 text-xs mr-1">{OrderById?.items?.length}</span>
+    <div className="space-y-6">
+      {/* Summary bar - reference style */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
+          <div className="text-xs text-slate-400 mb-1">Line Items</div>
+          <div className="text-xl font-bold text-white">{lineItemsCount}</div>
+        </div>
+        <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
+          <div className="text-xs text-slate-400 mb-1">Total Units</div>
+          <div className="text-xl font-bold text-white">
+            {totalUnits.toLocaleString()}
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          {activeCategory ? (
-            <>
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveCategory(null);
-                  setCategoryFilter("All");
-                  setSelectedItems([]);
-                }}
-                className="flex items-center gap-3 cursor-pointer p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300"
-              >
-                <FaArrowLeft />
-                Back to Categories
-              </button>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Category: <span className="font-bold">{activeCategory}</span>
-              </span>
-              <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                <input
-                  type="checkbox"
-                  checked={areAllVisibleSelected}
-                  onChange={handleSelectAll}
-                  className="w-4 h-4 text-blue-600 rounded cursor-pointer"
-                />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Select All ({selectedVisibleCount}/{visibleItemIds.length})
-                </span>
-              </label>
-              {selectedItems.length > 0 ? (
-                <QASheetGenerator
-                  orderId={OrderById.Id}
-                  selectedItems={selectedItems}
-                />
-              ) : (
-                <div className="text-sm text-gray-500 dark:text-gray-400 bg-blue-100 text-gray-900 rounded-lg p-2">
-                  Select items to generate QA sheet
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="text-sm text-gray-600 dark:text-gray-300">
-              Browse by category
-            </div>
-          )}
+        <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
+          <div className="text-xs text-slate-400 mb-1">Categories</div>
+          <div className="text-xl font-bold text-white">{categoryFolders.length}</div>
+        </div>
+        <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
+          <div className="text-xs text-slate-400 mb-1">Selected</div>
+          <div className="text-xl font-bold text-white">{selectedItems.length}</div>
         </div>
       </div>
 
+      {/* Header / toolbar - reference style */}
+      <div className="bg-slate-900 rounded-2xl border border-slate-800 p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <i className="ri-list-check-2 text-white w-4 h-4 flex items-center justify-center" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-white">Order Items</h2>
+              <p className="text-xs text-slate-400">
+                {lineItemsCount} item{lineItemsCount !== 1 ? "s" : ""}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            {activeCategory ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveCategory(null);
+                    setCategoryFilter("All");
+                    setSelectedItems([]);
+                  }}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer flex items-center gap-2"
+                >
+                  <i className="ri-arrow-left-line w-4 h-4 flex items-center justify-center" />
+                  Back to Categories
+                </button>
+                <span className="text-sm text-slate-400">
+                  Category: <span className="text-white font-medium">{activeCategory}</span>
+                </span>
+                <label className="flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border border-slate-700 hover:bg-slate-800 transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={areAllVisibleSelected}
+                    onChange={handleSelectAll}
+                    className="w-4 h-4 text-blue-600 rounded cursor-pointer bg-slate-800 border-slate-600"
+                  />
+                  <span className="text-sm text-slate-300">
+                    Select All ({selectedVisibleCount}/{visibleItemIds.length})
+                  </span>
+                </label>
+                {selectedItems.length > 0 ? (
+                  <QASheetGenerator
+                    orderId={OrderById.Id}
+                    selectedItems={selectedItems}
+                  />
+                ) : (
+                  <span className="text-xs text-slate-500 px-3 py-2">
+                    Select items for QA sheet
+                  </span>
+                )}
+              </>
+            ) : (
+              <p className="text-sm text-slate-400">Browse by category below</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Category folders - reference style */}
       {!activeCategory && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {categoryFolders.map(({ name, count }) => (
             <button
               type="button"
@@ -140,24 +171,20 @@ const handleSelectItem = (itemId: number) => {
                 setCategoryFilter(name);
                 setSelectedItems([]);
               }}
-              className="group text-left p-5 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 bg-white dark:bg-slate-800"
+              className="text-left p-5 rounded-2xl border border-slate-800 bg-slate-900 hover:border-slate-700 hover:bg-slate-800/80 transition-all"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-400 text-white flex items-center justify-center shadow-md">
-                  <FaFolder />
+                <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center shrink-0">
+                  <i className="ri-folder-open-line text-slate-400 text-xl w-5 h-5 flex items-center justify-center" />
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-gray-900 truncate">
-                      {name}
-                    </h3>
-                    <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full px-2 py-1">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="font-semibold text-white truncate">{name}</h3>
+                    <span className="text-xs bg-slate-700 text-slate-300 rounded-full px-2 py-0.5 shrink-0">
                       {count}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Click to view items
-                  </p>
+                  <p className="text-xs text-slate-500 mt-0.5">Click to view items</p>
                 </div>
               </div>
             </button>
@@ -165,14 +192,15 @@ const handleSelectItem = (itemId: number) => {
         </div>
       )}
 
+      {/* Item list */}
       {activeCategory && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="space-y-4">
           {filteredItems.map((item) => (
             <ItemCard
               key={item.Id}
+              item={item}
               isSelected={selectedItems.includes(item.Id)}
               onSelect={() => handleSelectItem(item.Id)}
-              item={item}
             />
           ))}
         </div>

@@ -1,14 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Link } from "@heroui/react";
 import { Form, Formik } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
-import { FaRuler } from "react-icons/fa";
-import { FaRegFileLines } from "react-icons/fa6";
-import { IoDocumentAttach, IoCaretBackSharp } from "react-icons/io5";
 
 import useOrderStore from "@/store/useOrderStore";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
@@ -19,15 +14,14 @@ import { FormValues, steps } from "@/src/types/order";
 import * as Yup from "yup";
 
 // lazy load
-const Step1 = dynamic(() => import("./Step1"), {loading: () => null});
-const Step2 = dynamic(() => import("./Step2"), {loading: () => null});
-const OrderAttachments = dynamic(() => import("./OrderAttachments"), {loading: () => null});
-
+const Step1 = dynamic(() => import("./Step1"), { loading: () => null });
+const Step2 = dynamic(() => import("./Step2"), { loading: () => null });
+const OrderAttachments = dynamic(() => import("./OrderAttachments"), { loading: () => null });
 
 const formSteps = [
-  { id: 1, name: "Order Details", icon: <FaRegFileLines size={20} /> },
-  { id: 2, name: "Order Items", icon: <FaRuler size={20} /> },
-  { id: 3, name: "Order Attachments", icon: <IoDocumentAttach size={20} /> },
+  { num: 1, label: "Order Details", icon: "ri-file-list-3-line" },
+  { num: 2, label: "Order Items", icon: "ri-shopping-cart-2-line" },
+  { num: 3, label: "Order Attachments", icon: "ri-checkbox-circle-line" },
 ];
 
 const defaultValues: FormValues = {
@@ -49,16 +43,13 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const searchParams = useSearchParams();
   const clientIdFromQuery = searchParams.get("clientId");
+  const eventIdFromQuery = searchParams.get("eventId");
 
   const [initialValues, setInitialValues] = useState<FormValues>(() => {
-    // Preselect client when coming from client profile
-    if (clientIdFromQuery) {
-      return {
-        ...defaultValues,
-        ClientId: clientIdFromQuery,
-      };
-    }
-    return defaultValues;
+    const base = { ...defaultValues };
+    if (clientIdFromQuery) base.ClientId = clientIdFromQuery;
+    if (eventIdFromQuery) base.OrderEventId = eventIdFromQuery;
+    return base;
   });
 
   const { addOrder, getOrderById, updateOrder, OrderById } = useOrderStore();
@@ -239,108 +230,166 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   };
 
   return (
-    <>
-      <div className="flex">
-        <aside className="w-1/4 p-6">
-          <div className="flex items-center mb-10">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="flex items-center gap-1 dark:text-gray-400 text-gray-800"
-            >
-              <IoCaretBackSharp />
-              <span>Back</span>
-            </button>
-          </div>
-          <ul>
-            {formSteps.map((label, index) => (
-              <li
-                key={index}
-                onClick={() => setCurrentStep(label.id)}
-                className={`flex items-center gap-4 mb-4 w-[230px] dark:bg-slate-900 bg-gray-300 p-2 rounded-lg cursor-pointer`}
+    <div className="p-8">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-sm mb-6">
+        <button
+          type="button"
+          onClick={() => router.push("/orders")}
+          className="text-slate-400 hover:text-white transition-colors cursor-pointer"
+        >
+          Orders
+        </button>
+        <i className="ri-arrow-right-s-line text-slate-600 w-4 h-4 flex items-center justify-center" />
+        <span className="text-white">{orderId ? "Edit Order" : "Create Order"}</span>
+      </div>
+
+      {/* Page Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            {orderId ? "Edit Order" : "Create New Order"}
+          </h1>
+          <p className="text-slate-400 text-sm">
+            Complete the wizard to submit a new production order
+          </p>
+        </div>
+      </div>
+
+      {/* Stepper - same as reference */}
+      <div className="bg-slate-900 rounded-2xl border border-slate-800 p-5 mb-8">
+        <div className="flex items-center justify-between max-w-2xl mx-auto">
+          {formSteps.map((step, idx) => (
+            <div key={step.num} className="flex items-center">
+              <button
+                type="button"
+                onClick={() => {
+                  if (step.num < currentStep) setCurrentStep(step.num);
+                }}
+                className={`flex items-center gap-3 cursor-pointer transition-all ${
+                  step.num < currentStep ? "opacity-100" : step.num === currentStep ? "opacity-100" : "opacity-40"
+                }`}
               >
                 <div
-                  className={` ${label.id === currentStep
-                      ? "dark:text-green-400 text-green-800 font-bold"
-                      : "dark:text-gray-400 text-gray-800"
-                    }`}
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm transition-all ${
+                    step.num < currentStep
+                      ? "bg-green-600 text-white"
+                      : step.num === currentStep
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-800 text-slate-500 border border-slate-700"
+                  }`}
                 >
-                  {label.icon}
+                  {step.num < currentStep ? (
+                    <i className="ri-check-line w-5 h-5 flex items-center justify-center" />
+                  ) : (
+                    step.num
+                  )}
                 </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs dark:text-gray-500 text-gray-800">
-                    STEP {index + 1}
-                  </span>
-                  <span
-                    className={` ${label.id === currentStep
-                        ? "dark:text-green-400 text-green-800 font-bold"
-                        : "dark:text-gray-400 text-gray-800"
-                      }`}
+                <div className="text-left">
+                  <div
+                    className={`text-sm font-semibold ${
+                      step.num <= currentStep ? "text-white" : "text-slate-500"
+                    }`}
                   >
-                    {label.name}
-                  </span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </aside>
-        <main className="flex flex-col justify-center items-center w-full">
-          <h1 className="text-sm font-bold text-gray-500 mb-2">
-          {orderId ? "Edit Order" : "Add New Order"} 
-          </h1>
-          <h2 className="text-xl font-semibold mb-4">
-            {steps[currentStep - 1]}
-          </h2>
-          <div className="flex flex-col dark:bg-slate-900 bg-gray-300 rounded-xl p-10">
-            <Formik
-              validationSchema={getValidationSchema(currentStep - 1, !!orderId)}
-              initialValues={initialValues}
-              enableReinitialize
-              onSubmit={handleSubmit}
-            >
-              {({ isSubmitting, validateForm, setTouched, ...formikProps }) => (
-                <Form className="flex flex-col gap-5 px-5 w-full dark:shadow-2xl shadow-lg pt-5 pb-5 rounded-lg h-fit ">
-                  {renderStep(formikProps)}
-                  <div className="flex items-center justify-end gap-5 mt-5">
-                    {currentStep > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => setCurrentStep((prev) => prev - 1)}
-                        className="flex items-center justify-center text-white bg-[#dd7775] w-[80px] h-[30px] rounded-lg text-sm"
-                      >
-                        Back
-                      </button>
-                    )}
-
-                    {currentStep < 3 && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleNext(validateForm, setTouched, currentStep)
-                        }
-                        className="flex items-center justify-center text-white bg-[#584BDD] w-[80px] h-[30px] rounded-lg text-sm"
-                      >
-                        Next
-                      </button>
-                    )}
-
-                    {currentStep === 3 && (
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="flex items-center justify-center text-white bg-[#584BDD] w-[80px] h-[30px] rounded-lg text-sm"
-                      >
-                        Submit
-                      </button>
-                    )}
+                    Step {step.num}
                   </div>
-                </Form>
+                  <div
+                    className={`text-xs ${
+                      step.num <= currentStep ? "text-slate-400" : "text-slate-600"
+                    }`}
+                  >
+                    {step.label}
+                  </div>
+                </div>
+              </button>
+
+              {idx < formSteps.length - 1 && (
+                <div className="w-24 mx-4">
+                  <div className="h-0.5 bg-slate-800 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        step.num < currentStep ? "bg-green-500" : "bg-slate-700"
+                      }`}
+                      style={{ width: step.num < currentStep ? "100%" : "0%" }}
+                    />
+                  </div>
+                </div>
               )}
-            </Formik>
-          </div>
-        </main>
+            </div>
+          ))}
+        </div>
       </div>
-    </>
+
+      {/* Step Content + Bottom Action Bar - single Formik */}
+      <div className="max-w-4xl">
+        <Formik
+          validationSchema={getValidationSchema(currentStep - 1, !!orderId)}
+          initialValues={initialValues}
+          enableReinitialize
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting, validateForm, setTouched, submitForm, ...formikProps }) => (
+            <>
+              <Form id="order-form" className="flex flex-col gap-5 w-full">
+                {renderStep(formikProps)}
+              </Form>
+
+              {/* Bottom Action Bar - same as reference */}
+              <div className="mt-8">
+                <div className="bg-slate-900 rounded-2xl border border-slate-800 p-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      {currentStep > 1 ? (
+                        <button
+                          type="button"
+                          onClick={() => setCurrentStep((prev) => prev - 1)}
+                          className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap border border-slate-700"
+                        >
+                          <i className="ri-arrow-left-line mr-2 w-4 h-4 inline-flex items-center justify-center" />
+                          Back
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => router.push("/orders")}
+                          className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap border border-slate-700 inline-flex items-center"
+                        >
+                          <i className="ri-close-line mr-2 w-4 h-4 inline-flex items-center justify-center" />
+                          Cancel
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      {currentStep < 3 ? (
+                        <button
+                          type="button"
+                          onClick={() => handleNext(validateForm, setTouched, currentStep)}
+                          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
+                        >
+                          Next Step
+                          <i className="ri-arrow-right-line ml-2 w-4 h-4 inline-flex items-center justify-center" />
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => submitForm()}
+                          disabled={isSubmitting}
+                          className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
+                        >
+                          <i className="ri-check-double-line mr-2 w-4 h-4 inline-flex items-center justify-center" />
+                          {orderId ? "Update Order" : "Create Order"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </Formik>
+      </div>
+    </div>
   );
 };
 

@@ -2,8 +2,8 @@
 
 import { useState, useCallback } from "react";
 import JSZip from "jszip";
-import * as XLSX from "xlsx";
 import { useDropzone } from "react-dropzone";
+import readXlsxFile from "read-excel-file";
 import { MdCancel } from "react-icons/md";
 import { FaRegEye } from "react-icons/fa";
 import FilePreviewModal from "../../product/component/FilePreviewModal";
@@ -49,6 +49,7 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
           previewUrl = URL.createObjectURL(file);
         }
 
+        // Excel preview (safe reader, coerced to string matrix)
         if (
           file.name.endsWith(".xlsx") ||
           file.name.endsWith(".xls") ||
@@ -57,14 +58,12 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
           type === "application/vnd.ms-excel"
         ) {
           try {
-            const data = await file.arrayBuffer();
-            const workbook = XLSX.read(data, { type: "array" });
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            const json = XLSX.utils.sheet_to_json(sheet, {
-              header: 1,
-            }) as string[][];
-            excelPreview = json.slice(0, 10);
+            const rows = await readXlsxFile(file);
+            excelPreview = rows.slice(0, 10).map((row) =>
+              row.map((cell) =>
+                cell === null || cell === undefined ? "" : String(cell)
+              )
+            );
           } catch (error) {
             console.error("Error reading Excel file:", error);
           }
@@ -120,105 +119,72 @@ const DropZoneMultiple: React.FC<DropZoneProps> = ({ index, onFileSelect }) => {
     setOpenViewModal(false);
   };
 
-  return (
-    <div className="space-y-6 w-full">
-      <div className="p-4">
-        <div
-          {...getRootProps()}
-          className={`border-2 border-dashed p-6 rounded-md text-center cursor-pointer ${
-            isDragActive
-              ? "dark:bg-gray-800 bg-gray-500"
-              : "dark:bg-slate-800 bg-gray-400"
-          }`}
-        >
-          <input {...getInputProps()} />
-          {isDragActive ? (
-            <p>Drop the file here ...</p>
-          ) : (
-            <p>
-              Drag & drop a file here, or click to select (image, doc, zip...)
-            </p>
-          )}
-        </div>
+  const formatSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / 1048576).toFixed(1) + " MB";
+  };
 
-        {uploadedFiles.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-            {uploadedFiles.map((f, idx) => (
-              <div
-                key={idx}
-                className="border rounded-lg shadow hover:shadow-md transition relative p-4"
-              >
+  return (
+    <div className="space-y-4 w-full">
+      <div
+        {...getRootProps()}
+        className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
+          isDragActive
+            ? "border-blue-500 bg-blue-500/10"
+            : "border-slate-700 hover:border-blue-500 bg-slate-800/30"
+        }`}
+      >
+        <input {...getInputProps()} />
+        <div className="w-14 h-14 bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i className="ri-upload-cloud-2-line text-3xl text-slate-500 w-8 h-8 flex items-center justify-center" />
+        </div>
+        <p className="text-white text-sm font-medium mb-1">
+          {isDragActive ? "Drop the files here..." : "Click to upload or drag and drop"}
+        </p>
+        <p className="text-slate-500 text-xs">
+          PDF, images, documents, ZIP up to 25MB each
+        </p>
+      </div>
+
+      {uploadedFiles.length > 0 && (
+        <div className="space-y-2">
+          {uploadedFiles.map((f, idx) => (
+            <div
+              key={idx}
+              className="flex items-center justify-between px-4 py-3 bg-slate-800 rounded-lg border border-slate-700"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center shrink-0">
+                  <i className="ri-file-3-line text-blue-400 w-4 h-4 flex items-center justify-center" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-white text-sm font-medium truncate">{f.file.name}</p>
+                  <p className="text-slate-500 text-xs">{formatSize(f.file.size)}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  className="mt-2 p-1.5 text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors"
+                  onClick={() => handleOpenModal(f)}
+                  title="Preview"
+                >
+                  <FaRegEye size={16} />
+                </button>
                 <button
                   type="button"
                   onClick={() => handleRemove(idx)}
-                  className="absolute top-0 right-0 text-red-500 hover:text-red-700"
+                  className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                  title="Remove"
                 >
-                  <MdCancel size={20} />
+                  <i className="ri-delete-bin-line w-4 h-4 flex items-center justify-center" />
                 </button>
-
-                {f.previewUrl && f.type.startsWith("image/") ? (
-                  <img
-                    src={f.previewUrl}
-                    className="rounded-md w-full h-20 object-cover mb-2"
-                    alt="Uploaded"
-                  />
-                ) : f.previewUrl && f.type === "application/pdf" ? (
-                  <iframe
-                    src={f.previewUrl}
-                    className="w-full h-40 rounded mb-2"
-                  />
-                ) : f.excelPreview ? (
-                  <div className="h-40 overflow-y-auto text-sm bg-gray-100 p-2 rounded">
-                    <p className="font-semibold mb-1">Excel Preview:</p>
-                    <table className="text-xs w-full table-auto border">
-                      <tbody>
-                        {f.excelPreview.map((row, i) => (
-                          <tr key={i}>
-                            {row.map((cell, j) => (
-                              <td key={j} className="border px-1 py-0.5">
-                                {cell}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : f.zipContents ? (
-                  <div className="h-40 overflow-y-auto text-sm bg-gray-100 p-2 rounded">
-                    <p className="font-semibold mb-1">ZIP contents:</p>
-                    <ul className="list-disc pl-4">
-                      {f.zipContents.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : (
-                  <div className="h-40 flex items-center justify-center bg-gray-100 rounded text-gray-500 text-sm">
-                    No preview available
-                  </div>
-                )}
-
-                <div className="mt-2">
-                  <p className="font-medium truncate whitespace-nowrap overflow-hidden">{f.file.name}</p>
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-gray-500 truncate whitespace-nowrap overflow-hidden">
-                      {f.type || "Unknown type"}
-                    </p>
-                    <button
-                      type="button"
-                      className="mt-2 text-sm text-green-500 hover:underline"
-                      onClick={() => handleOpenModal(f)}
-                    >
-                      <FaRegEye size={18} />
-                    </button>
-                  </div>
-                </div>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <FilePreviewModal
         isOpen={OpenViewModal}

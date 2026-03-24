@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
 interface PaginationProps {
   currentPage: number;
@@ -9,6 +8,9 @@ interface PaginationProps {
   pageSize?: number;
   onPageSizeChange?: (pageSize: number) => void;
   pageSizeOptions?: number[];
+  totalItems?: number;
+  startIndex?: number;
+  itemLabel?: string;
 }
 
 const getPaginationItems = (
@@ -63,6 +65,9 @@ export const Pagination: React.FC<PaginationProps> = ({
   pageSize,
   onPageSizeChange,
   pageSizeOptions,
+  totalItems,
+  startIndex = 0,
+  itemLabel = "items",
 }) => {
   // Clamp current page when totalPages changes or becomes smaller than current
   useEffect(() => {
@@ -84,115 +89,65 @@ export const Pagination: React.FC<PaginationProps> = ({
     [pageSizeOptions]
   );
   const effectivePageSize = pageSize ?? sizeOptions[0];
+  const showingText =
+    totalItems != null && startIndex != null
+      ? `Showing ${startIndex + 1} to ${Math.min(startIndex + effectivePageSize, totalItems)} of ${totalItems} ${itemLabel}`
+      : null;
 
   return (
-    <div className="px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-      <div className="flex-1 flex items-center justify-between sm:hidden">
-        <div className="flex items-center gap-2">
-          <label htmlFor="mobile-page-size" className="text-sm text-gray-700">
-            Show
-          </label>
-          <select
-            id="mobile-page-size"
-            value={effectivePageSize}
-            onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
-            className="block border border-gray-300 rounded-md text-sm py-1 px-2 bg-white text-gray-700 focus:outline-none"
-          >
-            {sizeOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800">
+      <div className="text-sm text-slate-400">
+        {showingText ?? (
+          <>
+            Showing page <span className="font-medium">{Math.max(1, Math.min(currentPage, totalPages || 1))}</span> of{" "}
+            <span className="font-medium">{totalPages || 1}</span>
+          </>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2">
         <button
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1 || totalPages === 0}
-          className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
         >
           Previous
         </button>
-        <span className="mx-2 text-sm text-gray-700">
-          Page <span className="font-medium">{Math.max(1, Math.min(currentPage, totalPages || 1))}</span> of {" "}
-          <span className="font-medium">{totalPages || 1}</span>
-        </span>
+
+        {items.map((item, index) => {
+          if (item === "...") {
+            return (
+              <span
+                key={`ellipsis-${index}`}
+                className="px-3 py-2 bg-slate-800 text-slate-400 rounded-lg text-sm"
+              >
+                ...
+              </span>
+            );
+          }
+          const pageNum = item as number;
+          return (
+            <button
+              key={`page-${pageNum}`}
+              onClick={() => onPageChange(pageNum)}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                currentPage === pageNum
+                  ? "bg-blue-600 text-white"
+                  : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+              }`}
+            >
+              {pageNum}
+            </button>
+          );
+        })}
+
         <button
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages || totalPages === 0}
-          className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
         >
           Next
         </button>
-      </div>
-      <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <label htmlFor="desktop-page-size" className="text-sm text-gray-700">
-              Show
-            </label>
-            <select
-              id="desktop-page-size"
-              value={effectivePageSize}
-              onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
-              className="block border rounded-md text-sm py-1 px-2 text-gray-700 focus:outline-none"
-            >
-              {sizeOptions.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-            <span className="text-sm text-gray-700">per page</span>
-          </div>
-          <p className="text-sm text-gray-700">
-            Showing page <span className="font-medium">{Math.max(1, Math.min(currentPage, totalPages || 1))}</span> of {" "}
-            <span className="font-medium">{totalPages || 1}</span>
-          </p>
-        </div>
-        <div>
-          <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-            <button
-              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1 || totalPages === 0}
-              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <FaChevronLeft className="h-5 w-5" />
-            </button>
-            {items.map((item, index) => {
-              if (item === "...") {
-                return (
-                  <span
-                    key={`ellipsis-${index}`}
-                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500"
-                  >
-                    ...
-                  </span>
-                );
-              }
-              const pageNum = item as number;
-              return (
-                <button
-                  key={`page-${pageNum}`}
-                  onClick={() => onPageChange(pageNum)}
-                  className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                    currentPage === pageNum
-                      ? "z-10 bg-blue-50 border-blue-500 text-blue-600"
-                      : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
-                  }`}
-                >
-                  {pageNum}
-                </button>
-              );
-            })}
-            <button
-              onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages || totalPages === 0}
-              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <FaChevronRight className="h-5 w-5" />
-            </button>
-          </nav>
-        </div>
       </div>
     </div>
   );

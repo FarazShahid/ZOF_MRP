@@ -1,21 +1,10 @@
 import React from "react";
-import {
-  Eye,
-  Edit,
-  Trash2,
-  RotateCcw,
-  Calendar,
-  AlertTriangle,
-} from "lucide-react";
-import OrderStatusBadge from "./OrderStatusBadge";
+import Link from "next/link";
 import { GetOrdersType } from "../../interfaces/OrderStoreInterface";
 import { formatDate } from "@/src/types/admin";
-import { getDeadlineColor, getDeadlineStatus } from "@/src/types/order";
 import { OrderItemShipmentEnum } from "@/interface";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
-import NoData from "../common/NoData";
-import { getOrderTypeLabelColor } from "@/interface/GetFileType";
 
 interface OrderTableProps {
   orders: GetOrdersType[];
@@ -25,6 +14,24 @@ interface OrderTableProps {
   onReorderOrder: (orderId: number) => void;
 }
 
+const getStatusColor = (status: string) => {
+  const s = (status || "").toLowerCase();
+  if (s.includes("production")) return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+  if (s.includes("shipped")) return "bg-purple-500/20 text-purple-400 border-purple-500/30";
+  if (s.includes("packing")) return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+  if (s.includes("kept") || s.includes("completed")) return "bg-green-500/20 text-green-400 border-green-500/30";
+  return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+};
+
+const getStageIcon = (status: string) => {
+  const s = (status || "").toLowerCase();
+  if (s.includes("production")) return "ri-tools-line text-amber-400";
+  if (s.includes("shipped")) return "ri-truck-line text-purple-400";
+  if (s.includes("packing")) return "ri-palette-line text-blue-400";
+  if (s.includes("kept") || s.includes("completed")) return "ri-checkbox-circle-line text-green-400";
+  return "ri-question-line text-slate-400";
+};
+
 const OrderTable: React.FC<OrderTableProps> = ({
   orders,
   onViewOrder,
@@ -33,150 +40,169 @@ const OrderTable: React.FC<OrderTableProps> = ({
   onReorderOrder,
 }) => {
   return (
-    <div className=" rounded-lg border border-slate-200 dark:border-gray-50 overflow-hidden">
-      <div className="overflow-x-auto">
+    <table className="w-full">
+      <thead>
+        <tr className="border-b border-slate-800">
+          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Order Name
+          </th>
+          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Event
+          </th>
+          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Type
+          </th>
+          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Items
+          </th>
+          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Current Stage
+          </th>
+          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Status
+          </th>
+          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Delivery Date
+          </th>
+          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
         {(!orders || orders.length === 0) ? (
-          <div className="flex items-center justify-center py-16">
-            <NoData title="No orders found" message="Try adjusting filters or create a new order." />
-          </div>
+          <tr>
+            <td
+              colSpan={8}
+              className="px-6 py-12 text-center text-slate-500"
+            >
+              <i className="ri-shopping-bag-line text-4xl mb-2 block w-10 h-10 mx-auto flex items-center justify-center" />
+              No orders found
+            </td>
+          </tr>
         ) : (
-        <table className="min-w-full divide-y divide-slate-200">
-          <thead className="bg-white dark:bg-slate-700">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                Order Details
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                Client
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                Event
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                Type
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                Deadline
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className=" divide-y divide-slate-200">
-            {orders?.map((order) => (
-              <tr
-                key={order?.Id}
-                className={
-                  "hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors even:bg-green-50 dark:even:bg-slate-700"
-                }
-              >
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">
-                      {order?.OrderName}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {order?.OrderNumber}
-                    </div>
+          orders?.map((order) => (
+            <tr
+              key={order?.Id}
+              className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors"
+            >
+              <td className="px-6 py-4">
+                <div>
+                  <div className="text-sm font-medium text-white">
+                    {order?.OrderName}
                   </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {order?.ClientName}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                  {order?.EventName}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <OrderStatusBadge status={order.StatusName} />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                  <span className={`${getOrderTypeLabelColor(order?.OrderType)} rounded p-1 text-xs`}>
-                    {order?.OrderType}
+                  <div className="text-xs text-slate-500">
+                    {order?.OrderNumber} &middot; {order?.ClientName}
+                  </div>
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <Link
+                  href={`/events/${order?.OrderEventId}`}
+                  className="text-sm text-blue-400 hover:text-blue-300 transition-colors cursor-pointer"
+                >
+                  {order?.EventName || "—"}
+                </Link>
+              </td>
+              <td className="px-6 py-4">
+                <span
+                  className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${
+                    order?.OrderType === "Sample"
+                      ? "bg-teal-500/20 text-teal-300 border-teal-500/30"
+                      : order?.OrderType === "Reorder"
+                      ? "bg-orange-500/20 text-orange-300 border-orange-500/30"
+                      : "bg-slate-600/30 text-slate-300 border-slate-500/30"
+                  }`}
+                >
+                  {order?.OrderType || "—"}
+                </span>
+              </td>
+              <td className="px-6 py-4">
+                <span className="inline-flex items-center justify-center min-w-[28px] px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-700 text-slate-200">
+                  {(order as any)?.ItemsCount?.toLocaleString?.() ?? "—"}
+                </span>
+              </td>
+              <td className="px-6 py-4">
+                <div className="flex items-center gap-2">
+                  <i
+                    className={`${getStageIcon(order?.StatusName || "")} text-sm w-4 h-4 flex items-center justify-center`}
+                  />
+                  <span className="text-sm text-slate-300">
+                    {order?.StatusName || "—"}
                   </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div
-                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm border ${
-                      order.StatusName === OrderItemShipmentEnum.SHIPPED
-                        ? "text-gray-600 border-slate-200"
-                        : getDeadlineColor(order.Deadline)
-                    }`}
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <span
+                  className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${getStatusColor(
+                    order?.StatusName || ""
+                  )}`}
+                >
+                  <i
+                    className={`${getStageIcon(order?.StatusName || "")} text-sm w-4 h-4 flex items-center justify-center shrink-0`}
+                  />
+                  {(order?.StatusName || "—").charAt(0).toUpperCase() +
+                    (order?.StatusName || "").slice(1)}
+                </span>
+              </td>
+              <td className="px-6 py-4">
+                <div className="text-sm text-slate-300">
+                  {order?.Deadline ? formatDate(order.Deadline) : "—"}
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => onViewOrder(order.Id)}
+                    className="p-2 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer"
+                    title="View"
                   >
-                    <Calendar className="w-4 h-4 mr-2" />
-                    <span>Due: {formatDate(order.Deadline)}</span>
-                    {getDeadlineStatus(order.Deadline) === "overdue" && (
-                      <AlertTriangle className="w-4 h-4 ml-1" />
-                    )}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex items-center justify-end space-x-2">
-                    <PermissionGuard required={PERMISSIONS_ENUM.ORDER.REORDER}>
-                      <button
-                        onClick={() => onReorderOrder(order.Id)}
-                        className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                        title="Re-order"
-                      >
-                        <RotateCcw className="w-4 h-4" />
-                      </button>
-                    </PermissionGuard>
+                    <i className="ri-eye-line w-4 h-4 flex items-center justify-center" />
+                  </button>
+                  <PermissionGuard required={PERMISSIONS_ENUM.ORDER.REORDER}>
                     <button
-                      onClick={() => onViewOrder(order.Id)}
-                      className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="View"
+                      onClick={() => onReorderOrder(order.Id)}
+                      className="p-2 text-amber-400 hover:bg-amber-500/10 rounded-lg transition-colors cursor-pointer"
+                      title="Repeat Order"
                     >
-                      <Eye className="w-4 h-4" />
+                      <i className="ri-repeat-line w-4 h-4 flex items-center justify-center" />
                     </button>
-                    <PermissionGuard required={PERMISSIONS_ENUM.ORDER.UPDATE}>
-                      <button
-                        onClick={() => onEditOrder(order.Id)}
-                        className={`p-2 text-slate-400 hover:text-slate-600  rounded-lg transition-colors ${
-                          order.StatusName === OrderItemShipmentEnum.SHIPPED
-                            ? "cursor-not-allowed"
-                            : "hover:bg-slate-50"
-                        }`}
-                        title="Edit"
-                        disabled={
-                          order.StatusName === OrderItemShipmentEnum.SHIPPED
-                            ? true
-                            : false
-                        }
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                    </PermissionGuard>
-
-                    <PermissionGuard required={PERMISSIONS_ENUM.ORDER.DELETE}>
-                      <button
-                        onClick={() => onDeleteOrder(order.Id)}
-                        className={`p-2 text-slate-400 hover:text-red-600  rounded-lg transition-colors ${
-                          order.StatusName === OrderItemShipmentEnum.SHIPPED
-                            ? "cursor-not-allowed"
-                            : "hover:bg-red-50"
-                        }`}
-                        title="Delete"
-                        disabled={
-                          order.StatusName === OrderItemShipmentEnum.SHIPPED
-                            ? true
-                            : false
-                        }
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </PermissionGuard>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </PermissionGuard>
+                  <PermissionGuard required={PERMISSIONS_ENUM.ORDER.UPDATE}>
+                    <button
+                      onClick={() => onEditOrder(order.Id)}
+                      className={`p-2 text-slate-400 hover:bg-slate-700 rounded-lg transition-colors ${
+                        order.StatusName === OrderItemShipmentEnum.SHIPPED
+                          ? "cursor-not-allowed opacity-50"
+                          : "hover:text-white"
+                      }`}
+                      title="Edit"
+                      disabled={order.StatusName === OrderItemShipmentEnum.SHIPPED}
+                    >
+                      <i className="ri-edit-line w-4 h-4 flex items-center justify-center" />
+                    </button>
+                  </PermissionGuard>
+                  <PermissionGuard required={PERMISSIONS_ENUM.ORDER.DELETE}>
+                    <button
+                      onClick={() => onDeleteOrder(order.Id)}
+                      className={`p-2 text-slate-400 hover:bg-red-500/10 rounded-lg transition-colors ${
+                        order.StatusName === OrderItemShipmentEnum.SHIPPED
+                          ? "cursor-not-allowed opacity-50"
+                          : "hover:text-red-400"
+                      }`}
+                      title="Delete"
+                      disabled={order.StatusName === OrderItemShipmentEnum.SHIPPED}
+                    >
+                      <i className="ri-delete-bin-line w-4 h-4 flex items-center justify-center" />
+                    </button>
+                  </PermissionGuard>
+                </div>
+              </td>
+            </tr>
+          ))
         )}
-      </div>
-    </div>
+      </tbody>
+    </table>
   );
 };
 

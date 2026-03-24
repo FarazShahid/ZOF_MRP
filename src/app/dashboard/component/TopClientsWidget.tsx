@@ -57,7 +57,7 @@ const TopClientsWidget: React.FC = () => {
               onClick={() => router.push(`/client/${c.id}`)}
               className="rounded-2xl bg-gray-100 p-3 ring-1 ring-gray-200/60 dark:bg-white/[0.06] dark:ring-white/10 transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mb-2">
                 <span className="p-2 rounded-lg bg-gray-200/80 dark:bg-white/10 text-gray-900">
                   <FiUser />
                 </span>

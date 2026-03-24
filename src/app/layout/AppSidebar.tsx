@@ -47,7 +47,7 @@ const navItems: NavItem[] = [
   {
     icon: <FaTshirt size={22} />,
     name: "Products",
-    path: "/products",
+    path: "/product",
   },
   {
     name: "Inventory",

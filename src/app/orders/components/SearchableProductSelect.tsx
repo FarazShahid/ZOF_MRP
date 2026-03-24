@@ -107,31 +107,27 @@ const SearchableProductSelect: React.FC<SearchableProductSelectProps> = ({
   return (
     <div
       ref={containerRef}
-      className="relative w-[400px]"
+      className="relative w-full max-w-md"
       tabIndex={-1}
       aria-haspopup="listbox"
       aria-owns="product-listbox"
       aria-expanded={isOpen}
     >
       <div className="relative">
-        {/* Clear button on the left */}
         {query && (
           <button
             type="button"
             onClick={clearInput}
-            className="absolute right-2 top-1/2 -translate-y-1/2 dark:text-gray-100 text-gray-800  focus:outline-none"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white focus:outline-none"
             aria-label="Clear search"
           >
             &#10005;
           </button>
         )}
 
-        {/* Search input */}
         <input
           type="text"
-          className={`w-full p-2 pl-8 pr-8 border-1 border-gray-600 rounded-lg ${
-            query ? "pl-10" : "pl-2"
-          }`}
+          className="w-full bg-slate-800 text-white text-sm px-4 py-3 pl-10 pr-10 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500"
           placeholder={placeholder}
           value={query}
           onChange={handleInputChange}
@@ -144,31 +140,16 @@ const SearchableProductSelect: React.FC<SearchableProductSelectProps> = ({
           }
         />
 
-        {/* Search icon on the right */}
-        <div className="absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z"
-            />
-          </svg>
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+          <i className="ri-search-line w-4 h-4 flex items-center justify-center" />
         </div>
       </div>
 
-      {/* Dropdown list */}
       {isOpen && filteredProducts.length > 0 && (
         <ul
           id="product-listbox"
           role="listbox"
-          className="absolute z-10 w-full max-h-60 overflow-auto border border-gray-300  rounded-md mt-1 shadow-lg"
+          className="absolute z-10 w-full max-h-60 overflow-auto bg-slate-800 border border-slate-700 rounded-lg mt-1 shadow-lg"
         >
           {filteredProducts.map((product, idx) => {
             const isHighlighted = idx === highlightedIndex;
@@ -179,8 +160,8 @@ const SearchableProductSelect: React.FC<SearchableProductSelectProps> = ({
                 id={`product-option-${idx}`}
                 role="option"
                 aria-selected={isHighlighted}
-                className={`cursor-pointer px-4 dark:text-white text-gray-800 py-2 ${
-                  isHighlighted ? "dark:bg-[#56688f] bg-gray-400" : "dark:bg-black bg-gray-300"
+                className={`cursor-pointer px-4 text-white py-2.5 text-sm ${
+                  isHighlighted ? "bg-slate-700" : "hover:bg-slate-700/50"
                 }`}
                 onMouseDown={(e) => {
                   e.preventDefault();
@@ -196,7 +177,7 @@ const SearchableProductSelect: React.FC<SearchableProductSelectProps> = ({
       )}
 
       {isOpen && filteredProducts.length === 0 && (
-        <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 p-2 text-gray-500">
+        <div className="absolute z-10 w-full bg-slate-800 border border-slate-700 rounded-lg mt-1 p-3 text-slate-400 text-sm">
           No products found.
         </div>
       )}
