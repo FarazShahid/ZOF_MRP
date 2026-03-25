@@ -15,10 +15,10 @@ export default function Profile() {
   }
 
   return (
-    <AdminDashboardLayout>
+    // <AdminDashboardLayout>
       <PermissionGuard required={PERMISSIONS_ENUM.ORDER.VIEW}>
         <ViewOrderDetails orderId={Number(id)} />
       </PermissionGuard>
-    </AdminDashboardLayout>
+    // </AdminDashboardLayout>
   );
 }

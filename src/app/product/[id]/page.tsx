@@ -15,6 +15,7 @@ import { Edit } from "lucide-react";
 import Link from "next/link";
 import { downloadAtIndex } from "@/src/types/admin";
 import DeleteConfirmationModal from "@/src/components/common/DeleteConfirmationModal";
+import AttachmentPreviewModal, { AttachmentItem } from "@/src/app/components/AttachmentPreviewModal";
 
 const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
 
@@ -35,6 +36,7 @@ const ProductDetailPage = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>("overview");
   const [deleteDocId, setDeleteDocId] = useState<number | null>(null);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
   const { getProductById, productById, loading } = useProductStore();
   const { fetchDocuments, documentsByReferenceId, uploadDocument, loadingDoc, deleteDocument } = useDocumentCenterStore();
@@ -48,6 +50,16 @@ const ProductDetailPage = () => {
   }, [productId]);
 
   const documents = documentsByReferenceId[productId || 0] || [];
+
+  const previewItems: AttachmentItem[] = useMemo(
+    () =>
+      documents.map((d: any) => ({
+        fileName: d?.fileName ?? d?.name ?? "",
+        fileType: d?.fileType ?? "",
+        fileUrl: d?.fileUrl ?? "",
+      })),
+    [documents]
+  );
 
   const selectedColors = useMemo(() => {
     return (productById?.productColors || [])
@@ -389,6 +401,14 @@ const ProductDetailPage = () => {
                                   <div className="flex items-center gap-2">
                                     <button
                                       type="button"
+                                      onClick={() => setPreviewIndex(index)}
+                                      className="p-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors cursor-pointer"
+                                      title="View"
+                                    >
+                                      <i className="ri-eye-line w-4 h-4 flex items-center justify-center" />
+                                    </button>
+                                    <button
+                                      type="button"
                                       onClick={() => downloadAtIndex(documents, index)}
                                       className="p-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors cursor-pointer"
                                       title="Download"
@@ -600,6 +620,13 @@ const ProductDetailPage = () => {
             </div>
           </div>
         </div>
+
+        <AttachmentPreviewModal
+          isOpen={previewIndex !== null}
+          onClose={() => setPreviewIndex(null)}
+          items={previewItems}
+          startIndex={previewIndex ?? 0}
+        />
 
         <DeleteConfirmationModal
           isOpen={deleteDocId !== null}

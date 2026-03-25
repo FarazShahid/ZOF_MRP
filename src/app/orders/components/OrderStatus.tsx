@@ -59,7 +59,7 @@ const OrderStatus: React.FC<ComponentProps> = ({
               enableReinitialize
               onSubmit={handleSumit}
             >
-              {({ isSubmitting }) => (
+              {({ isSubmitting, values }) => (
                 <Form>
                   <ModalBody>
                     {loading ? (
@@ -107,6 +107,7 @@ const OrderStatus: React.FC<ComponentProps> = ({
                     </Button>
                     <Button
                       isLoading={isSubmitting}
+                      isDisabled={!(values as any).StatusId}
                       color="primary"
                       type="submit"
                     >
