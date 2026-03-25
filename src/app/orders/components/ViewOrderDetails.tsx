@@ -236,8 +236,8 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
             {tab.label}
             {"count" in tab && tab.count !== undefined && (
               <span
-                className={`ml-1 px-1.5 py-0.5 rounded-full text-xs ${
-                  activeTab === tab.key ? "bg-blue-500/40 text-blue-100" : "bg-slate-700 text-slate-400"
+                className={`ml-1 px-2 py-0.5 rounded-full text-xs ${
+                  activeTab === tab.key ? "bg-yellow-400 text-black font-bold" : "bg-slate-700 text-slate-400"
                 }`}
               >
                 {tab.count}
