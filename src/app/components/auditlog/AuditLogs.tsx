@@ -148,30 +148,28 @@ export const AuditLogs: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       {/* Header */}
-      <div className=" border-b border-gray-200">
-        <div className="px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <LuShield className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Audit Logs</h1>
-              <p className="text-sm text-gray-500">
-                Track all system activities and changes across modules
-              </p>
-            </div>
+      <div className="px-6 py-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center">
+            <LuShield className="w-5 h-5 text-emerald-500" />
           </div>
-
-          {/* Stats */}
-          <AuditLogStats
-            totalLogsLength={logs.length}
-            filteredLogsLength={filteredLogs.length}
-            currentPage={currentPage}
-            totalPages={totalPages}
-          />
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Audit Logs</h1>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">
+              Track all system activities and changes across modules
+            </p>
+          </div>
         </div>
+
+        {/* Stats */}
+        <AuditLogStats
+          totalLogsLength={logs.length}
+          filteredLogsLength={filteredLogs.length}
+          currentPage={currentPage}
+          totalPages={totalPages}
+        />
       </div>
 
       {/* Filters */}
@@ -184,7 +182,7 @@ export const AuditLogs: React.FC = () => {
 
       {/* Table */}
       <div className="px-6 py-4">
-        <div className="rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800 overflow-hidden mb-4">
           <AuditLogTable
             logs={paginatedLogs}
             currentPage={currentPage}

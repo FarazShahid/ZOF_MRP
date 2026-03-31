@@ -49,70 +49,71 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
   };
 
   return (
-    <div className="">
+    <div>
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-200 dark:border-slate-800">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Date/Time
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Module
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Action
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 User (Email)
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Details
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                Action
+              </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
             {logs.map((log) => {
               const { date, time } = formatDateTime(log.createdAt);
               return (
                 <tr
                   key={log.id}
                   onClick={() => onRowClick(log)}
-                  className="cursor-pointer transition-colors hover:bg-gray-50 even:bg-green-50"
+                  className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-slate-800/50"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <div className="text-gray-900 font-medium">{date}</div>
-                    <div className="text-gray-500">{time}</div>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm">
+                    <div className="text-gray-900 dark:text-white font-medium">{date}</div>
+                    <div className="text-xs text-gray-500 dark:text-slate-400">{time}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <ModuleBadge module={log.module} />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <ActionBadge action={log.action} />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-8 w-8">
-                        <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                          <span className="text-xs font-medium text-gray-700">
-                            {initialsFromEmail(log.Email)}
-                          </span>
-                        </div>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
+                        <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                          {initialsFromEmail(log.Email)}
+                        </span>
                       </div>
-                      <div className="ml-3">
-                        <div className="text-sm font-medium text-gray-900">
-                          {log.Email}
-                        </div>
-                      </div>
+                      <span className="text-sm text-gray-600 dark:text-slate-300">
+                        {log.Email}
+                      </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  <td className="px-4 py-3 text-sm text-gray-600 dark:text-slate-300">
                     <div className="max-w-xs truncate">{log.details}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button className="text-blue-500 hover:text-blue-700" onClick={() => onRowClick(log)}>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <button
+                      className="p-1.5 text-gray-400 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 rounded-md transition-colors"
+                      onClick={(e) => { e.stopPropagation(); onRowClick(log); }}
+                    >
                       <EyeIcon className="w-4 h-4" />
                     </button>
                   </td>
@@ -121,7 +122,7 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
             })}
             {logs.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                <td colSpan={6} className="px-6 py-12 text-center text-gray-500 dark:text-slate-400">
                   No results found.
                 </td>
               </tr>
@@ -139,9 +140,6 @@ export const AuditLogTable: React.FC<AuditLogTableProps> = ({
         onPageSizeChange={onPageSizeChange}
         pageSizeOptions={pageSizeOptions}
       />
-
-
-      
     </div>
   );
 };

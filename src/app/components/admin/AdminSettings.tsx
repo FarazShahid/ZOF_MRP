@@ -18,7 +18,7 @@ const EventsModule = dynamic(() => import("./events/EventsModule"), {
   loading: () => <TableSkel />,
 });
 const CarriorTable = dynamic(
-  () => import("../../shipment/carrior/components/CarriorTable"),
+  () => import("../../shipments/carrior/components/CarriorTable"),
   {
     ssr: false,
     loading: () => <TableSkel />,

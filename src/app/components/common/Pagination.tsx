@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
+import { ChevronDown } from "lucide-react";
 
 interface PaginationProps {
   currentPage: number;
@@ -57,6 +58,52 @@ const getPaginationItems = (
   ];
 };
 
+const PageSizeDropdown: React.FC<{
+  value: number;
+  options: number[];
+  onChange: (value: number) => void;
+}> = ({ value, options, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1 pl-3 pr-7 py-1 min-w-[60px] text-xs font-medium rounded-md bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:border-emerald-500 dark:hover:border-emerald-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors cursor-pointer relative"
+      >
+        {value}
+        <ChevronDown className={`w-3 h-3 absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div className="absolute bottom-full mb-1 left-0 min-w-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg z-50 p-1 max-h-48 overflow-y-auto">
+          {options.map((opt) => (
+            <button
+              key={opt}
+              onClick={() => { onChange(opt); setOpen(false); }}
+              className={`w-full text-left px-3 py-1.5 text-xs rounded-md transition-colors ${
+                value === opt
+                  ? 'bg-emerald-600 text-white'
+                  : 'text-gray-700 dark:text-slate-300 hover:bg-emerald-500/15 hover:text-emerald-700 dark:hover:text-emerald-400'
+              }`}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
@@ -89,27 +136,45 @@ export const Pagination: React.FC<PaginationProps> = ({
     [pageSizeOptions]
   );
   const effectivePageSize = pageSize ?? sizeOptions[0];
-  const showingText =
-    totalItems != null && startIndex != null
-      ? `Showing ${startIndex + 1} to ${Math.min(startIndex + effectivePageSize, totalItems)} of ${totalItems} ${itemLabel}`
+
+
+  const endIndex = Math.min(startIndex + effectivePageSize, totalItems ?? 0);
+  const rangeText =
+    totalItems != null
+      ? `Showing ${startIndex + 1} to ${endIndex} of ${totalItems} ${itemLabel}`
       : null;
 
   return (
-    <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800">
-      <div className="text-sm text-slate-400">
-        {showingText ?? (
-          <>
-            Showing page <span className="font-medium">{Math.max(1, Math.min(currentPage, totalPages || 1))}</span> of{" "}
-            <span className="font-medium">{totalPages || 1}</span>
-          </>
+    <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-slate-800">
+      {/* Left: Show per page dropdown + record range */}
+      <div className="flex items-center gap-3">
+        {onPageSizeChange && (
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-500 dark:text-slate-400">Show</span>
+            <PageSizeDropdown
+              value={effectivePageSize}
+              options={sizeOptions}
+              onChange={onPageSizeChange}
+            />
+            <span className="text-xs text-gray-500 dark:text-slate-400">per page</span>
+          </div>
         )}
+        <span className="text-xs text-gray-500 dark:text-slate-400">
+          {rangeText ?? (
+            <>
+              Showing page <span className="font-medium">{Math.max(1, Math.min(currentPage, totalPages || 1))}</span> of{" "}
+              <span className="font-medium">{totalPages || 1}</span>
+            </>
+          )}
+        </span>
       </div>
 
-      <div className="flex items-center gap-2">
+      {/* Right: Page buttons */}
+      <div className="flex items-center gap-1">
         <button
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1 || totalPages === 0}
-          className="px-3 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+          className="px-2.5 py-1.5 bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-300 rounded-md text-xs font-medium hover:bg-gray-200 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
         >
           Previous
         </button>
@@ -119,7 +184,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             return (
               <span
                 key={`ellipsis-${index}`}
-                className="px-3 py-2 bg-slate-800 text-slate-400 rounded-lg text-sm"
+                className="px-2.5 py-1.5 text-gray-400 dark:text-slate-500 text-xs"
               >
                 ...
               </span>
@@ -130,10 +195,10 @@ export const Pagination: React.FC<PaginationProps> = ({
             <button
               key={`page-${pageNum}`}
               onClick={() => onPageChange(pageNum)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
                 currentPage === pageNum
-                  ? "bg-blue-600 text-white"
-                  : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  ? "bg-emerald-600 text-white"
+                  : "bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700"
               }`}
             >
               {pageNum}
@@ -144,7 +209,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         <button
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages || totalPages === 0}
-          className="px-3 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+          className="px-2.5 py-1.5 bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-300 rounded-md text-xs font-medium hover:bg-gray-200 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
         >
           Next
         </button>

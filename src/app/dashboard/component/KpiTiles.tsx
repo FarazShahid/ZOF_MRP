@@ -37,7 +37,7 @@ const KpiTiles: React.FC = () => {
         icon: <FiPackage />,
         title: "shipments",
         number: widgets?.totalShipments?.toLocaleString?.() ?? "-",
-        href: "/shipment",
+        href: "/shipments",
       },
       {
         icon: <FiUsers />,

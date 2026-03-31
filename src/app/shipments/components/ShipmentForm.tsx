@@ -143,7 +143,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
     };
   }, [shipmentId, ship]);
 
-  const onClose = () => router.push("/shipment");
+  const onClose = () => router.push("/shipments");
 
   const handleOrderOptionChange = (
     keys: Set<React.Key> | "all",
@@ -267,20 +267,20 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
   return (
     <div className="flex-1">
       {/* Header */}
-      <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-500 px-6 py-4">
+      <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 mx-6 mt-6 px-6 py-4 rounded-lg">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             <Link
-              href="/shipment"
-              className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              href="/shipments"
+              className="group p-2 hover:px-4 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-700 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-lg transition-all duration-300 ease-in-out"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-5 h-5 group-hover:w-6 group-hover:h-6 transition-all duration-300 ease-in-out" />
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {!shipmentId ? "Add New " : "Edit "} Shipment
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">
                 {!shipmentId ? "Create a new " : "Edit "}
                 shipment record
               </p>
@@ -289,7 +289,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="p-6">
         <Formik
           innerRef={formikRef}
           validationSchema={ShipmentSchema}
@@ -301,12 +301,12 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
             <Form>
               <div className="space-y-8">
                 {/* Section 1: Basic Shipment Info */}
-                <div className="bg-white  dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-500 p-6">
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Package className="w-5 h-5 text-blue-600" />
+                <div className="bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800 p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center">
+                      <Package className="w-4 h-4 text-emerald-500" />
                     </div>
-                    <h2 className="text-xl font-semibold text-gray-900">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                       Basic Shipment Information
                     </h2>
                   </div>
@@ -315,7 +315,8 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                     <div className="flex flex-col gap-1">
                       <Label isRequired={false} label="Order" />
                       <Select
-                        className="rounded-xl text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
+                        className="rounded-md text-gray-400 text-sm w-full outline-none dark:bg-slate-800 bg-gray-100"
+                        radius="sm"
                         name="orderId"
                         placeholder="Select Order"
                         variant="bordered"
@@ -340,7 +341,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                         type="text"
                         name="ShipmentCode"
                         placeholder="Enter shipment code"
-                        className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                        className="rounded-md dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                       />
                       <ErrorMessage
                         name="ShipmentCode"
@@ -491,13 +492,13 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                   </div>
                 </div>
                 {/* Section 2: Boxes Information */}
-                <div className="bg-white  dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-500 p-6">
+                <div className="bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800 p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                        <Package className="w-5 h-5 text-green-600" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center">
+                        <Package className="w-4 h-4 text-emerald-500" />
                       </div>
-                      <h2 className="text-xl font-semibold text-gray-900">
+                      <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                         Boxes Information
                       </h2>
                     </div>
@@ -510,7 +511,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                           (box: any, index: number) => (
                             <div
                               key={index}
-                              className="grid grid-cols-2 gap-2 border border-gray-200 rounded-xl p-3 mb-2"
+                              className="grid grid-cols-2 gap-2 border border-gray-200 dark:border-slate-800 rounded-lg p-4 mb-3 bg-gray-50/50 dark:bg-slate-800/30"
                             >
                               {/* Box header fields */}
                               <div className="flex flex-col gap-1">
@@ -667,7 +668,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                                       ],
                                     })
                                   }
-                                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                                  className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2 text-sm font-medium"
                                   title="Add box"
                                 >
                                   <Plus className="w-4 h-4" />
@@ -677,7 +678,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                                   <button
                                     type="button"
                                     onClick={() => remove(index)}
-                                    className="bg-red-500 px-2 py-1 rounded-lg text-sm text-white"
+                                    className="bg-red-500 hover:bg-red-600 px-3 py-2 rounded-lg text-sm font-medium text-white transition-colors"
                                     title="Remove box"
                                   >
                                     Remove Box
@@ -693,15 +694,17 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                 </div>
               </div>
 
-              <DropZoneMultiple index={1} onFileSelect={handleFileSelect} />
-              {shipmentId && (
-                <RecentAttachmentsView
-                  referenceId={Number(shipmentId)}
-                  referenceType={DOCUMENT_REFERENCE_TYPE.SHIPMENT}
-                />
-              )}
+              <div className="mt-8 space-y-6">
+                <DropZoneMultiple index={1} onFileSelect={handleFileSelect} />
+                {shipmentId && (
+                  <RecentAttachmentsView
+                    referenceId={Number(shipmentId)}
+                    referenceType={DOCUMENT_REFERENCE_TYPE.SHIPMENT}
+                  />
+                )}
+              </div>
 
-              <div className="flex items-center justify-end gap-2 mt-5">
+              <div className="flex items-center justify-end gap-3 mt-6">
                 <Button
                   color="danger"
                   type="button"
@@ -710,7 +713,7 @@ const ShipmentForm = ({ shipmentId }: { shipmentId?: string }) => {
                 >
                   Cancel
                 </Button>
-                <Button color="primary" type="submit" disabled={isSubmitting}>
+                <Button color="success" type="submit" disabled={isSubmitting}>
                   {loadingDoc || loading ? <Spinner color="white" /> : <></>}
                   {shipmentId ? "Update" : "Save"}
                 </Button>

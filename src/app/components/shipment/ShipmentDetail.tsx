@@ -10,6 +10,9 @@ import {
   Truck,
   User,
   Clock,
+  ShoppingBag,
+  FileText,
+  Info,
 } from "lucide-react";
 import StatusBadge from "./StatusBadge";
 import { ShipmentStatus } from "@/src/types/admin";
@@ -20,15 +23,18 @@ import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 
 interface ShipmentDetailProps {
   shipmentId: number;
+  isOpen: boolean;
   onClose: () => void;
 }
 
 const ShipmentDetail: React.FC<ShipmentDetailProps> = ({
   shipmentId,
+  isOpen,
   onClose,
 }) => {
   const { getShipmentById, ShipmentById } = useShipmentStore();
   const [isBoxesSectionOpen, setIsBoxesSectionOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -36,6 +42,20 @@ const ShipmentDetail: React.FC<ShipmentDetailProps> = ({
       getShipmentById(shipmentId);
     }
   }, [shipmentId]);
+
+  // Smooth open/close transition
+  useEffect(() => {
+    if (isOpen) {
+      requestAnimationFrame(() => setVisible(true));
+    } else {
+      setVisible(false);
+    }
+  }, [isOpen]);
+
+  const handleClose = () => {
+    setVisible(false);
+    setTimeout(onClose, 300);
+  };
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -59,246 +79,259 @@ const ShipmentDetail: React.FC<ShipmentDetailProps> = ({
     router.push(`/orders/vieworder/${orderId}`);
   };
 
+  if (!isOpen && !visible) return null;
+
   return (
-    <div className="fixed right-0 top-0 w-96 bg-white dark:bg-black shadow-2xl flex flex-col h-full z-50 transform transition-transform duration-300">
-      {/* Header */}
-      <div className="p-6 border-b border-slate-200">
-        <div className="flex items-start justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-1">
-              {ShipmentById?.ShipmentCode}
-            </h2>
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-1">
-                <Truck className="w-4 h-4 text-gray-500" />
-                <span className="text-gray-600">
-                  {ShipmentById?.ShipmentCarrierName}
+    <>
+      {/* Overlay */}
+      <div
+        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}
+        onClick={handleClose}
+      />
+
+      {/* Drawer */}
+      <div className={`fixed right-0 top-0 w-[480px] bg-white dark:bg-slate-900 shadow-2xl flex flex-col h-full z-50 transition-transform duration-300 ease-in-out ${visible ? 'translate-x-0' : 'translate-x-full'}`}>
+        {/* Header */}
+        <div className="px-6 py-4 bg-emerald-700 dark:bg-emerald-800 border-b border-white/20">
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-white mb-1">
+                {ShipmentById?.ShipmentCode}
+              </h2>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <Truck className="w-3.5 h-3.5 text-emerald-200" />
+                  <span className="text-sm text-emerald-100">
+                    {ShipmentById?.ShipmentCarrierName}
+                  </span>
+                </div>
+                <StatusBadge
+                  status={
+                    (ShipmentById?.Status as ShipmentStatus) || "In Transit"
+                  }
+                />
+              </div>
+            </div>
+            <button
+              onClick={handleClose}
+              className="p-1.5 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto">
+          {/* Shipment Details Section */}
+          <div className="p-5 border-b-4 border-gray-100 dark:border-slate-800">
+            <div className="flex items-center gap-2 mb-4">
+              <Package className="w-4 h-4 text-emerald-500" />
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                Shipment Details
+              </h3>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500" />
+                  <span className="text-sm text-gray-600 dark:text-slate-400">Shipment Date</span>
+                </div>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
+                  {formatDate(ShipmentById?.ShipmentDate || "")}
                 </span>
               </div>
 
-              <StatusBadge
-                status={
-                  (ShipmentById?.Status as ShipmentStatus) || "In Transit"
-                }
-              />
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto">
-        {/* Basic Info Section */}
-        <div className="p-6 border-b border-slate-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Shipment Details
-          </h3>
-          <div className="grid grid-cols-1 gap-4">
-            <div className="flex items-center space-x-3">
-              <Calendar className="w-5 h-5 text-gray-500" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">
-                  Shipment Date
-                </p>
-                <p className="text-sm text-gray-600">
-                  {formatDate(ShipmentById?.ShipmentDate || "")}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <DollarSign className="w-5 h-5 text-gray-500" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">
-                  Shipment Cost
-                </p>
-                <p className="text-sm text-gray-600">
-                  {ShipmentById?.ShipmentCost}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <Weight className="w-5 h-5 text-gray-500" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">
-                  Total Weight
-                </p>
-                <p className="text-sm text-gray-600">
-                  {ShipmentById?.TotalWeight} {ShipmentById?.WeightUnit}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <Package className="w-5 h-5 text-gray-500" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">
-                  Number of Boxes
-                </p>
-                <p className="text-sm text-gray-600">
-                  {ShipmentById?.NumberOfBoxes}
-                </p>
-              </div>
-            </div>
-
-            {ShipmentById?.ReceivedTime && (
-              <div className="flex items-center space-x-3">
-                <Clock className="w-5 h-5 text-gray-500" />
-                <div>
-                  <p className="text-sm font-medium text-gray-900">
-                    Received Time
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {formatDateTime(ShipmentById?.ReceivedTime)}
-                  </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500" />
+                  <span className="text-sm text-gray-600 dark:text-slate-400">Shipment Cost</span>
                 </div>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400">
+                  {ShipmentById?.ShipmentCost}
+                </span>
               </div>
-            )}
-          </div>
-        </div>
 
-        {/* Orders Section */}
-        <div className="p-6 border-b border-slate-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Associated Orders
-          </h3>
-          <div className="space-y-3">
-            {ShipmentById?.Orders.map((order) => (
-              <div key={order.Id} className="p-3 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Weight className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500" />
+                  <span className="text-sm text-gray-600 dark:text-slate-400">Total Weight</span>
+                </div>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400">
+                  {ShipmentById?.TotalWeight} {ShipmentById?.WeightUnit}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Package className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500" />
+                  <span className="text-sm text-gray-600 dark:text-slate-400">Number of Boxes</span>
+                </div>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-400">
+                  {ShipmentById?.NumberOfBoxes}
+                </span>
+              </div>
+
+              {ShipmentById?.ReceivedTime && (
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500" />
+                    <span className="text-sm text-gray-600 dark:text-slate-400">Received Time</span>
+                  </div>
+                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400">
+                    {formatDateTime(ShipmentById?.ReceivedTime)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Associated Orders Section */}
+          <div className="p-5 border-b-4 border-emerald-50 dark:border-emerald-500/5">
+            <div className="flex items-center gap-2 mb-4">
+              <ShoppingBag className="w-4 h-4 text-emerald-500" />
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                Associated Orders
+              </h3>
+            </div>
+            <div className="space-y-3">
+              {ShipmentById?.Orders.map((order) => (
+                <div key={order.Id} className="bg-gray-50 dark:bg-slate-800/60 rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
                       {order.OrderName}
-                    </p>
-                    <p className="text-sm text-gray-600">{order.OrderNumber}</p>
+                    </span>
+                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300">
+                      {order.OrderNumber}
+                    </span>
                   </div>
                   <button
                     onClick={() => viewOrderDetail(order.Id)}
                     type="button"
-                    className="text-blue-600 hover:text-blue-700 text-sm font-medium whitespace-nowrap"
+                    className="w-full py-2 text-xs font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-lg transition-colors text-center"
                   >
                     View Order
                   </button>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Boxes Section */}
-        <div className="p-6 border-b border-slate-200">
-          <button
-            onClick={() => setIsBoxesSectionOpen(!isBoxesSectionOpen)}
-            className="flex items-center justify-between w-full text-left"
-          >
-            <h3 className="text-lg font-semibold text-gray-900">
-              Boxes ({ShipmentById?.boxes?.length || 0})
-            </h3>
-            {isBoxesSectionOpen ? (
-              <ChevronDown className="w-5 h-5 text-gray-500" />
-            ) : (
-              <ChevronRight className="w-5 h-5 text-gray-500" />
-            )}
-          </button>
+          {/* Boxes Section */}
+          <div className="p-5 border-b-4 border-gray-100 dark:border-slate-800">
+            <button
+              onClick={() => setIsBoxesSectionOpen(!isBoxesSectionOpen)}
+              className="flex items-center justify-between w-full text-left"
+            >
+              <div className="flex items-center gap-2">
+                <Package className="w-4 h-4 text-emerald-500" />
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                  Boxes ({ShipmentById?.boxes?.length || 0})
+                </h3>
+              </div>
+              {isBoxesSectionOpen ? (
+                <ChevronDown className="w-4 h-4 text-gray-400 dark:text-slate-500" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-gray-400 dark:text-slate-500" />
+              )}
+            </button>
 
-          {isBoxesSectionOpen && ShipmentById?.boxes && (
-            <div className="mt-4 space-y-3">
-              {ShipmentById?.boxes.map((box, index) => (
-                <div key={index} className="p-3 rounded-lg">
-                  <div className="grid grid-cols-1 gap-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-900">
+            {isBoxesSectionOpen && ShipmentById?.boxes && (
+              <div className="mt-3 space-y-2">
+                {ShipmentById?.boxes.map((box, index) => (
+                  <div key={index} className="bg-gray-50 dark:bg-slate-800/60 rounded-lg p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">
                         Box #{box.BoxNumber}
                       </span>
-                      <span className="text-gray-600">
+                      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400">
                         {box.Weight} {ShipmentById?.WeightUnit}
                       </span>
                     </div>
-                    {box?.items?.map((boxItem, index) => {
-                      return (
-                        <div className="flex justify-between" key={index}>
-                          <span className="font-medium text-gray-900">
-                            {boxItem?.OrderItemName}
-                          </span>
-                          <span className="text-gray-600">
-                            {boxItem?.Quantity}
-                          </span>
-                        </div>
-                      );
-                    })}
-                    <div>
-                      <p className="text-xs text-gray-500">
+                    {box?.items?.map((boxItem, idx) => (
+                      <div className="flex items-center justify-between py-1" key={idx}>
+                        <span className="text-xs text-gray-600 dark:text-slate-400">
+                          {boxItem?.OrderItemName}
+                        </span>
+                        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-400">
+                          {boxItem?.Quantity} pcs
+                        </span>
+                      </div>
+                    ))}
+                    {box.OrderBoxDescription && (
+                      <p className="text-xs text-gray-400 dark:text-slate-500 mt-2 pt-2 border-t border-gray-100 dark:border-slate-700">
                         {box.OrderBoxDescription}
                       </p>
-                    </div>
+                    )}
                   </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Attachments */}
+          <div className="p-5 border-b-4 border-emerald-50 dark:border-emerald-500/5">
+            <div className="flex items-center gap-2 mb-4">
+              <FileText className="w-4 h-4 text-emerald-500" />
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                Attachments
+              </h3>
+            </div>
+            <RecentAttachmentsView
+              referenceId={shipmentId}
+              referenceType={DOCUMENT_REFERENCE_TYPE.SHIPMENT}
+            />
+          </div>
+
+          {/* Meta Information */}
+          <div className="p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <Info className="w-4 h-4 text-emerald-500" />
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                Meta Information
+              </h3>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600 dark:text-slate-400">Created By</span>
+                <div className="flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500" />
+                  <span className="text-xs text-gray-900 dark:text-slate-300">{ShipmentById?.CreatedBy}</span>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Attachements  */}
-
-        <div className="p-6 border-b border-slate-200">
-          <RecentAttachmentsView
-            referenceId={shipmentId}
-            referenceType={DOCUMENT_REFERENCE_TYPE.SHIPMENT}
-          />
-        </div>
-
-        {/* Meta Info Section */}
-        <div className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Meta Information
-          </h3>
-          <div className="space-y-3 text-sm">
-            <div className="flex items-center space-x-3">
-              <User className="w-4 h-4 text-gray-500" />
-              <div>
-                <p className="font-medium text-gray-900">Created By</p>
-                <p className="text-gray-600">{ShipmentById?.CreatedBy}</p>
               </div>
-            </div>
 
-            <div className="flex items-center space-x-3">
-              <Clock className="w-4 h-4 text-gray-500" />
-              <div>
-                <p className="font-medium text-gray-900">Created On</p>
-                <p className="text-gray-600">
-                  {formatDateTime(ShipmentById?.CreatedOn || "")}
-                </p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600 dark:text-slate-400">Created On</span>
+                <div className="flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500" />
+                  <span className="text-xs text-gray-900 dark:text-slate-300">
+                    {formatDateTime(ShipmentById?.CreatedOn || "")}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center space-x-3">
-              <User className="w-4 h-4 text-gray-500" />
-              <div>
-                <p className="font-medium text-gray-900">Updated By</p>
-                <p className="text-gray-600">{ShipmentById?.UpdatedBy}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600 dark:text-slate-400">Updated By</span>
+                <div className="flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500" />
+                  <span className="text-xs text-gray-900 dark:text-slate-300">{ShipmentById?.UpdatedBy}</span>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center space-x-3">
-              <Clock className="w-4 h-4 text-gray-500" />
-              <div>
-                <p className="font-medium text-gray-900">Updated On</p>
-                <p className="text-gray-600">
-                  {formatDateTime(ShipmentById?.UpdatedOn || "")}
-                </p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600 dark:text-slate-400">Updated On</span>
+                <div className="flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500" />
+                  <span className="text-xs text-gray-900 dark:text-slate-300">
+                    {formatDateTime(ShipmentById?.UpdatedOn || "")}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

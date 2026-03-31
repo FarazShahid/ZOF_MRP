@@ -51,11 +51,11 @@ const CutomNavBar = () => {
       id: 5,
       label: "Shipment",
       icon: <GiCargoShip size={14} />,
-      route: "/shipment",
+      route: "/shipments",
       isNested: false,
       subList: [
-        { id: 1, label: "Shipment", route: "/shipment" },
-        { id: 2, label: "Carrier", route: "/shipment/carrior" },
+        { id: 1, label: "Shipment", route: "/shipments" },
+        { id: 2, label: "Carrier", route: "/shipments/carrior" },
       ],
     },
   ];

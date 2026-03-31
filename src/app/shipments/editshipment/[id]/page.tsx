@@ -3,7 +3,7 @@
 import React from "react";
 import { useParams } from "next/navigation";
 import ShipmentForm from "../../components/ShipmentForm";
-import AdminDashboardLayout from "@/src/app/components/common/AdminDashboardLayout";
+// import AdminDashboardLayout from "@/src/app/components/common/AdminDashboardLayout";
 
 const page = () => {
   const params = useParams();
@@ -14,9 +14,9 @@ const page = () => {
   }
 
   return (
-    <AdminDashboardLayout>
+    // <AdminDashboardLayout>
       <ShipmentForm shipmentId={id} />
-    </AdminDashboardLayout>
+    // </AdminDashboardLayout>
   );
 };
 

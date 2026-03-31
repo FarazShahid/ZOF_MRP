@@ -40,7 +40,7 @@ export default function AppShell({ children }: AppShellProps) {
   }
 
   return (
-    <div className="bg-slate-950 min-h-screen">
+    <div className="bg-gray-50 dark:bg-slate-950 min-h-screen">
       <CollapsibleSidebar />
       <TopHeader />
       <main
