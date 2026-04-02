@@ -75,16 +75,30 @@ export const AdminSettings: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar activeModule={activeModule} onModuleChange={setActiveModule} />
-      <div className="flex-1 overflow-auto">
-        {renderActiveModule() || (
-          permissions?.length > 0 ? (
-            <div className="p-6 text-gray-500">You don't have access to any Admin modules.</div>
-          ) : (
-            <TableSkel />
-          )
-        )}
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 p-6">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center">
+          <i className="ri-settings-3-line text-lg text-emerald-500"></i>
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Settings</h1>
+          <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">Manage system configuration</p>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex gap-5 h-[calc(100vh-200px)]">
+        <Sidebar activeModule={activeModule} onModuleChange={setActiveModule} />
+        <div className="flex-1 overflow-auto bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg p-5">
+          {renderActiveModule() || (
+            permissions?.length > 0 ? (
+              <div className="text-gray-500 dark:text-slate-400">You don&apos;t have access to any Admin modules.</div>
+            ) : (
+              <TableSkel />
+            )
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
-import AdminDashboardLayout from "@/src/app/components/common/AdminDashboardLayout";
 import SizeMeasurementForm from "./SizeMeasurementForm";
+import AdminDashboardLayout from "@/src/app/components/common/AdminDashboardLayout";
 
 const page = () => {
   return (

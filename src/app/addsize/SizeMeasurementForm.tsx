@@ -143,17 +143,26 @@ const SizeMeasurementForm = ({
     >
       {({ values, isSubmitting }) => (
         <div className="grid grid-cols-12 gap-4 w-full">
-          <div className="col-span-8">
+          <div className={showMeasurementPin ? "col-span-8" : "col-span-12"}>
             <Form>
               <div className="space-y-3">
-                <button
-                  type="button"
-                  onClick={() => closeAddModal()}
-                  className="flex items-center gap-2 w-fit text-2xl font-semibold"
-                >
-                  <IoCaretBackOutline />
-                  {isEdit ? "Update Measurement" : "Add Measurement"}
-                </button>
+                <div className="flex items-center gap-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg px-5 py-4 mb-5">
+                  <button
+                    type="button"
+                    onClick={() => closeAddModal()}
+                    className="p-2 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-lg transition-all duration-300 ease-in-out"
+                  >
+                    <IoCaretBackOutline className="w-4 h-4" />
+                  </button>
+                  <div>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {isEdit ? "Update Measurement" : "Add Measurement"}
+                    </h1>
+                    <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">
+                      {isEdit ? "Edit size measurement details" : "Create a new size measurement"}
+                    </p>
+                  </div>
+                </div>
 
                 <div className="grid grid-cols-4 gap-3">
                   {/* Measurement1 (Name) */}
@@ -319,7 +328,7 @@ const SizeMeasurementForm = ({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
                   >
                     {isEdit ? "Update Measurement" : "Add Measurement"}
                   </button>

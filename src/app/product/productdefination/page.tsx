@@ -1,24 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { IoCaretBackSharp, IoCut } from "react-icons/io5";
-import { GiClothes, GiRolledCloth, GiSleevelessJacket } from "react-icons/gi";
-import { TbRulerMeasure2, TbCategory2 } from "react-icons/tb";
+import useUIStore from "@/store/useUIStore";
 import { IoIosColorPalette } from "react-icons/io";
-import { PiPrinterFill, PiMapPinLineFill } from "react-icons/pi";
-import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
-import ColorOptions from "../../setting/coloroptions/ColorOptions";
 import Fabric from "../../setting/fabrictype/Fabric";
 import Sleeve from "../../setting/sleevetype/Sleeve";
-import ProductCategoryComponent from "../../setting/productcatagory/ProductCategoryComponent";
-import ProductCutOptions from "../../setting/cutoptions/ProductCutOptions";
-import ProductSizeOptions from "../../setting/SizeOptions/ProductSizeOptions";
-import ProductSizeMeasurements from "../../setting/SizeMeasurements/ProductSizeMeasurements";
-import PrintingOptions from "../../setting/printingoptions/PrintingOptions";
-import ProductRegionComponent from "../../setting/productregionstandard/ProductRegionComponent";
-import useUIStore from "@/store/useUIStore";
-import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
+import { IoCaretBackSharp, IoCut } from "react-icons/io5";
+import { TbRulerMeasure2, TbCategory2 } from "react-icons/tb";
+import { PiPrinterFill, PiMapPinLineFill } from "react-icons/pi";
+import ColorOptions from "../../setting/coloroptions/ColorOptions";
+import PermissionGuard from "../../components/auth/PermissionGaurd";
+import ProductCutOptions from "../../setting/cutoptions/ProductCutOptions";
+import PrintingOptions from "../../setting/printingoptions/PrintingOptions";
+import ProductSizeOptions from "../../setting/SizeOptions/ProductSizeOptions";
+import { GiClothes, GiRolledCloth, GiSleevelessJacket } from "react-icons/gi";
+import ProductSizeMeasurements from "../../setting/SizeMeasurements/ProductSizeMeasurements";
+import ProductCategoryComponent from "../../setting/productcatagory/ProductCategoryComponent";
+import ProductRegionComponent from "../../setting/productregionstandard/ProductRegionComponent";
 
 const ListItems = [
   { id: 1, name: "Fabric Type", icon: <GiRolledCloth size={20} /> },
@@ -37,39 +36,49 @@ const page = () => {
   const setSelectedItem = useUIStore((state) => state.setSelectedItem);
 
   return (
-    <AdminDashboardLayout>
       <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.VIEW}>
-        <div className="space-y-6">
-          <div className="flex items-center">
+        <div className="p-6 space-y-6">
+          {/* Header */}
+          <div className="flex items-center gap-4">
             <Link
               href={"/product"}
-              className="flex items-center gap-1 dark:text-gray-400 text-gray-800"
+              className="group p-2 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-lg transition-all duration-300 ease-in-out"
             >
-              <IoCaretBackSharp /> <span>Back to listing</span>
+              <IoCaretBackSharp className="w-4 h-4" />
             </Link>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Product Definition</h1>
+              <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">Manage product types, categories, and options</p>
+            </div>
           </div>
-          <div className="space-x-5 flex h-[calc(100vh-162px)] overflow-y-auto">
-            <aside className="w-1/4 p-5  h-full">
-              <div className="space-y-3">
+
+          {/* Content */}
+          <div className="flex gap-5 h-[calc(100vh-200px)]">
+            {/* Sidebar Tabs */}
+            <aside className="w-64 shrink-0 h-full overflow-y-auto">
+              <div className="space-y-1.5">
                 {ListItems.map((item) => {
+                  const isActive = selectedItem === item.id;
                   return (
                     <div
-                      className={`${
-                        selectedItem === item.id
-                          ? "bg-green-800 text-white"
-                          : "dark:bg-[#18181b] bg-gray-300 text-gray-800"
-                      } rounded-lg p-2 text-gray-300 flex items-center gap-3 cursor-pointer`}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors text-sm font-medium ${
+                        isActive
+                          ? "bg-emerald-600 text-white"
+                          : "bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-200 dark:hover:border-emerald-500/30"
+                      }`}
                       onClick={() => setSelectedItem(item.id)}
                       key={item.id}
                     >
-                      {item.icon}
+                      <span className={isActive ? "text-white" : "text-gray-400 dark:text-slate-500"}>{item.icon}</span>
                       <span>{item.name}</span>
                     </div>
                   );
                 })}
               </div>
             </aside>
-            <main className="w-full h-full p-5">
+
+            {/* Main Content */}
+            <main className="flex-1 h-full overflow-y-auto bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg p-5">
               {(() => {
                 switch (selectedItem) {
                   case 1:
@@ -99,7 +108,6 @@ const page = () => {
           </div>
         </div>
       </PermissionGuard>
-    </AdminDashboardLayout>
   );
 };
 

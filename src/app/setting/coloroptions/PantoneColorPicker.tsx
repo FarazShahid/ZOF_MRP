@@ -156,23 +156,32 @@ export default function PantoneColorDropdown({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <button type="button" 
-          onClick={onCloseModal} 
-          className="flex items-center gap-1 text-lg font-semibold">
-          <IoChevronBackOutline size={20} />  Back
-        </button>
+      <div className="flex justify-between items-center bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg px-5 py-4">
         <div className="flex items-center gap-4">
-          <div
-            className="w-10 h-10 rounded border shadow-inner"
-            style={{ backgroundColor: selectedColor.hex }}
-          />
-          <div className="text-sm dark:text-gray-300 text-gray-800">
-            <strong>{selectedColor.name}</strong> ({selectedColor.code}) —{" "}
-            <span>{selectedColor.hex.toUpperCase()}</span>
+          <button type="button"
+            onClick={onCloseModal}
+            className="p-2 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-lg transition-all duration-300 ease-in-out">
+            <IoChevronBackOutline className="w-5 h-5" />
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Pantone Colors</h1>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">Select and add color options</p>
           </div>
         </div>
-        <AddButton title="Add New" onClick={handleAddColor} />
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-8 h-8 rounded-md border border-gray-200 dark:border-slate-700 shadow-inner"
+              style={{ backgroundColor: selectedColor.hex }}
+            />
+            <div className="text-xs text-gray-600 dark:text-slate-300">
+              <span className="font-semibold text-gray-900 dark:text-white">{selectedColor.name}</span>
+              <span className="text-gray-400 dark:text-slate-500 ml-1">({selectedColor.code})</span>
+              <span className="text-gray-400 dark:text-slate-500 ml-1">{selectedColor.hex.toUpperCase()}</span>
+            </div>
+          </div>
+          <AddButton title="Add New" onClick={handleAddColor} />
+        </div>
       </div>
       <div className="w-full  mb-[50px] px-5 flex items-center justify-center">
         <ul className="flex flex-wrap items-center justify-center lg:max-w-[992px]">
@@ -180,7 +189,7 @@ export default function PantoneColorDropdown({
             filterBtns.map((btn)=>{
               return(
               <li className="m-1" key={btn.id}>
-                <button className={`color-tag !bg-[#d7d7d7] ${btn.id === selectedBtnId ? "tagIsActive":""}`} onClick={() => handleSelectFilter(btn.id, btn.name)}>
+                <button className={`color-tag !bg-gray-200 dark:!bg-slate-800 dark:text-slate-300 ${btn.id === selectedBtnId ? "tagIsActive":""}`} onClick={() => handleSelectFilter(btn.id, btn.name)}>
                   {
                     btn.name !== "All Shades" ? <div  style={{ backgroundColor: btn.color }} /> :<></>
                   }

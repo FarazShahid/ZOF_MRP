@@ -8,10 +8,10 @@ import {
   ModalHeader,
   Spinner,
 } from "@heroui/react";
+import Label from "../../components/common/Label";
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import { SizeOptionSchema } from "../../schema/SizeOptionSchema";
-import Label from "../../components/common/Label";
 import useProductRegionStore from "@/store/useProductRegionStore";
 
 interface AddClientComponentProps {

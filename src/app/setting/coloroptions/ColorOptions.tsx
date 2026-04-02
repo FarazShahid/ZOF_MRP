@@ -57,7 +57,7 @@ const ColorOptions = () => {
         <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.ADD}>
           <Link
             href={"/setting/coloroptions/addColor"}
-            className="text-sm rounded-full dark:bg-blue-600 bg-blue-800 text-white font-semibold px-3 py-2 flex items-center gap-2"
+            className="text-sm rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 flex items-center gap-2 transition-colors"
           >
             <FiPlus />
             Add New
@@ -69,7 +69,7 @@ const ColorOptions = () => {
         isHeaderSticky
         aria-label="Product Table with pagination"
         classNames={{
-          wrapper: "min-h-[222px]",
+          wrapper: "min-h-[222px] !bg-transparent dark:!bg-transparent shadow-none",
           th: "tableHeaderWrapper",
         }}
         bottomContent={
@@ -117,23 +117,23 @@ const ColorOptions = () => {
                   ) : columnKey === "HexCode" ? (
                     <div className="flex items-center gap-1">
                       <div
-                        className="rounded-lg w-[100px] h-4"
+                        className="rounded-sm w-[80px] h-8"
                         style={{ background: `${item.HexCode}` }}
                       ></div>
                     </div>
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                       <PermissionGuard
                         required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.DELETE}
                       >
                         <button
                           type="button"
-                          className="hover:text-red-500 cursor-pointer"
                           onClick={() => handleOpenDeleteModal(item?.Id)}
+                          className="p-1.5 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 dark:hover:text-white rounded-md transition-colors"
                         >
-                          <RiDeleteBin6Line color="red" />
+                          <RiDeleteBin6Line className="w-3.5 h-3.5" />
                         </button>
                       </PermissionGuard>
                     </div>

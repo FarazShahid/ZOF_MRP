@@ -985,10 +985,20 @@ span.flatpickr-weekday,
 }
 
 .formInputdefault {
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 0px 6px;
   height: 40px;
   /* background: #f6f6f6; */
+}
+select.formInputdefault {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
 }
 .formContainerWrapper {
   background: rgb(252 251 251);
@@ -1002,8 +1012,12 @@ span.flatpickr-weekday,
   overflow-y: auto;
 }
 .tableHeaderWrapper {
-  background: #55555b;
-  color: white;
+  background: #f1f5f9;
+  color: #475569;
+}
+.dark .tableHeaderWrapper {
+  background: #1e293b;
+  color: #94a3b8;
 }
 #color-shades li {
   display: inline-block;
@@ -1051,8 +1065,8 @@ span.flatpickr-weekday,
   font-size: 14px;
 }
 .tagIsActive {
-  background: #e6f0ff;
-  color: #0066ff;
+  background: #d1fae5 !important;
+  color: #059669 !important;
 }
 .color-tag:hover {
   background: #ededee;

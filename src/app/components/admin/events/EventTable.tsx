@@ -39,12 +39,13 @@ const EventTable: React.FC<ComponentProp> = ({
   }, [page, Events]);
   return (
     <Table
-      isStriped
       isHeaderSticky
       aria-label="Product Table with pagination"
       classNames={{
-        wrapper: "min-h-[222px]",
+        wrapper: "min-h-[222px] !bg-transparent dark:!bg-transparent shadow-none",
         th: "tableHeaderWrapper",
+        tr: "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors",
+        td: "text-gray-700 dark:text-slate-300",
       }}
       bottomContent={
         <div className="grid grid-cols-2 mt-5">
@@ -55,7 +56,7 @@ const EventTable: React.FC<ComponentProp> = ({
             isCompact
             showControls
             showShadow
-            color="secondary"
+            color="success"
             page={page}
             total={pages}
             onChange={(page) => setPage(page)}
@@ -94,12 +95,16 @@ const EventTable: React.FC<ComponentProp> = ({
                 ) : columnKey !== "action" ? (
                   getKeyValue(item, columnKey)
                 ) : (
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-2">
                     <PermissionGuard
                       required={PERMISSIONS_ENUM.EVENTS.UPDATE}
                     >
-                      <button type="button" onClick={() => onEdit(item?.Id)}>
-                        <GoPencil color="green" />
+                      <button
+                        type="button"
+                        onClick={() => onEdit(item?.Id)}
+                        className="p-1.5 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-md transition-colors"
+                      >
+                        <GoPencil className="w-3.5 h-3.5" />
                       </button>
                     </PermissionGuard>
 
@@ -108,10 +113,10 @@ const EventTable: React.FC<ComponentProp> = ({
                     >
                       <button
                         type="button"
-                        className="hover:text-red-500 cursor-pointer"
                         onClick={() => onDelete(item?.Id)}
+                        className="p-1.5 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 dark:hover:text-white rounded-md transition-colors"
                       >
-                        <RiDeleteBin6Line color="red" />
+                        <RiDeleteBin6Line className="w-3.5 h-3.5" />
                       </button>
                     </PermissionGuard>
                   </div>

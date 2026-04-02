@@ -273,19 +273,21 @@ export default function CollapsibleSidebar() {
                 <span className="text-sm font-medium">Audit Log</span>
               </Link>
 
-              <button
+              <Link
+                href="/product/productdefination"
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition-all cursor-pointer"
               >
                 <i className="ri-file-text-line text-lg w-5 h-5 flex items-center justify-center"></i>
                 <span className="text-sm font-medium">Product Definition</span>
-              </button>
+              </Link>
 
-              <button
+              <Link
+                href="/adminsetting"
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition-all cursor-pointer"
               >
                 <i className="ri-settings-3-line text-lg w-5 h-5 flex items-center justify-center"></i>
                 <span className="text-sm font-medium">Admin Setting</span>
-              </button>
+              </Link>
 
               <div className="pt-1 border-t border-gray-200 dark:border-slate-800 mt-1">
                 <button

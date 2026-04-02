@@ -39,7 +39,7 @@ const RoleModule = () => {
           <button
             type="button"
             onClick={openForCreate}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 bg-emerald-600 text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-emerald-700 transition-colors"
           >
             <Plus className="w-4 h-4" />
             Create Role
@@ -47,7 +47,9 @@ const RoleModule = () => {
         </PermissionGuard>
       </div>
 
-      <Role onEditRole={openForEdit} />
+      <div className="rounded-lg border border-gray-200 dark:border-slate-800 overflow-hidden">
+        <Role onEditRole={openForEdit} />
+      </div>
 
       {/* Modal for Add/Edit */}
       {
