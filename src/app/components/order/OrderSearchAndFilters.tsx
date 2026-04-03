@@ -89,8 +89,8 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
   }, [clientFilter, clients]);
 
   return (
-    <div className="bg-slate-900 rounded-2xl p-6 mb-6 border border-slate-800">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+    <div className="bg-slate-900/80 backdrop-blur-sm rounded-2xl p-5 mb-6 border border-slate-800/60">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3">
         {/* Search */}
         <div className="relative">
           <input
@@ -98,7 +98,7 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
             placeholder="Search orders..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full bg-slate-800 text-slate-300 text-sm px-4 py-2.5 pl-10 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500"
+            className="w-full bg-slate-800/70 text-slate-200 text-sm px-4 py-2.5 pl-10 rounded-xl border border-slate-700/60 focus:outline-none focus:border-green-500/60 focus:ring-1 focus:ring-green-500/20 transition-colors placeholder:text-slate-500"
           />
           <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4 flex items-center justify-center" />
         </div>
@@ -107,7 +107,7 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
         <select
           value={statusFilter}
           onChange={(e) => onStatusChange(e.target.value as OrderStatus | "all")}
-          className="bg-slate-800 text-slate-300 text-sm px-4 py-2.5 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 cursor-pointer"
+          className="bg-slate-800/70 text-slate-200 text-sm px-4 py-2.5 rounded-xl border border-slate-700/60 focus:outline-none focus:border-green-500/60 focus:ring-1 focus:ring-green-500/20 transition-colors cursor-pointer"
         >
           <option value="all">All Status</option>
           <option value="Production">Production</option>
@@ -122,7 +122,7 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
           onChange={(e) =>
             onProjectChange(e.target.value === "all" ? "all" : Number(e.target.value))
           }
-          className="bg-slate-800 text-slate-300 text-sm px-4 py-2.5 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 cursor-pointer"
+          className="bg-slate-800/70 text-slate-200 text-sm px-4 py-2.5 rounded-xl border border-slate-700/60 focus:outline-none focus:border-green-500/60 focus:ring-1 focus:ring-green-500/20 transition-colors cursor-pointer"
         >
           <option value="all">All Projects</option>
           {projects.map((p) => (
@@ -137,29 +137,29 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
           <button
             type="button"
             onClick={() => setIsClientOpen((o) => !o)}
-            className="w-full bg-slate-800 text-slate-300 text-sm px-4 py-2.5 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 cursor-pointer text-left"
+            className="w-full bg-slate-800/70 text-slate-200 text-sm px-4 py-2.5 rounded-xl border border-slate-700/60 focus:outline-none focus:border-green-500/60 focus:ring-1 focus:ring-green-500/20 transition-colors cursor-pointer text-left"
           >
             {selectedClientNames}
           </button>
           {isClientOpen && (
-            <div className="absolute left-0 right-0 z-10 mt-1 max-h-64 overflow-auto bg-slate-800 border border-slate-700 rounded-lg shadow-lg">
-              <div className="px-3 py-2 border-b border-slate-700 flex items-center justify-between">
+            <div className="absolute left-0 right-0 z-10 mt-1 max-h-64 overflow-auto bg-slate-800 border border-slate-700/60 rounded-xl shadow-xl shadow-black/20">
+              <div className="px-3 py-2 border-b border-slate-700/60 flex items-center justify-between">
                 <span className="text-sm text-slate-400">Clients</span>
                 <button
                   type="button"
                   onClick={clearClients}
-                  className="text-xs text-blue-400 hover:underline"
+                  className="text-xs text-green-400 hover:text-green-300 hover:underline transition-colors"
                 >
                   Clear
                 </button>
               </div>
               <ul className="p-2 space-y-1">
                 <li>
-                  <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer hover:text-white">
+                  <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer hover:text-white rounded-lg px-2 py-1 hover:bg-slate-700/40 transition-colors">
                     <input
                       type="checkbox"
                       checked={clientFilter.length === 0}
-                      className="rounded border-slate-600 bg-slate-900"
+                      className="rounded border-slate-600 bg-slate-900 accent-green-500"
                       onChange={clearClients}
                     />
                     All Clients
@@ -167,11 +167,11 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
                 </li>
                 {clients.map((client) => (
                   <li key={client.id}>
-                    <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer hover:text-white">
+                    <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer hover:text-white rounded-lg px-2 py-1 hover:bg-slate-700/40 transition-colors">
                       <input
                         type="checkbox"
                         checked={clientFilter.includes(client.id)}
-                        className="rounded border-slate-600 bg-slate-900"
+                        className="rounded border-slate-600 bg-slate-900 accent-green-500"
                         onChange={() => toggleClient(client.id)}
                       />
                       {client.name}
@@ -188,7 +188,7 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
           type="date"
           value={dateRange.start}
           onChange={(e) => onDateRangeChange({ ...dateRange, start: e.target.value })}
-          className="bg-slate-800 text-slate-300 text-sm px-4 py-2.5 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 cursor-pointer"
+          className="bg-slate-800/70 text-slate-200 text-sm px-4 py-2.5 rounded-xl border border-slate-700/60 focus:outline-none focus:border-green-500/60 focus:ring-1 focus:ring-green-500/20 transition-colors cursor-pointer"
           placeholder="From date"
         />
 
@@ -198,14 +198,14 @@ const OrderSearchAndFilters: React.FC<OrderSearchAndFiltersProps> = ({
             type="date"
             value={dateRange.end}
             onChange={(e) => onDateRangeChange({ ...dateRange, end: e.target.value })}
-            className="w-full bg-slate-800 text-slate-300 text-sm px-4 py-2.5 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 cursor-pointer"
+            className="w-full bg-slate-800/70 text-slate-200 text-sm px-4 py-2.5 rounded-xl border border-slate-700/60 focus:outline-none focus:border-green-500/60 focus:ring-1 focus:ring-green-500/20 transition-colors cursor-pointer"
             placeholder="To date"
           />
           {hasActiveFilters && onClearFilters && (
             <button
               type="button"
               onClick={onClearFilters}
-              className="p-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer shrink-0"
+              className="p-2.5 text-slate-400 hover:text-green-400 hover:bg-slate-800/70 rounded-xl border border-transparent hover:border-slate-700/60 transition-colors cursor-pointer shrink-0"
               title="Clear filters"
             >
               <i className="ri-filter-off-line w-4 h-4 flex items-center justify-center" />

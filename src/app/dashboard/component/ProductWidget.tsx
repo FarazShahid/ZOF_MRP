@@ -20,7 +20,13 @@ const ProductWidget = () => {
       fetchTopProducts();
     }
   }, [topProducts, storeLoading, fetchTopProducts]);
-  const colors = ["#e5e7eb", "#86efac", "#93c5fd", "#fca5a5", "#fde68a"]; // light gray, green, blue, red, yellow
+  const colorSchemes = [
+    { bg: "#6b7280", text: "#ffffff" }, // gray
+    { bg: "#16a34a", text: "#ffffff" }, // green
+    { bg: "#2563eb", text: "#ffffff" }, // blue
+    { bg: "#dc2626", text: "#ffffff" }, // red
+    { bg: "#ca8a04", text: "#ffffff" }, // yellow
+  ];
 
   const products = useMemo(() => {
     return (topProducts ?? [])?.map((p, idx) => ({
@@ -30,7 +36,7 @@ const ProductWidget = () => {
       totalQty: p.totalQuantity,
       type: `${p.orderCount?.toLocaleString?.() ?? p.orderCount} orders`,
       qtyLabel: `${p.totalQuantity?.toLocaleString?.() ?? p.totalQuantity} qty`,
-      color: colors[idx % colors.length],
+      scheme: colorSchemes[idx % colorSchemes.length],
     }));
   }, [topProducts]);
 
@@ -68,8 +74,8 @@ const ProductWidget = () => {
                 onClick={() => router.push(`/product/${item.id}`)}
               >
                 <div
-                  className="w-14 h-14 rounded-xl flex items-center justify-center ring-1 ring-gray-200/60 dark:ring-white/10 text-gray-800 dark:text-white text-lg font-semibold shrink-0"
-                  style={{ backgroundColor: item.color }}
+                  className="w-14 h-14 rounded-xl flex items-center justify-center ring-1 ring-gray-200/60 dark:ring-white/10 text-lg font-semibold shrink-0"
+                  style={{ backgroundColor: item.scheme.bg, color: item.scheme.text }}
                   aria-hidden
                 >
                   {item.name?.[0] ?? "P"}
@@ -79,7 +85,7 @@ const ProductWidget = () => {
                     <h6 className="dark:text-white text-gray-800 text-base font-medium truncate">{item.name}</h6>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-gray-200/70 text-gray-900 dark:bg-white/10">
+                    <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 ring-1 ring-teal-100 dark:bg-teal-500/10 dark:text-teal-300 dark:ring-teal-500/20">
                       <FiShoppingCart className="text-[12px]" /> {item.type}
                     </span>
                   </div>

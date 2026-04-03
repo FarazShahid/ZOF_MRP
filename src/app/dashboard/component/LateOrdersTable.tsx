@@ -51,10 +51,10 @@ const LateOrdersTable: React.FC = () => {
         <table className="min-w-full text-sm">
           <thead>
             <tr className="text-gray-500">
-              <th className="text-center p-2">Order</th>
-              <th className="text-center p-2">Client</th>
-              <th className="text-center p-2">Due date</th>
-              <th className="text-center p-2">Status</th>
+              <th className="text-left p-2">Order</th>
+              <th className="text-left p-2">Client</th>
+              <th className="text-left p-2">Due date</th>
+              <th className="text-left p-2">Status</th>
               <th className="text-center p-2">Days late</th>
             </tr>
           </thead>
@@ -74,10 +74,10 @@ const LateOrdersTable: React.FC = () => {
             ) : (
               rows?.map((r) => (
                 <tr key={r.id} className="border-t border-gray-100 dark:border-[#1d2939] hover:bg-gray-50/60 dark:hover:bg-white/[0.03]">
-                  <td className="p-2 dark:text-white text-gray-900 font-medium text-center">{r.orderName}</td>
-                  <td className="p-2 text-gray-500 text-center">{r.client}</td>
-                  <td className="p-2 text-gray-500 text-center">{r.dueDate}</td>
-                  <td className="p-2 text-center">
+                  <td className="p-2 dark:text-white text-gray-900 font-medium text-left">{r.orderName}</td>
+                  <td className="p-2 text-gray-500 text-left">{r.client}</td>
+                  <td className="p-2 text-gray-500 text-left">{r.dueDate}</td>
+                  <td className="p-2 text-left">
                     <span className="px-2 py-1 rounded-full text-xs bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200 dark:bg-white/[0.06] dark:text-yellow-300 dark:ring-white/10">
                       {r.status}
                     </span>

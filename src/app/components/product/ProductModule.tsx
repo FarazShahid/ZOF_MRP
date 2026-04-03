@@ -199,7 +199,7 @@ const ProductModule = () => {
             <Tooltip content="Product Definition">
               <Link
                 href="/product/productdefination"
-                className="p-2.5 bg-slate-800 text-slate-400 hover:text-white rounded-lg border border-slate-700 transition-colors inline-flex items-center justify-center"
+                className="p-2.5 bg-slate-800/70 text-slate-400 hover:text-white rounded-xl border border-slate-700/60 hover:border-slate-600 transition-colors inline-flex items-center justify-center"
               >
                 <FiSettings className="w-5 h-5" />
               </Link>
@@ -210,7 +210,7 @@ const ProductModule = () => {
             <button
               type="button"
               onClick={handleAddProduct}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors whitespace-nowrap flex items-center gap-2"
+              className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium text-sm transition-colors whitespace-nowrap flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Add Product

@@ -42,29 +42,29 @@ const OrderTable: React.FC<OrderTableProps> = ({
   return (
     <table className="w-full">
       <thead>
-        <tr className="border-b border-slate-800">
-          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <tr className="border-b border-slate-700/60 bg-slate-800/40">
+          <th className="text-left px-6 py-3 text-[11px] font-bold text-slate-300 uppercase tracking-widest">
             Order Name
           </th>
-          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <th className="text-left px-6 py-3 text-[11px] font-bold text-slate-300 uppercase tracking-widest">
             Event
           </th>
-          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <th className="text-left px-6 py-3 text-[11px] font-bold text-slate-300 uppercase tracking-widest">
             Type
           </th>
-          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <th className="text-left px-6 py-3 text-[11px] font-bold text-slate-300 uppercase tracking-widest">
             Items
           </th>
-          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <th className="text-left px-6 py-3 text-[11px] font-bold text-slate-300 uppercase tracking-widest">
             Current Stage
           </th>
-          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <th className="text-left px-6 py-3 text-[11px] font-bold text-slate-300 uppercase tracking-widest">
             Status
           </th>
-          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <th className="text-left px-6 py-3 text-[11px] font-bold text-slate-300 uppercase tracking-widest">
             Delivery Date
           </th>
-          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <th className="text-left px-6 py-3 text-[11px] font-bold text-slate-300 uppercase tracking-widest">
             Actions
           </th>
         </tr>
@@ -84,7 +84,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
           orders?.map((order) => (
             <tr
               key={order?.Id}
-              className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors"
+              className="border-b border-slate-800/60 hover:bg-slate-800/40 transition-colors"
             >
               <td className="px-6 py-4">
                 <div>

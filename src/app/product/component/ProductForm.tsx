@@ -293,31 +293,41 @@ const ProductForm = ({
         <div className="flex items-center gap-2 text-sm mb-6">
           <Link
             href={clientId ? `/client/${clientId}` : "/product"}
-            className="text-slate-400 hover:text-white transition-colors flex items-center gap-1"
+            className="text-slate-400 hover:text-green-400 transition-colors flex items-center gap-1"
           >
             <IoCaretBackSharp className="w-4 h-4" />
             {clientId ? "Back to client" : "Products"}
           </Link>
           <span className="text-slate-600">/</span>
-          <span className="text-white">
+          <span className="text-white font-medium">
             {productId ? "Edit Product" : "Create Product"}
           </span>
         </div>
 
         {/* Page Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">
-              {productId ? "Edit Product" : "Create New Product"}
-            </h1>
-            <p className="text-slate-400 text-sm">
-              Complete the wizard to add a new product
-            </p>
+        <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 px-6 py-4 rounded-lg mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link
+                href={clientId ? `/client/${clientId}` : "/product"}
+                className="group p-2 hover:px-4 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-700 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-lg transition-all duration-300 ease-in-out"
+              >
+                <ArrowLeft className="w-5 h-5 group-hover:w-6 group-hover:h-6 transition-all duration-300 ease-in-out" />
+              </Link>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {productId ? "Edit Product" : "Create New Product"}
+                </h1>
+                <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">
+                  {productId ? "Update the product details below" : "Complete the wizard to add a new product"}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Stepper */}
-        <div className="bg-slate-900 rounded-2xl border border-slate-800 p-5 mb-8">
+        <div className="bg-slate-900/80 backdrop-blur-sm rounded-2xl border border-slate-800/60 p-5 mb-8">
           <div className="flex items-center justify-between max-w-3xl mx-auto flex-wrap gap-4">
             {formSteps.map((step, idx) => (
               <React.Fragment key={step.id}>
@@ -336,10 +346,10 @@ const ProductForm = ({
                     <div
                       className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm transition-all shrink-0 ${
                         step.id < currentStep
-                          ? "bg-green-600 text-white"
+                          ? "bg-green-600 text-white shadow-sm shadow-green-500/20"
                           : step.id === currentStep
-                          ? "bg-blue-600 text-white"
-                          : "bg-slate-800 text-slate-500 border border-slate-700"
+                          ? "bg-green-600 text-white shadow-sm shadow-green-500/20"
+                          : "bg-slate-800/70 text-slate-500 border border-slate-700/60"
                       }`}
                     >
                       {step.id < currentStep ? (
@@ -390,8 +400,8 @@ const ProductForm = ({
         </div>
 
         {/* Step Content */}
-        <div className="max-w-4xl">
-          <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
+        <div>
+          <div className="bg-slate-900/80 backdrop-blur-sm rounded-2xl border border-slate-800/60 overflow-hidden">
             <Formik
               key={isEdit ? `edit-${productId}` : "create"}
               validationSchema={ProductValidationSchemas[currentStep - 1]}
@@ -409,14 +419,14 @@ const ProductForm = ({
                   </Form>
 
                   {/* Bottom Action Bar */}
-                  <div className="border-t border-slate-800 p-5">
+                  <div className="border-t border-slate-800/60 p-5">
                     <div className="flex items-center justify-between">
                       <div>
                         {currentStep > 1 ? (
                           <button
                             type="button"
                             onClick={() => setCurrentStep((prev) => prev - 1)}
-                            className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium text-sm transition-colors whitespace-nowrap border border-slate-700 inline-flex items-center gap-2"
+                            className="px-6 py-2.5 bg-slate-800/70 hover:bg-slate-700 text-white rounded-xl font-medium text-sm transition-colors whitespace-nowrap border border-slate-700/60 hover:border-slate-600 inline-flex items-center gap-2"
                           >
                             <ArrowLeft className="w-4 h-4" />
                             Back
@@ -424,7 +434,7 @@ const ProductForm = ({
                         ) : (
                           <Link
                             href={clientId ? `/client/${clientId}` : "/product"}
-                            className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium text-sm transition-colors whitespace-nowrap border border-slate-700 inline-flex items-center gap-2"
+                            className="px-6 py-2.5 bg-slate-800/70 hover:bg-slate-700 text-white rounded-xl font-medium text-sm transition-colors whitespace-nowrap border border-slate-700/60 hover:border-slate-600 inline-flex items-center gap-2"
                           >
                             <ArrowLeft className="w-4 h-4" />
                             Cancel
@@ -439,7 +449,7 @@ const ProductForm = ({
                             onClick={() =>
                               handleNext(validateForm, setTouched, currentStep)
                             }
-                            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors whitespace-nowrap inline-flex items-center gap-2"
+                            className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium text-sm transition-colors whitespace-nowrap inline-flex items-center gap-2 shadow-sm shadow-green-500/20"
                           >
                             Next Step
                             <ArrowRight className="w-4 h-4" />
@@ -451,7 +461,7 @@ const ProductForm = ({
                             type="submit"
                             form="product-form"
                             disabled={isSubmitting}
-                            className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition-colors whitespace-nowrap inline-flex items-center gap-2 disabled:opacity-70"
+                            className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium text-sm transition-colors whitespace-nowrap inline-flex items-center gap-2 shadow-sm shadow-green-500/20 disabled:opacity-70"
                           >
                             {isSubmitting ? (
                               <Spinner size="sm" className="text-white" />

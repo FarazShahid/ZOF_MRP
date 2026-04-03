@@ -22,50 +22,50 @@ const OrderDashboard: React.FC<OrderDashboardProps> = ({ orders, statusFilter, o
       title: "Total Orders",
       value: stats.total,
       icon: "ri-shopping-bag-line",
-      gradient: "from-slate-700 to-slate-800",
-      border: "border-slate-600/30",
-      labelClass: "text-slate-300",
-      iconClass: "text-slate-300",
+      bg: "bg-slate-800/60",
+      border: "border-slate-700/50",
+      labelClass: "text-slate-400",
+      iconClass: "text-slate-400",
       status: "all" as const,
     },
     {
       title: "In Production",
       value: stats.production,
       icon: "ri-tools-line",
-      gradient: "from-amber-600 to-amber-700",
-      border: "border-amber-500/20",
-      labelClass: "text-amber-100",
-      iconClass: "text-amber-200",
+      bg: "bg-amber-950/40",
+      border: "border-amber-800/30",
+      labelClass: "text-amber-400",
+      iconClass: "text-amber-400",
       status: "Production" as OrderStatus,
     },
     {
       title: "In Transit",
       value: stats.shipped,
       icon: "ri-truck-line",
-      gradient: "from-purple-600 to-purple-700",
-      border: "border-purple-500/20",
-      labelClass: "text-purple-100",
-      iconClass: "text-purple-200",
+      bg: "bg-purple-950/40",
+      border: "border-purple-800/30",
+      labelClass: "text-purple-400",
+      iconClass: "text-purple-400",
       status: "Shipped" as OrderStatus,
     },
     {
       title: "Packing",
       value: stats.packing,
       icon: "ri-palette-line",
-      gradient: "from-blue-600 to-blue-700",
-      border: "border-blue-500/20",
-      labelClass: "text-blue-100",
-      iconClass: "text-blue-200",
+      bg: "bg-blue-950/40",
+      border: "border-blue-800/30",
+      labelClass: "text-blue-400",
+      iconClass: "text-blue-400",
       status: "Packing" as OrderStatus,
     },
     {
       title: "Completed",
       value: stats.kept_in_stock,
       icon: "ri-checkbox-circle-line",
-      gradient: "from-green-600 to-green-700",
-      border: "border-green-500/20",
-      labelClass: "text-green-100",
-      iconClass: "text-green-200",
+      bg: "bg-emerald-950/40",
+      border: "border-emerald-800/30",
+      labelClass: "text-emerald-400",
+      iconClass: "text-emerald-400",
       status: "Kept in Stock" as OrderStatus,
     },
   ];
@@ -79,13 +79,13 @@ const OrderDashboard: React.FC<OrderDashboardProps> = ({ orders, statusFilter, o
             key={card.title}
             type="button"
             onClick={() => onStatusChange(card.status)}
-            className={`bg-gradient-to-br ${card.gradient} rounded-2xl p-6 border ${card.border} text-left transition-all duration-200 hover:opacity-95 cursor-pointer ${
-              active ? "ring-2 ring-white/30" : ""
+            className={`group ${card.bg} rounded-2xl p-6 border ${active ? "border-green-500" : card.border} text-left transition-all duration-200 hover:opacity-95 cursor-pointer ${
+              active ? "ring-1 ring-green-500/30" : ""
             }`}
           >
             <div className="flex items-center justify-between mb-2">
               <span className={`${card.labelClass} text-sm font-medium`}>{card.title}</span>
-              <i className={`${card.icon} ${card.iconClass} text-2xl w-8 h-8 flex items-center justify-center`} />
+              <i className={`${card.icon} ${card.iconClass} text-3xl w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-125`} />
             </div>
             <div className="text-3xl font-bold text-white">{card.value}</div>
           </button>

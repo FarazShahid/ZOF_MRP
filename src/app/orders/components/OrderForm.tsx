@@ -1,7 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { Form, Formik } from "formik";
+import { ArrowLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -236,28 +238,38 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
         <button
           type="button"
           onClick={() => router.push("/orders")}
-          className="text-slate-400 hover:text-white transition-colors cursor-pointer"
+          className="text-slate-400 hover:text-green-400 transition-colors cursor-pointer"
         >
           Orders
         </button>
         <i className="ri-arrow-right-s-line text-slate-600 w-4 h-4 flex items-center justify-center" />
-        <span className="text-white">{orderId ? "Edit Order" : "Create Order"}</span>
+        <span className="text-white font-medium">{orderId ? "Edit Order" : "Create Order"}</span>
       </div>
 
-      {/* Page Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">
-            {orderId ? "Edit Order" : "Create New Order"}
-          </h1>
-          <p className="text-slate-400 text-sm">
-            Complete the wizard to submit a new production order
-          </p>
+      {/* Header */}
+      <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 px-6 py-4 rounded-lg mb-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link
+              href="/orders"
+              className="group p-2 hover:px-4 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-700 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-lg transition-all duration-300 ease-in-out"
+            >
+              <ArrowLeft className="w-5 h-5 group-hover:w-6 group-hover:h-6 transition-all duration-300 ease-in-out" />
+            </Link>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {orderId ? "Edit Order" : "Create New Order"}
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">
+                {orderId ? "Update the order details below" : "Complete the wizard to submit a new production order"}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Stepper - same as reference */}
-      <div className="bg-slate-900 rounded-2xl border border-slate-800 p-5 mb-8">
+      {/* Stepper */}
+      <div className="bg-slate-900/80 backdrop-blur-sm rounded-2xl border border-slate-800/60 p-5 mb-8">
         <div className="flex items-center justify-between max-w-2xl mx-auto">
           {formSteps.map((step, idx) => (
             <div key={step.num} className="flex items-center">
@@ -273,10 +285,10 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
                 <div
                   className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm transition-all ${
                     step.num < currentStep
-                      ? "bg-green-600 text-white"
+                      ? "bg-green-600 text-white shadow-sm shadow-green-500/20"
                       : step.num === currentStep
-                      ? "bg-blue-600 text-white"
-                      : "bg-slate-800 text-slate-500 border border-slate-700"
+                      ? "bg-green-600 text-white shadow-sm shadow-green-500/20"
+                      : "bg-slate-800/70 text-slate-500 border border-slate-700/60"
                   }`}
                 >
                   {step.num < currentStep ? (
@@ -334,16 +346,16 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
                 {renderStep(formikProps)}
               </Form>
 
-              {/* Bottom Action Bar - same as reference */}
+              {/* Bottom Action Bar */}
               <div className="mt-8">
-                <div className="bg-slate-900 rounded-2xl border border-slate-800 p-5">
+                <div className="bg-slate-900/80 backdrop-blur-sm rounded-2xl border border-slate-800/60 p-5">
                   <div className="flex items-center justify-between">
                     <div>
                       {currentStep > 1 ? (
                         <button
                           type="button"
                           onClick={() => setCurrentStep((prev) => prev - 1)}
-                          className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap border border-slate-700"
+                          className="px-6 py-2.5 bg-slate-800/70 hover:bg-slate-700 text-white rounded-xl font-medium text-sm transition-colors cursor-pointer whitespace-nowrap border border-slate-700/60 hover:border-slate-600 inline-flex items-center"
                         >
                           <i className="ri-arrow-left-line mr-2 w-4 h-4 inline-flex items-center justify-center" />
                           Back
@@ -352,7 +364,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
                         <button
                           type="button"
                           onClick={() => router.push("/orders")}
-                          className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap border border-slate-700 inline-flex items-center"
+                          className="px-6 py-2.5 bg-slate-800/70 hover:bg-slate-700 text-white rounded-xl font-medium text-sm transition-colors cursor-pointer whitespace-nowrap border border-slate-700/60 hover:border-slate-600 inline-flex items-center"
                         >
                           <i className="ri-close-line mr-2 w-4 h-4 inline-flex items-center justify-center" />
                           Cancel
@@ -365,7 +377,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
                         <button
                           type="button"
                           onClick={() => handleNext(validateForm, setTouched, currentStep)}
-                          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
+                          className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium text-sm transition-colors cursor-pointer whitespace-nowrap inline-flex items-center shadow-sm shadow-green-500/20"
                         >
                           Next Step
                           <i className="ri-arrow-right-line ml-2 w-4 h-4 inline-flex items-center justify-center" />
@@ -375,7 +387,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
                           type="button"
                           onClick={() => submitForm()}
                           disabled={isSubmitting}
-                          className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
+                          className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium text-sm transition-colors cursor-pointer whitespace-nowrap inline-flex items-center shadow-sm shadow-green-500/20"
                         >
                           <i className="ri-check-double-line mr-2 w-4 h-4 inline-flex items-center justify-center" />
                           {orderId ? "Update Order" : "Create Order"}

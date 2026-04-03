@@ -77,13 +77,15 @@ export const AdminSettings: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 p-6">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-          <i className="ri-settings-3-line text-lg text-emerald-500"></i>
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Settings</h1>
-          <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">Manage system configuration</p>
+      <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 px-6 py-4 rounded-lg mb-6">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg flex items-center justify-center">
+            <i className="ri-settings-3-line text-lg text-emerald-600 dark:text-emerald-400"></i>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Settings</h1>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">Manage system configuration</p>
+          </div>
         </div>
       </div>
 
