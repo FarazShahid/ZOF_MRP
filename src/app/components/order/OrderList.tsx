@@ -1,21 +1,18 @@
 "use client";
-
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import React, { useState, useMemo } from "react";
-
-import { OrderStatus } from "@/src/types/admin";
-
 import DeleteModal from "../DeleteModal";
+import { useRouter } from "next/navigation";
 import Pagination from "../common/Pagination";
+import { OrderStatus } from "@/src/types/admin";
+import React, { useState, useMemo } from "react";
 import { TableSkel } from "../ui/Skeleton/TableSkel";
+import PermissionGuard from "../auth/PermissionGaurd";
 import { ViewToggle } from "../admin/common/ViewToggle";
+import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import SearchSkeleton from "../ui/Skeleton/SearchSkeleton";
 import { GetOrdersType } from "../../interfaces/OrderStoreInterface";
 import ReorderConfirmation from "../../orders/components/ReorderConfirmation";
-import PermissionGuard from "../auth/PermissionGaurd";
-import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 // Lazy load
 const OrderDashboard = dynamic(() => import("./OrderDashboard"), {
@@ -175,7 +172,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders, projectFilter: externalPr
           <PermissionGuard required={PERMISSIONS_ENUM.ORDER.ADD}>
             <Link
               href="/orders/addorder"
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
+              className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
             >
               <i className="ri-add-line mr-2 w-4 h-4 inline-flex items-center justify-center" />
               Create Order

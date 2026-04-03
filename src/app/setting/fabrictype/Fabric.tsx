@@ -116,7 +116,7 @@ const Fabric = () => {
         isHeaderSticky
         aria-label="Product Table with pagination"
         classNames={{
-          wrapper: "min-h-[222px]",
+          wrapper: "min-h-[222px] !bg-transparent dark:!bg-transparent shadow-none",
           th: "tableHeaderWrapper",
         }}
         bottomContent={
@@ -192,15 +192,16 @@ const Fabric = () => {
                   ) : columnKey !== "action" ? (
                     getKeyValue(item, columnKey)
                   ) : (
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                       <PermissionGuard
                         required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
                       >
                         <button
                           type="button"
                           onClick={() => openEditModal(item?.id)}
+                          className="p-1.5 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-md transition-colors"
                         >
-                          <GoPencil color="green" />
+                          <GoPencil className="w-3.5 h-3.5" />
                         </button>
                       </PermissionGuard>
 
@@ -209,10 +210,10 @@ const Fabric = () => {
                       >
                         <button
                           type="button"
-                          className="hover:text-red-500 cursor-pointer"
                           onClick={() => handleOpenDeleteModal(item?.id)}
+                          className="p-1.5 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 dark:hover:text-white rounded-md transition-colors"
                         >
-                          <RiDeleteBin6Line color="red" />
+                          <RiDeleteBin6Line className="w-3.5 h-3.5" />
                         </button>
                       </PermissionGuard>
                     </div>

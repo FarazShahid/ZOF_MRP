@@ -13,7 +13,7 @@ import { FileText } from "lucide-react";
 
 // Reuse the same base field/dropdown style as order form (Target Delivery Date)
 const fieldStyle =
-  "w-full bg-slate-800 text-white text-sm px-4 py-3 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500";
+  "w-full bg-slate-800/70 text-white text-sm px-4 py-3 rounded-xl border border-slate-700/60 focus:outline-none focus:border-green-500/60 focus:ring-1 focus:ring-green-500/20 transition-colors placeholder:text-slate-500";
 const selectStyle = fieldStyle + " cursor-pointer";
 
 export default function Step1({ formik }: any) {
@@ -104,9 +104,9 @@ export default function Step1({ formik }: any) {
   }, [formik.values.productColors]);
 
   return (
-    <div className="space-y-6 w-full max-w-2xl">
+    <div className="space-y-6 w-full">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shrink-0">
+        <div className="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center shrink-0 shadow-sm shadow-green-500/20">
           <FileText className="w-5 h-5 text-white" />
         </div>
         <div>

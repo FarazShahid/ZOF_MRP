@@ -60,7 +60,7 @@ const UsersModule: React.FC = () => {
             <button
               type="button"
               onClick={openAddModal}
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 bg-emerald-600 text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-emerald-700 transition-colors"
             >
               <Plus className="w-4 h-4" />
               Add User
@@ -80,7 +80,7 @@ const UsersModule: React.FC = () => {
           />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4">
           {users.map((user) => (
             <UserCard
               key={user.Id}

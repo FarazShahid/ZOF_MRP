@@ -12,7 +12,7 @@ import NoData from "../common/NoData";
 import SearchAndFilters from "./SearchAndFilters";
 import ShipmentGrid from "./ShipmentGrid";
 import ShipmentDetail from "./ShipmentDetail";
-import DeleteShipment from "../../shipment/components/DeleteShipment";
+import DeleteShipment from "../../shipments/components/DeleteShipment";
 import { useRouter } from "next/navigation";
 import PermissionGuard from "../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
@@ -115,19 +115,19 @@ const ShipmentModule = () => {
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
 
   const handleAddShipment = () => {
-    router.push("/shipment/addshipment");
+    router.push("/shipments/addshipment");
   };
   useEffect(() => {
     fetchShipments();
   }, []);
 
   return (
-    <div className="p-6 bg-white dark:bg-slate-800 rounded">
+    <div className="p-6 rounded">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Shipment</h2>
-          <p className="text-gray-600 mt-1">Monitor and manage all shipments</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Shipments</h1>
+          <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">Monitor and manage all shipments</p>
         </div>
         <div className="flex items-center gap-4">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
@@ -136,7 +136,7 @@ const ShipmentModule = () => {
             <button
               type="button"
               onClick={handleAddShipment}
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors"
             >
               <Plus className="w-4 h-4" />
               Add Shipment
@@ -170,7 +170,7 @@ const ShipmentModule = () => {
       ) : (
         <>
           {viewMode === "table" ? (
-            <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
+            <div className="rounded-lg border border-gray-200 overflow-hidden mt-4 mb-4">
               <ShipmentTable
                 onViewDetails={(id) => handleonViewDetails(id)}
                 onDelete={(id) => handleOpenDeleteModal(id)}
@@ -195,23 +195,21 @@ const ShipmentModule = () => {
               setCurrentPage(1);
             }}
             pageSizeOptions={[5, 10, 20, 50, 100]}
+            totalItems={filteredShipments?.length || 0}
+            startIndex={startIndex}
+            itemLabel="records"
           />
         </>
       )}
   
 
       {/* Overlay Drawer */}
-      {isDetailOpen && selectedShipment && (
-        <>
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
-            onClick={handleCloseDetail}
-          />
-          <ShipmentDetail
-            shipmentId={selectedShipment}
-            onClose={handleCloseDetail}
-          />
-        </>
+      {selectedShipment > 0 && (
+        <ShipmentDetail
+          shipmentId={selectedShipment}
+          isOpen={isDetailOpen}
+          onClose={handleCloseDetail}
+        />
       )}
 
       {/* Delete Shipment */}

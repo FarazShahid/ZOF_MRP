@@ -36,26 +36,28 @@ const ShipmentGrid: React.FC<ShipmentGridProps> = ({
   };
 
   const handleEditShipment = (id: number) => {
-    router.push(`/shipment/editshipment/${id}`);
+    router.push(`/shipments/editshipment/${id}`);
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 pb-4">
       {shipments?.map((shipment) => (
         <div
           key={shipment.Id}
-          className="rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+          className="bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800 hover:shadow-lg transition-all duration-300 cursor-pointer group"
         >
           {/* Header */}
-          <div className="p-4 border-b border-slate-200">
+          <div className="p-4 border-b border-gray-100 dark:border-slate-800">
             <div className="flex items-start justify-between">
-              <div className="flex items-center space-x-2">
-                <Package className="w-5 h-5 text-gray-600" />
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 bg-emerald-500/10 rounded-lg flex items-center justify-center">
+                  <Package className="w-4 h-4 text-emerald-500" />
+                </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                     {shipment?.ShipmentCode}
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-xs text-gray-500 dark:text-slate-400">
                     {shipment?.ShipmentCarrierName}
                   </p>
                 </div>
@@ -65,95 +67,85 @@ const ShipmentGrid: React.FC<ShipmentGridProps> = ({
           </div>
 
           {/* Content */}
-          <div className="p-4 space-y-3">
-            {/* Date, Boxes, Weight, Cost */}
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="flex items-center space-x-2">
-                <Calendar className="w-4 h-4 text-gray-600" />
-                <span className="text-gray-600">
-                  {formatDate(shipment.ShipmentDate)}
-                </span>
+          <div className="px-4 pb-3 pt-3 space-y-2">
+            {/* Date & Boxes row */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800/60 rounded-md px-2.5 py-2">
+                <Calendar className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500 shrink-0" />
+                <span className="text-xs text-gray-600 dark:text-slate-300">{formatDate(shipment.ShipmentDate)}</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <Package className="w-4 h-4 text-gray-600" />
-                <span className="text-gray-600">
-                  {shipment.NumberOfBoxes} boxes
-                </span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Weight className="w-4 h-4 text-gray-600" />
-                <span className="text-gray-600">
-                  {shipment.TotalWeight} {shipment.WeightUnit}
-                </span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <DollarSign className="w-4 h-4 text-gray-600" />
-                <span className="text-gray-900 font-medium">
-                  {shipment.ShipmentCost}
-                </span>
+              <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800/60 rounded-md px-2.5 py-2">
+                <Package className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500 shrink-0" />
+                <span className="text-xs text-gray-600 dark:text-slate-300">{shipment.NumberOfBoxes} boxes</span>
               </div>
             </div>
 
-            {/* Orders */}
-            <div>
-              <p className="text-xs font-medium text-gray-500 mb-2">
-                ASSOCIATED ORDERS
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {shipment.Orders.slice(0, 3).map((order) => (
-                  <span
-                    key={order.Id}
-                    className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                  >
-                    {order.OrderNumber}
-                  </span>
-                ))}
-                {shipment.Orders.length > 3 && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
-                    +{shipment.Orders.length - 3} more
-                  </span>
-                )}
+            {/* Weight & Cost row */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800/60 rounded-md px-2.5 py-2">
+                <Weight className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500 shrink-0" />
+                <span className="text-xs text-gray-600 dark:text-slate-300">{shipment.TotalWeight} {shipment.WeightUnit}</span>
               </div>
+              <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800/60 rounded-md px-2.5 py-2">
+                <DollarSign className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500 shrink-0" />
+                <span className="text-xs font-medium text-gray-900 dark:text-white">{shipment.ShipmentCost}</span>
+              </div>
+            </div>
+
+            {/* Orders - inline */}
+            <div className="flex items-center gap-2 flex-nowrap overflow-hidden">
+              <span className="text-[10px] font-medium text-gray-400 dark:text-slate-500 uppercase tracking-wider shrink-0">Associated Orders</span>
+              {shipment.Orders.slice(0, 3).map((order) => (
+                <span
+                  key={order.Id}
+                  className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 shrink-0"
+                >
+                  {order.OrderNumber}
+                </span>
+              ))}
+              {shipment.Orders.length > 3 && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400 shrink-0">
+                  +{shipment.Orders.length - 3}
+                </span>
+              )}
             </div>
           </div>
 
           {/* Actions */}
-          <div className="px-4 py-3 rounded-b-lg border-t border-slate-200">
-            <div className="flex items-center justify-end space-x-2">
+          <div className="flex gap-2 px-4 py-3 border-t border-gray-100 dark:border-slate-800">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewDetails(shipment.Id);
+              }}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-lg transition-colors"
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span>View</span>
+            </button>
+
+            <PermissionGuard required={PERMISSIONS_ENUM.SHIPMENT.UPDATE}>
               <button
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onViewDetails(shipment.Id);
-                }}
-                className="flex items-center space-x-1 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-50 rounded-md transition-colors"
+                onClick={() => handleEditShipment(shipment.Id)}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white rounded-lg transition-colors"
               >
-                <Eye className="w-4 h-4" />
-                <span>View</span>
+                <Edit className="w-3.5 h-3.5" />
+                <span>Edit</span>
               </button>
+            </PermissionGuard>
 
-              <PermissionGuard required={PERMISSIONS_ENUM.SHIPMENT.UPDATE}>
-                <button
-                  type="button"
-                  onClick={() => handleEditShipment(shipment.Id)}
-                  className="flex items-center space-x-1 px-3 py-1.5 text-sm text-gray-600 hover:bg-slate-100 dark:hover:bg-slate-500 rounded-md transition-colors"
-                >
-                  <Edit className="w-4 h-4" />
-                  <span>Edit</span>
-                </button>
-              </PermissionGuard>
-
-              <PermissionGuard required={PERMISSIONS_ENUM.SHIPMENT.DELETE}>
-                <button
-                  type="button"
-                  onClick={() => onDelete(shipment.Id)}
-                  className="flex items-center space-x-1 px-3 py-1.5 text-sm text-red-600 dark:text-red-100 hover:bg-red-50 dark:hover:bg-red-400 rounded-md transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  <span>Delete</span>
-                </button>
-              </PermissionGuard>
-            </div>
+            <PermissionGuard required={PERMISSIONS_ENUM.SHIPMENT.DELETE}>
+              <button
+                type="button"
+                onClick={() => onDelete(shipment.Id)}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-500/10 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 dark:hover:text-white rounded-lg transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete</span>
+              </button>
+            </PermissionGuard>
           </div>
         </div>
       ))}

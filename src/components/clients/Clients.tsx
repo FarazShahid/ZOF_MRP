@@ -1,11 +1,10 @@
 "use client";
-
-import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import useClientStore, { GetClientsType } from "@/store/useClientStore";
 import ClientKPITiles from "./ClientKPITiles";
 import ClientFilters from "./ClientFilters";
 import AddClientModal from "./AddClientModal";
+import React, { useEffect, useMemo, useState } from "react";
+import useClientStore, { GetClientsType } from "@/store/useClientStore";
 import DeleteConfirmationModal from "@/src/components/common/DeleteConfirmationModal";
 
 const ITEMS_PER_PAGE = 10;
@@ -127,7 +126,7 @@ export default function Clients() {
             setEditingClientId(null);
             setShowAddModal(true);
           }}
-          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
+          className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
         >
           <i className="ri-add-line mr-2 w-4 h-4 inline-flex items-center justify-center"></i>
           Add Client
@@ -272,7 +271,7 @@ export default function Clients() {
                   onClick={() => setCurrentPage(i + 1)}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
                     currentPage === i + 1
-                      ? "bg-blue-600 text-white"
+                      ? "bg-green-600 text-white"
                       : "bg-slate-800 text-slate-300 hover:bg-slate-700"
                   }`}
                 >

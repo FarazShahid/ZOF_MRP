@@ -59,7 +59,6 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
   return (
     <div className="space-y-6">
       <Table
-        isStriped
         isHeaderSticky
         aria-label="Roles table with pagination"
         bottomContent={
@@ -71,7 +70,7 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
               isCompact
               showControls
               showShadow
-              color="secondary"
+              color="success"
               page={page}
               total={pages}
               onChange={(p) => setPage(p)}
@@ -79,8 +78,10 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
           </div>
         }
         classNames={{
-          wrapper: "min-h-[222px]",
+          wrapper: "min-h-[222px] !bg-transparent dark:!bg-transparent shadow-none",
           th: "tableHeaderWrapper",
+          tr: "hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors",
+          td: "text-gray-700 dark:text-slate-300",
         }}
       >
         <TableHeader>
@@ -103,17 +104,17 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
                 <TableCell>{start + index + 1}</TableCell>
                 <TableCell>{role?.name ?? "-"}</TableCell>
                 <TableCell>
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-2">
                     <PermissionGuard
                       required={PERMISSIONS_ENUM.ROLES_AND_RIGHTS.UPDATE}
                     >
                       <button
                         type="button"
-                        disabled={role.id === 1 ? true : false}
+                        disabled={role.id === 1}
                         onClick={() => handleEdit(role?.id)}
-                        className={`${role.id === 1 ? "cursor-not-allowed text-gray-500" : "cursor-pointer text-green-500"}`}
+                        className={`p-1.5 rounded-md transition-colors ${role.id === 1 ? "cursor-not-allowed opacity-40 bg-gray-100 dark:bg-slate-800 text-gray-400" : "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white"}`}
                       >
-                        <GoPencil />
+                        <GoPencil className="w-3.5 h-3.5" />
                       </button>
                     </PermissionGuard>
 
@@ -122,11 +123,11 @@ const Role: React.FC<RoleProps> = ({ onEditRole }) => {
                     >
                       <button
                         type="button"
-                        className={`${role.id === 1 ? "cursor-not-allowed text-gray-500" : "cursor-pointer text-red-500"}`}
-                        disabled={loading || role.id === 1 ? true : false}
+                        disabled={loading || role.id === 1}
                         onClick={() => handleDelete(role?.id)}
+                        className={`p-1.5 rounded-md transition-colors ${role.id === 1 ? "cursor-not-allowed opacity-40 bg-gray-100 dark:bg-slate-800 text-gray-400" : "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 dark:hover:text-white"}`}
                       >
-                        <RiDeleteBin6Line />
+                        <RiDeleteBin6Line className="w-3.5 h-3.5" />
                       </button>
                     </PermissionGuard>
                   </div>

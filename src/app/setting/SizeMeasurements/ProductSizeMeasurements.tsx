@@ -306,11 +306,11 @@ const ProductSizeMeasurements = () => {
           {/* Header */}
           <div className="grid grid-cols-12 gap-2 bg-default-100 px-4 py-3 text-sm font-semibold">
             <div className="text-default-700 col-span-1">Sr</div>
-            <div className="text-default-700 col-span-2">Name</div>
+            <div className="text-default-700 col-span-3">Name</div>
             <div className="text-default-700 col-span-2">Product Category</div>
             <div className="text-default-700 col-span-2">Size Option</div>
             <div className="text-default-700 col-span-2">Client Name</div>
-            <div className="text-default-700 col-span-3">Action</div>
+            <div className="text-default-700 col-span-2">Action</div>
           </div>
           {/* Body */}
           <div className="divide-y divide-default-200">
@@ -325,7 +325,7 @@ const ProductSizeMeasurements = () => {
                   {/* Row */}
                   <div className="grid grid-cols-12 gap-2 px-4 py-3 items-center odd:bg-default-50 hover:bg-default-100 transition-colors">
                     <div className="text-sm text-default-700 col-span-1">{index + 1}</div>
-                    <div className="text-sm text-default-700 flex items-center gap-2 col-span-2">
+                    <div className="text-sm text-default-700 flex items-center gap-2 col-span-3">
                       {hasArchive ? (
                         <button
                           type="button"
@@ -352,15 +352,15 @@ const ProductSizeMeasurements = () => {
                     <div className="text-sm text-default-700 col-span-2">{item.ProductCategoryType}</div>
                     <div className="text-sm text-default-700 col-span-2">{item.SizeOptionName}</div>
                     <div className="text-sm text-default-700 col-span-2">{item.ClientName}</div>
-                    <div className="flex items-center gap-2 justify-start col-span-3">
+                    <div className="flex items-center gap-2 justify-start col-span-2">
                       <button
                         type="button"
                         onClick={() => openViewModal(item.Id)}
-                        className="p-1 hover:bg-default-200 rounded"
+                        className="p-1.5 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white rounded-md transition-colors"
                         aria-label="View"
                         title="View"
                       >
-                        <GoEye />
+                        <GoEye className="w-3.5 h-3.5" />
                       </button>
                       <PermissionGuard
                         required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.UPDATE}
@@ -368,11 +368,11 @@ const ProductSizeMeasurements = () => {
                         <button
                           type="button"
                           onClick={() => openEditModal(item.Id)}
-                          className="p-1 hover:bg-default-200 rounded"
+                          className="p-1.5 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-md transition-colors"
                           aria-label="Edit"
                           title="Edit"
                         >
-                          <GoPencil color="green" />
+                          <GoPencil className="w-3.5 h-3.5" />
                         </button>
                       </PermissionGuard>
                       <PermissionGuard
@@ -380,12 +380,12 @@ const ProductSizeMeasurements = () => {
                       >
                         <button
                           type="button"
-                          className="p-1 hover:bg-default-200 rounded hover:text-red-500"
+                          className="p-1.5 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 dark:hover:text-white rounded-md transition-colors"
                           onClick={() => handleOpenDeleteModal(item.Id, rootId)}
                           aria-label="Delete"
                           title="Delete"
                         >
-                          <RiDeleteBin6Line color="red" />
+                          <RiDeleteBin6Line className="w-3.5 h-3.5" />
                         </button>
                       </PermissionGuard>
                       {/* Archive chevron moved to Name cell */}
@@ -456,8 +456,8 @@ const ProductSizeMeasurements = () => {
                           {/* Nested header */}
                           <div className="grid grid-cols-7 gap-2 px-8 py-2 text-[11px] font-semibold text-default-600 uppercase tracking-wide">
                             <div className="col-span-3">Name</div>
-                            <div className="col-span-1">Version</div>
-                            <div className="col-span-3 text-left">Action</div>
+                            <div className="col-span-2">Version</div>
+                            <div className="col-span-2 text-left">Action</div>
                           </div>
                           <div className="px-6 pb-3">
                             <div className="border-l-2 border-default-200 ml-2">
@@ -502,18 +502,18 @@ const ProductSizeMeasurements = () => {
                                       ) : null}
                                       <span>{v.Measurement1}</span>
                                     </div>
-                                    <div className="col-span-1 text-sm flex items-center gap-2">
+                                    <div className="col-span-2 text-sm flex items-center gap-2">
                                       <span>{v.Version}</span>
                                     </div>
-                                    <div className="col-span-3 flex items-center gap-2">
+                                    <div className="col-span-2 flex items-center gap-2">
                                       <button
                                         type="button"
                                         onClick={() => openViewModal(v.Id)}
-                                        className="p-1 hover:bg-default-200 rounded"
+                                        className="p-1.5 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white rounded-md transition-colors"
                                         aria-label="View"
                                         title="View"
                                       >
-                                        <GoEye />
+                                        <GoEye className="w-3.5 h-3.5" />
                                       </button>
                                       <button
                                         type="button"
@@ -536,12 +536,12 @@ const ProductSizeMeasurements = () => {
                                       >
                                         <button
                                           type="button"
-                                          className="p-1 hover:bg-default-200 rounded hover:text-red-500"
+                                          className="p-1.5 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 dark:hover:text-white rounded-md transition-colors"
                                           onClick={() => handleOpenDeleteModal(v.Id, rootId)}
                                           aria-label="Delete"
                                           title="Delete"
                                         >
-                                          <RiDeleteBin6Line color="red" />
+                                          <RiDeleteBin6Line className="w-3.5 h-3.5" />
                                         </button>
                                       </PermissionGuard>
                                       <PermissionGuard

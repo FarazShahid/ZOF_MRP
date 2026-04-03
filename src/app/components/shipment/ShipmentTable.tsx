@@ -28,103 +28,98 @@ const ShipmentTable: React.FC<ShipmentTableProps> = ({
   };
 
   const handleEditShipment = (id: number) => {
-    router.push(`/shipment/editshipment/${id}`);
+    router.push(`/shipments/editshipment/${id}`);
   };
 
   return (
-    <div className=" rounded-lg border border-slate-200 dark:border-gray-50 overflow-hidden">
+    <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-slate-200">
-          <thead className="bg-white dark:bg-slate-700">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                Shipment Code
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-200 dark:border-slate-800">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                Shipment
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Date
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Carrier
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Boxes
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Weight
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Cost
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Orders
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-900 uppercase tracking-wider">
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className=" divide-y divide-slate-200">
+          <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
             {shipments?.map((shipment) => (
               <tr
                 key={shipment.Id}
-                className={
-                  "hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors even:bg-green-50 dark:even:bg-slate-700"
-                }
+                className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
               >
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <Package className="w-4 h-4 text-slate-400 mr-2" />
-                    <span className="text-sm font-medium text-gray-900">
-                      {shipment.ShipmentCode}
-                    </span>
-                  </div>
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                    {shipment.ShipmentCode}
+                  </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-slate-300">
                   {formatDate(shipment.ShipmentDate)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-slate-300">
                   {shipment.ShipmentCarrierName}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-4 py-3 whitespace-nowrap">
                   <StatusBadge status={shipment.Status as ShipmentStatus} />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-slate-300">
                   {shipment.NumberOfBoxes}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-slate-300">
                   {shipment.TotalWeight} {shipment.WeightUnit}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white font-medium">
                   {shipment.ShipmentCost}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-4 py-3 whitespace-nowrap">
                   <div className="flex flex-wrap gap-1">
                     {shipment.Orders.slice(0, 2).map((order) => (
                       <span
                         key={order.Id}
-                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                        className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400"
                       >
                         {order.OrderNumber}
                       </span>
                     ))}
                     {shipment.Orders.length > 2 && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400">
                         +{shipment.Orders.length - 2} more
                       </span>
                     )}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex items-center justify-end space-x-2">
+                <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                  <div className="flex items-center space-x-1">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         onViewDetails(shipment.Id);
                       }}
-                      className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      className="p-1.5 text-gray-400 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 rounded-md transition-colors"
                       title="View Details"
                     >
                       <Eye className="w-4 h-4" />
@@ -135,7 +130,7 @@ const ShipmentTable: React.FC<ShipmentTableProps> = ({
                     >
                       <button
                         onClick={() => handleEditShipment(shipment.Id)}
-                        className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
+                        className="p-1.5 text-gray-400 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-md transition-colors"
                         title="Edit"
                         type="button"
                       >
@@ -148,7 +143,7 @@ const ShipmentTable: React.FC<ShipmentTableProps> = ({
                     >
                       <button
                         onClick={() => onDelete(shipment.Id)}
-                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-1.5 text-gray-400 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md transition-colors"
                         title="Delete"
                         type="button"
                       >
@@ -162,6 +157,15 @@ const ShipmentTable: React.FC<ShipmentTableProps> = ({
           </tbody>
         </table>
       </div>
+
+      {shipments?.length === 0 && (
+        <div className="text-center py-12">
+          <div className="w-14 h-14 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3">
+            <Package className="w-6 h-6 text-gray-400 dark:text-slate-500" />
+          </div>
+          <p className="text-sm text-gray-500 dark:text-slate-400">No shipments found</p>
+        </div>
+      )}
     </div>
   );
 };

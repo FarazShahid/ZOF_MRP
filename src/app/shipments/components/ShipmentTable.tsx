@@ -75,7 +75,7 @@ const ShipmentTable = () => {
   const closeDeleteModal = () => setIsOpenDeleteModal(false);
 
   const handleEditShipment = (id: number) => {
-    router.push(`/shipment/editshipment/${id}`);
+    router.push(`/shipments/editshipment/${id}`);
   };
 
   const handleViewModal = (id: number) => {
@@ -111,7 +111,7 @@ const ShipmentTable = () => {
             variant="bordered"
           />
           {/* <Link
-            href={"/shipment/addshipment"}
+            href={"/shipments/addshipment"}
             type="button"
             className="text-sm rounded-full dark:bg-blue-600 bg-blue-800 text-white font-semibold px-3 py-2 flex items-center gap-2"
           >

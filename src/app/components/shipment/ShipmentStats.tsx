@@ -1,6 +1,5 @@
 import React from "react";
 import { Package, Truck, CheckCircle, XCircle } from "lucide-react";
-import Image from "next/image";
 import { GetAllShipments } from "@/store/useShipmentStore";
 import { ShipmentStatus } from "@/src/types/admin";
 
@@ -23,10 +22,8 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
       title: "Total Shipments",
       value: stats.total,
       icon: Package,
-      bgColor: "bg-slate-400",
-      textColor: "text-white",
-      iconBg: "bg-slate-600",
-      seal: "/Seal 1.png",
+      iconColor: "text-amber-400",
+      iconBg: "bg-amber-500/10 dark:bg-amber-500/10",
       onClick: () => onStatusChange('all' as const),
       active: statusFilter === 'all'
     },
@@ -34,10 +31,8 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
       title: "In Transit",
       value: stats.shipped,
       icon: Truck,
-      bgColor: "bg-blue-500",
-      textColor: "text-white",
-      iconBg: "bg-blue-600",
-      seal: "/Seal 2.png",
+      iconColor: "text-emerald-400",
+      iconBg: "bg-emerald-500/10 dark:bg-emerald-500/10",
       onClick: () => onStatusChange('In Transit' as ShipmentStatus),
       active: statusFilter === 'In Transit'
     },
@@ -45,29 +40,24 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
       title: "Delivered",
       value: stats.delivered,
       icon: CheckCircle,
-      bgColor: "bg-green-500",
-      textColor: "text-white",
-      iconBg: "bg-green-600",
-      seal: "/Seal 3.png",
+      iconColor: "text-cyan-400",
+      iconBg: "bg-cyan-500/10 dark:bg-cyan-500/10",
       onClick: () => onStatusChange('Delivered' as ShipmentStatus),
       active: statusFilter === 'Delivered'
     },
-
     {
       title: "Cancelled",
       value: stats.cancelled,
       icon: XCircle,
-      bgColor: "bg-red-500",
-      textColor: "text-white",
-      iconBg: "bg-red-600",
-      seal: "/Seal 5.png",
+      iconColor: "text-rose-400",
+      iconBg: "bg-rose-500/10 dark:bg-rose-500/10",
       onClick: () => onStatusChange('Cancelled' as ShipmentStatus),
       active: statusFilter === 'Cancelled'
     },
   ];
 
   return (
-    <div className="p-6">
+    <div className="py-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card) => (
           <div
@@ -77,27 +67,15 @@ const ShipmentStats: React.FC<DashboardProps> = ({ shipments, statusFilter, onSt
             aria-pressed={card.active}
             onClick={card.onClick}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') card.onClick(); }}
-            className={`${card.textColor} ${card.bgColor} rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group relative overflow-hidden ${card.active ? 'ring-2 ring-offset-2 ring-white/80' : ''}`}
+            className={`bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer ${card.active ? 'ring-1 ring-emerald-500 dark:ring-emerald-500' : ''}`}
           >
-            {/* Decorative seal image */}
-            <div className="pointer-events-none absolute -right-4 -bottom-6 group-hover:opacity-30 transition-opacity duration-300">
-              <div className="relative w-28 h-28 transform group-hover:rotate-6 group-hover:scale-105 transition-transform duration-300 ease-out">
-                <Image src={card.seal} alt="decorative seal" fill className="object-contain" sizes="112px" />
-              </div>
-            </div>
-
-            {/* Soft radial highlight on hover */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden>
-              <div className="absolute -inset-16 rounded-full bg-white/5 blur-2xl group-hover:scale-105 transition-transform" />
-            </div>
-
-            <div className="relative z-10 flex items-center gap-3">
-              <div className={`${card.iconBg} p-3 rounded-lg transform group-hover:scale-110 transition-transform`}>
-                <card.icon className="w-6 h-6" />
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 ${card.iconBg} rounded-lg flex items-center justify-center`}>
+                <card.icon className={`w-5 h-5 ${card.iconColor}`} />
               </div>
               <div>
-                <p className="text-sm font-medium opacity-90">{card.title}</p>
-                <p className="text-2xl font-bold mt-1">{card.value}</p>
+                <div className="text-2xl font-bold text-gray-900 dark:text-white">{card.value}</div>
+                <div className="text-xs text-gray-500 dark:text-slate-400">{card.title}</div>
               </div>
             </div>
           </div>
