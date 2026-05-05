@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import Image from "next/image";
+import AttachmentImage from "@/src/app/components/AttachmentImage";
+import { getPreferredMediaUrl } from "@/src/utils/publicMedai";
 
 interface LightboxItem {
   src: string;
@@ -46,7 +47,7 @@ const Lightbox = ({ open, items, index, onClose, onPrev, onNext }: LightboxProps
           </div>
           <div className="flex items-center gap-2">
             <a
-              href={current?.src}
+              href={getPreferredMediaUrl(current?.src || "")}
               target="_blank"
               rel="noreferrer"
               className="px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 text-sm"
@@ -54,7 +55,7 @@ const Lightbox = ({ open, items, index, onClose, onPrev, onNext }: LightboxProps
               Open
             </a>
             <a
-              href={current?.src}
+              href={getPreferredMediaUrl(current?.src || "")}
               download
               className="px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 text-sm"
             >
@@ -74,7 +75,7 @@ const Lightbox = ({ open, items, index, onClose, onPrev, onNext }: LightboxProps
           </button>
           <div className="absolute inset-0 flex items-center justify-center p-6">
             <div className="relative w-full h-full">
-              <Image src={current?.src || ""} alt={current?.title || ""} fill className="object-contain" sizes="100vw" />
+              <AttachmentImage src={current?.src || ""} alt={current?.title || ""} className="w-full h-full object-contain" />
             </div>
           </div>
           <button

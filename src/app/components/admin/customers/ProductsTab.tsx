@@ -14,6 +14,8 @@ import PermissionGuard from "../../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import useProductStore from "@/store/useProductStore";
 import DeleteProduct from "../../../products/DeleteProduct";
+import { isImageFileType } from "@/src/utils/mediaFiles";
+import { getPreferredMediaUrl } from "@/src/utils/publicMedai";
 
 const ProductsTab: React.FC<{ products: Product[] }> = ({ products }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -313,14 +315,13 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete }) => {
   const router = useRouter();
   const { changeProductStatus } = useProductStore();
-  const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
   const { fetchDocuments, documentsByReferenceId } = useDocumentCenterStore();
   
   const documents = documentsByReferenceId[product.Id] || [];
   
   const imageDocs = useMemo(() => {
     return (documents || []).filter((d: any) =>
-      imageExtensions.includes(d?.fileType?.toLowerCase())
+      isImageFileType(d?.fileType, d?.fileName, d?.fileUrl)
     );
   }, [documents]);
 
@@ -342,7 +343,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete }) => {
       <div className="relative h-44 bg-gray-50 dark:bg-slate-800">
         {firstImage ? (
           <img
-            src={firstImage.fileUrl}
+            src={getPreferredMediaUrl(firstImage.fileUrl)}
             alt={product.Name}
             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
           />

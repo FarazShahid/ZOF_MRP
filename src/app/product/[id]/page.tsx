@@ -14,11 +14,11 @@ import { IoMdDownload } from "react-icons/io";
 import { CgAttachment } from "react-icons/cg";
 import { Package, Layers, CalendarDays, Tag, User2 } from "lucide-react";
 import Lightbox from "@/src/app/components/gallery/Lightbox";
-import Image from "next/image";
 import Link from "next/link";
 import { downloadAtIndex } from "@/src/types/admin";
-
-const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
+import { isImageFileType } from "@/src/utils/mediaFiles";
+import AttachmentImage from "@/src/app/components/AttachmentImage";
+import { getPreferredMediaUrl } from "@/src/utils/publicMedai";
 
 const ProductDetailPage = () => {
   const params = useParams<{ id: string }>();
@@ -41,10 +41,10 @@ const ProductDetailPage = () => {
 
   const { imageDocs, otherDocs } = useMemo(() => {
     const imageDocs = (documents || []).filter((d: any) =>
-      imageExtensions.includes(d?.fileType?.toLowerCase())
+      isImageFileType(d?.fileType, d?.fileName, d?.fileUrl)
     );
     const otherDocs = (documents || []).filter(
-      (d: any) => !imageExtensions.includes(d?.fileType?.toLowerCase())
+      (d: any) => !isImageFileType(d?.fileType, d?.fileName, d?.fileUrl)
     );
     return { imageDocs, otherDocs };
   }, [documents]);
@@ -52,7 +52,7 @@ const ProductDetailPage = () => {
   const imageItems = useMemo(
     () =>
       (imageDocs || []).map((img: any) => ({
-        src: img.fileUrl as string,
+        src: getPreferredMediaUrl(img.fileUrl as string),
         title: productById?.Name as string,
         subtitle: ((productById as any)?.client?.Name || (productById as any)?.ClientName) as string,
       })),
@@ -146,11 +146,10 @@ const ProductDetailPage = () => {
                                 className={`relative w-full h-20 rounded-md overflow-hidden border ${active ? "border-blue-500 ring-2 ring-blue-200 dark:ring-blue-900/40" : "border-gray-200 dark:border-gray-700"} `}
                                 title={thumb.fileName}
                               >
-                                <Image
+                                <AttachmentImage
                                   src={thumb.fileUrl}
                                   alt={thumb.fileName || "Thumbnail"}
-                                  fill
-                                  className="object-cover"
+                                  className="w-full h-full object-cover"
                                 />
                               </button>
                             );
@@ -171,14 +170,12 @@ const ProductDetailPage = () => {
                         >
                           {currentImage ? (
                             <>
-                              <Image
+                              <AttachmentImage
                                 key={currentImage.fileUrl}
                                 src={currentImage.fileUrl}
                                 alt={currentImage.fileName || "Attachment"}
-                                fill
-                                className="object-contain transition-transform duration-300 group-hover:scale-[1.15]"
-                                style={{ transformOrigin: `${zoomOrigin.x} ${zoomOrigin.y}` }}
-                                sizes="100vw"
+                                className="absolute inset-0 w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.15]"
+                                imgStyle={{ transformOrigin: `${zoomOrigin.x} ${zoomOrigin.y}` }}
                               />
                               <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
                               <div className="absolute left-3 bottom-3 text-xs text-white/90 bg-black/40 backdrop-blur px-2 py-1 rounded">
@@ -197,7 +194,7 @@ const ProductDetailPage = () => {
                                   </svg>
                                 </button>
                                 <a
-                                  href={currentImage.fileUrl}
+                                  href={getPreferredMediaUrl(currentImage.fileUrl)}
                                   target="_blank"
                                   rel="noreferrer"
                                   className="inline-flex items-center justify-center w-9 h-9 rounded-md bg-black/30 hover:bg-black/40 text-white backdrop-blur-sm"

@@ -7,6 +7,7 @@ import AttachmentPreviewModal, {
 } from "../../AttachmentPreviewModal";
 import { IoMdDownload } from "react-icons/io";
 import { IoEyeOutline } from "react-icons/io5";
+import { isImageFileType } from "@/src/utils/mediaFiles";
 
 interface OrderAttachementsProp {
   productId: number;
@@ -14,8 +15,6 @@ interface OrderAttachementsProp {
 const OrderItemAttachments: React.FC<OrderAttachementsProp> = ({
   productId,
 }) => {
-  const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
-
   const [isOpen, setIsOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
 
@@ -25,10 +24,10 @@ const OrderItemAttachments: React.FC<OrderAttachementsProp> = ({
 
   const { imageDocs, otherDocs } = useMemo(() => {
     const imageDocs = (documents || []).filter((d: any) =>
-      imageExtensions.includes(d?.fileType?.toLowerCase())
+      isImageFileType(d?.fileType, d?.fileName, d?.fileUrl)
     );
     const otherDocs = (documents || []).filter(
-      (d: any) => !imageExtensions.includes(d?.fileType?.toLowerCase())
+      (d: any) => !isImageFileType(d?.fileType, d?.fileName, d?.fileUrl)
     );
     return { imageDocs, otherDocs };
   }, [documents]);

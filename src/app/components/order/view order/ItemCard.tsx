@@ -12,6 +12,7 @@ import { IoMdDownload } from "react-icons/io";
 import { CgAttachment } from "react-icons/cg";
 import { ViewMeasurementChart } from "@/src/app/orders/components/ViewMeasurementChart";
 import { downloadAtIndex } from "@/src/types/admin";
+import { isImageFileType } from "@/src/utils/mediaFiles";
 
 interface OrderItemCardProps {
   item: OrderItem;
@@ -20,8 +21,6 @@ interface OrderItemCardProps {
 }
 
 const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
-  const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
-
   const [isOpen, setIsOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const [openViewModal, setOpenViewModal] = useState<boolean>(false);
@@ -34,10 +33,10 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
 
   const { imageDocs, otherDocs } = useMemo(() => {
     const imageDocs = (documents || []).filter((d: any) =>
-      imageExtensions.includes(d?.fileType?.toLowerCase())
+      isImageFileType(d?.fileType, d?.fileName, d?.fileUrl)
     );
     const otherDocs = (documents || []).filter(
-      (d: any) => !imageExtensions.includes(d?.fileType?.toLowerCase())
+      (d: any) => !isImageFileType(d?.fileType, d?.fileName, d?.fileUrl)
     );
     return { imageDocs, otherDocs };
   }, [documents]);

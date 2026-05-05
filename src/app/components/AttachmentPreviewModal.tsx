@@ -12,6 +12,8 @@ import {
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { TbRotateClockwise, TbRotate2 } from "react-icons/tb";
 import { IoMdDownload, IoMdOpen, IoMdClose } from "react-icons/io";
+import AttachmentImage from "./AttachmentImage";
+import { getPreferredMediaUrl } from "@/src/utils/publicMedai";
 
 export type AttachmentItem = {
   fileName: string;
@@ -53,13 +55,14 @@ function isOfficeExt(ext: string) {
  * For anything else, we show a “download/open” only view.
  */
 function getViewerSrc(fileUrl: string, ext: string) {
+  const resolvedUrl = getPreferredMediaUrl(fileUrl);
   if (isOfficeExt(ext)) {
     // Office online viewer
-    return `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`;
+    return `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(resolvedUrl)}`;
   }
   if (isPdfExt(ext)) {
     // Many browsers can natively preview PDFs
-    return fileUrl;
+    return resolvedUrl;
   }
   return null;
 }
@@ -143,7 +146,7 @@ const AttachmentPreviewModal: React.FC<AttachmentPreviewModalProps> = ({
                 <Button
                   size="sm"
                   as="a"
-                  href={current?.fileUrl}
+                  href={getPreferredMediaUrl(current?.fileUrl)}
                   download={current?.fileName}
                   target="_blank"
                   rel="noreferrer"
@@ -154,7 +157,7 @@ const AttachmentPreviewModal: React.FC<AttachmentPreviewModalProps> = ({
                 <Button
                   size="sm"
                   as="a"
-                  href={current?.fileUrl}
+                  href={getPreferredMediaUrl(current?.fileUrl)}
                   target="_blank"
                   rel="noreferrer"
                   title="Open in new tab"
@@ -189,11 +192,11 @@ const AttachmentPreviewModal: React.FC<AttachmentPreviewModalProps> = ({
               <div className="w-full h-[70vh] flex items-center justify-center overflow-hidden rounded-xl border dark:border-gray-700 border-gray-300 bg-black/5 dark:bg-black/30">
                 {isImage && (
                   // Image can rotate via CSS
-                  <img
+                  <AttachmentImage
                     src={current?.fileUrl}
                     alt={current?.fileName}
                     className="max-h-full max-w-full object-contain"
-                    style={{ transform: `rotate(${rotation}deg)` }}
+                    imgStyle={{ transform: `rotate(${rotation}deg)` }}
                   />
                 )}
 
@@ -221,14 +224,14 @@ const AttachmentPreviewModal: React.FC<AttachmentPreviewModalProps> = ({
                     <div className="flex items-center justify-center gap-2">
                       <Button
                         as="a"
-                        href={current?.fileUrl}
+                        href={getPreferredMediaUrl(current?.fileUrl)}
                         download={current.fileName}
                         target="_blank"
                         rel="noreferrer"
                       >
                         <IoMdDownload /> Download
                       </Button>
-                      <Button as="a" href={current?.fileUrl} target="_blank" rel="noreferrer" variant="flat">
+                      <Button as="a" href={getPreferredMediaUrl(current?.fileUrl)} target="_blank" rel="noreferrer" variant="flat">
                         <IoMdOpen /> Open in new tab
                       </Button>
                     </div>
