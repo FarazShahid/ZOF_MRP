@@ -138,7 +138,7 @@ const ShipmentTable: React.FC<ShipmentTableProps> = ({
                       </button>
                     </PermissionGuard>
 
-                    <PermissionGuard
+                    {/* <PermissionGuard
                       required={PERMISSIONS_ENUM.SHIPMENT.DELETE}
                     >
                       <button
@@ -149,7 +149,7 @@ const ShipmentTable: React.FC<ShipmentTableProps> = ({
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
-                    </PermissionGuard>
+                    </PermissionGuard> */}
                   </div>
                 </td>
               </tr>

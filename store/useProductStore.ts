@@ -198,6 +198,23 @@ interface CategoryState {
   deleteProduct: (id: number, onSuccess: () => void) => Promise<void>;
 }
 
+const getReadableDeleteProductMessage = (message?: string) => {
+  if (!message) {
+    return "Failed to delete product";
+  }
+
+  const normalizedMessage = message.toLowerCase();
+
+  if (
+    normalizedMessage.includes("foreign key constraint fails") ||
+    normalizedMessage.includes("cannot delete or update a parent row")
+  ) {
+    return "This product cannot be deleted because it is already linked to one or more order items.";
+  }
+
+  return message;
+};
+
 const useProductStore = create<CategoryState>((set, get) => ({
   products: [],
   productType: null,
@@ -635,11 +652,14 @@ const useProductStore = create<CategoryState>((set, get) => ({
       } else {
         set({ loading: false, error: null });
         const error = await response.json();
-        toast.error(error.message || "Fail to delete product");
+        toast.error(
+          getReadableDeleteProductMessage(error.message) ||
+            "Failed to delete product"
+        );
       }
     } catch (error) {
       set({ error: "Failed to delete products", loading: false });
-      toast.error("Fail to delete product");
+      toast.error("Failed to delete product");
     }
   },
 }));
