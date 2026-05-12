@@ -103,7 +103,16 @@ export default function ClientProfile({ clientId }: ClientProfileProps) {
     <div className="p-8">
       <ClientProfileBreadcrumb client={client} />
       <ClientProfileHeader client={client} clientId={clientId} />
-      <ClientProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
+      <ClientProfileTabs
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          counts={{
+            projects: projectsForClient.length,
+            products: products.length,
+            orders: orders.length,
+            shipments: shipments.length,
+          }}
+        />
 
       {activeTab === "overview" && (
         <ClientProfileOverview

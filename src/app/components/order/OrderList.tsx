@@ -172,7 +172,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders, projectFilter: externalPr
           <PermissionGuard required={PERMISSIONS_ENUM.ORDER.ADD}>
             <Link
               href="/orders/addorder"
-              className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
+              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
             >
               <i className="ri-add-line mr-2 w-4 h-4 inline-flex items-center justify-center" />
               Create Order

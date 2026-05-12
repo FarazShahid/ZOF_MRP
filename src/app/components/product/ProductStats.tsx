@@ -18,15 +18,15 @@ const ProductStats: React.FC<Props> = ({ products, statusFilter, onStatusChange,
   const archived = products.filter(p => p.isArchived).length;
 
   const cards = [
-    { title: "Total Products", value: products.length, icon: Package, bg: "bg-blue-950/40", border: "border-blue-800/30", labelCls: "text-blue-400", iconCls: "text-blue-400", onClick: () => { onStatusChange("all"); onArchivedChange("all"); }, active: statusFilter === "all" && archivedFilter === "all" },
-    { title: "Approved", value: approved, icon: CheckCircle, bg: "bg-emerald-950/40", border: "border-emerald-800/30", labelCls: "text-emerald-400", iconCls: "text-emerald-400", onClick: () => { onStatusChange("Approved" as ProductStatus); onArchivedChange("all"); }, active: statusFilter === "Approved" && archivedFilter !== "archived" },
-    { title: "Samples", value: sample, icon: FlaskConical, bg: "bg-purple-950/40", border: "border-purple-800/30", labelCls: "text-purple-400", iconCls: "text-purple-400", onClick: () => { onStatusChange("Sample" as ProductStatus); onArchivedChange("all"); }, active: statusFilter === "Sample" && archivedFilter !== "archived" },
-    { title: "Pending", value: emptyStatus, icon: HelpCircle, bg: "bg-amber-950/40", border: "border-amber-800/30", labelCls: "text-amber-400", iconCls: "text-amber-400", onClick: () => { onStatusChange("" as unknown as ProductStatus); onArchivedChange("all"); }, active: (statusFilter as string) === "" && archivedFilter !== "archived" },
-    { title: "Archived", value: archived, icon: Archive, bg: "bg-slate-800/60", border: "border-slate-700/50", labelCls: "text-slate-400", iconCls: "text-slate-400", onClick: () => { onArchivedChange("archived"); onStatusChange("all"); }, active: archivedFilter === "archived" },
+    { title: "Total Products", value: products.length, icon: Package, bg: "bg-gradient-to-br from-blue-600 to-blue-700", border: "border-blue-500/20", labelCls: "text-blue-100", iconCls: "text-blue-200", onClick: () => { onStatusChange("all"); onArchivedChange("all"); }, active: statusFilter === "all" && archivedFilter === "all" },
+    { title: "Approved", value: approved, icon: CheckCircle, bg: "bg-gradient-to-br from-green-600 to-green-700", border: "border-green-500/20", labelCls: "text-green-100", iconCls: "text-green-200", onClick: () => { onStatusChange("Approved" as ProductStatus); onArchivedChange("all"); }, active: statusFilter === "Approved" && archivedFilter !== "archived" },
+    { title: "Samples", value: sample, icon: FlaskConical, bg: "bg-gradient-to-br from-purple-600 to-purple-700", border: "border-purple-500/20", labelCls: "text-purple-100", iconCls: "text-purple-200", onClick: () => { onStatusChange("Sample" as ProductStatus); onArchivedChange("all"); }, active: statusFilter === "Sample" && archivedFilter !== "archived" },
+    { title: "Pending", value: emptyStatus, icon: HelpCircle, bg: "bg-gradient-to-br from-amber-500 to-orange-600", border: "border-amber-400/20", labelCls: "text-amber-50", iconCls: "text-amber-100", onClick: () => { onStatusChange("" as unknown as ProductStatus); onArchivedChange("all"); }, active: (statusFilter as string) === "" && archivedFilter !== "archived" },
+    { title: "Archived", value: archived, icon: Archive, bg: "bg-gradient-to-br from-slate-600 to-slate-700", border: "border-slate-500/20", labelCls: "text-slate-100", iconCls: "text-slate-200", onClick: () => { onArchivedChange("archived"); onStatusChange("all"); }, active: archivedFilter === "archived" },
   ];
 
   return (
-    <div className="grid grid-cols-5 gap-4 mb-8">
+    <div className="grid grid-cols-1 gap-4 mb-8 md:grid-cols-3 xl:grid-cols-5">
       {cards.map(card => (
         <div
           key={card.title}
@@ -35,11 +35,15 @@ const ProductStats: React.FC<Props> = ({ products, statusFilter, onStatusChange,
           aria-pressed={card.active}
           onClick={card.onClick}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") card.onClick(); }}
-          className={`${card.bg} rounded-2xl p-6 border ${card.active ? "border-green-500" : card.border} cursor-pointer transition-all hover:opacity-95 ${card.active ? "ring-1 ring-green-500/30" : ""}`}
+          className={`${card.bg} rounded-2xl p-6 border cursor-pointer transition-all hover:opacity-95 ${
+            card.active
+              ? "border-2 border-white ring-4 ring-white/20 shadow-[0_0_0_1px_rgba(255,255,255,0.35)]"
+              : card.border
+          }`}
         >
           <div className="flex items-center justify-between mb-2">
             <span className={`${card.labelCls} text-sm font-medium`}>{card.title}</span>
-            <card.icon className={`w-8 h-8 flex items-center justify-center ${card.iconCls}`} />
+            <card.icon className={`w-8 h-8 ${card.iconCls}`} />
           </div>
           <div className="text-3xl font-bold text-white">{card.value}</div>
         </div>

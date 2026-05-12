@@ -1,12 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Product } from "@/store/useProductStore";
+import EventDetailTablePagination from "./EventDetailTablePagination";
 
 interface EventDetailProductsTabProps {
   products: Product[];
 }
+
+const ITEMS_PER_PAGE = 10;
 
 function getStatusColor(status: string) {
   const s = status?.toLowerCase() || "";
@@ -18,6 +21,21 @@ function getStatusColor(status: string) {
 export default function EventDetailProductsTab({
   products,
 }: EventDetailProductsTabProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE));
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedProducts = products.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(1);
+    }
+  }, [currentPage, totalPages]);
+
   return (
     <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
       {products.length === 0 ? (
@@ -47,7 +65,7 @@ export default function EventDetailProductsTab({
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
+              {paginatedProducts.map((product) => (
                 <tr
                   key={product.Id}
                   className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors"
@@ -90,6 +108,16 @@ export default function EventDetailProductsTab({
             </tbody>
           </table>
         </div>
+      )}
+      {products.length > 0 && (
+        <EventDetailTablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          totalItems={products.length}
+          startIndex={startIndex}
+          itemLabel="products"
+        />
       )}
     </div>
   );

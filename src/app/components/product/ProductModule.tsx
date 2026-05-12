@@ -210,7 +210,7 @@ const ProductModule = () => {
             <button
               type="button"
               onClick={handleAddProduct}
-              className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium text-sm transition-colors whitespace-nowrap flex items-center gap-2"
+              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium text-sm transition-colors whitespace-nowrap flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Add Product
