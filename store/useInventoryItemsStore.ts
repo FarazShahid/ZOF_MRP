@@ -20,7 +20,7 @@ export interface InventoryItemResponse {
   ItemCode: string;
   CategoryId: number;
   CategoryName: string;
-  SubCategoryId?: number;
+  SubCategoryId?: number | null;
   SubCategoryName: string;
   UnitOfMeasureId: string;
   UnitOfMeasureName: string;
@@ -38,7 +38,7 @@ export interface InventoryItemResponse {
 export interface AddInventoryItemOptions {
   Name: string;
   CategoryId: number;
-  SubCategoryId?: number;
+  SubCategoryId?: number | null;
   UnitOfMeasureId: string;
   SupplierId: number;
   ReorderLevel: number;

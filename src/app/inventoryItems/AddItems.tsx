@@ -82,11 +82,21 @@ const AddItems: React.FC<AddComponentProps> = ({
     }
   }, [isOpen]);
 
+  const normalizeInventoryItemValues = (
+    values: AddInventoryItemOptions
+  ): AddInventoryItemOptions => ({
+    ...values,
+    SubCategoryId:
+      values.SubCategoryId && Number(values.SubCategoryId) > 0
+        ? Number(values.SubCategoryId)
+        : null,
+  });
+
   const InitialValues = {
     Name: isEdit && inventoryItemById ? inventoryItemById.Name : "",
     CategoryId: isEdit && inventoryItemById ? inventoryItemById.CategoryId : 0,
     SubCategoryId:
-      isEdit && inventoryItemById ? inventoryItemById.SubCategoryId : 0,
+      isEdit && inventoryItemById ? inventoryItemById.SubCategoryId ?? 0 : 0,
     UnitOfMeasureId:
       isEdit && inventoryItemById ? inventoryItemById.UnitOfMeasureId : "",
     SupplierId: isEdit && inventoryItemById ? inventoryItemById.SupplierId : 0,
@@ -96,10 +106,11 @@ const AddItems: React.FC<AddComponentProps> = ({
   };
 
   const handleAdd = async (values: AddInventoryItemOptions) => {
+    const normalizedValues = normalizeInventoryItemValues(values);
     const files = uploadedFilesByIndex[1] || [];
 
     if (isEdit) {
-      const updatedItem = await updateInventoryItem(Id, values);
+      const updatedItem = await updateInventoryItem(Id, normalizedValues);
 
       if (updatedItem && files.length > 0) {
         for (const fileObj of files) {
@@ -114,7 +125,7 @@ const AddItems: React.FC<AddComponentProps> = ({
       resetAllFiles();
       closeAddModal();
     } else {
-      const result = await addInventoryItem(values);
+      const result = await addInventoryItem(normalizedValues);
 
       if (result) {
         if (files.length > 0) {

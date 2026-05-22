@@ -48,7 +48,7 @@ const ViewItem: React.FC<ComponentProps> = ({ isOpen, closeAddModal, Id }) => {
                     </div>
                     <div className="flex items-center gap-10">
                       <div>Sub Category:</div>
-                      <p>{inventoryItemById?.SubCategoryName}</p>
+                      <p>{inventoryItemById?.SubCategoryName || "-"}</p>
                     </div>
                     <div className="flex items-center gap-10">
                       <div>Supplier:</div>
