@@ -11,12 +11,19 @@ import { FaRegFileLines } from "react-icons/fa6";
 import { IoDocumentAttach, IoCaretBackSharp } from "react-icons/io5";
 
 import useOrderStore from "@/store/useOrderStore";
-import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 import { OrderValidationSchemas } from "../../schema";
-import { useFileUploadStore } from "@/store/useFileUploadStore";
 import { useDocumentCenterStore } from "@/store/useDocumentCenterStore";
 import { FormValues, steps } from "@/src/types/order";
 import * as Yup from "yup";
+import toast from "react-hot-toast";
+import useOrderDocumentTypesStore from "@/store/useOrderDocumentTypesStore";
+import {
+  getOrderDocumentUploadItems,
+  getOrderDocumentValidationError,
+} from "./OrderDocumentUploadPicker";
+import {
+  type OrderDocumentFilesByType,
+} from "./OrderAttachments";
 
 // lazy load
 const Step1 = dynamic(() => import("./Step1"), {loading: () => null});
@@ -40,12 +47,15 @@ const defaultValues: FormValues = {
   Deadline: "",
   OrderPriority: "",
   items: [],
-  typeId: "",
-  
 };
 
 const OrderForm = ({ orderId }: { orderId?: string }) => {
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
+  const [orderDocumentFiles, setOrderDocumentFiles] =
+    useState<OrderDocumentFilesByType>({});
+  const [selectedOrderDocumentTypeIds, setSelectedOrderDocumentTypeIds] =
+    useState<number[]>([]);
+  const [createdOrderId, setCreatedOrderId] = useState<number | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const searchParams = useSearchParams();
   const clientIdFromQuery = searchParams.get("clientId");
@@ -62,8 +72,9 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   });
 
   const { addOrder, getOrderById, updateOrder, OrderById } = useOrderStore();
-  const { uploadDocument } = useDocumentCenterStore();
-  const { uploadedFilesByIndex, resetAllFiles } = useFileUploadStore();
+  const { uploadOrderDocuments, loadingDoc } = useDocumentCenterStore();
+  const { orderDocumentTypes, fetchOrderDocumentTypes } =
+    useOrderDocumentTypesStore();
 
   const router = useRouter();
 
@@ -144,7 +155,10 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
         return (
           <OrderAttachments
             orderId={orderId || null}
-            onFileSelect={handleFileSelect}
+            documentFiles={orderDocumentFiles}
+            onDocumentFilesChange={handleOrderDocumentFilesChange}
+            onRemoveDocumentFile={handleRemoveOrderDocumentFile}
+            onSelectedDocumentTypesChange={setSelectedOrderDocumentTypeIds}
           />
         );
       default:
@@ -154,6 +168,39 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
 
   const handleFileSelect = (file: File, index: number) => {
     setItemFiles((prev) => ({ ...prev, [index]: file }));
+  };
+
+  const handleOrderDocumentFilesChange = (
+    typeId: number,
+    files: OrderDocumentFilesByType[number]
+  ) => {
+    setOrderDocumentFiles((prev) => {
+      const next = { ...prev };
+
+      if (files.length === 0) {
+        delete next[typeId];
+      } else {
+        next[typeId] = files;
+      }
+
+      return next;
+    });
+  };
+
+  const handleRemoveOrderDocumentFile = (typeId: number, fileIndex: number) => {
+    setOrderDocumentFiles((prev) => {
+      const currentFiles = prev[typeId] ?? [];
+      const nextFiles = currentFiles.filter((_, index) => index !== fileIndex);
+      const next = { ...prev };
+
+      if (nextFiles.length === 0) {
+        delete next[typeId];
+      } else {
+        next[typeId] = nextFiles;
+      }
+
+      return next;
+    });
   };
 
   const handleNext = async (
@@ -194,13 +241,39 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   };
 
   const handleSubmit = async (values: any) => {
-  
-    if (!values.OrderEventId) delete values.OrderEventId;
+    const availableDocumentTypes =
+      orderDocumentTypes.length > 0
+        ? orderDocumentTypes
+        : await fetchOrderDocumentTypes();
+    const documentTypesError = useOrderDocumentTypesStore.getState().error;
+
+    if (documentTypesError && availableDocumentTypes.length === 0) {
+      toast.error("Order document types could not be loaded. Please try again.");
+      setCurrentStep(3);
+      return;
+    }
+
+    const documentValidationError = getOrderDocumentValidationError(
+      availableDocumentTypes,
+      orderDocumentFiles,
+      selectedOrderDocumentTypeIds
+    );
+
+    if (documentValidationError) {
+      toast.error(documentValidationError);
+      setCurrentStep(3);
+      return;
+    }
+
+    const orderValues = { ...values };
+    delete orderValues.typeId;
+
+    if (!orderValues.OrderEventId) delete orderValues.OrderEventId;
 
     // Normalize payload and remove MeasurementId
     const finalPayload = {
-      ...values,
-      items: (values.items || []).map((item: any) => ({
+      ...orderValues,
+      items: (orderValues.items || []).map((item: any) => ({
         ...item,
         orderItemDetails: (item.orderItemDetails || []).map((d: any) => {
           const normalized: any = {
@@ -213,27 +286,45 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
       })),
     };
 
-    const result = orderId
-      ? await updateOrder(Number(orderId), finalPayload)
-      : await addOrder(finalPayload);
+    const orderIdForSubmit = orderId ? Number(orderId) : createdOrderId;
+    const result = orderIdForSubmit
+      ? await updateOrder(orderIdForSubmit, finalPayload, {
+          showSuccessToast: false,
+        })
+      : await addOrder(finalPayload, { showSuccessToast: false });
 
-    // handle attachments
-    const files = uploadedFilesByIndex[1] || [];
-    if (result && files.length > 0) {
-      const refernceId = Number(result.data.Id);
-
-      for (const fileObj of files) {
-        await uploadDocument(
-          fileObj.file,
-          DOCUMENT_REFERENCE_TYPE.ORDER,
-          refernceId,
-          undefined,
-          values?.typeId ? Number(values.typeId) : undefined
-        );
-      }
-    }
-    resetAllFiles();
     if (result) {
+      const savedOrderId = orderIdForSubmit ?? Number(result.data.Id);
+      if (!orderId && !createdOrderId) {
+        setCreatedOrderId(savedOrderId);
+      }
+
+      const documentsToUpload = getOrderDocumentUploadItems(
+        availableDocumentTypes,
+        orderDocumentFiles
+      );
+
+      if (documentsToUpload.length > 0) {
+        const uploaded = await uploadOrderDocuments(
+          savedOrderId,
+          documentsToUpload,
+          { showSuccessToast: false }
+        );
+
+        if (!uploaded) {
+          setCurrentStep(3);
+          return;
+        }
+      }
+
+      setOrderDocumentFiles({});
+      setSelectedOrderDocumentTypeIds([]);
+      setCreatedOrderId(null);
+      toast.success(
+        orderIdForSubmit
+          ? "Order updated successfully"
+          : "Order added successfully"
+      );
       handleBoBack();
     }
   };
@@ -288,9 +379,11 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
           <h1 className="text-sm font-bold text-gray-500 mb-2">
           {orderId ? "Edit Order" : "Add New Order"} 
           </h1>
-          <h2 className="text-xl font-semibold mb-4">
-            {steps[currentStep - 1]}
-          </h2>
+          {currentStep !== 3 && (
+            <h2 className="text-xl font-semibold mb-4">
+              {steps[currentStep - 1]}
+            </h2>
+          )}
           <div className="flex flex-col dark:bg-slate-900 bg-gray-300 rounded-xl p-10">
             <Formik
               validationSchema={getValidationSchema(currentStep - 1, !!orderId)}
@@ -327,7 +420,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
                     {currentStep === 3 && (
                       <button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || loadingDoc}
                         className="flex items-center justify-center text-white bg-[#584BDD] w-[80px] h-[30px] rounded-lg text-sm"
                       >
                         Submit

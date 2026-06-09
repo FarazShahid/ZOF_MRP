@@ -99,10 +99,14 @@ interface StoreState {
   // Comments
   getOrderComments: (orderId: number) => Promise<void>;
   addOrderComment: (orderId: number, payload: { Comment: string }) => Promise<void>;
-  addOrder: (category: AddOrderType) => Promise<AddOrderResponse | null>;
+  addOrder: (
+    category: AddOrderType,
+    options?: { showSuccessToast?: boolean }
+  ) => Promise<AddOrderResponse | null>;
   updateOrder: (
     id: number,
-    category: AddOrderType
+    category: AddOrderType,
+    options?: { showSuccessToast?: boolean }
   ) => Promise<AddOrderResponse | null>;
   reorderOrder: (
     orderId: number,
@@ -409,7 +413,8 @@ const useOrderStore = create<StoreState>((set, get) => ({
   },
 
   addOrder: async (
-    orderType: AddOrderType
+    orderType: AddOrderType,
+    options?: { showSuccessToast?: boolean }
   ): Promise<AddOrderResponse | null> => {
     set({ loading: true, error: null });
 
@@ -431,7 +436,9 @@ const useOrderStore = create<StoreState>((set, get) => ({
       }
 
       set({ loading: false, error: null });
-      toast.success("Order added successfully");
+      if (options?.showSuccessToast !== false) {
+        toast.success("Order added successfully");
+      }
       await get().fetchOrders();
 
       return result;
@@ -444,7 +451,8 @@ const useOrderStore = create<StoreState>((set, get) => ({
 
   updateOrder: async (
     id: number,
-    orderType: AddOrderType
+    orderType: AddOrderType,
+    options?: { showSuccessToast?: boolean }
   ): Promise<AddOrderResponse | null> => {
     set({ loading: true, error: null });
 
@@ -466,7 +474,9 @@ const useOrderStore = create<StoreState>((set, get) => ({
       }
 
       set({ loading: false, error: null });
-      toast.success("Order updated successfully");
+      if (options?.showSuccessToast !== false) {
+        toast.success("Order updated successfully");
+      }
       await get().fetchOrders();
 
       return result;
