@@ -192,16 +192,17 @@ const AddOrderDocumentType: React.FC<AddOrderDocumentTypeProps> = ({
                           )}
                         </div>
 
-                        <div className="flex items-center justify-between gap-4 rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
-                          <span>
-                            <span className="block font-semibold">
-                              Required Document
-                            </span>
-                            <span className="block text-xs text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex flex-col gap-1">
+                            <Label
+                              isRequired={false}
+                              label="Required Document"
+                            />
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
                               Include this type in order document completion
                               checks.
                             </span>
-                          </span>
+                          </div>
                           <Switch
                             isSelected={values.IsRequired}
                             onValueChange={(isSelected) =>

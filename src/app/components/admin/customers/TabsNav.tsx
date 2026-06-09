@@ -1,10 +1,21 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { Building2, Package, ShoppingCart, FolderKanban } from "lucide-react";
+import {
+  Building2,
+  FileText,
+  FolderKanban,
+  Package,
+  ShoppingCart,
+} from "lucide-react";
 import TabActionButton from "./TabActionButton";
 
-export type TabType = "overview" | "orders" | "products" | "projects";
+export type TabType =
+  | "overview"
+  | "orders"
+  | "products"
+  | "projects"
+  | "documents";
 
 interface Props {
   activeTab: TabType;
@@ -28,6 +39,7 @@ const TabsNav: React.FC<Props> = ({
     { id: "projects", label: `Projects (${projectsCount})`, icon: FolderKanban },
     { id: "products", label: `Products (${productsCount})`, icon: Package },
     { id: "orders", label: `Orders (${ordersCount})`, icon: ShoppingCart },
+    { id: "documents", label: "Documents", icon: FileText },
     
   ]), [ordersCount, productsCount, projectsCount]);
 
