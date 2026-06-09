@@ -67,11 +67,10 @@ export interface FormValues {
   Deadline: string;
   OrderPriority: string;
   items: any[];
-  typeId?: string;
 }
 
 // order Steps
-export const steps = ["Order Details", "Order Items"];
+export const steps = ["Order Details", "Order Items", "Order Attachments"];
 
 // order document_types
 export const FileTypesEnum = [

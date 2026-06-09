@@ -9,7 +9,6 @@ import {
   Flag,
   ChevronDown,
   ChevronRight,
-  ArrowRight,
   Search,
   X,
   PencilLine,
@@ -17,10 +16,10 @@ import {
   Trash2,
   RotateCcw,
   AlertTriangle,
+  FileCheck2,
 } from "lucide-react";
 import { GetOrdersType } from "@/src/app/interfaces/OrderStoreInterface";
 import { formatDate, formatDateTime, getStatusColor } from "./clientHelpers";
-import Link from "next/link";
 import { getOrderTypeLabelColor } from "@/interface/GetFileType";
 import { getDeadlineColor, getDeadlineStatus } from "@/src/types/order";
 import { OrderItemShipmentEnum } from "@/interface";
@@ -28,6 +27,16 @@ import PermissionGuard from "../../auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import DeleteModal from "../../DeleteModal";
 import ReorderConfirmation from "../../../orders/components/ReorderConfirmation";
+
+const getDocumentCompletionPercent = (value?: number | null) => {
+  const percent = Math.round(Number(value ?? 0));
+
+  if (!Number.isFinite(percent)) {
+    return 0;
+  }
+
+  return Math.min(100, Math.max(0, percent));
+};
 
 const OrdersTab: React.FC<{
   orders: GetOrdersType[];
@@ -231,6 +240,9 @@ const OrdersTab: React.FC<{
           {paginatedOrders.map((order) => {
             const isExpanded = expandedOrderId === order.Id;
             const isShipped = order.StatusName === OrderItemShipmentEnum.SHIPPED;
+            const documentCompletion = getDocumentCompletionPercent(
+              order.attachmentProgress
+            );
 
             return (
               <div
@@ -289,7 +301,7 @@ const OrdersTab: React.FC<{
                 </div>
 
                 {/* Summary row */}
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 text-sm">
                   <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                     <Hash className="w-4 h-4 text-gray-500" />
                     <span className="text-gray-500">
@@ -332,6 +344,26 @@ const OrdersTab: React.FC<{
                     <span className="ml-1 text-gray-900">
                       Level {order.OrderPriority}
                     </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                    <FileCheck2 className="w-4 h-4 text-gray-500" />
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Documents
+                    </span>
+                    <div className="ml-1 flex min-w-[92px] flex-col gap-1">
+                      <span className="font-medium text-gray-900 dark:text-white">
+                        {documentCompletion}%
+                      </span>
+                      <div
+                        className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
+                        aria-hidden="true"
+                      >
+                        <div
+                          className="h-full rounded-full bg-blue-600 dark:bg-blue-500"
+                          style={{ width: `${documentCompletion}%` }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 

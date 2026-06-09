@@ -127,7 +127,11 @@ const ViewOrderDetails: FC<ViewOrderProps> = ({ orderId }) => {
           <OrderItemsCard OrderById={OrderById} />
         </Tab>
         <Tab key="OrderAttachements" title="Order Attachements">
-          <OrderAttachements orderId={OrderById.Id} />
+          <OrderAttachements
+            orderId={OrderById.Id}
+            attachmentProgress={OrderById.attachmentProgress}
+            onDocumentsUploaded={() => getOrderById(orderId)}
+          />
         </Tab>
        
         {OrderById?.StatusName === 'Shipped' && (

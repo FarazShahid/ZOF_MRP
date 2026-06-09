@@ -15,6 +15,7 @@ export interface GetOrdersType {
   OrderType: string;
   CreatedOn: string;
   UpdatedOn: string;
+  attachmentProgress?: number;
 }
 
 export interface GetOrderByClientResponse {
@@ -87,6 +88,7 @@ export interface GetOrderByIdType {
   OrderStatusId: number;
   StatusName: string;
   OrderShipmentStatus?: string;
+  attachmentProgress?: number;
   Deadline: string;
   ParentOrderId: number;
   items: OrderItem[];
