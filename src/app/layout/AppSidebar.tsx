@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { IoSettingsOutline } from "react-icons/io5";
+import { IoDocumentsOutline } from "react-icons/io5";
 import { RiAlignItemBottomLine } from "react-icons/ri";
 import { PiWarehouseDuotone } from "react-icons/pi";
 import { FaUserFriends, FaTshirt } from "react-icons/fa";
@@ -43,6 +44,11 @@ const navItems: NavItem[] = [
     icon: <RiAlignItemBottomLine size={22} />,
     name: "Orders",
     path: "/orders",
+  },
+  {
+    icon: <IoDocumentsOutline size={22} />,
+    name: "Documents",
+    path: "/documents",
   },
   {
     icon: <FaTshirt size={22} />,

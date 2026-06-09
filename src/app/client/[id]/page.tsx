@@ -13,6 +13,7 @@ import OverviewTab from "@/src/app/components/admin/customers/OverviewTab";
 import OrdersTab from "@/src/app/components/admin/customers/OrdersTab";
 import ProjectsTab from "@/src/app/components/admin/customers/ProjectsTab";
 import ProductsTab from "@/src/app/components/admin/customers/ProductsTab";
+import DocumentsFolderView from "@/src/app/components/documents/DocumentsFolderView";
 import { OrderStatusEnum } from "@/src/types/admin";
 import { PackageOpen, ShoppingCart } from "lucide-react";
 
@@ -146,6 +147,14 @@ const ClientProfilePage = () => {
 
             {activeTab === "orders" && (
               <OrdersTab orders={Orders} loading={ordersLoading} />
+            )}
+
+            {activeTab === "documents" && (
+              <DocumentsFolderView
+                clientId={clientId}
+                clientName={client.Name}
+                includeEmpty
+              />
             )}
 
             {activeTab === "products" && (

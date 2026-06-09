@@ -3,14 +3,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState ,useEffect,useRef} from "react";
 import UserDropdown from "../components/header/UserDropdown";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
 import { useSidebar } from "../context/SidebarContext";
+import { IoDocumentsOutline } from "react-icons/io5";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const isDocumentsActive = pathname?.startsWith("/documents");
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
@@ -165,6 +169,17 @@ const AppHeader: React.FC = () => {
             
             {/* <ThemeToggleButton /> */}
             
+            <Link
+              href="/documents"
+              className={`inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors ${
+                isDocumentsActive
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
+              }`}
+            >
+              <IoDocumentsOutline size={18} />
+              <span>Documents</span>
+            </Link>
 
            <NotificationDropdown /> 
             {/* <!-- Notification Menu Area --> */}

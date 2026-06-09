@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { RiDashboard2Line, RiMenu3Line, RiCloseLine } from "react-icons/ri";
-import { IoStorefrontOutline } from "react-icons/io5";
+import { IoDocumentsOutline, IoStorefrontOutline } from "react-icons/io5";
 import { GiCargoShip } from "react-icons/gi";
 import { IoIosArrowDown } from "react-icons/io";
 import UserDropdown from "../header/UserDropdown";
@@ -45,6 +45,13 @@ const CutomNavBar = () => {
       label: "Clients",
       icon: <FaUserTie size={14} />,
       route: "/client",
+      isNested: false,
+    },
+    {
+      id: 8,
+      label: "Documents",
+      icon: <IoDocumentsOutline size={15} />,
+      route: "/documents",
       isNested: false,
     },
     {
