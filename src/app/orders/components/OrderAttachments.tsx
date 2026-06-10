@@ -5,6 +5,7 @@ import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 import Label from "../../components/common/Label";
 import OrderDocumentUploadPicker, {
+  DocumentAttachmentRow,
   OrderDocumentFilesByType,
 } from "./OrderDocumentUploadPicker";
 import type { UploadedFile } from "@/store/useFileUploadStore";
@@ -17,6 +18,8 @@ type OrderAttachmentsProps = {
   onDocumentFilesChange: (typeId: number, files: UploadedFile[]) => void;
   onRemoveDocumentFile: (typeId: number, fileIndex: number) => void;
   onSelectedDocumentTypesChange: (typeIds: number[]) => void;
+  documentRows?: DocumentAttachmentRow[];
+  onDocumentRowsChange?: (rows: DocumentAttachmentRow[]) => void;
 };
 
 const OrderAttachments: React.FC<OrderAttachmentsProps> = ({
@@ -25,6 +28,8 @@ const OrderAttachments: React.FC<OrderAttachmentsProps> = ({
   onDocumentFilesChange,
   onRemoveDocumentFile,
   onSelectedDocumentTypesChange,
+  documentRows,
+  onDocumentRowsChange,
 }) => {
   const { values } = useFormikContext<any>();
 
@@ -35,6 +40,8 @@ const OrderAttachments: React.FC<OrderAttachmentsProps> = ({
         onDocumentFilesChange={onDocumentFilesChange}
         onRemoveDocumentFile={onRemoveDocumentFile}
         onSelectedDocumentTypesChange={onSelectedDocumentTypesChange}
+        documentRows={documentRows}
+        onDocumentRowsChange={onDocumentRowsChange}
       />
 
       {orderId && (

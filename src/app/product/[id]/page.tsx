@@ -96,6 +96,27 @@ const ProductDetailPage = () => {
       .filter(Boolean);
   }, [productById?.productDetails]);
 
+  const productComponents = useMemo(() => {
+    return (productById?.productComponents || [])
+      .map((component: any) => ({
+        id: component?.id,
+        componentTypeName:
+          component?.componentTypeName ||
+          component?.ProductComponentTypeName ||
+          component?.componentType?.name ||
+          "",
+        fabricName:
+          component?.fabricName ||
+          component?.FabricName ||
+          component?.fabricTypeName ||
+          component?.fabricType?.name ||
+          "",
+      }))
+      .filter(
+        (component) => component.componentTypeName || component.fabricName
+      );
+  }, [productById?.productComponents]);
+
   const formatDate = (iso?: string) =>
     iso
       ? new Date(iso).toLocaleDateString("en-US", {
@@ -360,6 +381,31 @@ const ProductDetailPage = () => {
                     </div>
 
                     {/* Option chips */}
+                    {productComponents.length > 0 && (
+                      <details className="group py-3">
+                        <summary className="flex items-center justify-between cursor-pointer list-none border-b border-slate-200 dark:border-slate-700 pb-2">
+                          <span className="text-sm font-medium flex items-center gap-2">
+                            Component Types
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60">
+                              {productComponents.length}
+                            </span>
+                          </span>
+                          <span className="transition-transform group-open:rotate-45 text-xl leading-none">+</span>
+                        </summary>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {productComponents.map((component, index) => (
+                            <Chip
+                              key={`${component.id ?? component.componentTypeName}-${index}`}
+                              radius="full"
+                              size="sm"
+                            >
+                              {component.componentTypeName || "—"}
+                              {component.fabricName ? ` - ${component.fabricName}` : ""}
+                            </Chip>
+                          ))}
+                        </div>
+                      </details>
+                    )}
                     {selectedColors.length > 0 && (
                       <details className="group py-3">
                         <summary className="flex items-center justify-between cursor-pointer list-none border-b border-slate-200 dark:border-slate-700 pb-2">

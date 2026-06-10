@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { Field, ErrorMessage } from "formik";
+import { Field, ErrorMessage, FieldArray } from "formik";
+import { MdDelete } from "react-icons/md";
+import { FaCirclePlus } from "react-icons/fa6";
 import useCategoryStore from "@/store/useCategoryStore";
 import useFabricStore from "@/store/useFabricStore";
 import { Select, SelectItem } from "@heroui/react";
@@ -9,6 +11,7 @@ import useColorOptionsStore from "@/store/useColorOptionsStore";
 import Label from "../../components/common/Label";
 import { useColorPickerStore } from "@/store/useColorPickerStore";
 import useClientStore from "@/store/useClientStore";
+import useProductComponentTypesStore from "@/store/useProductComponentTypesStore";
 
 export default function Step1({ formik }: any) {
   const [selectedColorOptions, setSelectedColorOptions] = useState<string[]>(
@@ -20,6 +23,8 @@ export default function Step1({ formik }: any) {
   const { fetchFabricType, fabricTypeData } = useFabricStore();
   const { fetchColorOptions, colorOptions } = useColorOptionsStore();
   const { fetchClients, clients, fetchProjects, projects } = useClientStore();
+  const { fetchProductComponentTypes, productComponentTypes } =
+    useProductComponentTypesStore();
   const { selectedColors } = useColorPickerStore();
 
   const handleColorOptionChange = (
@@ -62,6 +67,7 @@ export default function Step1({ formik }: any) {
         fetchFabricType(),
         fetchColorOptions(),
         fetchClients(),
+        fetchProductComponentTypes(),
       ]);
     };
     fetchData();
@@ -105,6 +111,7 @@ export default function Step1({ formik }: any) {
           type="text"
           name="Name"
           required
+          maxLength={255}
           className="rounded-xl dark:text-gray-400 text-gray-800 text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
         />
         <ErrorMessage
@@ -205,6 +212,127 @@ export default function Step1({ formik }: any) {
           className="text-red-500 text-sm"
         />
       </div>
+      <FieldArray name="productComponents">
+        {({ push, remove, form }) => {
+          const productComponents = form.values.productComponents || [];
+          const selectedComponentTypeIds = productComponents
+            .map((component: any) => String(component?.componentTypeId || ""))
+            .filter(Boolean);
+          const uniqueSelectedComponentTypeIds = new Set(
+            selectedComponentTypeIds
+          );
+          const addComponentDisabled =
+            productComponentTypes.length === 0 ||
+            productComponents.length >= productComponentTypes.length ||
+            uniqueSelectedComponentTypeIds.size >= productComponentTypes.length;
+
+          return (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <Label isRequired={false} label="Product Component Types" />
+                <button
+                  type="button"
+                  disabled={addComponentDisabled}
+                  onClick={() =>
+                    push({
+                      componentTypeId: "",
+                      fabricTypeId: "",
+                    })
+                  }
+                  className={`flex items-center gap-1 text-sm ${
+                    addComponentDisabled
+                      ? "cursor-not-allowed text-gray-400"
+                      : "dark:text-green-400 text-green-700"
+                  }`}
+                >
+                  <FaCirclePlus className="text-base" />
+                  Add
+                </button>
+              </div>
+              {productComponents.map((_: any, index: number) => {
+                const disabledComponentTypeIds = selectedComponentTypeIds.filter(
+                  (id: string) =>
+                    id !== String(productComponents[index]?.componentTypeId || "")
+                );
+
+                return (
+                  <div
+                    key={index}
+                    className="border-1 dark:border-gray-800 border-gray-400 space-y-3 rounded-lg p-4"
+                  >
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="flex flex-col gap-1">
+                        <Label
+                          isRequired={false}
+                          label="Product Component Type"
+                        />
+                        <Field
+                          as="select"
+                          name={`productComponents[${index}].componentTypeId`}
+                          className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                        >
+                          <option value={""}>Select an option</option>
+                          {productComponentTypes?.map((type) => (
+                            <option
+                              key={type.id}
+                              value={type.id}
+                              disabled={disabledComponentTypeIds.includes(
+                                String(type.id)
+                              )}
+                            >
+                              {type.name}
+                            </option>
+                          ))}
+                        </Field>
+                        <ErrorMessage
+                          name={`productComponents[${index}].componentTypeId`}
+                          component="div"
+                          className="text-red-500 text-sm"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <Label isRequired={false} label="Fabric Type" />
+                        <Field
+                          as="select"
+                          name={`productComponents[${index}].fabricTypeId`}
+                          className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
+                        >
+                          <option value={""}>Select an option</option>
+                          {fabricTypeData?.map((fabric) => (
+                            <option key={fabric.id} value={fabric.id}>
+                              {`${fabric?.name}_${fabric?.type}_${fabric?.gsm}`}
+                            </option>
+                          ))}
+                        </Field>
+                        <ErrorMessage
+                          name={`productComponents[${index}].fabricTypeId`}
+                          component="div"
+                          className="text-red-500 text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    {productComponents.length > 1 && (
+                      <div className="flex justify-end">
+                        <button type="button" onClick={() => remove(index)}>
+                          <MdDelete className="text-red-500 text-lg" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              <ErrorMessage name="productComponents">
+                {(message) =>
+                  typeof message === "string" ? (
+                    <div className="text-red-500 text-sm">{message}</div>
+                  ) : null
+                }
+              </ErrorMessage>
+            </div>
+          );
+        }}
+      </FieldArray>
       <div className="flex flex-col gap-1">
         <Label isRequired={false} label="Available Colors" />
         <Select
