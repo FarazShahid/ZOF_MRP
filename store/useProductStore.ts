@@ -90,7 +90,14 @@ interface ProductById {
     id: number;
     name: string;
     productId: number
-  }[]
+  }[];
+  productComponents?: {
+    id: number;
+    componentTypeId: number;
+    componentTypeName: string;
+    fabricTypeId: number;
+    fabricName: string;
+  }[];
 }
 
 interface GetAvailableColorResponse {
@@ -143,10 +150,16 @@ interface GetProductAttachmentsPaginatedResponse {
 interface AddProduct {
   ProductCategoryId: number;
   FabricTypeId: number;
+  ClientId?: number;
+  ProjectId?: number;
   Name: string;
   Description: string;
-  CreatedBy: string;
-  UpdatedBy: string;
+  productComponents?: {
+    componentTypeId: number;
+    fabricTypeId: number;
+  }[];
+  CreatedBy?: string;
+  UpdatedBy?: string;
 }
 
 interface AttachmentFilters {

@@ -26,7 +26,7 @@ export type OrderDocumentUploadItem = {
   typeId: number;
 };
 
-type DocumentAttachmentRow = {
+export type DocumentAttachmentRow = {
   rowId: number;
   typeId: number | "";
 };
@@ -36,6 +36,8 @@ type OrderDocumentUploadPickerProps = {
   onDocumentFilesChange: (typeId: number, files: UploadedFile[]) => void;
   onRemoveDocumentFile: (typeId: number, fileIndex: number) => void;
   onSelectedDocumentTypesChange: (typeIds: number[]) => void;
+  documentRows?: DocumentAttachmentRow[];
+  onDocumentRowsChange?: (rows: DocumentAttachmentRow[]) => void;
   disabled?: boolean;
   resetKey?: number;
   className?: string;
@@ -53,7 +55,7 @@ const dropzoneAccept = {
   "application/x-zip-compressed": [],
 };
 
-const createEmptyDocumentRow = (): DocumentAttachmentRow => ({
+export const createEmptyDocumentRow = (): DocumentAttachmentRow => ({
   rowId: Date.now() + Math.random(),
   typeId: "",
 });
@@ -398,13 +400,37 @@ const OrderDocumentUploadPicker: React.FC<OrderDocumentUploadPickerProps> = ({
   onDocumentFilesChange,
   onRemoveDocumentFile,
   onSelectedDocumentTypesChange,
+  documentRows: controlledDocumentRows,
+  onDocumentRowsChange,
   disabled = false,
   resetKey,
   className = "flex w-full max-w-full flex-col gap-5 md:w-[760px]",
 }) => {
-  const [documentRows, setDocumentRows] = useState<DocumentAttachmentRow[]>([
+  const [internalDocumentRows, setInternalDocumentRows] = useState<
+    DocumentAttachmentRow[]
+  >([
     createEmptyDocumentRow(),
   ]);
+  const documentRows = controlledDocumentRows ?? internalDocumentRows;
+  const setDocumentRows = useCallback(
+    (
+      updater:
+        | DocumentAttachmentRow[]
+        | ((currentRows: DocumentAttachmentRow[]) => DocumentAttachmentRow[])
+    ) => {
+      if (controlledDocumentRows) {
+        const nextRows =
+          typeof updater === "function"
+            ? updater(controlledDocumentRows)
+            : updater;
+        onDocumentRowsChange?.(nextRows);
+        return;
+      }
+
+      setInternalDocumentRows(updater);
+    },
+    [controlledDocumentRows, onDocumentRowsChange]
+  );
   const { fetchOrderDocumentTypes, orderDocumentTypes, loading } =
     useOrderDocumentTypesStore();
   const isDisabled = disabled || loading;
@@ -418,7 +444,7 @@ const OrderDocumentUploadPicker: React.FC<OrderDocumentUploadPickerProps> = ({
   useEffect(() => {
     if (resetKey === undefined) return;
     setDocumentRows([createEmptyDocumentRow()]);
-  }, [resetKey]);
+  }, [resetKey, setDocumentRows]);
 
   const sortedDocumentTypes = useMemo(
     () =>

@@ -18,6 +18,8 @@ import * as Yup from "yup";
 import toast from "react-hot-toast";
 import useOrderDocumentTypesStore from "@/store/useOrderDocumentTypesStore";
 import {
+  createEmptyDocumentRow,
+  type DocumentAttachmentRow,
   getOrderDocumentUploadItems,
   getOrderDocumentValidationError,
 } from "./OrderDocumentUploadPicker";
@@ -53,6 +55,9 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
   const [orderDocumentFiles, setOrderDocumentFiles] =
     useState<OrderDocumentFilesByType>({});
+  const [orderDocumentRows, setOrderDocumentRows] = useState<
+    DocumentAttachmentRow[]
+  >(() => [createEmptyDocumentRow()]);
   const [selectedOrderDocumentTypeIds, setSelectedOrderDocumentTypeIds] =
     useState<number[]>([]);
   const [createdOrderId, setCreatedOrderId] = useState<number | null>(null);
@@ -159,6 +164,8 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
             onDocumentFilesChange={handleOrderDocumentFilesChange}
             onRemoveDocumentFile={handleRemoveOrderDocumentFile}
             onSelectedDocumentTypesChange={setSelectedOrderDocumentTypeIds}
+            documentRows={orderDocumentRows}
+            onDocumentRowsChange={setOrderDocumentRows}
           />
         );
       default:
@@ -318,6 +325,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
       }
 
       setOrderDocumentFiles({});
+      setOrderDocumentRows([createEmptyDocumentRow()]);
       setSelectedOrderDocumentTypeIds([]);
       setCreatedOrderId(null);
       toast.success(

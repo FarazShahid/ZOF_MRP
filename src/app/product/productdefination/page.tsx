@@ -9,6 +9,7 @@ import { PiPrinterFill, PiMapPinLineFill } from "react-icons/pi";
 import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
 import ColorOptions from "../../setting/coloroptions/ColorOptions";
 import Fabric from "../../setting/fabrictype/Fabric";
+import ProductComponentTypes from "../../setting/productcomponenttypes/ProductComponentTypes";
 import Sleeve from "../../setting/sleevetype/Sleeve";
 import ProductCategoryComponent from "../../setting/productcatagory/ProductCategoryComponent";
 import ProductCutOptions from "../../setting/cutoptions/ProductCutOptions";
@@ -22,14 +23,15 @@ import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const ListItems = [
   { id: 1, name: "Fabric Type", icon: <GiRolledCloth size={20} /> },
-  { id: 2, name: "Product Category", icon: <TbCategory2 size={20} /> },
-  { id: 3, name: "Sleeve Type", icon: <GiSleevelessJacket size={20} /> },
-  { id: 4, name: "Cut Options", icon: <IoCut size={20} /> },
-  { id: 5, name: "Product Region", icon: <PiMapPinLineFill size={20} /> },
-  { id: 6, name: "Size Options", icon: <GiClothes size={20} /> },
-  { id: 7, name: "Size Measurements", icon: <TbRulerMeasure2 size={20} /> },
-  { id: 8, name: "Colors", icon: <IoIosColorPalette size={20} /> },
-  { id: 9, name: "Printing Options", icon: <PiPrinterFill size={20} /> },
+  { id: 2, name: "Product Component Types", icon: <TbCategory2 size={20} /> },
+  { id: 3, name: "Product Category", icon: <TbCategory2 size={20} /> },
+  { id: 4, name: "Sleeve Type", icon: <GiSleevelessJacket size={20} /> },
+  { id: 5, name: "Cut Options", icon: <IoCut size={20} /> },
+  { id: 6, name: "Product Region", icon: <PiMapPinLineFill size={20} /> },
+  { id: 7, name: "Size Options", icon: <GiClothes size={20} /> },
+  { id: 8, name: "Size Measurements", icon: <TbRulerMeasure2 size={20} /> },
+  { id: 9, name: "Colors", icon: <IoIosColorPalette size={20} /> },
+  { id: 10, name: "Printing Options", icon: <PiPrinterFill size={20} /> },
 ];
 
 const page = () => {
@@ -75,20 +77,22 @@ const page = () => {
                   case 1:
                     return <Fabric />;
                   case 2:
-                    return <ProductCategoryComponent />;
+                    return <ProductComponentTypes />;
                   case 3:
-                    return <Sleeve />;
+                    return <ProductCategoryComponent />;
                   case 4:
-                    return <ProductCutOptions />;
+                    return <Sleeve />;
                   case 5:
-                    return <ProductRegionComponent />;
+                    return <ProductCutOptions />;
                   case 6:
-                    return <ProductSizeOptions />;
+                    return <ProductRegionComponent />;
                   case 7:
-                    return <ProductSizeMeasurements />;
+                    return <ProductSizeOptions />;
                   case 8:
-                    return <ColorOptions />;
+                    return <ProductSizeMeasurements />;
                   case 9:
+                    return <ColorOptions />;
+                  case 10:
                     return <PrintingOptions />;
 
                   default:

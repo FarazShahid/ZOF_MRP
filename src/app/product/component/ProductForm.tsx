@@ -66,6 +66,10 @@ const ProductForm = ({
     ProductSizeMeasurementId: "",
     SleeveTypeId: "",
   };
+  const defaultProductComponentRow = {
+    componentTypeId: "",
+    fabricTypeId: "",
+  };
 
   const defaultValues = {
     Name: "",
@@ -77,6 +81,7 @@ const ProductForm = ({
     productColors: [{ Id: 0, colorId: 0, ImageId: "1" }],
     printingOptions: [{ PrintingOptionId: 0 }],
     productDetails: [defaultDetailsRow],
+    productComponents: [defaultProductComponentRow],
     productSizes: [{ sizeId: 0 }],
     productStatus: "",
   };
@@ -93,6 +98,15 @@ const ProductForm = ({
               SleeveTypeId: d.SleeveTypeId ?? "",
             }))
           : [defaultDetailsRow];
+      const mappedProductComponents =
+        Array.isArray(productById.productComponents) &&
+        productById.productComponents.length > 0
+          ? productById.productComponents.map((component: any) => ({
+              componentTypeId: component.componentTypeId ?? "",
+              fabricTypeId: component.fabricTypeId ?? "",
+            }))
+          : [defaultProductComponentRow];
+
       return {
         Name: productById.Name ?? "",
         ClientId: productById.ClientId ?? "",
@@ -107,6 +121,7 @@ const ProductForm = ({
           { PrintingOptionId: 0 },
         ],
         productDetails: mappedDetails,
+        productComponents: mappedProductComponents,
         productSizes: productById.productSizes?.map((s: any) => ({
           Id: s.Id,
           sizeId: s.sizeId,
@@ -238,6 +253,18 @@ const ProductForm = ({
         return detail;
       })
       .filter((detail: any) => Object.keys(detail).length > 0);
+
+    payload.productComponents = (payload.productComponents ?? [])
+      .map((component: any) => ({
+        componentTypeId: component.componentTypeId
+          ? Number(component.componentTypeId)
+          : 0,
+        fabricTypeId: component.fabricTypeId ? Number(component.fabricTypeId) : 0,
+      }))
+      .filter(
+        (component: { componentTypeId: number; fabricTypeId: number }) =>
+          component.componentTypeId > 0 && component.fabricTypeId > 0
+      );
 
     const isDefaultProductColors =
       payload.productColors?.length === 1 &&

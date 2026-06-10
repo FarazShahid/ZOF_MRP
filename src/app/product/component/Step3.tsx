@@ -43,6 +43,7 @@ export default function Step3({ formik, handleFileSelect, productId }: any) {
           as="textarea"
           name="Description"
           placeholder="Product Description..."
+          maxLength={255}
           className="rounded-xl dark:text-gray-400 text-gray-800 min-h-[105px] h-full text-sm p-2 w-full outline-none dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100"
         />
       </div>
