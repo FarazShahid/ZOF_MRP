@@ -4,8 +4,8 @@ import { ProductProp } from "./Step2";
 import TextAreaField from "./TextAreaField";
 import PrintingOptionsMultiSelect from "./PrintingOptionsMultiSelect";
 import OrderItemDetailsFieldArray from "./OrderItemDetailsFieldArray";
-import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
+import TypedRecentAttachmentsView from "./TypedRecentAttachmentsView";
 
 interface OrderItemProps {
   index: number;
@@ -74,9 +74,10 @@ const OrderItem: React.FC<OrderItemProps> = ({
           </div>
 
           {selectedProduct ? (
-            <RecentAttachmentsView
+            <TypedRecentAttachmentsView
               referenceId={item.ProductId}
               referenceType={DOCUMENT_REFERENCE_TYPE.PRODUCT}
+              label="Product Attachments"
             />
           ) : (
             <></>

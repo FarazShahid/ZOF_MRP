@@ -508,12 +508,27 @@ const DocumentsFolderView: React.FC<DocumentsFolderViewProps> = ({
   };
 
   const renderBreadcrumb = () => (
-    <div className="flex min-w-0 flex-wrap items-center gap-1 text-sm">
+    <div className="flex min-h-8 min-w-0 max-w-full flex-nowrap items-center gap-1 overflow-x-auto whitespace-nowrap text-sm">
+      {isClientScoped && (
+        <button
+          type="button"
+          onClick={handleBackToOrders}
+          className={`inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 font-medium ${
+            selectedOrder
+              ? "text-gray-600 hover:bg-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-blue-300"
+              : "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200"
+          }`}
+        >
+          <Home className="h-4 w-4" />
+          Documents
+        </button>
+      )}
+
       {!isClientScoped && (
         <button
           type="button"
           onClick={handleBackToClients}
-          className={`inline-flex items-center gap-1 rounded-md px-2 py-1 font-medium ${
+          className={`inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 font-medium ${
             selectedClient
               ? "text-gray-600 hover:bg-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-blue-300"
               : "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200"
@@ -526,11 +541,11 @@ const DocumentsFolderView: React.FC<DocumentsFolderViewProps> = ({
 
       {!isClientScoped && selectedClient && (
         <>
-          <ChevronRight className="h-4 w-4 text-gray-400" />
+          <ChevronRight className="h-4 w-4 shrink-0 text-gray-400" />
           <button
             type="button"
             onClick={handleBackToOrders}
-            className={`max-w-[240px] truncate rounded-md px-2 py-1 font-medium ${
+            className={`max-w-[240px] shrink-0 truncate rounded-md px-2 py-1 font-medium ${
               selectedOrder
                 ? "text-gray-600 hover:bg-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-blue-300"
                 : "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200"
@@ -543,8 +558,8 @@ const DocumentsFolderView: React.FC<DocumentsFolderViewProps> = ({
 
       {selectedOrder && (
         <>
-          {!isClientScoped && <ChevronRight className="h-4 w-4 text-gray-400" />}
-          <span className="max-w-[260px] truncate rounded-md bg-blue-50 px-2 py-1 font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">
+          <ChevronRight className="h-4 w-4 shrink-0 text-gray-400" />
+          <span className="max-w-[260px] shrink-0 truncate rounded-md bg-blue-50 px-2 py-1 font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">
             {selectedOrder.orderNumber}
           </span>
         </>
@@ -667,29 +682,12 @@ const DocumentsFolderView: React.FC<DocumentsFolderViewProps> = ({
 
   const renderToolbar = () => (
     <div className="border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-slate-900">
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
         <div className="min-w-0">
           {renderBreadcrumb()}
-          <h2 className="mt-2 truncate text-xl font-semibold text-gray-900 dark:text-white">
-            {explorerTitle}
-          </h2>
         </div>
 
         <div className="flex w-full flex-col gap-3 xl:w-auto">
-          {scope === "order" && selectedOrder && (
-            <div className="flex justify-start xl:justify-end">
-              <Button
-                color="primary"
-                startContent={<Plus className="h-4 w-4" />}
-                onPress={() => setShowUploadPanel(true)}
-                isDisabled={uploading || loadingDoc}
-                className="w-full sm:w-auto"
-              >
-                Add Order Documents
-              </Button>
-            </div>
-          )}
-
           <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-[minmax(220px,1fr)_150px_44px_120px_44px] xl:w-[720px]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -754,6 +752,20 @@ const DocumentsFolderView: React.FC<DocumentsFolderViewProps> = ({
               <RefreshCcw className="h-4 w-4" />
             </IconButton>
           </div>
+
+          {scope === "order" && selectedOrder && (
+            <div className="flex justify-start xl:justify-end">
+              <Button
+                color="primary"
+                startContent={<Plus className="h-4 w-4" />}
+                onPress={() => setShowUploadPanel(true)}
+                isDisabled={uploading || loadingDoc}
+                className="w-full sm:w-auto"
+              >
+                Add Order Documents
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

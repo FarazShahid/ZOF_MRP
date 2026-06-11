@@ -1,7 +1,6 @@
 import React from "react";
 import { ErrorMessage, Field, useFormikContext } from "formik";
 
-import RecentAttachmentsView from "../../components/RecentAttachmentsView";
 import { DOCUMENT_REFERENCE_TYPE } from "@/interface";
 import Label from "../../components/common/Label";
 import OrderDocumentUploadPicker, {
@@ -9,6 +8,7 @@ import OrderDocumentUploadPicker, {
   OrderDocumentFilesByType,
 } from "./OrderDocumentUploadPicker";
 import type { UploadedFile } from "@/store/useFileUploadStore";
+import TypedRecentAttachmentsView from "./TypedRecentAttachmentsView";
 
 export type { OrderDocumentFilesByType } from "./OrderDocumentUploadPicker";
 
@@ -46,9 +46,10 @@ const OrderAttachments: React.FC<OrderAttachmentsProps> = ({
 
       {orderId && (
         <div className="px-4">
-          <RecentAttachmentsView
+          <TypedRecentAttachmentsView
             referenceId={Number(orderId)}
             referenceType={DOCUMENT_REFERENCE_TYPE.ORDER}
+            label="Order Attachments"
           />
         </div>
       )}

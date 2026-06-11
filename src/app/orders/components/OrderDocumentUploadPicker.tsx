@@ -500,6 +500,7 @@ const OrderDocumentUploadPicker: React.FC<OrderDocumentUploadPickerProps> = ({
   const handleDocumentTypeChange = (rowId: number, value: string) => {
     const nextTypeId = value ? Number(value) : "";
     const currentRow = documentRows.find((row) => row.rowId === rowId);
+    const currentTypeId = currentRow?.typeId;
 
     if (
       typeof nextTypeId === "number" &&
@@ -512,11 +513,46 @@ const OrderDocumentUploadPicker: React.FC<OrderDocumentUploadPickerProps> = ({
     }
 
     if (
-      currentRow &&
-      typeof currentRow.typeId === "number" &&
-      currentRow.typeId !== nextTypeId
+      typeof currentTypeId === "number" &&
+      currentTypeId !== nextTypeId
     ) {
-      onDocumentFilesChange(currentRow.typeId, []);
+      const currentFiles = documentFiles[currentTypeId] ?? [];
+
+      if (currentFiles.length > 0 && nextTypeId === "") {
+        toast.error("Remove selected files before clearing the document type.");
+        return;
+      }
+
+      if (currentFiles.length > 0 && typeof nextTypeId === "number") {
+        const nextDocumentType = sortedDocumentTypes.find(
+          (type) => type.Id === nextTypeId
+        );
+
+        if (!nextDocumentType) return;
+
+        const unsupportedFiles = currentFiles.filter(
+          (file) =>
+            !isFileExtensionAllowed(
+              file.file.name,
+              nextDocumentType.SupportedExtensions
+            )
+        );
+
+        if (unsupportedFiles.length > 0) {
+          toast.error(
+            `${unsupportedFiles[0].file.name} is not allowed for ${
+              nextDocumentType.Name
+            }. Allowed: ${getSupportedExtensionsLabel(
+              nextDocumentType.SupportedExtensions
+            )}.`
+          );
+          return;
+        }
+
+        const nextTypeFiles = documentFiles[nextTypeId] ?? [];
+        onDocumentFilesChange(currentTypeId, []);
+        onDocumentFilesChange(nextTypeId, [...nextTypeFiles, ...currentFiles]);
+      }
     }
 
     setDocumentRows((prev) =>

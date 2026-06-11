@@ -26,6 +26,7 @@ interface Document {
   updated_on: string;
   tag?: string;
   typeId?: number;
+  typeName?: string | null;
 }
 
 interface UploadResponse {
@@ -225,12 +226,6 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
         return;
       }
 
-      const docs: Document[] = (result.data ?? []).map((d) => ({
-        ...d,
-        fileUrl: withMediaPrefix(d.fileUrl),
-      }));
-       
-
       let documentTypes = FileTypesEnum;
       if (referenceType === "order") {
         const store = useOrderDocumentTypesStore.getState();
@@ -244,6 +239,35 @@ export const useDocumentCenterStore = create<DocumentCenterStore>((set) => ({
           name: type.Name,
         }));
       }
+
+      const typeNameById = new Map(
+        documentTypes.map((documentType) => [
+          documentType.id,
+          documentType.name,
+        ])
+      );
+
+      const docs: Document[] = ((result.data ?? []) as any[]).map((d) => {
+        const typeId =
+          d?.typeId === undefined || d?.typeId === null
+            ? undefined
+            : Number(d.typeId);
+
+        return {
+          ...d,
+          typeId,
+          typeName:
+            d?.typeName ??
+            d?.documentTypeName ??
+            d?.orderDocumentTypeName ??
+            d?.documentType?.Name ??
+            d?.documentType?.name ??
+            (typeof typeId === "number" ? typeNameById.get(typeId) : null) ??
+            d?.tag ??
+            null,
+          fileUrl: withMediaPrefix(d.fileUrl),
+        };
+      });
 
       const perTypeCount: Record<number, number> = {};
       for (const t of documentTypes) perTypeCount[t.id] = 0;

@@ -62,8 +62,46 @@ export const OrderValidationSchemas = [
     OrderName:  Yup.string().required("Order Name is required"),
     ClientId: Yup.string().required("Client is required"),
     Deadline: Yup.string().required("Deadline is required"),
+    OrderPriority: Yup.string().required("Order Priority is required"),
   }),
-  null,
+  Yup.object({
+    items: Yup.array()
+      .of(
+        Yup.object({
+          ProductId: Yup.number()
+            .typeError("Product is required")
+            .moreThan(0, "Product is required")
+            .required("Product is required"),
+          orderItemDetails: Yup.array()
+            .of(
+              Yup.object({
+                Quantity: Yup.number()
+                  .typeError("Quantity is required")
+                  .integer("Quantity must be a whole number")
+                  .min(1, "Quantity must be at least 1")
+                  .required("Quantity is required"),
+                Priority: Yup.number()
+                  .transform((value, originalValue) =>
+                    originalValue === "" || originalValue === null ? 0 : value
+                  )
+                  .typeError("Please select a priority")
+                  .moreThan(0, "Please select a priority")
+                  .required("Please select a priority"),
+                SizeOption: Yup.number()
+                  .transform((value, originalValue) =>
+                    originalValue === "" || originalValue === null ? 0 : value
+                  )
+                  .moreThan(0, "Please select a size option")
+                  .required("Please select a size option"),
+              })
+            )
+            .min(1, "Please add at least one size option")
+            .required("Please add at least one size option"),
+        })
+      )
+      .min(1, "Please add at least one product")
+      .required("Please add at least one product"),
+  }),
   Yup.object({
     Description: Yup.string().trim().required("Description is required"),
   }),
