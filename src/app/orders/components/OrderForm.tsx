@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Link } from "@heroui/react";
-import { Form, Formik } from "formik";
+import { Form, Formik, setIn } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -26,6 +26,7 @@ import {
 import {
   type OrderDocumentFilesByType,
 } from "./OrderAttachments";
+import Spinner from "../../components/Spinner";
 
 // lazy load
 const Step1 = dynamic(() => import("./Step1"), {loading: () => null});
@@ -49,6 +50,33 @@ const defaultValues: FormValues = {
   Deadline: "",
   OrderPriority: "",
   items: [],
+};
+
+const markTouchedFromErrors = (errorValue: any): any => {
+  if (Array.isArray(errorValue)) {
+    return errorValue.map(markTouchedFromErrors);
+  }
+
+  if (errorValue && typeof errorValue === "object") {
+    return Object.keys(errorValue).reduce((acc, key) => {
+      acc[key] = markTouchedFromErrors(errorValue[key]);
+      return acc;
+    }, {} as Record<string, any>);
+  }
+
+  return true;
+};
+
+const getTouchedFromYupError = (error: any) => {
+  const validationErrors =
+    Array.isArray(error?.inner) && error.inner.length > 0
+      ? error.inner
+      : [error];
+
+  return validationErrors.reduce((acc: any, validationError: any) => {
+    if (!validationError?.path) return acc;
+    return setIn(acc, validationError.path, true);
+  }, {});
 };
 
 const OrderForm = ({ orderId }: { orderId?: string }) => {
@@ -91,6 +119,7 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
         OrderName: Yup.string().required("Order Name is required"),
         ClientId: Yup.string().required("Client is required"),
         Deadline: Yup.string().required("Deadline is required"),
+        OrderPriority: Yup.string().required("Order Priority is required"),
       };
       
       // Only add OrderNumber validation for edit case
@@ -231,9 +260,11 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
 
     if (stepErrors.length > 0) {
       const touchedFields = stepFields.reduce((acc, field) => {
-        acc[field] = true;
+        acc[field] = errors[field]
+          ? markTouchedFromErrors(errors[field])
+          : true;
         return acc;
-      }, {} as Record<string, boolean>);
+      }, {} as Record<string, any>);
 
       setTouched(touchedFields, true);
       return;
@@ -247,7 +278,39 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
     router.back();
   };
 
-  const handleSubmit = async (values: any) => {
+  const validateRequiredStepsBeforeSubmit = async (
+    values: any,
+    setTouched: (touched: any, shouldValidate?: boolean) => void
+  ) => {
+    const stepsToValidate = [
+      { step: 1, schema: getValidationSchema(0, !!orderId) },
+      { step: 2, schema: getValidationSchema(1, !!orderId) },
+    ];
+
+    for (const stepToValidate of stepsToValidate) {
+      if (!stepToValidate.schema) continue;
+
+      try {
+        await stepToValidate.schema.validate(values, { abortEarly: false });
+      } catch (error: any) {
+        setTouched(getTouchedFromYupError(error), true);
+        setCurrentStep(stepToValidate.step);
+        toast.error(error?.errors?.[0] || "Please complete required fields.");
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (values: any, formikHelpers: any) => {
+    const isValid = await validateRequiredStepsBeforeSubmit(
+      values,
+      formikHelpers.setTouched
+    );
+
+    if (!isValid) return;
+
     const availableDocumentTypes =
       orderDocumentTypes.length > 0
         ? orderDocumentTypes
@@ -429,8 +492,13 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
                       <button
                         type="submit"
                         disabled={isSubmitting || loadingDoc}
-                        className="flex items-center justify-center text-white bg-[#584BDD] w-[80px] h-[30px] rounded-lg text-sm"
+                        className="flex items-center justify-center gap-1 text-white bg-[#584BDD] min-w-[80px] h-[30px] rounded-lg px-2 text-sm disabled:cursor-not-allowed disabled:opacity-70"
                       >
+                        {isSubmitting || loadingDoc ? (
+                          <Spinner size="small" />
+                        ) : (
+                          <></>
+                        )}
                         Submit
                       </button>
                     )}

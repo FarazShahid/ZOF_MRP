@@ -1,4 +1,4 @@
-import { Field, FieldArray } from "formik";
+import { ErrorMessage, Field, FieldArray } from "formik";
 import React, { useEffect, useState } from "react";
 import { PRIORITY_ENUM } from "@/interface/GetFileType";
 import Label from "../../components/common/Label";
@@ -95,9 +95,14 @@ const OrderItemDetailsFieldArray = ({
                         }
                       }}
                     />
+                    <ErrorMessage
+                      name={`items[${index}].orderItemDetails[${detailIndex}].Quantity`}
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
                   <div>
-                    <Label isRequired={false} label="Priority" />
+                    <Label isRequired label="Priority" />
                     <Field
                       as="select"
                       name={`items[${index}].orderItemDetails[${detailIndex}].Priority`}
@@ -110,9 +115,14 @@ const OrderItemDetailsFieldArray = ({
                         </option>
                       ))}
                     </Field>
+                    <ErrorMessage
+                      name={`items[${index}].orderItemDetails[${detailIndex}].Priority`}
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
                   <div>
-                    <Label isRequired={false} label="Size Options" />
+                    <Label isRequired label="Size Options" />
                     <Field
                       as="select"
                       name={`items[${index}].orderItemDetails[${detailIndex}].SizeOption`}
@@ -126,6 +136,11 @@ const OrderItemDetailsFieldArray = ({
                         </option>
                       ))}
                     </Field>
+                    <ErrorMessage
+                      name={`items[${index}].orderItemDetails[${detailIndex}].SizeOption`}
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
  
                   </div>
                 </div>
@@ -148,6 +163,8 @@ const OrderItemDetailsFieldArray = ({
                           ColorOptionId: null,
                           Quantity: 1,
                           Priority: 0,
+                          SizeOption: 0,
+                          MeasurementId: 0,
                         })
                       }
                       className="bg-green-600 hover:bg-green-800 text-white rounded-lg px-2 font-bold"

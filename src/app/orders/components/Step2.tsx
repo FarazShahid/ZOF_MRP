@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FieldArray } from "formik";
-import { useFormikContext } from "formik";
+import { ErrorMessage, useFormikContext } from "formik";
 import useProductStore from "@/store/useProductStore";
 import SearchableProductSelect from "./SearchableProductSelect";
 import OrderItem from "./OrderItem";
@@ -132,6 +132,13 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
       <FieldArray name="items">
         {(itemsHelpers) => (
           <>
+            <ErrorMessage name="items">
+              {(message) =>
+                typeof message === "string" ? (
+                  <div className="text-red-500 text-sm">{message}</div>
+                ) : null
+              }
+            </ErrorMessage>
             {values.items.map((item: any, index: number) => (
               <OrderItem
                 key={index}

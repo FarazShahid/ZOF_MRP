@@ -93,7 +93,7 @@ const Step1 = ({ formik, isEdit }: { formik: any; isEdit?: boolean }) => {
         />
       </div>
       <div className="flex flex-col gap-1">
-        <Label isRequired={false} label="Order Priority" />
+        <Label isRequired={true} label="Order Priority" />
         <Field as="select" name="OrderPriority" className={fieldStyle}>
           <option value="">Select a priority</option>
           {PRIORITY_ENUM.map((priority, index) => (
@@ -102,6 +102,11 @@ const Step1 = ({ formik, isEdit }: { formik: any; isEdit?: boolean }) => {
             </option>
           ))}
         </Field>
+        <ErrorMessage
+          name="OrderPriority"
+          component="div"
+          className="text-red-500 text-sm"
+        />
       </div>
 
       {!hideOrderTypeSelect && (
