@@ -19,6 +19,12 @@ import Link from "next/link";
 import { downloadAtIndex } from "@/src/types/admin";
 
 const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
+const getDocumentTypeName = (document: any) =>
+  document?.typeName ||
+  document?.documentTypeName ||
+  document?.orderDocumentTypeName ||
+  document?.tag ||
+  "No document type";
 
 const ProductDetailPage = () => {
   const params = useParams<{ id: string }>();
@@ -205,6 +211,12 @@ const ProductDetailPage = () => {
                               <div className="absolute left-3 bottom-3 text-xs text-white/90 bg-black/40 backdrop-blur px-2 py-1 rounded">
                                 {selectedMediaIndex + 1} / {imageDocs.length}
                               </div>
+                              <div
+                                className="absolute left-3 bottom-11 max-w-[calc(100%-1.5rem)] truncate rounded bg-blue-600/90 px-2 py-1 text-xs font-medium text-white backdrop-blur"
+                                title={getDocumentTypeName(currentImage)}
+                              >
+                                Type: {getDocumentTypeName(currentImage)}
+                              </div>
                               <div className="absolute right-3 top-3 flex items-center gap-2">
                                 <button
                                   type="button"
@@ -283,9 +295,22 @@ const ProductDetailPage = () => {
                     <div className="p-4 space-y-2">
                       {otherDocs.map((attachment: any, index: number) => (
                         <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
-                          <span className="text-sm font-medium text-gray-900 truncate">
-                            {attachment.fileName}.{attachment.fileType}
-                          </span>
+                          <div className="min-w-0">
+                            <span className="block truncate text-sm font-medium text-gray-900">
+                              {attachment.fileName}.{attachment.fileType}
+                            </span>
+                            <span
+                              className="mt-1 inline-flex max-w-full items-center gap-1 truncate rounded-md border border-blue-100 bg-blue-50 px-2 py-0.5 text-[11px] text-blue-700 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-200"
+                              title={getDocumentTypeName(attachment)}
+                            >
+                              <span className="font-semibold uppercase tracking-wide">
+                                Type:
+                              </span>
+                              <span className="truncate">
+                                {getDocumentTypeName(attachment)}
+                              </span>
+                            </span>
+                          </div>
                           <button
                             type="button"
                             onClick={() => {

@@ -46,6 +46,12 @@ const TypedRecentAttachmentsView: React.FC<TypedRecentAttachmentsViewProps> = ({
     setStartIndex(index);
     setIsOpen(true);
   };
+  const getDocumentTypeName = (document: any) =>
+    document?.typeName ||
+    document?.documentTypeName ||
+    document?.orderDocumentTypeName ||
+    document?.tag ||
+    "No document type";
 
   if (!documents || documents.length === 0) return null;
 
@@ -57,11 +63,11 @@ const TypedRecentAttachmentsView: React.FC<TypedRecentAttachmentsViewProps> = ({
       <h6 className="flex items-center gap-3 text-gray-700">
         <IoDocumentAttach size={25} /> {label}
       </h6>
-      <div className="flex flex-wrap gap-3 mt-5">
+      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {documents.map((document: any, index) => (
           <div
             key={`${document.fileUrl}-${index}`}
-            className="flex max-w-[190px] flex-col gap-1 rounded-lg border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-slate-900"
+            className="flex w-full max-w-full flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-slate-900 [&>a]:w-full [&>a]:max-w-full"
           >
             <DocumentCard
               fileTitle={document.fileName}
@@ -71,10 +77,13 @@ const TypedRecentAttachmentsView: React.FC<TypedRecentAttachmentsViewProps> = ({
               onPreview={() => openAt(index)}
             />
             <span
-              className="w-fit max-w-full truncate rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-200"
-              title={document.typeName || "Document type not assigned"}
+              className="inline-flex w-fit max-w-full items-center gap-1 truncate rounded-md border border-blue-100 bg-blue-50 px-2 py-0.5 text-[11px] text-blue-700 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-200"
+              title={getDocumentTypeName(document)}
             >
-              {document.typeName || "No document type"}
+              <span className="font-semibold uppercase tracking-wide">
+                Type:
+              </span>
+              <span className="truncate">{getDocumentTypeName(document)}</span>
             </span>
           </div>
         ))}

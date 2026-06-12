@@ -60,7 +60,7 @@ const AddProductComponentType: React.FC<AddProductComponentTypeProps> = ({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {isEdit ? "Edit Product Component Type" : "Add Product Component Type"}
+              {isEdit ? "Edit Component Type" : "Add Component Type"}
             </ModalHeader>
             <Formik
               validationSchema={ProductComponentTypeSchema}
@@ -85,7 +85,7 @@ const AddProductComponentType: React.FC<AddProductComponentTypeProps> = ({
                             name="name"
                             type="text"
                             maxLength={255}
-                            placeholder="Enter product component type name"
+                            placeholder="Enter component type name"
                             className="formInputdefault bg-gray-100"
                           />
                           <ErrorMessage

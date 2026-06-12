@@ -23,7 +23,7 @@ import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 
 const ListItems = [
   { id: 1, name: "Fabric Type", icon: <GiRolledCloth size={20} /> },
-  { id: 2, name: "Product Component Types", icon: <TbCategory2 size={20} /> },
+  { id: 2, name: "Component Types", icon: <TbCategory2 size={20} /> },
   { id: 3, name: "Product Category", icon: <TbCategory2 size={20} /> },
   { id: 4, name: "Sleeve Type", icon: <GiSleevelessJacket size={20} /> },
   { id: 5, name: "Cut Options", icon: <IoCut size={20} /> },

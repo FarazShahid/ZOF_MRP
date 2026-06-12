@@ -45,6 +45,13 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
     setStartIndex(idx);
     setIsOpen(true);
   };
+  const getDocumentTypeName = (document: any) =>
+    document?.typeName ||
+    document?.documentTypeName ||
+    document?.orderDocumentTypeName ||
+    document?.tag ||
+    "No document type";
+
   if (!documents || documents.length === 0) return null;
   return (
     documents &&
@@ -59,14 +66,27 @@ const RecentAttachmentsView: React.FC<ComponentProp> = ({
         <div className="flex flex-wrap gap-2 mt-5">
           {documents?.map((doc, index) => {
             return (
-              <DocumentCard
+              <div
                 key={index}
-                fileTitle={doc.fileName}
-                fileType={doc.fileType}
-                path={doc.fileUrl}
-                isPrintable={isPrintable}
-                onPreview={() => openAt(index)}
-              />
+                className="flex max-w-[190px] flex-col gap-1 rounded-lg border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-slate-900"
+              >
+                <DocumentCard
+                  fileTitle={doc.fileName}
+                  fileType={doc.fileType}
+                  path={doc.fileUrl}
+                  isPrintable={isPrintable}
+                  onPreview={() => openAt(index)}
+                />
+                <span
+                  className="inline-flex w-fit max-w-full items-center gap-1 truncate rounded-md border border-blue-100 bg-blue-50 px-2 py-0.5 text-[11px] text-blue-700 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-200"
+                  title={getDocumentTypeName(doc)}
+                >
+                  <span className="font-semibold uppercase tracking-wide">
+                    Type:
+                  </span>
+                  <span className="truncate">{getDocumentTypeName(doc)}</span>
+                </span>
+              </div>
             );
           })}
         </div>

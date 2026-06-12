@@ -297,7 +297,7 @@ const DocumentTypeDropZone: React.FC<DocumentTypeDropZoneProps> = ({
 
         <div className="mt-6 min-h-[180px]">
           {files.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {files.map((uploadedFile, index) => (
                 <div
                   key={`${uploadedFile.file.name}-${uploadedFile.file.lastModified}-${index}`}
@@ -696,7 +696,7 @@ const OrderDocumentUploadPicker: React.FC<OrderDocumentUploadPickerProps> = ({
             disabled={isDisabled || areAllDocumentTypesAdded}
             className="flex h-[30px] w-fit items-center justify-center rounded-lg bg-[#584BDD] px-3 text-sm text-white disabled:cursor-not-allowed disabled:opacity-70"
           >
-            Add Other Document
+            Add Document
           </button>
         )}
       </div>

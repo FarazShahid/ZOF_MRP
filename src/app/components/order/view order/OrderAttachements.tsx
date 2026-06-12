@@ -72,6 +72,12 @@ const OrderAttachements: React.FC<OrderAttachementsProp> = ({
 
   const documents = orderId ? documentsByReferenceId[orderId] || [] : [];
   const documentCompletion = getDocumentCompletionPercent(attachmentProgress);
+  const getAttachmentTypeName = (attachment: any) =>
+    attachment?.typeName ||
+    attachment?.documentTypeName ||
+    attachment?.orderDocumentTypeName ||
+    attachment?.tag ||
+    "No document type";
 
   const items: AttachmentItem[] = useMemo(
     () =>
@@ -259,9 +265,22 @@ const OrderAttachements: React.FC<OrderAttachementsProp> = ({
                     <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 truncate">
                       {attachment?.fileName}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-slate-400">
-                      {attachment?.fileType}
-                    </p>
+                    <div className="mt-1 flex flex-wrap items-center gap-2">
+                      <span className="text-xs text-gray-500 dark:text-slate-400">
+                        {attachment?.fileType}
+                      </span>
+                      <span
+                        className="inline-flex max-w-full items-center gap-1 truncate rounded-md border border-blue-100 bg-blue-50 px-2 py-0.5 text-[11px] text-blue-700 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-200"
+                        title={getAttachmentTypeName(attachment)}
+                      >
+                        <span className="font-semibold uppercase tracking-wide">
+                          Type:
+                        </span>
+                        <span className="truncate">
+                          {getAttachmentTypeName(attachment)}
+                        </span>
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-4">

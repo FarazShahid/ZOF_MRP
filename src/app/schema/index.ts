@@ -20,7 +20,7 @@ export const ProductValidationSchemas = [
         Yup.object({
           componentTypeId: Yup.string().test(
             "component-type-required-with-fabric",
-            "Product Component Type is required",
+            "Component Type is required",
             function (value) {
               const { fabricTypeId } = this.parent;
               return !fabricTypeId || Boolean(value);
@@ -38,7 +38,7 @@ export const ProductValidationSchemas = [
       )
       .test(
         "unique-component-types",
-        "Product Component Type can only be added once",
+        "Component Type can only be added once",
         (components) => {
           const componentTypeIds = (components || [])
             .map((component) => component?.componentTypeId)

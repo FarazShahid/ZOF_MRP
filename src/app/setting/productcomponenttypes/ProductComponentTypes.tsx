@@ -106,9 +106,7 @@ const ProductComponentTypes = () => {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h6 className="font-sans text-lg font-semibold">
-          Product Component Types
-        </h6>
+        <h6 className="font-sans text-lg font-semibold">Component Types</h6>
         <PermissionGuard required={PERMISSIONS_ENUM.PRODUCT_DEFINITIONS.ADD}>
           <AddButton title="Add New" onClick={openAddModal} />
         </PermissionGuard>
@@ -117,7 +115,7 @@ const ProductComponentTypes = () => {
       <Table
         isStriped
         isHeaderSticky
-        aria-label="Product component types table"
+        aria-label="Component types table"
         classNames={{
           wrapper: "min-h-[222px]",
           th: "tableHeaderWrapper",

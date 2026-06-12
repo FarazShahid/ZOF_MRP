@@ -21,6 +21,12 @@ interface OrderItemCardProps {
 
 const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
   const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
+  const getDocumentTypeName = (attachment: any) =>
+    attachment?.typeName ||
+    attachment?.documentTypeName ||
+    attachment?.orderDocumentTypeName ||
+    attachment?.tag ||
+    "No document type";
 
   const [isOpen, setIsOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
@@ -218,6 +224,12 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
                       <IoEyeOutline className="text-white text-xl" />
                     </div>
+                    <span
+                      className="absolute bottom-1 left-1 right-1 truncate rounded bg-blue-600/90 px-1.5 py-0.5 text-[10px] font-medium text-white"
+                      title={getDocumentTypeName(img)}
+                    >
+                      Type: {getDocumentTypeName(img)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -234,9 +246,22 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
                     <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white">
                       <FaFileInvoice />
                     </div>
-                    <span className="text-sm font-medium text-gray-900">
-                      {attachment.fileName}.{attachment.fileType}
-                    </span>
+                    <div className="min-w-0">
+                      <span className="block truncate text-sm font-medium text-gray-900">
+                        {attachment.fileName}.{attachment.fileType}
+                      </span>
+                      <span
+                        className="mt-1 inline-flex max-w-full items-center gap-1 truncate rounded-md border border-blue-100 bg-blue-50 px-2 py-0.5 text-[11px] text-blue-700 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-200"
+                        title={getDocumentTypeName(attachment)}
+                      >
+                        <span className="font-semibold uppercase tracking-wide">
+                          Type:
+                        </span>
+                        <span className="truncate">
+                          {getDocumentTypeName(attachment)}
+                        </span>
+                      </span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-1">
                     <button

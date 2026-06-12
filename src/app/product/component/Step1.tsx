@@ -229,7 +229,7 @@ export default function Step1({ formik }: any) {
           return (
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <Label isRequired={false} label="Product Component Types" />
+                <Label isRequired={false} label="Component Types" />
                 <button
                   type="button"
                   disabled={addComponentDisabled}
@@ -264,14 +264,14 @@ export default function Step1({ formik }: any) {
                       <div className="flex flex-col gap-1">
                         <Label
                           isRequired={false}
-                          label="Product Component Type"
+                          label="Component Type"
                         />
                         <Field
                           as="select"
                           name={`productComponents[${index}].componentTypeId`}
                           className="rounded-xl dark:text-gray-400 text-gray-800 dark:bg-slate-800 bg-gray-100 border-1 dark:border-gray-400 border-gray-100 text-sm p-2 w-full outline-none"
                         >
-                          <option value={""}>Select an option</option>
+                          <option value={""}>Select Component Types</option>
                           {productComponentTypes?.map((type) => (
                             <option
                               key={type.id}

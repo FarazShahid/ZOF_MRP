@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Select, SelectItem } from "@heroui/react";
 import { Field, ErrorMessage, FieldArray } from "formik";
 import { MdDelete } from "react-icons/md";
@@ -8,21 +8,44 @@ import useCutOptionsStore from "@/store/useCutOptionsStore";
 import useSizeOptionsStore from "@/store/useSizeOptionsStore";
 import Label from "../../components/common/Label";
 import usePrintingOptionsStore from "@/store/usePrintingOptionsStore";
+import useSizeMeasurementsStore from "@/store/useSizeMeasurementsStore";
 
 export default function Step2({ formik }: any) {
   const [selectedSizeIds, setSelectedSizeIds] = useState<string[]>([]);
   const [selectedPrintingIds, setSelectedPrintingIds] = useState<string[]>([]);
+  const [allowedSizeOptionIds, setAllowedSizeOptionIds] = useState<Set<number>>(
+    new Set()
+  );
+  const [loadingSizeOptions, setLoadingSizeOptions] = useState(false);
 
   const { fetchcutOptions, cutOptions } = useCutOptionsStore();
   const { fetchSleeveType, sleeveTypeData } = useSleeveType();
   const { fetchsizeOptions, sizeOptions } = useSizeOptionsStore();
   const { fetchprintingOptions, printingOptions } = usePrintingOptionsStore();
+  const { getSizeMeasurementByClientId } = useSizeMeasurementsStore();
+
+  const selectedClientId = Number(formik.values.ClientId);
+  const selectedProductCategoryId = Number(formik.values.ProductCategoryId);
+  const filteredSizeOptions = useMemo(() => {
+    if (!selectedClientId || !selectedProductCategoryId) {
+      return [];
+    }
+
+    return sizeOptions.filter((sizeOption) =>
+      allowedSizeOptionIds.has(Number(sizeOption.Id))
+    );
+  }, [
+    allowedSizeOptionIds,
+    selectedClientId,
+    selectedProductCategoryId,
+    sizeOptions,
+  ]);
 
   const handleSizeChange = (keys: Set<React.Key> | "all") => {
     let sizeIds: string[] = [];
 
     if (keys === "all") {
-      sizeIds = sizeOptions.map((sz) => String(sz.Id));
+      sizeIds = filteredSizeOptions.map((sz) => String(sz.Id));
     } else {
       sizeIds = Array.from(keys).map(String);
     }
@@ -70,9 +93,56 @@ export default function Step2({ formik }: any) {
   }, []);
 
   useEffect(() => {
-    const initialSizeIds = formik.values.productSizes?.map((s: any) =>
-      String(s.sizeId)
-    );
+    let isCurrentRequest = true;
+
+    const loadSizeOptionsByClientAndCategory = async () => {
+      if (!selectedClientId || !selectedProductCategoryId) {
+        setAllowedSizeOptionIds(new Set());
+        return;
+      }
+
+      setLoadingSizeOptions(true);
+      try {
+        const measurements = await getSizeMeasurementByClientId(
+          selectedClientId
+        );
+
+        if (!isCurrentRequest) {
+          return;
+        }
+
+        const sizeOptionIds = measurements
+          .filter(
+            (measurement) =>
+              Number(measurement.ProductCategoryId) ===
+              selectedProductCategoryId
+          )
+          .map((measurement) => Number(measurement.SizeOptionId))
+          .filter((sizeOptionId) => sizeOptionId > 0);
+
+        setAllowedSizeOptionIds(new Set(sizeOptionIds));
+      } finally {
+        if (isCurrentRequest) {
+          setLoadingSizeOptions(false);
+        }
+      }
+    };
+
+    loadSizeOptionsByClientAndCategory();
+
+    return () => {
+      isCurrentRequest = false;
+    };
+  }, [
+    selectedClientId,
+    selectedProductCategoryId,
+    getSizeMeasurementByClientId,
+  ]);
+
+  useEffect(() => {
+    const initialSizeIds = formik.values.productSizes
+      ?.map((s: any) => String(s.sizeId))
+      .filter((sizeId: string) => Number(sizeId) > 0);
     setSelectedSizeIds(initialSizeIds || []);
 
     const initialPrintingIds = formik.values.printingOptions?.map((p: any) =>
@@ -80,6 +150,42 @@ export default function Step2({ formik }: any) {
     );
     setSelectedPrintingIds(initialPrintingIds || []);
   }, [formik.values.productSizes, formik.values.printingOptions]);
+
+  useEffect(() => {
+    if (
+      !selectedClientId ||
+      !selectedProductCategoryId ||
+      loadingSizeOptions
+    ) {
+      return;
+    }
+
+    const allowedSizeIds = new Set(
+      filteredSizeOptions.map((sizeOption) => String(sizeOption.Id))
+    );
+    const currentSizeIds =
+      formik.values.productSizes?.map((size: any) => String(size.sizeId)) || [];
+    const nextSizeIds = currentSizeIds.filter((sizeId: string) =>
+      allowedSizeIds.has(sizeId)
+    );
+
+    if (nextSizeIds.length !== currentSizeIds.length) {
+      setSelectedSizeIds(nextSizeIds);
+      formik.setFieldValue(
+        "productSizes",
+        nextSizeIds.map((id: string) => ({
+          Id: 0,
+          sizeId: Number(id),
+        }))
+      );
+    }
+  }, [
+    filteredSizeOptions,
+    formik.values.productSizes,
+    loadingSizeOptions,
+    selectedClientId,
+    selectedProductCategoryId,
+  ]);
 
   return (
     <div className="space-y-6 w-[500px]">
@@ -94,12 +200,15 @@ export default function Step2({ formik }: any) {
           placeholder="Select Size Options"
           variant="bordered"
           isRequired
+          isDisabled={
+            !selectedClientId || !selectedProductCategoryId || loadingSizeOptions
+          }
           selectionMode="multiple"
           aria-label="Size Options"
           selectedKeys={new Set(selectedSizeIds)}
           onSelectionChange={(keys) => handleSizeChange(keys)}
         >
-          {sizeOptions?.map((sizeOption) => (
+          {filteredSizeOptions?.map((sizeOption) => (
             <SelectItem key={sizeOption?.Id}>
               {sizeOption.OptionSizeOptions}
             </SelectItem>
