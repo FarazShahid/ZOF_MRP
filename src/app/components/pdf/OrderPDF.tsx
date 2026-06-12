@@ -455,6 +455,16 @@ const OrderPDF: React.FC<Props> = ({
                           <Text style={styles.sizeHeaderCell}>
                             Size: {d?.SizeOptionName ?? "—"}
                           </Text>
+                          {d?.ProductSubCategoryName ? (
+                            <Text style={styles.sizeHeaderCell}>
+                              Sub Category: {d.ProductSubCategoryName}
+                            </Text>
+                          ) : null}
+                          {d?.StyleNumber ? (
+                            <Text style={styles.sizeHeaderCell}>
+                              Style: {d.StyleNumber}
+                            </Text>
+                          ) : null}
                           <Text style={styles.sizeHeaderCell}>
                             Qty: {d?.Quantity ?? "—"}
                           </Text>

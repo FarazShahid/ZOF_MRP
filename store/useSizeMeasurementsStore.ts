@@ -18,6 +18,9 @@ export interface AddSizeMeasurementType {
   SizeOptionId: number;
   ClientId?: number;
   Measurement1: string;
+  ProductCategoryId?: number | string;
+  ProductSubCategoryId?: number | string;
+  StyleNumber?: string;
   FrontLengthHPS: string;
   BackLengthHPS: string;
   AcrossShoulders: string;
@@ -51,6 +54,9 @@ export interface SizeMeasurements {
   ClientId: number;
   ProductCategoryId: number;
   ProductCategoryType: string;
+  ProductSubCategoryId?: number | null;
+  ProductSubCategoryName?: string | null;
+  StyleNumber?: string | null;
   SizeOptionId: number;
   SizeOptionName: string;
   Measurement1: string;
@@ -167,6 +173,12 @@ interface AddSizeOptions {
   OptionSizeOptions: string;
 }
 
+interface SizeMeasurementBySizeOptionFilters {
+  ProductSubCategoryId?: number | string | null;
+  ProductCategoryId?: number | string | null;
+  ClientId?: number | string | null;
+}
+
 interface StoreState {
   sizeMeasurement: SizeMeasurements[];
   sizeMeasurementById: SizeMeasurements | null;
@@ -192,10 +204,56 @@ interface StoreState {
     onSuccess: () => void
   ) => Promise<void>;
   deleteSizeOption: (id: number, onSuccess: () => void) => Promise<void>;
-  getMeasurementsBySizeOption: (sizeOptionId: number) => Promise<SizeMeasurements[]>;
+  getMeasurementsBySizeOption: (
+    sizeOptionId: number,
+    filters?: SizeMeasurementBySizeOptionFilters
+  ) => Promise<SizeMeasurements[]>;
   getVersionsBySizeMeasurement: (measurementId: number) => Promise<SizeMeasurements[]>;
   setAsDefault: (measurementId: number, onSuccess?: () => void) => Promise<void>;
 }
+
+const normalizeOptionalNumber = (value: unknown) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+};
+
+const normalizeSizeMeasurementPayload = (
+  sizeMeasurement: AddSizeMeasurementType
+) => ({
+  ...sizeMeasurement,
+  SizeOptionId: Number(sizeMeasurement.SizeOptionId),
+  ClientId: normalizeOptionalNumber(sizeMeasurement.ClientId),
+  ProductCategoryId: Number(sizeMeasurement.ProductCategoryId),
+  ProductSubCategoryId: normalizeOptionalNumber(
+    sizeMeasurement.ProductSubCategoryId
+  ),
+  StyleNumber:
+    typeof sizeMeasurement.StyleNumber === "string" &&
+    sizeMeasurement.StyleNumber.trim()
+      ? sizeMeasurement.StyleNumber.trim()
+      : null,
+});
+
+const buildSizeOptionMeasurementQuery = (
+  filters?: SizeMeasurementBySizeOptionFilters
+) => {
+  const params = new URLSearchParams();
+
+  if (filters?.ProductSubCategoryId) {
+    params.set("ProductSubCategoryId", String(filters.ProductSubCategoryId));
+  }
+
+  if (filters?.ProductCategoryId) {
+    params.set("ProductCategoryId", String(filters.ProductCategoryId));
+  }
+
+  if (filters?.ClientId) {
+    params.set("ClientId", String(filters.ClientId));
+  }
+
+  const queryString = params.toString();
+  return queryString ? `?${queryString}` : "";
+};
 
 const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
   sizeMeasurement: [],
@@ -310,7 +368,7 @@ const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(sizeMeasurement),
+          body: JSON.stringify(normalizeSizeMeasurementPayload(sizeMeasurement)),
         }
       );
       if (!response.ok) {
@@ -341,7 +399,7 @@ const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(sizeMeasurement),
+          body: JSON.stringify(normalizeSizeMeasurementPayload(sizeMeasurement)),
         }
       );
       if (!response.ok) {
@@ -383,11 +441,15 @@ const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
     }
   },
 
-  getMeasurementsBySizeOption: async (sizeOptionId: number): Promise<SizeMeasurements[]> => {
+  getMeasurementsBySizeOption: async (
+    sizeOptionId: number,
+    filters?: SizeMeasurementBySizeOptionFilters
+  ): Promise<SizeMeasurements[]> => {
     set({ loading: true, error: null });
     try {
+      const queryString = buildSizeOptionMeasurementQuery(filters);
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/size-option/${sizeOptionId}`
+        `${process.env.NEXT_PUBLIC_API_URL}/size-measurements/size-option/${sizeOptionId}${queryString}`
       );
       if (!response.ok) {
         let message = "Failed to fetch measurements";

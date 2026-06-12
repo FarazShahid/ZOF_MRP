@@ -30,6 +30,7 @@ import RenderPinComponent from "../components/RenderPinComponent";
 import UnitTypeToggle from "./UnitTypeToggle";
 import HatUnit from "./HatUnit";
 import BagUnit from "./BagUnit";
+import useProductSubCategoryStore from "@/store/useProductSubCategoryStore";
 
 const SizeMeasurementForm = ({
   isEdit,
@@ -65,6 +66,8 @@ const SizeMeasurementForm = ({
     sizeMeasurementById,
   } = useSizeMeasurementsStore();
   const { fetchCategories, productCategories } = useCategoryStore();
+  const { fetchProductSubCategories, productSubCategories } =
+    useProductSubCategoryStore();
 
   useEffect(() => {
     if (sizeId && isEdit) {
@@ -76,6 +79,7 @@ const SizeMeasurementForm = ({
     fetchsizeOptions();
     fetchClients();
     fetchCategories();
+    fetchProductSubCategories({ limit: 100, sortBy: "name", sortOrder: "ASC" });
   }, []);
 
   useEffect(() => {
@@ -119,6 +123,8 @@ const SizeMeasurementForm = ({
       return {
         ...defaultMeasurementValues,
         ...sizeMeasurementById,
+        ProductSubCategoryId: sizeMeasurementById.ProductSubCategoryId ?? "",
+        StyleNumber: sizeMeasurementById.StyleNumber ?? "",
       };
     }
     return defaultMeasurementValues;
@@ -155,7 +161,7 @@ const SizeMeasurementForm = ({
                   {isEdit ? "Update Measurement" : "Add Measurement"}
                 </button>
 
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   {/* Measurement1 (Name) */}
                   <div className="flex flex-col gap-1 w-full">
                     <Label isRequired label="Name" labelForm="Name" />
@@ -195,6 +201,7 @@ const SizeMeasurementForm = ({
                           onChange={(e) => {
                             const selectedId = Number(e.target.value);
                             form.setFieldValue("ProductCategoryId", selectedId);
+                            form.setFieldValue("ProductSubCategoryId", "");
 
                             const matchedCategory = productCategories.find(
                               (cat) => cat.Id === selectedId
@@ -241,6 +248,83 @@ const SizeMeasurementForm = ({
 
                     <ErrorMessage
                       name="ProductCategoryId"
+                      component="div"
+                      className="text-red-400 text-sm"
+                    />
+                  </div>
+
+                  {/* Product Sub Category */}
+                  <div className="flex flex-col gap-1 w-full">
+                    <Label
+                      isRequired={false}
+                      label="Product Sub Category"
+                      labelForm="Product Sub Category"
+                    />
+                    <Field name="ProductSubCategoryId">
+                      {({
+                        field,
+                        form,
+                      }: {
+                        field: FieldInputProps<any>;
+                        form: FormikProps<any>;
+                      }) => {
+                        const selectedCategoryId = Number(
+                          form.values.ProductCategoryId
+                        );
+                        const filteredSubCategories =
+                          productSubCategories.filter(
+                            (subCategory) =>
+                              Number(subCategory.productCategoryId) ===
+                              selectedCategoryId
+                          );
+
+                        return (
+                          <select
+                            {...field}
+                            disabled={isEdit || !selectedCategoryId}
+                            className="formInputdefault border-1"
+                          >
+                            <option value="">
+                              {selectedCategoryId
+                                ? "Select a Product Sub Category"
+                                : "Select Product Category first"}
+                            </option>
+                            {filteredSubCategories.map((subCategory) => (
+                              <option
+                                value={subCategory.id}
+                                key={subCategory.id}
+                              >
+                                {subCategory.name}
+                              </option>
+                            ))}
+                          </select>
+                        );
+                      }}
+                    </Field>
+                    <ErrorMessage
+                      name="ProductSubCategoryId"
+                      component="div"
+                      className="text-red-400 text-sm"
+                    />
+                  </div>
+
+                  {/* Style Number */}
+                  <div className="flex flex-col gap-1 w-full">
+                    <Label
+                      isRequired={false}
+                      label="Style Number"
+                      labelForm="Style Number"
+                    />
+                    <Field
+                      name="StyleNumber"
+                      type="text"
+                      maxLength={100}
+                      disabled={isEdit}
+                      placeholder="Enter Style Number"
+                      className="formInputdefault border-1"
+                    />
+                    <ErrorMessage
+                      name="StyleNumber"
                       component="div"
                       className="text-red-400 text-sm"
                     />
@@ -331,8 +415,11 @@ const SizeMeasurementForm = ({
           {showMeasurementPin && (
             <RenderPinComponent
               categoryId={
-                sizeMeasurementById?.ProductCategoryId ??
-                values.ProductCategoryId
+                Number(
+                  sizeMeasurementById?.ProductCategoryId ??
+                    values.ProductCategoryId ??
+                    0
+                )
               }
               values={values}
             />

@@ -3,6 +3,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 export interface Product {
   Id: number;
   Name: string;
+  ProductCategoryId: number;
   ProductCategoryName: string;
   FabricType: string;
   FabricName: string;
@@ -11,7 +12,12 @@ export interface Product {
 
 interface SearchableProductSelectProps {
   products: Product[];
-  onSelect: (selected: { Id: number; productName: string }) => void;
+  onSelect: (selected: {
+    Id: number;
+    productName: string;
+    productCategoryId: number;
+    productCategoryName: string;
+  }) => void;
   placeholder?: string;
 }
 
@@ -64,7 +70,12 @@ const SearchableProductSelect: React.FC<SearchableProductSelectProps> = ({
   }, [query, products]);
 
   const handleSelect = (product: Product) => {
-    onSelect({ Id: product.Id, productName: product.Name });
+    onSelect({
+      Id: product.Id,
+      productName: product.Name,
+      productCategoryId: product.ProductCategoryId,
+      productCategoryName: product.ProductCategoryName,
+    });
     setIsOpen(false);
     setQuery(product.Name);
   };

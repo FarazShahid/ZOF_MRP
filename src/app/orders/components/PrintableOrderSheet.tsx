@@ -80,6 +80,12 @@ const PrintableOrderSheet: React.FC<PrintableOrderSheetProps> = ({ order }) => {
             <div key={j} className="text-sm pl-4 mb-1">
               <p>• Quantity: {detail.Quantity}</p>
               <p>• Size: {detail.SizeOptionName}</p>
+              {detail.ProductSubCategoryName ? (
+                <p>â€¢ Product Sub Category: {detail.ProductSubCategoryName}</p>
+              ) : null}
+              {detail.StyleNumber ? (
+                <p>â€¢ Style Number: {detail.StyleNumber}</p>
+              ) : null}
               <p className="flex items-center gap-3">
                 • Priority:{" "}
                 <PriorityChip priority={detail.Priority} showLabel={false} />

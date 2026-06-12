@@ -54,6 +54,9 @@ export interface OrderItemsByIdData {
     SizeOptionName: string;
     MeasurementId: number;
     MeasurementName: string;
+    ProductSubCategoryId?: number | null;
+    ProductSubCategoryName?: string | null;
+    StyleNumber?: string | null;
   }[];
 }
 

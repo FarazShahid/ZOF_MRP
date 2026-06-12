@@ -176,6 +176,17 @@ const ItemCard: FC<OrderItemCardProps> = ({ item, isSelected, onSelect }) => {
                         <span className="font-bold text-gray-900 dark:text-gray-100 text-xs">
                           {sizeItem.SizeOptionName}
                         </span>
+                        {(sizeItem.ProductSubCategoryName ||
+                          sizeItem.StyleNumber) && (
+                          <span className="text-[11px] text-gray-600 dark:text-gray-200">
+                            {[
+                              sizeItem.ProductSubCategoryName,
+                              sizeItem.StyleNumber,
+                            ]
+                              .filter(Boolean)
+                              .join(" / ")}
+                          </span>
+                        )}
                         <div className="flex items-center justify-between gap-5 w-full">
                           <div className="flex items-center gap-2 text-xs text-gray-900 dark:text-black">
                             Qty:{" "}

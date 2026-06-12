@@ -93,6 +93,16 @@ export const OrderValidationSchemas = [
                   )
                   .moreThan(0, "Please select a size option")
                   .required("Please select a size option"),
+                ProductSubCategoryId: Yup.number()
+                  .nullable()
+                  .transform((value, originalValue) =>
+                    originalValue === "" || originalValue === null ? null : value
+                  )
+                  .typeError("Product Sub Category is invalid"),
+                StyleNumber: Yup.string()
+                  .trim()
+                  .nullable()
+                  .max(100, "Style Number must not exceed 100 characters"),
               })
             )
             .min(1, "Please add at least one size option")

@@ -8,6 +8,8 @@ import { OrderItem } from "@/src/app/interfaces/OrderStoreInterface";
 export interface OrderItemDetail {
   SizeOptionId?: number;
   SizeOptionName?: string;
+  ProductSubCategoryName?: string | null;
+  StyleNumber?: string | null;
   Quantity?: number;
   MeasurementId?: number;
 }
@@ -105,6 +107,8 @@ const OrderItemCard: FC<Props> = ({
           <thead>
             <tr>
               <th className="border-2 text-xs text-center">Size</th>
+              <th className="border-2 text-xs text-center">Sub Category</th>
+              <th className="border-2 text-xs text-center">Style No.</th>
               <th className="border-2 text-xs text-center">Qunatity</th>
               <th className="border-2 text-xs text-center">Measurement</th>
             </tr>
@@ -114,6 +118,12 @@ const OrderItemCard: FC<Props> = ({
               <tr key={i}>
                 <td className="border-2 text-xs text-center">
                   {d.SizeOptionId && <>{d?.SizeOptionName}</>}
+                </td>
+                <td className="border-2 text-xs text-center">
+                  {d.ProductSubCategoryName || "-"}
+                </td>
+                <td className="border-2 text-xs text-center">
+                  {d.StyleNumber || "-"}
                 </td>
                 <td className="border-2 text-xs text-center">{d?.Quantity}</td>
                 <td className="border-2 text-xs text-center">

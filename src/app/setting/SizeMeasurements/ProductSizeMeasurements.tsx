@@ -30,6 +30,9 @@ import PermissionGuard from "../../components/auth/PermissionGaurd";
 import { PERMISSIONS_ENUM } from "@/src/types/rightids";
 import { ROWS_PER_PAGE } from "@/src/types/admin";
 
+const measurementGridTemplate =
+  "44px minmax(120px, 1.2fr) minmax(130px, 1.1fr) minmax(130px, 1.1fr) minmax(95px, 0.8fr) minmax(105px, 0.9fr) minmax(130px, 1fr) 140px";
+
 const ProductSizeMeasurements = () => {
   const [page, setPage] = useState<number>(1);
   const [isOpenDeletModal, setIsOpenDeleteModal] = useState<boolean>(false);
@@ -70,6 +73,8 @@ const ProductSizeMeasurements = () => {
   const filtered = useSearch(sizeMeasurement, query, [
     "Measurement1",
     "ProductCategoryType",
+    "ProductSubCategoryName",
+    "StyleNumber",
     "SizeOptionName",
     "ClientName",
   ]);
@@ -304,13 +309,18 @@ const ProductSizeMeasurements = () => {
         {/* Custom Table */}
         <div className="w-full rounded-medium border border-default-200 overflow-hidden">
           {/* Header */}
-          <div className="grid grid-cols-12 gap-2 bg-default-100 px-4 py-3 text-sm font-semibold">
-            <div className="text-default-700 col-span-1">Sr</div>
-            <div className="text-default-700 col-span-2">Name</div>
-            <div className="text-default-700 col-span-2">Product Category</div>
-            <div className="text-default-700 col-span-2">Size Option</div>
-            <div className="text-default-700 col-span-2">Client Name</div>
-            <div className="text-default-700 col-span-3">Action</div>
+          <div
+            className="grid gap-2 bg-default-100 px-4 py-3 text-sm font-semibold"
+            style={{ gridTemplateColumns: measurementGridTemplate }}
+          >
+            <div className="text-default-700">Sr</div>
+            <div className="text-default-700">Name</div>
+            <div className="text-default-700">Product Category</div>
+            <div className="text-default-700">Sub Category</div>
+            <div className="text-default-700">Style No.</div>
+            <div className="text-default-700">Size Option</div>
+            <div className="text-default-700">Client Name</div>
+            <div className="text-default-700">Action</div>
           </div>
           {/* Body */}
           <div className="divide-y divide-default-200">
@@ -323,9 +333,12 @@ const ProductSizeMeasurements = () => {
               return (
                 <div key={item.Id}>
                   {/* Row */}
-                  <div className="grid grid-cols-12 gap-2 px-4 py-3 items-center odd:bg-default-50 hover:bg-default-100 transition-colors">
-                    <div className="text-sm text-default-700 col-span-1">{index + 1}</div>
-                    <div className="text-sm text-default-700 flex items-center gap-2 col-span-2">
+                  <div
+                    className="grid gap-2 px-4 py-3 items-center odd:bg-default-50 hover:bg-default-100 transition-colors"
+                    style={{ gridTemplateColumns: measurementGridTemplate }}
+                  >
+                    <div className="text-sm text-default-700">{index + 1}</div>
+                    <div className="text-sm text-default-700 flex items-center gap-2">
                       {hasArchive ? (
                         <button
                           type="button"
@@ -349,10 +362,12 @@ const ProductSizeMeasurements = () => {
                         </span>
                       ) : null}
                     </div>
-                    <div className="text-sm text-default-700 col-span-2">{item.ProductCategoryType}</div>
-                    <div className="text-sm text-default-700 col-span-2">{item.SizeOptionName}</div>
-                    <div className="text-sm text-default-700 col-span-2">{item.ClientName}</div>
-                    <div className="flex items-center gap-2 justify-start col-span-3">
+                    <div className="text-sm text-default-700">{item.ProductCategoryType}</div>
+                    <div className="text-sm text-default-700">{item.ProductSubCategoryName || "-"}</div>
+                    <div className="text-sm text-default-700">{item.StyleNumber || "-"}</div>
+                    <div className="text-sm text-default-700">{item.SizeOptionName}</div>
+                    <div className="text-sm text-default-700">{item.ClientName}</div>
+                    <div className="flex items-center gap-2 justify-start">
                       <button
                         type="button"
                         onClick={() => openViewModal(item.Id)}
@@ -368,7 +383,8 @@ const ProductSizeMeasurements = () => {
                         <button
                           type="button"
                           onClick={() => openEditModal(item.Id)}
-                          className="p-1 hover:bg-default-200 rounded"
+                          onMouseDown={(event) => event.preventDefault()}
+                          className="p-1 hover:bg-default-200 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
                           aria-label="Edit"
                           title="Edit"
                         >
@@ -454,10 +470,12 @@ const ProductSizeMeasurements = () => {
                             return null;
                           })()}
                           {/* Nested header */}
-                          <div className="grid grid-cols-7 gap-2 px-8 py-2 text-[11px] font-semibold text-default-600 uppercase tracking-wide">
+                          <div className="grid grid-cols-10 gap-2 px-8 py-2 text-[11px] font-semibold text-default-600 uppercase tracking-wide">
                             <div className="col-span-3">Name</div>
+                            <div className="col-span-2">Sub Category</div>
+                            <div className="col-span-2">Style No.</div>
                             <div className="col-span-1">Version</div>
-                            <div className="col-span-3 text-left">Action</div>
+                            <div className="col-span-2 text-left">Action</div>
                           </div>
                           <div className="px-6 pb-3">
                             <div className="border-l-2 border-default-200 ml-2">
@@ -465,7 +483,7 @@ const ProductSizeMeasurements = () => {
                                 (v) => (
                                   <div
                                     key={v.Id}
-                                    className="relative grid grid-cols-7 gap-2 items-center px-4 py-2 ml-4 odd:bg-default-100/50 hover:bg-default-200/40 rounded"
+                                    className="relative grid grid-cols-10 gap-2 items-center px-4 py-2 ml-4 odd:bg-default-100/50 hover:bg-default-200/40 rounded"
                                   >
                                     <span
                                       className={`absolute -left-3 top-3 rounded-full ${
@@ -502,10 +520,16 @@ const ProductSizeMeasurements = () => {
                                       ) : null}
                                       <span>{v.Measurement1}</span>
                                     </div>
+                                    <div className="col-span-2 text-sm">
+                                      {v.ProductSubCategoryName || "-"}
+                                    </div>
+                                    <div className="col-span-2 text-sm">
+                                      {v.StyleNumber || "-"}
+                                    </div>
                                     <div className="col-span-1 text-sm flex items-center gap-2">
                                       <span>{v.Version}</span>
                                     </div>
-                                    <div className="col-span-3 flex items-center gap-2">
+                                    <div className="col-span-2 flex items-center gap-2">
                                       <button
                                         type="button"
                                         onClick={() => openViewModal(v.Id)}

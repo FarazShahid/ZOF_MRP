@@ -79,6 +79,17 @@ const getTouchedFromYupError = (error: any) => {
   }, {});
 };
 
+const normalizeOptionalNumber = (value: unknown) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+};
+
+const normalizeOptionalString = (value: unknown) => {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+};
+
 const OrderForm = ({ orderId }: { orderId?: string }) => {
   const [itemFiles, setItemFiles] = useState<Record<number, File | null>>({});
   const [orderDocumentFiles, setOrderDocumentFiles] =
@@ -164,6 +175,8 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
             ColorOptionId: detail.ColorOptionId,
             SizeOption: detail.SizeOptionId,
             MeasurementId: detail.MeasurementId,
+            ProductSubCategoryId: detail.ProductSubCategoryId ?? "",
+            StyleNumber: detail.StyleNumber ?? "",
             Quantity: detail.Quantity,
             Priority: detail.Priority,
           })),
@@ -340,18 +353,20 @@ const OrderForm = ({ orderId }: { orderId?: string }) => {
 
     if (!orderValues.OrderEventId) delete orderValues.OrderEventId;
 
-    // Normalize payload and remove MeasurementId
+    // Normalize optional measurement matching fields before submit.
     const finalPayload = {
       ...orderValues,
       items: (orderValues.items || []).map((item: any) => ({
         ...item,
         orderItemDetails: (item.orderItemDetails || []).map((d: any) => {
-          const normalized: any = {
+          return {
             ...d,
+            MeasurementId: normalizeOptionalNumber(d.MeasurementId),
+            ProductSubCategoryId: normalizeOptionalNumber(
+              d.ProductSubCategoryId
+            ),
+            StyleNumber: normalizeOptionalString(d.StyleNumber),
           };
-          // Remove MeasurementId from payload
-          delete normalized.MeasurementId;
-          return normalized;
         }),
       })),
     };

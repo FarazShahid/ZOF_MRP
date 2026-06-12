@@ -8,6 +8,8 @@ import OrderItem from "./OrderItem";
 export interface ProductProp {
   Id: number;
   productName: string;
+  productCategoryId: number;
+  productCategoryName: string;
 }
 
 type Step2Props = {
@@ -51,7 +53,7 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
     }
   }, [values.items.length]);
 
-  const addProduct = async (selected: { Id: number; productName: string }) => {
+  const addProduct = async (selected: ProductProp) => {
     setSelectedProduct(selected);
 
     const exists = values.items.some(
@@ -75,6 +77,8 @@ const Step2: React.FC<Step2Props> = ({ itemFiles, onFileSelect }) => {
 
     const newItem = {
       ProductId: selected.Id,
+      ProductCategoryId: selected.productCategoryId,
+      ProductCategoryName: selected.productCategoryName,
       Description: selected.productName,
       OrderItemPriority: "",
       ImageId: null,

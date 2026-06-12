@@ -179,6 +179,8 @@ const ProductCategoryComponent = () => {
                         >
                           <button
                             type="button"
+                            className="inline-flex rounded p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+                            onMouseDown={(event) => event.preventDefault()}
                             onClick={() => openEditModal(item?.Id)}
                           >
                             <GoPencil color="green" />

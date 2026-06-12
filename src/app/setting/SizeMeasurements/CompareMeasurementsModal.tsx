@@ -20,6 +20,7 @@ const excludedKeys = new Set<string>([
   "ClientId",
   "ProductCategoryId",
   "ProductCategoryType",
+  "ProductSubCategoryId",
   "SizeOptionId",
   "SizeOptionName",
   "CutOptionId",

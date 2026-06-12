@@ -10,6 +10,7 @@ import AdminDashboardLayout from "../../components/common/AdminDashboardLayout";
 import ColorOptions from "../../setting/coloroptions/ColorOptions";
 import Fabric from "../../setting/fabrictype/Fabric";
 import ProductComponentTypes from "../../setting/productcomponenttypes/ProductComponentTypes";
+import ProductSubCategoryComponent from "../../setting/productsubcategory/ProductSubCategoryComponent";
 import Sleeve from "../../setting/sleevetype/Sleeve";
 import ProductCategoryComponent from "../../setting/productcatagory/ProductCategoryComponent";
 import ProductCutOptions from "../../setting/cutoptions/ProductCutOptions";
@@ -25,6 +26,7 @@ const ListItems = [
   { id: 1, name: "Fabric Type", icon: <GiRolledCloth size={20} /> },
   { id: 2, name: "Product Component Types", icon: <TbCategory2 size={20} /> },
   { id: 3, name: "Product Category", icon: <TbCategory2 size={20} /> },
+  { id: 11, name: "Product Sub Categories", icon: <TbCategory2 size={20} /> },
   { id: 4, name: "Sleeve Type", icon: <GiSleevelessJacket size={20} /> },
   { id: 5, name: "Cut Options", icon: <IoCut size={20} /> },
   { id: 6, name: "Product Region", icon: <PiMapPinLineFill size={20} /> },
@@ -80,6 +82,8 @@ const page = () => {
                     return <ProductComponentTypes />;
                   case 3:
                     return <ProductCategoryComponent />;
+                  case 11:
+                    return <ProductSubCategoryComponent />;
                   case 4:
                     return <Sleeve />;
                   case 5:

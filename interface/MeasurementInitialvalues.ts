@@ -3,6 +3,8 @@ export const defaultMeasurementValues = {
   ClientId: 0,
   Measurement1: "",
   ProductCategoryId: "",
+  ProductSubCategoryId: "",
+  StyleNumber: "",
 
   // Top unit
   BackNeckDrop: "",

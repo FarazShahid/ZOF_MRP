@@ -27,6 +27,8 @@ export interface orderItemDetailsType {
   Quantity: number;
   Priority: number;
   MeasurementId?: number;
+  ProductSubCategoryId?: number | null;
+  StyleNumber?: string | null;
 }
 
 export interface GetOrderByIdResponse{
@@ -66,6 +68,9 @@ export interface OrderItem {
       HexCode:string;
       MeasurementId: number;
       MeasurementName: string;
+      ProductSubCategoryId?: number | null;
+      ProductSubCategoryName?: string | null;
+      StyleNumber?: string | null;
       SizeOptionId: number;
       SizeOptionName: string;
       Quantity: number;

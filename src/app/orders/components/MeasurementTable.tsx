@@ -14,6 +14,9 @@ export interface ProductCategoryLike {
 }
 
 export interface SizeMeasurementLike {
+  ProductSubCategoryName?: string | null;
+  StyleNumber?: string | null;
+
   // Top Unit
   BackNeckDrop: string;
   FrontNeckDrop: string;
@@ -320,8 +323,11 @@ const MeasurementTables: React.FC<MeasurementTablesProps> = ({
 
   if (!sections.length) {
     return (
-      <div className="text-sm text-gray-500">
-        No measurements available for this product category.
+      <div className="space-y-3">
+        <MeasurementMeta measurement={measurement} />
+        <div className="text-sm text-gray-500">
+          No measurements available for this product category.
+        </div>
       </div>
     );
   }
@@ -329,7 +335,8 @@ const MeasurementTables: React.FC<MeasurementTablesProps> = ({
   // If only one section or tabs disabled → show stacked
   if (!useTabs || !multiple) {
     return (
-      <div className="w-full">
+      <div className="w-full space-y-3">
+        <MeasurementMeta measurement={measurement} />
         {sections.map((s) => (
           <SectionTable key={s.key} title={s.title} rows={s.rows} />
         ))}
@@ -339,7 +346,8 @@ const MeasurementTables: React.FC<MeasurementTablesProps> = ({
 
   // Tabs variant when multiple sections
   return (
-    <div className="w-full">
+    <div className="w-full space-y-3">
+      <MeasurementMeta measurement={measurement} />
       <div className="flex gap-2 mb-4">
         {sections.map((s) => (
           <Button
@@ -364,3 +372,27 @@ const MeasurementTables: React.FC<MeasurementTablesProps> = ({
 };
 
 export default MeasurementTables;
+
+const MeasurementMeta = ({
+  measurement,
+}: {
+  measurement?: SizeMeasurementLike | null;
+}) => {
+  const items = [
+    ["Sub Category", measurement?.ProductSubCategoryName],
+    ["Style No.", measurement?.StyleNumber],
+  ].filter(([, value]) => value);
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="grid grid-cols-2 gap-2 rounded-lg border border-default-200 bg-default-50 p-3 text-xs">
+      {items.map(([label, value]) => (
+        <div key={label} className="space-y-0.5">
+          <div className="font-semibold text-default-500">{label}</div>
+          <div className="text-default-800">{value}</div>
+        </div>
+      ))}
+    </div>
+  );
+};

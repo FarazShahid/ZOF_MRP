@@ -9,6 +9,9 @@ export const normalize = (v: unknown) =>
 
 export const labelMap: Record<string, string> = {
   Measurement1: "Name",
+  ProductSubCategoryId: "Product Sub Category",
+  ProductSubCategoryName: "Product Sub Category",
+  StyleNumber: "Style Number",
   // Top Unit
   BackNeckDrop: "Back Neck Drop",
   FrontNeckDrop: "Front Neck Drop",
