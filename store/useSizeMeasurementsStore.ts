@@ -177,7 +177,7 @@ interface StoreState {
 
   fetchSizeMeasurements: () => Promise<void>;
   getSizeMeasurementById: (id: number) => Promise<void>;
-  getSizeMeasurementByClientId: (id: number) => Promise<void>;
+  getSizeMeasurementByClientId: (id: number) => Promise<SizeMeasurements[]>;
   fetchSizeMeasurementByClientAndSize: (
     clientId: number,
     sizeOptionId: number
@@ -241,7 +241,7 @@ const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
       toast.error("Failed to fetch data");
     }
   },
-  getSizeMeasurementByClientId: async (id: number) => {
+  getSizeMeasurementByClientId: async (id: number): Promise<SizeMeasurements[]> => {
     set({ loading: true, error: null });
     try {
       const response = await fetchWithAuth(
@@ -251,12 +251,15 @@ const useSizeMeasurementsStore = create<StoreState>((set, get) => ({
         const error = await response.json();
         set({ loading: false, error: null });
         toast.error(error.message || "Failed to fetch data");
+        return [];
       }
-      const data: SizeOptionsIdRepsonse = await response.json();
-      set({ sizeMeasurementById: data.data, loading: false });
+      const data: GetSizeOptionsResponse = await response.json();
+      set({ sizeMeasurementsByClientId: data.data, loading: false });
+      return data.data;
     } catch (error) {
       set({ error: "Failed to fetch data", loading: false });
       toast.error("Failed to fetch data");
+      return [];
     }
   },
 
